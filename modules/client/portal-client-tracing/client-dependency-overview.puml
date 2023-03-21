@@ -1,0 +1,57 @@
+@startmindmap
+skinparam defaultTextAlignment center
+<style>
+  arrow {
+    LineColor #14557d
+  }
+
+  node {
+    BackGroundColor #acd7f2
+    LineColor #14557d
+  }
+  
+  .optional {
+    LineStyle 2
+  }
+</style>
+
+* PORTAL CLIENT\nTRACING
+** DSML
+*** dsml-utils\n1.2
+**** Apache CXF\n3.3.5
+***** JAX-WS (SOAP)
+****** JaxWsProxyFactoryBean
+******* In Interceptors
+******* Out Interceptors
+***** Integration
+****** Brave\n5.6.9
+******* brave-instrumentation-http
+******* cxf-rt-frontend-jaxrs (optional)
+****** OpenTracing\n0.33.0
+******* opentracing-api
+******* opentracing-util
+******* opentracing-mock
+******* cxf-rt-frontend-jaxrs (optional)
+
+** MP-REST
+*** SmallRye OpenTracing\n1.3.4
+**** OT API\n<b>0.31.0 !!!
+**** jakarta.ws.rs-api
+**** MP OT Spec\n1.3.3
+**** MP REST Client\n1.4.0
+***** could be instrumented via\n<i>builder.register(org.apache.cxf.tracing.brave.jaxrs.BraveClientProvider)
+**** RestEasy\n3.8.1.Final
+*** SmallRye OpenTracing\nx.y.z??? <<optional>>
+**** MP OT Spec\n2.0 <<optional>>
+***** OT API\n<b>0.33.0 !!! <<optional>>
+
+** FHIR
+*** HAPI\n3.8.0
+**** Apache HTTP Client\n4.5.3
+***** must be a\n<i>IHttpClient</i> (e.g. BaseHttpClient)
+***** Custom <i>RestfulClientFactory
+****** inherits\n<i>ApacheRestfulClientFactory
+****** uses\n<i>brave.httpclient.TracingHttpClientBuilder
+******* inherits\n<i>org.apache.http.impl.client.HttpClient(Builder)
+******* gets\n<i>brave.http.HttpTracing(brave.Tracing tracing)
+@endmindmap

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.cuioss.portal.test</groupId>
+        <artifactId>test</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>portal-core-unit-testing</artifactId>
+    <description>Provides a number of structures to enable junit 5 and weld-junit testing</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+        </dependency>
+        <!-- Portal modules -->
+        <dependency>
+            <groupId>de.cuioss.portal.authentication</groupId>
+            <artifactId>portal-authentication-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.portal.configuration</groupId>
+            <artifactId>portal-configuration-impl</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.config</groupId>
+            <artifactId>smallrye-config</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.portal.core</groupId>
+            <artifactId>portal-core-servlet</artifactId>
+        </dependency>
+        <!-- Optional Modules -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.test</groupId>
+            <artifactId>cui-test-value-objects</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Optional -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <!-- New Test Structure -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.test</groupId>
+            <artifactId>cui-test-juli-logger</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Needed for ModuleConsistencyTest -->
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>

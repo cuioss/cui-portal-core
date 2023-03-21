@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
-        <version>0.2.2</version>
+        <version>0.2.4</version>
         <relativePath />
     </parent>
     <groupId>de.cuioss.portal</groupId>
@@ -13,7 +13,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <description>The core modules of the cui-portal incorporating portal-configuration and portal authentication.
     </description>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <url>https://github.com/cuioss/cui-portal-core/</url>
     <scm>
         <url>https://github.com/cuioss/cui-portal-core/</url>
@@ -25,15 +25,8 @@
         <url>https://github.com/cuioss/cui-portal-core/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <!-- Unit testing -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>bom</module>
+        <module>modules</module>
+    </modules>
 </project>

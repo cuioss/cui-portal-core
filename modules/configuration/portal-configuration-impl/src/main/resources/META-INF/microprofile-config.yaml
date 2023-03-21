@@ -1,0 +1,357 @@
+# Defines the default configuration for the CUI-Portal
+portal:
+  # Locale Configuration
+  locale:
+    # Context parameter within configuration-subsysten with the name "portal.locale.default"
+    # Defines the default locale. Caution: the default locale must be defined within 
+    # "portal.locale.available".
+    # The default value for the is: 'de' 
+    default: de
+    # Context parameter within configuration-subsysten with the name "portal.locale.available" 
+    # Defines the available locales for for the Portal as a comma separated list. 
+    # The default value for the is: 'en,de,fr' 
+    available: en,de,fr
+
+  # View specific Configuration
+  view:
+    # Usually all our applications need authentication. This parameter defines the views 
+    # or partial trees that do not need any authentication
+    # in order to be displayed, as comma separated list.
+    # Caution: The views are relative to the root, usually starting with /faces. 
+    # The distinct values are to be checked using String#startsWith().
+    # The default for the portal is '/faces/guest/'. 
+    # In order to match all views you can use '/'.
+    non_secured: /faces/guest/
+    # Defines the views that are transient, therefore not part of the state saving. 
+    # Caution: The views are relative to the root, usually starting with /faces. 
+    # The distinct values are to be checked using String#startsWith(). 
+    # The default for the portal is '/faces/guest/'. 
+    # In order to match all views you can use '/'. 
+    transient: /faces/guest/
+    # Defines the views that are being suppressed: The portal provides many artifacts 
+    # that can be overridden by concrete modules. 
+    # This can be services or beans, usually to be overridden using the CDI way. 
+    # In addition, there are templates that can be overridden by our template mechanisms.
+    # But what about overriding pages that are delivered from the portal, 
+    # e.g. faces/guest/login.jsf? 
+    # If a concrete application has its own pages like in pep 
+    # using /faces/pep-ui/guest/login.jsf for login. 
+    # Due to the deployment mechanics of the portal faces/guest/login.jsf will still be 
+    # accessible. 
+    # In order to deal with this issue the portal view suppression mechanics may be used.
+    # Caution: The views are relative to the root, usually starting with /faces. 
+    # The distinct values are to be checked using String#startsWith(). 
+    # The default for the portal is '', saying no view is to be suppressed.
+    suppressed: ""
+    # Enables the view part cache (e.g. for the navigation menu).
+    cache.enabled: true
+    # Defines the views that are only accessible if the user has a specific role.
+    # E.g. all views under '/faces/demo-app/administration' should be only accessible, if the user has the role 'admin'.
+    #restrict.role.admin=/faces/demo-app/administration/
+
+  # Resource Configuration
+  resource:
+    # A comma separated list of libraries that should be handled by the CuiResourceHandler. 
+    # Handled by the resource handler means selecting the .min-version of the resource 
+    # if available and adding a cache-buster to the resource request. 
+    # The default value for the Portal is: 
+    # "com.icw.cui.fonts,com.icw.portal.css,com.icw.cui.javascript,thirdparty.legacy.js,thirdparty.js" 
+    handled_libraries: com.icw.cui.fonts,com.icw.portal.css,com.icw.cui.javascript,thirdparty.legacy.js,thirdparty.js,vendor
+
+    # A comma separated list of suffixes that should be handled by the CuiResourceHandler.
+    # Handled by the resource handler means selecting the .min-version of the resource is 
+    # available and adding a cache-buster to the resource request. 
+    # The default value for the Portal is: "eot,ttf,svg,js,css,woff" 
+    handled_suffixes: eot,ttf,svg,js,css,woff
+
+    # The String used for the cache buster for the resources under the control. 
+    # The default value for the Portal is: The corresponding cui version, e.g. "7.3"
+    version: ${project.version}
+
+    # To allow caching of specific resources it allows to specify how long (in minutes) the
+    # browser does not need to retrieve the resource again. It will not be used in 
+    # {@link ProjectStage#DEVELOPMENT}.
+    # Default value: 7 * 24 * 60
+    maxAge: 10080
+
+  # Theme Configuration
+  theme:
+    # The configured default theme. The default value for the Portal is 'Default' 
+    # Caution:  In order to work the default theme must be defined at 
+    # "portal.theme.available_themes"
+    default: Default
+
+    # The configured available themes as comma separated list. 
+    # The default value for the Portal is 
+    # 'Blue,Default,High-Contrast' (Dark, Mokka currently disabled) 
+    available_themes: Blue,Default,High-Contrast
+
+  # History Configuration
+  history:
+    # Defines the url-parameter to be ignored for the server side history manager as a 
+    # comma separated list. 
+    # Caution: The checks are all lower-cased, therefore this parameter must be 
+    # lower-cased as well 
+    # The default for the portal is 'samlresponse,jsessionid,jfwid' 
+    exclude_parameter: samlresponse,jsessionid,jfwid
+
+    # Defines the views that are to be excluded from the server-side history, as 
+    # comma separated list. 
+    # The distinct values are to be checked using String#startsWith(). 
+    # The default for the portal is '/faces/guest/'. 
+    # In order to match all views you can use '/'. 
+    view_excludes: /faces/guest/
+
+  # Pages Configuration
+  pages:
+    login:
+      # Defines the behavior of the login page if called with an already logged-in user. 
+      # Currently there are two strategies available: 'goto_home' resulting in a redirect
+      # to the home page 
+      # and 'logout' resulting in logging out the current logged in user. 
+      # The portal default is 'goto_home'
+      logged_in_strategy: goto_home
+      # Define configuration for default selected user store.
+      # If no valid setting is defined first available user store is used.
+      default_userstore: ""
+    error:
+      # Defines the behavior of the 404 / resource not found view.
+      # If set to 'true' the application will implicitly redirect to the home-view
+      # If set to 'false' it displays the 'home' link only
+      # The portal default is 'true'
+      404_redirect_to_home: true
+
+  # Configuration sub system
+  configuration:
+    # Path to the Portals configuration directory.
+    dir: config/
+
+    # Scheduler
+    #
+    # Used for the configuration of the cron-based system for checking for changes within 
+    # configuration files.
+    # The configuration is done using cron-expressions. 
+    # The default value for the portal is '* 0/1 * * * ?' saying the files will be scanned 
+    # every minute for changes. 
+    # In case of system configuration you can lower it to e.g. every 5 seconds: '0/5 * * * * ?'.
+    # Always set it to a production value like every minute if you finished configuration. 
+    # -Caution: Always keep in mind that this configuration change will only picked up at 
+    # the next scan-interval.
+    # -Caution: Due to this nature long intervals like hourly or daily can only be reconfigured 
+    # with a restart or a longer time to wait.
+    # -Although the reconfiguration checks the new expression and ignores it on an invalid 
+    # value, the value set on start-up time must always define a correct expression, 
+    # because otherwise the cron-job will not start at all.
+    # -You can use Cronmaker to validate you expressions. 
+    #- The actual execution of the cron job will be logged at debug level of 
+    # com.icw.ehf.cui.portal.application.schedule.FileWatcherScheduler
+    scheduler:
+      file_cron_expression: "* 0/1 * * * ?"
+    # Used for the configuration of tracking of changes in files, usually configuration files, 
+    # see FileWatcherService for handling details. 
+    # This is the successor of the previous cron-based approach. 
+    # The default-value is true 
+    file_watcher.enabled: true
+
+    # Project-Stage
+    # 
+    # Used for the configuration of the Portal project stage. Defaults to 'production'.
+    # Valid values are: production, test, configuration, development.
+    # The mapping between Portal stages and their JSF equivalent is as follows 
+    # (Portal-stage -> JSF-stage):
+    # production -> Production, test -> SystemTest, 
+    # configuration -> Production, development -> Development
+    stage: production
+
+  storage:
+    # 1 year
+    cookieMaxAge: 31536000
+
+  # Http Header Configuration
+  #
+  # Allows to define custom http header properties to be written in the response header.
+  # Each entry consists of a logical name to identify and reconfigure the setting, 
+  # an enabled flag, an optional
+  # views property to restrict the entry to specific view paths, and the content as is 
+  # should be written into the header.
+  httpHeader:
+
+    # Default Content security policy header. 
+    # As strict as possible due to limitations from CUI, JSF and Primefaces. 
+    # Allows inline Javascript and inline styles.
+    csp:
+      enabled: true
+      content: "Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'self'; media-src 'self'; form-action 'self'; frame-ancestors 'self';"
+
+    # Default X-Frame-Options header. Allows only embedding views 
+    # into application from the same origin.
+    xFrame:
+      enabled: true
+      views: /faces/
+      content: "X-Frame-Options: SAMEORIGIN"
+
+    # Default X-XSS-Protection header. Tells the browser to block the response if it detects an
+    # attack rather than sanitizing the script..
+    xssProtection:
+      enabled: true
+      views: /faces/
+      content: "X-XSS-Protection: 1; mode=block"
+
+    # HTTP Strict Transport Security is an excellent feature to support on your site 
+    # and strengthens your implementation of TLS by getting the 
+    # User Agent to enforce the use of HTTPS.
+    strictTransportSecurity:
+      enabled: true
+      views: /faces/
+      content: "Strict-Transport-Security: max-age=31536000; includeSubDomains"
+
+    # Default No-Sniff config
+    # See https://www.golem.de/news/cross-site-scripting-javascript-code-in-bilder-einbetten-1411-110264-2.html
+    # or http://webblaze.cs.berkeley.edu/papers/barth-caballero-song.pdf
+    nosniff:
+      enabled: true
+      content: "X-Content-Type-Options: nosniff"
+
+    # Default Cache Expires configuration. Forces to not cache any content in /faces/*.
+    cacheExpires:
+      enabled: true
+      views: /faces/
+      content: "Expires: -1"
+
+    # Default Cache Pragma configuration. Forces to not cache any content in /faces/*.
+    cachePragma:
+      enabled: true
+      views: /faces/
+      content: "Pragma: no-cache"
+
+    # Default Cache Control configuration. Forces to not cache any content in /faces/*.
+    cacheControl:
+      enabled: true
+      views: /faces/
+      content: "Cache-Control: no-cache, no-store, must-revalidate"
+
+    # Cache Control configuration for ping and healthcheck.
+    cacheControlHealth:
+      enabled: true
+      views: /health, /status
+      content: "Cache-Control: no-cache, no-store, must-revalidate"
+
+    # Cache Pragma configuration for ping and healthcheck.
+    cachePragmaHealth:
+      enabled: true
+      views: /health, /status
+      content: "Pragma: no-cache"
+
+  session:
+    # Defines the maximum interval (in minutes) the user may be inactive 
+    # before we black the screen and display the idle message dialog.
+    # Should correspond with "timeout". If not set, the timeout value will be used as default.
+    # Technically this behavior is achieved by setting the "maxInactiveInterval" to the value '-1'.
+    maxInactiveInterval: -1
+
+    # Defines the timeout (in minutes) of the session in the jsf server.
+    timeout: 20
+
+  # Activates navigation menu items and defines their order and hierarchy.
+  # Also see: com.icw.ehf.cui.components.bootstrap.menu.model.NavigationMenuItem
+  #
+  # Each entry consists of a logical name starting with "portal.menu." plus the menu id (also see
+  # com.icw.ehf.cui.components.bootstrap.menu.model.NavigationMenuItem.getId) and one of the properties "enabled",
+  # "order" or "parent".
+  #
+  # enabled: defaults to true and can be used to disable existing entries.
+  # order: is used to define an order of the items. Consider reserving space between the items.
+  # parent: is used to define a hierarchy. To define root menu item it must be set to 'top'.
+  #
+  # Example:
+  # portal.menu:
+  #   about:
+  #     enabled: true
+  #     order: 20
+  #     parent: userMenuItem
+  #
+  # Separator:
+  # To create a separator menu item, just create an entry starting with "separator". E.g.:
+  # portal.menu:
+  #   separator1:
+  #     order: 10
+  #     parent: userMenuItem
+  #
+  menu:
+    userMenuItem:
+      order: 40
+      parent: top
+    preferencesMenuItem:
+      order: 20
+      parent: userMenuItem
+    accountMenuItem:
+      enabled: false
+      order: 25
+      parent: userMenuItem
+    aboutMenuItem:
+      order: 48
+      parent: userMenuItem
+    logoutMenuItem:
+      order: 48
+      parent: top
+
+  customization:
+    enabled: true
+    # Defines the (relative) path to customization resources.
+    dir: ${portal.configuration.dir}/customization/
+
+  listener:
+
+    # Defines whether the listener for StickyMessages is enabled. Defaults to true.
+    StickyMessages.enabled: true
+
+    # Defines whether the listener for HistoryManager (for "back" Navigation and detection of redirects) is enabled.
+    # Defaults to true.
+    HistoryManager.enabled: true
+
+    # Defines whether the listener for Authentication (to supress not authenticated access of protected pages) is enabled.
+    # Defaults to true.
+    Authentication.enabled: true
+
+    # Defines whether the listener for Authentication (to supress unauthorized access of protected pages) is enabled.
+    # Defaults to true.
+    Authorization.enabled: true
+
+    # Defines whether the listener for ViewSupression is enabled. Defaults to true.
+    ViewSupression.enabled: true
+    
+    # Defines whether the listener for tracing faces-requests is enabled. Defaults to false. 
+    # In order to activate tracing on the application log you must set the Logger for 
+    # de.icw.cui.portal.application.metrics.RequestTracer to debug. In case of metrics being 
+    # enabled as well it will register as metric.
+    Trace:
+      enabled: false
+
+  lazyLoading:
+    # Defines the timeout to retrieve a backend request in seconds. After this timeout the request will be aborted.
+    request.retrieve.timeout: 120
+
+    # Defines the timeout to handle a backend request in seconds. After this timeout the request will be aborted. This
+    # can happen if the initial rendering or the ajax update request was aborted because of redirect.
+    request.handle.timeout: 30
+
+  # Authentication
+  authentication:
+    # Servlet based authentication
+    servlet:
+      allowBasicAuth: true
+
+# Defines the location of the config file for quartz 
+# (see org.apache.deltaspike.scheduler.api.Scheduled)
+#
+# FIXME: In Assembly deployment this configuration line is read to late and 
+# default config is used (= quartz)
+# To handle this we are currently duplicating the default config.
+# When the timing problem is fixed, it should be set to a specific location.
+deltaspike:
+  scheduler:
+    quartz_config-file: quartz
+
+smallrye:
+  config:
+    profile: ${portal.configuration.stage}

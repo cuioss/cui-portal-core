@@ -1,0 +1,24 @@
+key-bool: true
+key-with-value: stringvalue
+key-with-no-value: 
+key-master:
+  key-sub-number: 123456
+  key-sub-master:
+    key-sub-master-bool: yes
+    key-sub-master-string: stringvalue
+nested.key.replacement: ${key-with-value:default-nested-key-value}
+
+#SHOULD RESULT IN THE FOLLOWING PROPERTIES:
+#key-bool = true
+#key-with-value = stringvalue
+#key-with-no-value =
+#key-master.key-sub-number = 123456
+#key-master.key-sub-master.key-sub-master-bool = true
+#key-master.key-sub-master.key-sub-master-string = stringvalue
+
+array:
+  list:
+    - "a"
+    - "b"
+    - c
+string.list: "a,b,c"

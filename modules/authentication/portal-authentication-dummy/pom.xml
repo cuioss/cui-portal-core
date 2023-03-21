@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.cuioss.portal.authentication</groupId>
+        <artifactId>authentication</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>portal-authentication-dummy</artifactId>
+    <name>Portal Authentication Dummy</name>
+    <description>Implementation of 'portal-authentication' for cases where it is only needed technically</description>
+    <dependencies>
+        <dependency>
+            <groupId>de.cuioss.portal.authentication</groupId>
+            <artifactId>portal-authentication-api</artifactId>
+        </dependency>
+        <!--Test-->
+        <dependency>
+            <groupId>de.cuioss.portal.test</groupId>
+            <artifactId>portal-core-unit-testing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+    </dependencies>
+</project>

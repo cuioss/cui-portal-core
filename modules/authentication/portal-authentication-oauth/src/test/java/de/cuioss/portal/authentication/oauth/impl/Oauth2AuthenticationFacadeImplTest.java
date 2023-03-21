@@ -1,0 +1,317 @@
+package de.cuioss.portal.authentication.oauth.impl;
+
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
+import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
+import de.cuioss.portal.authentication.oauth.DeprecatedOauth2ConfigurationKeys;
+import de.cuioss.portal.authentication.oauth.LoginPagePath;
+import de.cuioss.portal.authentication.oauth.Oauth2Service;
+import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
+import de.cuioss.portal.authentication.oauth.Token;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
+import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
+import de.cuioss.tools.collect.CollectionLiterals;
+import de.cuioss.tools.net.UrlParameter;
+import de.cuioss.tools.string.MoreStrings;
+import lombok.Getter;
+
+@EnableAutoWeld
+@EnablePortalConfiguration
+@AddBeanClasses({ Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
+    RedirectorMock.class })
+class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl> {
+
+    @Inject
+    @PortalAuthenticationFacade
+    @Getter
+    private Oauth2AuthenticationFacadeImpl underTest;
+
+    @Produces
+    @LoginPagePath
+    private final String loginUrl = "login.jsf";
+
+    @Inject
+    @PortalConfigurationSource
+    private PortalTestConfiguration configuration;
+
+    @Inject
+    private RedirectorMock redirectorMock;
+
+    @Produces
+    @DeltaSpike
+    private MockHttpServletRequest servletRequest;
+
+    @Produces
+    private final Oauth2Service service = new Oauth2ServiceMock();
+
+    @BeforeEach
+    void beforeEach() {
+        servletRequest = new CuiMockHttpServletRequest();
+        servletRequest.setPathInfo("some.url");
+        configuration.put(DeprecatedOauth2ConfigurationKeys.CLIENT_ID, DeprecatedOauth2ConfigurationKeys.CLIENT_ID);
+        configuration.put(DeprecatedOauth2ConfigurationKeys.OAUTH2_SERVER_AUTHENTICATION_URI,
+                DeprecatedOauth2ConfigurationKeys.OAUTH2_SERVER_AUTHENTICATION_URI);
+        configuration.fireEvent();
+    }
+
+    @Test
+    void testTestLoginWithoutParams() {
+        var result = underTest.testLogin(Collections.emptyList(), "scope");
+        assertFalse(result.isAuthenticated());
+        assertFalse(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
+    }
+
+    @Test
+    void testTestLoginWithParams() {
+        underTest.sendRedirect("scope");
+        assertTrue(redirectorMock.getRedirectUrl().startsWith("oauth2authorize"));
+        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        assertTrue(result.isAuthenticated());
+        assertTrue(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
+    }
+
+    @Test
+    void testTestLoginWithErrorFails() {
+        underTest.sendRedirect("scope");
+        try {
+            underTest
+                    .testLogin(mutableList(getStateParameter(), new UrlParameter("error", "server_error")),
+                            "scope");
+            fail("should fail with OauthAuthenticationException");
+        } catch (OauthAuthenticationException e) {
+            assertEquals("system.exception.oauth.login", e.getMessage());
+        }
+        try {
+            underTest.testLogin(mutableList(getStateParameter(), new UrlParameter("error", "access_denied")),
+                    "scope");
+            fail("should fail with OauthAuthenticationException");
+        } catch (OauthAuthenticationException e) {
+            assertEquals("system.exception.oauth.consent", e.getMessage());
+        }
+
+    }
+
+    private UrlParameter getStateParameter() {
+        if (null != servletRequest.getSession().getAttribute("State")) {
+            return new UrlParameter("state", (String) servletRequest.getSession().getAttribute("State"));
+        }
+        return new UrlParameter("state", "abc");
+    }
+
+    private List<UrlParameter> calculateUrlParameter() {
+        return mutableList(new UrlParameter("code", "123"), getStateParameter());
+    }
+
+    @Test
+    void testRetrieveTokenWithoutSession() {
+        var result = underTest.retrieveToken("scope");
+        assertTrue(MoreStrings.isEmpty(result));
+    }
+
+    @Test
+    void testRetrieveTokenWithSameScope() {
+        underTest.sendRedirect("scope");
+        underTest.testLogin(calculateUrlParameter(), "scope");
+        var result = underTest.retrieveToken("scope");
+        assertFalse(MoreStrings.isEmpty(result));
+    }
+
+    @Test
+    void testInvalidateToken() {
+        underTest.sendRedirect("scope");
+        underTest.testLogin(calculateUrlParameter(), "scope");
+        var result = underTest.retrieveToken("scope");
+        assertFalse(MoreStrings.isEmpty(result));
+        underTest.invalidateToken();
+        result = underTest.retrieveToken("scope");
+        assertTrue(MoreStrings.isEmpty(result));
+    }
+
+    @Test
+    void testRetrieveTokenWithInvalidExpiresIn() {
+        underTest.sendRedirect("scope");
+        var userInfo =
+            underTest.testLogin(calculateUrlParameter(), "scope");
+        ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("abc");
+        var result = underTest.retrieveToken("scope");
+        assertNull(result);
+    }
+
+    @Test
+    void testRetrieveTokenWithOldExpiresIn() {
+        underTest.sendRedirect("scope");
+        var userInfo =
+            underTest.testLogin(calculateUrlParameter(), "scope");
+        ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
+        userInfo.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
+                (int) (System.currentTimeMillis() / 1000L) - 200);
+        var result = underTest.retrieveToken("scope");
+        assertNull(result);
+    }
+
+    @Test
+    void testRetrieveTokenWithValidExpiresIn() {
+        underTest.sendRedirect("scope");
+        var userInfo =
+            underTest.testLogin(calculateUrlParameter(), "scope");
+        ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY))
+                .setExpires_in("1000");
+        var result = underTest.retrieveToken("scope");
+        assertFalse(MoreStrings.isEmpty(result));
+    }
+
+    @Test
+    void testRetrieveTokenWithNewScope() {
+        underTest.sendRedirect("scope");
+        underTest.testLogin(calculateUrlParameter(), "scope");
+        var result =
+            underTest.retrieveToken("scope new");
+        assertNull(result);
+        assertTrue(redirectorMock.getRedirectUrl().startsWith("oauth2authorize"));
+        result = underTest.retrieveToken("scope new");
+        assertTrue(MoreStrings.isEmpty(result));
+    }
+
+    @Test
+    void testLogout() {
+        underTest.sendRedirect("scope");
+        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        assertTrue(result.isAuthenticated());
+        assertTrue(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
+        underTest.logout(servletRequest);
+        assertFalse(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
+    }
+
+    @Test
+    void testRetrieveOauth2RedirectUrlWithPKCEChallenge() throws NoSuchAlgorithmException {
+        var url = underTest.retrieveOauth2RedirectUrl("scope", null);
+        assertTrue(
+                url.startsWith("oauth2authorize?response_type=code&scope=scope&client_id=oauth2clientId&state="));
+        assertNotNull(servletRequest.getSession().getAttribute("PKCE_CODE"));
+        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() >= 43, "PKCE Code is too"
+                + " short (minimum 43 characters");
+        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() <= 128, "PKCE Code is too"
+                + " long (maximum 128 characters");
+        MessageDigest digest;
+        digest = MessageDigest.getInstance("SHA-256");
+        final var code_challenge =
+            Base64.getUrlEncoder().withoutPadding().encodeToString(digest.digest(
+                    ((String) servletRequest.getSession().getAttribute("PKCE_CODE"))
+                            .getBytes(StandardCharsets.US_ASCII)));
+        assertTrue(url.contains("&code_challenge=" + code_challenge));
+        assertTrue(url.endsWith("&redirect_uri=nulllogin.jsf"));
+        url = underTest.retrieveOauth2RedirectUrl("scope", "idtoken");
+        assertTrue(
+                url.startsWith("oauth2authorize?response_type=code&scope=scope&client_id=oauth2clientId&state="));
+        assertTrue(url.endsWith("&id_token_hint=idtoken&redirect_uri=nulllogin.jsf"));
+    }
+
+    @Test
+    void testPKCEChallenge() {
+        var pattern = Pattern.compile(".*&code_challenge=(.+?)&.*");
+        var url1 = underTest.retrieveOauth2RedirectUrl("scope", null);
+        var match1 = pattern.matcher(url1);
+        assertTrue(match1.matches());
+        var url2 = underTest.retrieveOauth2RedirectUrl("scope", null);
+        var match2 = pattern.matcher(url2);
+        assertTrue(match2.matches());
+        assertEquals(match1.group(1), match2.group(1));
+        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        var url3 = underTest.retrieveOauth2RedirectUrl("scope", null);
+        var match3 = pattern.matcher(url3);
+        assertTrue(match3.matches());
+        assertNotEquals(match1.group(1), match3.group(1));
+    }
+
+    /*
+     * @Test
+     * void testRetrieveOauth2RenewUrl() {
+     * underTest.sendRedirect("scope");
+     * AuthenticatedUserInfo userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
+     * ((Token)
+     * userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
+     * assertNotNull(underTest.retrieveOauth2RenewUrl());
+     * assertTrue(underTest.retrieveOauth2RenewUrl().endsWith("prompt=none"));
+     * assertNotNull(underTest.retrieveRenewInterval());
+     * userInfo.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
+     * (int) (System.currentTimeMillis() / 1000L) - 200);
+     * assertNotNull(underTest.retrieveOauth2RenewUrl());
+     * assertFalse(underTest.retrieveOauth2RenewUrl().endsWith("prompt=none"));
+     * assertEquals("-110", underTest.retrieveRenewInterval());
+     * }
+     */
+
+    @Test
+    void testRetrieveIdToken() {
+        var token = new Token();
+        token.setId_token(
+                "eyJraWQiOiJXMGZvIiwiYWxnIjoiUlMyNTYifQ"
+                        +
+                        ".eyJzdWIiOiIwMjNlYmU3NC1mMzI4LTQ0NjUtYjJkMi1hOTNjOGMwMzU0MzAiLCJhdWQiOiI1eGtnZnBob2pxbTY1NWJqbnc2czJqcGFycSIsImFjciI6Imh0dHA6XC9cL2lkbWFuYWdlbWVudC5nb3ZcL25zXC9hc3N1cmFuY2VcL2xvYVwvMiIsImlzcyI6Imh0dHBzOlwvXC9yaS11eC1pbmJvdW5kLTAxLmNpLmRldi5pY3cuaW50XC9jMmlkLWZhY2FkZVwvYzJpZCIsImV4cCI6MTUwODMzMzIyOCwiaWF0IjoxNTA4MzMyMzI4LCJub25jZSI6InVuYXA0ZGtsMzl0MmdzNWJrbGMxMTdhM3FoIn0.kFcTjbTLcAbUmWWK1uo6vvl_vSC09UBa2IOF8HuQBqKUnIbLRf1vbe-WnDN1r2Eh_-NgNnPDr07eRRUjmq3wh6e-wU2IcIILry_tH6GFjAeTajuO4JKfIvEyrHI7NbUu3Wvn_iieT0dOIb0Ugoh7nMR1DdpEGsKP5nfcl9P6R8d9ewwlDLyxeGLqrQUmKlBAe2xTHr3t6FFsRcHh0gBbfEg3D0KCKjPMfDJfMf1qAYqUagFJ4fp40XXpqvlRYOkv_8gZVYxxQsAJphoDHiZl_iQLRHl-boM4ePBIMyLSAaO0ye2wN6WBaduFVhPpLpxmpBV_izujji5oaIhiNY3m7w");
+        var testUser = BaseAuthenticatedUserInfo.builder()
+                .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token).build();
+        var result = underTest.retrieveIdToken(testUser);
+        assertNotNull(result);
+        assertNotNull(result.get("acr"));
+    }
+
+    @Test
+    void retrieveClientLogoutUrlWithParams() {
+        configuration.fireEvent(DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI, "http://logout");
+
+        var token = new Token();
+        token.setId_token("idtoken");
+        var testUser = BaseAuthenticatedUserInfo.builder()
+                .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token).build();
+        servletRequest.getSession().setAttribute("AuthenticatedUserInfo", testUser);
+
+        var logoutUrl = assertDoesNotThrow(() -> underTest.retrieveClientLogoutUrl(
+                CollectionLiterals.immutableSet(
+                        new UrlParameter("foo", "bar"),
+                        new UrlParameter("baz", "buz"))));
+
+        assertTrue(logoutUrl.startsWith("http://logout?"));
+        assertTrue(logoutUrl.contains("foo=bar"));
+        assertTrue(logoutUrl.contains("baz=buz"));
+        assertTrue(logoutUrl.contains("id_token_hint=idtoken"));
+    }
+
+    @Test
+    void retrieveClientLogoutUrlWithNoParams() {
+        configuration.fireEvent(DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI, "http://logout");
+
+        var logoutUrl = assertDoesNotThrow(() -> underTest.retrieveClientLogoutUrl(null));
+
+        assertEquals("http://logout", logoutUrl);
+    }
+}

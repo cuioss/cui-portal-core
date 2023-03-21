@@ -1,0 +1,17 @@
+{
+   "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+   "account_type": "user",
+   "authentication_types":    [
+      "username+password",
+      "2fa"
+   ],
+   "account_status": "active",
+   "preferred_username": "j.doe",
+   "email": "janedoe@example.com",
+   "cid": "n52qzhxhd5mmivnmumj2zxzrhq",
+   "ehealth-suite-roles": [
+      "testRole",
+      "patientRole",
+      ""
+   ]
+}

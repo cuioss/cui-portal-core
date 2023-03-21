@@ -1,0 +1,14 @@
+# Keep this test SPI content in sync with the pom.xml's antrun plugin!
+# Only this way the tests are running fine in your IDE and Maven.
+
+de.cuioss.portal.configuration.impl.source.InstallationFileConfigSource
+de.cuioss.portal.configuration.impl.source.InstallationProductionFileConfigSource
+de.cuioss.portal.configuration.impl.support.TestEnvConfigSource
+de.cuioss.portal.configuration.impl.support.PortalConfigurationMock
+de.cuioss.portal.configuration.impl.support.TestYamlFileConfigurationSource
+de.cuioss.portal.configuration.impl.support.TestPropertiesFileConfigurationSource
+de.cuioss.portal.configuration.impl.source.FancyYamlFileConfigSource
+de.cuioss.portal.configuration.impl.source.HighReloadableConfigSource
+de.cuioss.portal.configuration.impl.source.LowReloadableConfigSource
+
+#de.cuioss.portal.configuration.impl.support.UnsupportedConfigSource

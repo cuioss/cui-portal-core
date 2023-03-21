@@ -1,0 +1,6 @@
+{
+   "token_type"    : "Bearer",
+   "access_token"  : "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJzY3AiOlsib3BlbmlkIiw...",
+   "expires_in"    : 3600,
+   "scope"         : "access_cam read_thermostat set_thermostat"
+}

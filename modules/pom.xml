@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.cuioss.portal</groupId>
+        <artifactId>cui-portal-core</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>modules</artifactId>
+    <packaging>pom</packaging>
+    <name>portal-core modules</name>
+    <description>Aggreagator for all portal-core-modules</description>
+    <properties>
+        <version.cui.parent>0.2.4</version.cui.parent>
+        <version.okhttp3>5.0.0-alpha.11</version.okhttp3>
+        <version.zipkin.brave>5.15.0</version.zipkin.brave>
+        <version.zipkin.reporter>2.16.3</version.zipkin.reporter>
+        <version.javax.json.impl>1.1.4</version.javax.json.impl>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>de.cuioss.portal</groupId>
+                <artifactId>bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.cuioss</groupId>
+                <artifactId>java-ee-8-bom</artifactId>
+                <version>${version.cui.parent}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.cuioss</groupId>
+                <artifactId>java-ee-orthogonal</artifactId>
+                <version>${version.cui.parent}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>mockwebserver</artifactId>
+                <version>${version.okhttp3}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-tls</artifactId>
+                <version>${version.okhttp3}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- TRACING -->
+            <dependency>
+                <groupId>io.zipkin.brave</groupId>
+                <artifactId>brave-bom</artifactId>
+                <version>${version.zipkin.brave}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Reporting Spans to Zipkin https://github.com/openzipkin/zipkin-reporter-java -->
+                <groupId>io.zipkin.reporter2</groupId>
+                <artifactId>zipkin-reporter</artifactId>
+                <version>${version.zipkin.reporter}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.zipkin.reporter2</groupId>
+                <artifactId>zipkin-sender-urlconnection</artifactId>
+                <version>${version.zipkin.reporter}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <modules>
+        <module>configuration</module>
+        <module>authentication</module>
+        <module>client</module>
+        <module>core</module>
+        <module>micro-profile</module>
+        <module>test</module>
+    </modules>
+</project>

@@ -1,0 +1,4 @@
+de.cui.test:
+  key2: value2
+  key3: value3
+notInKeyHolder: otherValue  
