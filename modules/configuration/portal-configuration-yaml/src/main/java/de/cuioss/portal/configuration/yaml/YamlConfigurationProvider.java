@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.MappingNode;
@@ -299,7 +300,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
 
         // Declared as public for use in subclasses
         StrictMapAppenderConstructor() {
-            super();
+            super(new LoaderOptions());
         }
 
         @Override

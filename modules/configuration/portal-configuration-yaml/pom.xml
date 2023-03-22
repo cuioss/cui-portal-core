@@ -9,7 +9,7 @@
     <name>Portal Configuration yaml</name>
     <description>Provides support for mircroprofile-config.yml</description>
     <properties>
-        <version.snakeyaml>1.33</version.snakeyaml>
+        <version.snakeyaml>2.0</version.snakeyaml>
     </properties>
     <dependencyManagement>
         <dependencies>
