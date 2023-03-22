@@ -20,10 +20,13 @@ import de.cuioss.tools.logging.CuiLogger;
  *
  * @author Sven Haag
  */
-public abstract class AbstractInstallationConfigSource extends AbstractPortalConfigSource implements FileConfigurationSource {
+public abstract class AbstractInstallationConfigSource extends AbstractPortalConfigSource
+        implements FileConfigurationSource {
 
     private static final CuiLogger LOGGER = new CuiLogger(AbstractInstallationConfigSource.class);
 
+    @SuppressWarnings("java:S3077") // owolff: Not a problem because all implementations set are
+                                    // immutable
     protected volatile Map<String, String> properties;
 
     protected String path;
@@ -63,14 +66,15 @@ public abstract class AbstractInstallationConfigSource extends AbstractPortalCon
 
     /**
      * A path is always initialized, despite the file might not exist yet!
-     * if {@link #reload()} is triggered, the file might actually exist and we can load properties from it.
+     * if {@link #reload()} is triggered, the file might actually exist and we can load properties
+     * from it.
      */
     public void initPath() {
         LOGGER.debug(() -> "init path for: " + getName());
         properties = null; // a changed path dictates reloading of our properties
 
         final var filePath = Paths.get(getPortalConfigDir(), getFileName()).toAbsolutePath();
-        this.path = filePath.toString();
+        path = filePath.toString();
 
         if (filePath.toFile().isFile()) {
             present = true;
@@ -99,7 +103,7 @@ public abstract class AbstractInstallationConfigSource extends AbstractPortalCon
         }
 
         LOGGER.warn("Portal-158: Config property '{}' not set as environment or system variable. Using default: {}",
-            PORTAL_CONFIG_DIR, PORTAL_CONFIG_DIR_DEFAULT);
+                PORTAL_CONFIG_DIR, PORTAL_CONFIG_DIR_DEFAULT);
         return PORTAL_CONFIG_DIR_DEFAULT;
     }
 

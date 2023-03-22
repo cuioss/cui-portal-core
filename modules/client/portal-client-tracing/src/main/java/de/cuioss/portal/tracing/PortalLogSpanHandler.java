@@ -25,9 +25,12 @@ final class PortalLogSpanHandler extends SpanHandler {
     public boolean end(final TraceContext context, final MutableSpan span, final Cause cause) {
         // doing maybeScope ensures that the MDC contains the correct tracing data
         try (final var scope = currentTraceContext.maybeScope(context)) {
-            Arrays.asList(LoggingStrategies.values())
-                .stream()
-                .anyMatch(handler -> handler.doLogHandled(span));
+            var result = Arrays.asList(LoggingStrategies.values())
+                    .stream()
+                    .anyMatch(handler -> handler.doLogHandled(span));
+            if (!result) {
+                log.debug("Scope '%s' could not be handled", scope);
+            }
         }
 
         // keep the span alive for other span handlers
@@ -40,12 +43,14 @@ final class PortalLogSpanHandler extends SpanHandler {
     }
 
     interface LoggingStrategy {
+
         boolean doLogHandled(MutableSpan span);
     }
 
     enum LoggingStrategies implements LoggingStrategy {
 
         HANDLE_ERRORS {
+
             @Override
             public boolean doLogHandled(MutableSpan span) {
                 if (LoggingStrategies.containsError(span)) {
@@ -56,6 +61,7 @@ final class PortalLogSpanHandler extends SpanHandler {
             }
         },
         HANDLE_PAGES {
+
             @Override
             public boolean doLogHandled(MutableSpan span) {
                 if (requestPathContains(span, "/faces/")) {
@@ -67,6 +73,7 @@ final class PortalLogSpanHandler extends SpanHandler {
             }
         },
         HANDLE_RESOURCES {
+
             @Override
             public boolean doLogHandled(MutableSpan span) {
                 // nothing to do
@@ -74,11 +81,12 @@ final class PortalLogSpanHandler extends SpanHandler {
             }
         },
         HADNLE_METRIC_ENDPOINTS {
+
             @Override
             public boolean doLogHandled(MutableSpan span) {
                 if (requestPathContains(span, "/status")
-                    || requestPathContains(span, "/health")
-                    || requestPathContains(span, "/metrics")) {
+                        || requestPathContains(span, "/health")
+                        || requestPathContains(span, "/metrics")) {
                     log.trace(span.toString());
                     return true;
                 }
@@ -86,6 +94,7 @@ final class PortalLogSpanHandler extends SpanHandler {
             }
         },
         DEFAULT_HANDLING {
+
             @Override
             public boolean doLogHandled(MutableSpan span) {
                 log.info(span.toString());
@@ -103,6 +112,3 @@ final class PortalLogSpanHandler extends SpanHandler {
         }
     }
 }
-
-
-

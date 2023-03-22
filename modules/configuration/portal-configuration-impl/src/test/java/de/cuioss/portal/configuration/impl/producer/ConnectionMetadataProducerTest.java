@@ -102,7 +102,7 @@ class ConnectionMetadataProducerTest {
     void shouldNotFailWithDefaultConfiguration() {
         defaultConfig();
         configuration.fireEvent();
-        metadataProvider.get();
+        assertDoesNotThrow(() -> metadataProvider.get());
     }
 
     @Test

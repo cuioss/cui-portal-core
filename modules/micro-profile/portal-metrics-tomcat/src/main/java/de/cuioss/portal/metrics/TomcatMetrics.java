@@ -342,65 +342,90 @@ class TomcatMetrics {
                 final var threadPoolName = objectName.getKeyProperty("name").replaceAll("[\"\\\\]", "");
                 final var nameTag = new Tag(micrometerFormat ? "name" : "pool", threadPoolName);
 
-                registry.register(
-                        new ExtendedMetadataBuilder()
-                                .withName(micrometerFormat ? "tomcat.threads.current" : "threadpool.activeThreads")
-                                .withType(MetricType.GAUGE)
-                                .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
-                                .withDescription("Number threads in this pool.")
-                                .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
-                                .build(),
-                        SafeGauge.intGauge(() -> server.getAttribute(objectName, "currentThreadCount")),
-                        nameTag);
+                registerThreadCurrent(registry, micrometerFormat, objectName, nameTag);
 
-                registry.register(
-                        new ExtendedMetadataBuilder()
-                                .withName(micrometerFormat ? "tomcat.threads.busy" : "threadpool.busyThreads")
-                                .withType(MetricType.GAUGE)
-                                .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
-                                .withDescription("Number of busy threads in this pool.")
-                                .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
-                                .build(),
-                        SafeGauge.intGauge(() -> server.getAttribute(objectName, "currentThreadsBusy")),
-                        nameTag);
+                registerThreadBusy(registry, micrometerFormat, objectName, nameTag);
 
-                registry.register(
-                        new ExtendedMetadataBuilder()
-                                .withName(micrometerFormat ? "tomcat.threads.config.max" : "threadpool.size")
-                                .withType(MetricType.GAUGE)
-                                .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
-                                .withDescription("Maximum number of threads allowed in this pool.")
-                                .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
-                                .build(),
-                        SafeGauge.intGauge(() -> server.getAttribute(objectName, "maxThreads")),
-                        nameTag);
+                registerThredsConfigMax(registry, micrometerFormat, objectName, nameTag);
 
-                registry.register(
-                        new ExtendedMetadataBuilder()
-                                .withName(micrometerFormat ? "tomcat.threads.connections.current"
-                                        : "threadpool.activeConnections")
-                                .withType(MetricType.GAUGE)
-                                .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
-                                .withDescription("Number of connections served by this pool.")
-                                .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
-                                .build(),
-                        SafeGauge.longGauge(() -> server.getAttribute(objectName, "connectionCount")),
-                        nameTag, new Tag("pool", threadPoolName));
+                registerThreadsConnectionsCurrent(registry, micrometerFormat, objectName, threadPoolName, nameTag);
 
-                registry.register(
-                        new ExtendedMetadataBuilder()
-                                .withName(micrometerFormat ? "tomcat.threads.connections.max"
-                                        : "threadpool.maxConnections")
-                                .withType(MetricType.GAUGE)
-                                .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
-                                .withDescription("Maximum number of concurrent connections served by this pool.")
-                                .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
-                                .build(),
-                        SafeGauge.intGauge(() -> server.getAttribute(objectName, "maxConnections")),
-                        nameTag, new Tag("pool", threadPoolName));
+                registerThreadsConnectionsMax(registry, micrometerFormat, objectName, threadPoolName, nameTag);
             }
         } catch (final Exception e) {
             LOGGER.error(ERROR_MSG, e);
         }
+    }
+
+    private void registerThreadsConnectionsMax(final MetricRegistry registry, final boolean micrometerFormat,
+            final ObjectName objectName, final String threadPoolName, final Tag nameTag) {
+        registry.register(
+                new ExtendedMetadataBuilder()
+                        .withName(micrometerFormat ? "tomcat.threads.connections.max"
+                                : "threadpool.maxConnections")
+                        .withType(MetricType.GAUGE)
+                        .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
+                        .withDescription("Maximum number of concurrent connections served by this pool.")
+                        .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
+                        .build(),
+                SafeGauge.intGauge(() -> server.getAttribute(objectName, "maxConnections")),
+                nameTag, new Tag("pool", threadPoolName));
+    }
+
+    private void registerThreadsConnectionsCurrent(final MetricRegistry registry, final boolean micrometerFormat,
+            final ObjectName objectName, final String threadPoolName, final Tag nameTag) {
+        registry.register(
+                new ExtendedMetadataBuilder()
+                        .withName(micrometerFormat ? "tomcat.threads.connections.current"
+                                : "threadpool.activeConnections")
+                        .withType(MetricType.GAUGE)
+                        .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
+                        .withDescription("Number of connections served by this pool.")
+                        .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
+                        .build(),
+                SafeGauge.longGauge(() -> server.getAttribute(objectName, "connectionCount")),
+                nameTag, new Tag("pool", threadPoolName));
+    }
+
+    private void registerThredsConfigMax(final MetricRegistry registry, final boolean micrometerFormat,
+            final ObjectName objectName, final Tag nameTag) {
+        registry.register(
+                new ExtendedMetadataBuilder()
+                        .withName(micrometerFormat ? "tomcat.threads.config.max" : "threadpool.size")
+                        .withType(MetricType.GAUGE)
+                        .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
+                        .withDescription("Maximum number of threads allowed in this pool.")
+                        .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
+                        .build(),
+                SafeGauge.intGauge(() -> server.getAttribute(objectName, "maxThreads")),
+                nameTag);
+    }
+
+    private void registerThreadBusy(final MetricRegistry registry, final boolean micrometerFormat,
+            final ObjectName objectName, final Tag nameTag) {
+        registry.register(
+                new ExtendedMetadataBuilder()
+                        .withName(micrometerFormat ? "tomcat.threads.busy" : "threadpool.busyThreads")
+                        .withType(MetricType.GAUGE)
+                        .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
+                        .withDescription("Number of busy threads in this pool.")
+                        .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
+                        .build(),
+                SafeGauge.intGauge(() -> server.getAttribute(objectName, "currentThreadsBusy")),
+                nameTag);
+    }
+
+    private void registerThreadCurrent(final MetricRegistry registry, final boolean micrometerFormat,
+            final ObjectName objectName, final Tag nameTag) {
+        registry.register(
+                new ExtendedMetadataBuilder()
+                        .withName(micrometerFormat ? "tomcat.threads.current" : "threadpool.activeThreads")
+                        .withType(MetricType.GAUGE)
+                        .withUnit(micrometerFormat ? THREADS_SUFFIX : MetricUnits.NONE)
+                        .withDescription("Number threads in this pool.")
+                        .skipsScopeInOpenMetricsExportCompletely(micrometerFormat)
+                        .build(),
+                SafeGauge.intGauge(() -> server.getAttribute(objectName, "currentThreadCount")),
+                nameTag);
     }
 }

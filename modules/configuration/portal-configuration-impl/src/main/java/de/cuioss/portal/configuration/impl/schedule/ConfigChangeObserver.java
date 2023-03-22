@@ -170,25 +170,30 @@ public class ConfigChangeObserver implements ApplicationInitializer {
 
         for (final ConfigSource configSource : ConfigProvider.getConfig().getConfigSources()) {
             if (configSource instanceof Reloadable) {
-                LOGGER.debug("Checking for changed keys, config source: {}", configSource.getName());
-                for (final String changedKey : fileChangeDeltaMap.keySet()) {
-                    for (Map.Entry<String, String> entry : configSource.getProperties().entrySet()) {
-                        if (containsPlaceholder(entry.getValue(), changedKey)) {
-                            LOGGER.debug("Found changed key={} in config source={}",
-                                entry.getKey(), configSource.getName());
-                            // The actual value for this key probably only changes if it gets resolved.
-                            // Say, the value of this very config source has not changed,
-                            // but we need to fire a delta for this key as it might have changed after resolving.
-                            if (!fileChangeDeltaMap.containsKey(entry.getKey())) {
-                                affectedProperties.put(entry.getKey(), entry.getValue());
-                            }
-                        }
-                    }
-                }
+                checkForChangedKeys(fileChangeDeltaMap, affectedProperties, configSource);
             }
         }
 
         return affectedProperties;
+    }
+
+    private void checkForChangedKeys(Map<String, String> fileChangeDeltaMap,
+            final Map<String, String> affectedProperties, final ConfigSource configSource) {
+        LOGGER.debug("Checking for changed keys, config source: {}", configSource.getName());
+        for (final String changedKey : fileChangeDeltaMap.keySet()) {
+            for (Map.Entry<String, String> entry : configSource.getProperties().entrySet()) {
+                if (containsPlaceholder(entry.getValue(), changedKey)) {
+                    LOGGER.debug("Found changed key={} in config source={}",
+                        entry.getKey(), configSource.getName());
+                    // The actual value for this key probably only changes if it gets resolved.
+                    // Say, the value of this very config source has not changed,
+                    // but we need to fire a delta for this key as it might have changed after resolving.
+                    if (!fileChangeDeltaMap.containsKey(entry.getKey())) {
+                        affectedProperties.put(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+        }
     }
 
     private Map<String, String> getFileChangeDeltaMap(Path changedFilePath) {
