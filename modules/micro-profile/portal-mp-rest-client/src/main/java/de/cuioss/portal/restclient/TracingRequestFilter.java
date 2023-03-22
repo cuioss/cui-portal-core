@@ -14,7 +14,7 @@ import brave.jaxrs2.TracingClientFilter;
 /**
  * The {@link ClientRequestFilter} portion of {@link TracingClientFilter}.
  * Simply delegates the request filter to {@link TracingClientFilter}.
- *
+ * <p>
  * Request filters with low {@link Priority} numbers are processed first.
  *
  * @author Sven Haag

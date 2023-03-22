@@ -24,7 +24,7 @@ import de.cuioss.tools.logging.CuiLogger;
  * Lazy loading of the customization directory, because its position may be part of the
  * configured application installation configuration file, so it should be determined after
  * parsing the file.
- *
+ * <p>
  * Fires an {@link Event} with {@link PortalInstallationPathChangedPayload}, if the configuration of
  * the
  * customization directory has changed.

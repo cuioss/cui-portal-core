@@ -29,7 +29,7 @@ import de.cuioss.tools.string.MoreStrings;
 
 /**
  * Builder for a JAVA MicroProfile based REST client.
- *
+ * <p>
  * To enable log debugging / tracing set package de.cuioss.portal.core.restclient to TRACE level in your logger
  * configuration.
  */
@@ -258,7 +258,7 @@ public class CuiRestClientBuilder {
      * Enables the RestEasy default exception mapper for this MP REST client.
      * Per default, this exception mapper is disabled. It registers it with priority {@link Integer#MIN_VALUE},
      * instead of {@link Integer#MAX_VALUE}, to allow trace-logging of responses.
-     *
+     * <p>
      * Effect: Every response code of >=400 throws a general {@link javax.ws.rs.WebApplicationException}.
      *
      * @return this builder
@@ -281,7 +281,7 @@ public class CuiRestClientBuilder {
     /**
      * Disables the RestEasy default exception mapper for this MP REST client.
      * Per default, this exception mapper is disabled.
-     *
+     * <p>
      * Effect: Exceptions like {@link javax.ws.rs.BadRequestException} are thrown instead of a general
      * {@link javax.ws.rs.WebApplicationException}.
      *

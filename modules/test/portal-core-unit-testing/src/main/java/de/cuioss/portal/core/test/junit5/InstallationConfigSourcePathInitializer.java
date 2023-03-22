@@ -18,10 +18,10 @@ import de.cuioss.tools.logging.CuiLogger;
  * This is a simple observer observing changes of the portal config dir configuration. If there is a
  * change it re-initialized all AbstractInstallationConfigSources via
  * {@link AbstractInstallationConfigSource#initPath()}.
- *
+ * <p>
  * This cannot be done in the config source itself as they cannot be CDI enabled due to the nature of an actual MP
  * config source (init via SPI).
- *
+ * <p>
  * This must only apply to junit tests, because per default surefire creates 1 JVM per module, not per test class!
  *
  * @author Sven Haag

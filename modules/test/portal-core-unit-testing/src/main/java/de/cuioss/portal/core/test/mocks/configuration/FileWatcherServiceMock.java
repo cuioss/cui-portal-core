@@ -21,15 +21,19 @@ import lombok.ToString;
 /**
  * Mock implementation of {@link FileWatcherService} that is solely capable of managing paths.
  * It is defined as an {@link Alternative}, therefore you need to activate it like
- * <code><pre>
- *  &#64;ActivatedAlternatives(FileWatcherServiceMock.class)</pre></code>
- * <p>
+ * 
+ * <pre>
+ *  &#64;ActivatedAlternatives(FileWatcherServiceMock.class)
+ * </pre>
+ * 
  * In case your test needs {@link FileChangedEvent}s you can directly handle the in you unit-test:
- * <code><pre>
- *    &#64;Inject
+ * 
+ * <pre>
+ * 
+ * &#64;Inject
  * &#64;FileChangedEvent
- * private Event<Path> fileChangeEvent;</pre></code>
- * </p>
+ * private Event&lt;Path&gt; fileChangeEvent;
+ * </pre>
  *
  * @author Oliver Wolff
  */

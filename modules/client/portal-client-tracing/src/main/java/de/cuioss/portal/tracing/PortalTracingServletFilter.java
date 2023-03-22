@@ -30,7 +30,7 @@ import de.cuioss.tools.logging.CuiLogger;
  * A servlet tracing filter for URL pattern {@code "/*"}.
  * This ensures that every (UI) request is enriched with tracing information. Subsequent tracing spans, e.g. from a http
  * client request, are using this trace info as their parent.
- *
+ * <p>
  * The filter may not be the first in the servlet filter chain, but that should be no problem as we have no need to
  * provide tracing information to servlet filters. If that should be a requirement in the future please use a servlet
  * listener which registers a filter using

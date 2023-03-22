@@ -25,24 +25,22 @@ import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * Provides a factory for programmatically creating and registering cache metrics.
- *
+ * <p>
  * {@code Caffeine.newBuilder().recordStats()} should be used!
  *
  * <pre>
- * @Inject
- * @ConfigAsCacheConfig(name = "cache.config.key")
+ * &#64;Inject
+ * &#64;ConfigAsCacheConfig(name = "cache.config.key")
  * private CacheConfig cacheConfig;
  *
- * @Inject
- * @RegistryType(type = MetricRegistry.Type.APPLICATION)
+ * &#64;Inject
+ * &#64;RegistryType(type = MetricRegistry.Type.APPLICATION)
  * private MetricRegistry appRegistry;
- *
  * final Cache<String, String> cache = Caffeine.newBuilder()
- *     .maximumSize(cacheConfig.getSize())
- *     .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
- *     .recordStats()
- *     .build();
- *
+ *         .maximumSize(cacheConfig.getSize())
+ *         .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
+ *         .recordStats()
+ *         .build();
  * new CaffeineCacheMetrics("my-cache-name", cache, cacheConfig).bindTo(appRegistry);
  * </pre>
  *

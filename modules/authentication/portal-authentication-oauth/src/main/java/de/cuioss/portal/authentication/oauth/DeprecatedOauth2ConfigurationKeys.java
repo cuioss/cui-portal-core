@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Provide the keys for the application.properties to configure oauth2.
- *
+ * <p>
  * See also https://wiki.icw.int/display/CUI/Howto+enable+Oauth2+Authentication
  *
  * @author Matthias Walliczek

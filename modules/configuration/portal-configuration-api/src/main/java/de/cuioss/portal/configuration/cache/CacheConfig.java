@@ -46,9 +46,8 @@ public class CacheConfig implements Serializable {
 
     /**
      * Indicates whether the cache should record statistics. The default producer will use
-     * the values of {@link de.cuioss.portal.configuration.MetricsConfigKeys#PORTAL_METRICS_ENABLED} and
-     * {@link de.cuioss.portal.configuration.MetricsConfigKeys#CACHE_METRICS_ENABLED_SUFFIX} in order to set this
-     * configuration. It is assumed the recordStatistics are read only in the context of metrics.
+     * the values of {@link de.cuioss.portal.configuration.MetricsConfigKeys#PORTAL_METRICS_ENABLED}
+     * in order to set this configuration. It is assumed the recordStatistics are read only in the context of metrics.
      */
     @Getter
     private final boolean recordStatistics;

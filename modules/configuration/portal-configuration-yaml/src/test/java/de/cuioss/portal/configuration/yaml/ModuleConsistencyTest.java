@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests the complete cdi environment / wiring.
- *
+ * <p>
  * Does not utilize BaseModuleConsistencyTest from portal-unit-testing-junit5 due to a circular dependency via
  * portal-configuration-impl.
  *

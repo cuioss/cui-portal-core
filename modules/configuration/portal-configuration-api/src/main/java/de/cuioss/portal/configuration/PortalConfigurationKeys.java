@@ -112,14 +112,12 @@ public class PortalConfigurationKeys implements Serializable {
      * <li>"parent" is used to define a hierarchy. It can be a specific menu item id or
      * {@value PortalConfigurationKeys#MENU_TOP_IDENTIFIER}.</li>
      * </ul>
-     * <p>
      * <em>Conventions</em>:
      * <ul>
      * <li>To create a separator menu item, just create an entry starting with "separator". No
      * NavigationMenuItem needs to be
      * created.</li>
      * </ul>
-     * </p>
      */
     public static final String MENU_BASE = PORTAL_BASE + "menu.";
 
@@ -127,7 +125,6 @@ public class PortalConfigurationKeys implements Serializable {
      * This is used for setting the top-level menu as parent. In previous versions {@code null} as
      * parent was interpreted as indicator for displaying the menu-item as top-level element
      *
-     * @since cui 6.2
      */
     public static final String MENU_TOP_IDENTIFIER = "top";
 
@@ -212,6 +209,7 @@ public class PortalConfigurationKeys implements Serializable {
      * minute for changes. In case of system configuration you can lower it to e.g. every 5
      * seconds: '0/5 * * * * ?'. Always set it to a production value like every minute if you
      * finished configuration.
+     * </p>
      * <ul>
      * <li><em>Caution</em>: Always keep in mind that this configuration change will only picked up
      * at the next scan-interval.</li>
@@ -226,7 +224,6 @@ public class PortalConfigurationKeys implements Serializable {
      * <li>The actual execution of the cron job will be logged at debug level of
      * de.cuioss.portal.configuration.application.schedule.FileWatcherScheduler</li>
      * </ul>
-     * </p>
      */
     public static final String SCHEDULER_FILE_SCAN_CRON_EXPRESSION =
         SCHEDULER_BASE + "file_cron_expression";
@@ -488,13 +485,11 @@ public class PortalConfigurationKeys implements Serializable {
      * <p>
      * Defines an optional header parameter to enable the Content Security Policy.
      * </p>
-     * <p>
      * Valid values are:
      * <ul>
      * <li>false: the header will not be send</li>
      * <li>true: the header will be send</li>
      * </ul>
-     * </p>
      */
     public static final String CSP_ENABLED = CSP_BASE + ENABLED;
 

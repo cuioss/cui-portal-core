@@ -38,7 +38,7 @@ class MetricsInitializer implements ApplicationInitializer {
      * attached to each new
      * incoming HTTP request to process the request. So all threads share the servlet instances and
      * by extension their
-     * instance fields.<br/>
+     * instance fields.<br>
      * To prevent any unexpected behavior at runtime, all servlet fields should then be either
      * static and/or final, <strong>or simply removed</strong>!
      * </p>

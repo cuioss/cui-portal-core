@@ -39,7 +39,7 @@ import lombok.Getter;
  * Replacement for initial quartz based module (cdi-portal-core-scheduler). It uses
  * {@link WatchService} and {@link Executors} in order to work. It can be dynamically switched on /
  * without losing the registered {@link Path} elements.
- *
+ * <p>
  * TODO owolff: Reconsider thread handling
  * TODO owolff: Consider changing the event / api contract in order to transport more precise
  * information, like "I'm interested in changed / added / removed files".

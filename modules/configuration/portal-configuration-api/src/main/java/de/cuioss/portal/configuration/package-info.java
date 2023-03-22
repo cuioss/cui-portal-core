@@ -8,11 +8,12 @@
  * The configuration system can be consumed in a simple way.
  *
  * <pre>
+ * <code>
  * &#64;Inject
  * &#64;ConfigProperty(name="some.property")
  * private String someProperty;</code>
  * </pre>
- *
+ * <p>
  * The {@link org.eclipse.microprofile.config.inject.ConfigProperty} is capable of
  * automatically casting in standard types, like {@link java.lang.Integer} {@link java.lang.Double}
  * or boolean. More complex types are provided by own annotations / producers like:
@@ -27,8 +28,9 @@
  * to {@link de.cuioss.portal.configuration.PortalConfigurationChangeEvent} the payload is the
  * map with the changed key/ values. Sample:
  *
- * <pre><code>void configurationChangeEventListener(&#64;Observes &#64;PortalConfigurationChangeEvent Map<String, String> deltaMap)</code></pre>
- * </p>
+ * <pre>
+ * <code>void configurationChangeEventListener(&#64;Observes &#64;PortalConfigurationChangeEvent Map<String, String> deltaMap)</code>
+ * </pre>
  *
  * @author Oliver Wolff
  */

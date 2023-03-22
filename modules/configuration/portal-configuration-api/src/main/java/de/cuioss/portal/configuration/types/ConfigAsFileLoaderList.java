@@ -37,7 +37,7 @@ public @interface ConfigAsFileLoaderList {
     /**
      * @return boolean indicating whether the corresponding producer should throw an
      *         {@link IllegalArgumentException} in case the filepath derived by the property is not
-     *         accessible. Defaults to <code>true</ode>.
+     *         accessible. Defaults to {@code true}.
      */
     @Nonbinding
     boolean failOnNotAccessible() default true;

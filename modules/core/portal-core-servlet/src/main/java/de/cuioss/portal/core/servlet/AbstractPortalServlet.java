@@ -22,17 +22,15 @@ import de.cuioss.tools.logging.CuiLogger;
  * ->{@link #executeDoGet(HttpServletRequest, HttpServletResponse)}. If you need to implement a
  * different method you can call {@link #checkAccess(HttpServletResponse)} in order to participate
  * in the checks
- * <p>
  * The algorithm:
  * <ul>
  * <li>Check enabled: {@link #isEnabled()}</li>
  * <li>Check authentication status: {@link #isLoggedInUserRequired()}</li>
  * <li>Check required roles: {@link #getRequiredRoles()}</li>
- * <ul>
+ * </ul>
  * If all previous checks are passed the method
  * {@link AbstractPortalServlet#executeDoGet(HttpServletRequest, HttpServletResponse)} will be
  * called.
- * </p>
  *
  * @author Oliver Wolff
  *

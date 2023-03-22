@@ -33,10 +33,10 @@
  * </p>
  * <p>
  * If
- * {@linkplain de.cuioss.portal.configuration.PortalConfigurationKeys#PORTAL_HEALTHCHECK_ENABLED}
+ * {@linkplain de.cuioss.portal.configuration.HealthCheckConfigKeys#PORTAL_HEALTHCHECK_ENABLED}
  * is set to disabled,
  * the configured
- * {@linkplain de.cuioss.portal.configuration.PortalConfigurationKeys#PORTAL_HEALTHCHECK_HTTPCODEDOWN}
+ * {@linkplain de.cuioss.portal.configuration.HealthCheckConfigKeys#PORTAL_HEALTHCHECK_HTTPCODEDOWN}
  * HTTP status code is returned.
  * </p>
  *

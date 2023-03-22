@@ -30,12 +30,13 @@ import lombok.ToString;
  * {@link PortalConfigurationKeys#PORTAL_STAGE}
  * <p>
  * Currently it supports the following stages:
+ * <ul>
  * <li>{@link ProjectStage#DEVELOPMENT}</li>
  * <li>{@link ProjectStage#TEST}</li>
  * <li>{@link ProjectStage#CONFIGURATION}</li>
  * <li>{@link ProjectStage#PRODUCTION}</li>
- * </p>
- *
+ * </ul>
+ * 
  * @author Oliver Wolff
  * @author Sven Haag
  */

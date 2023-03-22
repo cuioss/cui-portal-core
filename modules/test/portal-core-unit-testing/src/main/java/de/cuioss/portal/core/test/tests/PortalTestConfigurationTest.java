@@ -21,12 +21,15 @@ import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
 
 /**
  * There are several use-cases to test for the test config source.
+ * <ul>
  * <li>It starts with an empty property map.</li>
  * <li>It only fires the delta to its previous config</li>
  * <li>It allows to explicitly set an empty property</li>
  * <li>It allows clearing of its local storage as a re-init for a new unit test</li>
- * <li>Previously added and then removed properties are present in the delta with an empty string value</li>
- *
+ * <li>Previously added and then removed properties are present in the delta with an empty string
+ * value</li>
+ * </ul>
+ * 
  * @author Sven Haag
  */
 @EnableAutoWeld
@@ -46,7 +49,7 @@ public class PortalTestConfigurationTest {
 
     @BeforeEach
     void beforeTest() {
-        this.configSourceChanges = null;
+        configSourceChanges = null;
         underTest.clear();
 
         assertNotNull(underTest.getProperties());
@@ -96,7 +99,7 @@ public class PortalTestConfigurationTest {
         underTest.fireEvent();
         assertNotNull(configSourceChanges);
         assertEquals("", configSourceChanges.get(KEY1),
-            "key1 should be indicated as removed via an empty string");
+                "key1 should be indicated as removed via an empty string");
     }
 
     @Test
@@ -122,9 +125,9 @@ public class PortalTestConfigurationTest {
     void configSourceChangeEventListener(@Observes @ConfigurationSourceChangeEvent final Map<String, String> deltaMap) {
         assertNotNull(deltaMap, "ConfigurationSourceChangeEvent payload must never be null!");
         assertFalse(deltaMap.isEmpty(), "An empty delta map is useless. " +
-            "Removed properties must be indicated via an empty string value");
+                "Removed properties must be indicated via an empty string value");
         assertUnmodifiable(deltaMap);
-        this.configSourceChanges = deltaMap;
+        configSourceChanges = deltaMap;
     }
 
     @SuppressWarnings("squid:S1872")

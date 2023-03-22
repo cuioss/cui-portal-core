@@ -4,7 +4,7 @@ import org.eclipse.microprofile.metrics.Counter;
 
 /**
  * Copy from io.quarkus.smallrye.metrics.runtime.GetCountOnlyCounter.
- *
+ * <p>
  * A helper abstract class for implementing counters which only need {@link #getCount()}.
  * Other methods throw an exception.
  *

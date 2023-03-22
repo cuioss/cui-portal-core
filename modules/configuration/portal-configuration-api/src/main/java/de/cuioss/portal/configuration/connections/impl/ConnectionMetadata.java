@@ -141,7 +141,7 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Enable or disable distributed tracing for this connection.
-     * Only effective if {@link PortalConfigurationKeys#PORTAL_TRACING_ENABLED} is enabled.
+     * Only effective if {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED} is enabled.
      * Defaults to <code>true</code>.
      */
     @Getter

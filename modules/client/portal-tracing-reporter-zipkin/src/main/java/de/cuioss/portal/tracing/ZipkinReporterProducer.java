@@ -23,13 +23,14 @@ import zipkin2.reporter.urlconnection.URLConnectionSender;
  *
  * @author Sven Haag
  */
-class ZipkinReporterProducer {
+public class ZipkinReporterProducer {
 
     private static final CuiLogger LOGGER = new CuiLogger(ZipkinReporterProducer.class);
 
     /**
-     * Spans are reported to java.util.logging per default (https://github.com/openzipkin/brave/tree/master/brave#setup)
-     *
+     * Spans are reported to java.util.logging per default
+     * (https://github.com/openzipkin/brave/tree/master/brave#setup)
+     * <p>
      * Reports spans to a Zipkin server, e.g.: http://zipkin:9411/api/v2/spans
      *
      * @return AsyncReporter
@@ -38,22 +39,22 @@ class ZipkinReporterProducer {
     @Dependent
     @Alternative
     static Reporter<Span> zipkinReporter(
-        @ConfigProperty(name = PORTAL_TRACING_REPORTER_URL) final Optional<String> url) {
+            @ConfigProperty(name = PORTAL_TRACING_REPORTER_URL) final Optional<String> url) {
 
         if (!url.isPresent()) {
             LOGGER.debug("Zipkin reporting disabled due to missing value for configuration key: "
-                + PORTAL_TRACING_REPORTER_URL);
+                    + PORTAL_TRACING_REPORTER_URL);
             return null;
         }
 
         LOGGER.info("Span reporting enabled. URL: {}", url.get());
         final Sender sender = URLConnectionSender.newBuilder()
-            .endpoint(url.get())
-            .encoding(Encoding.JSON)
-            .build();
+                .endpoint(url.get())
+                .encoding(Encoding.JSON)
+                .build();
 
         return AsyncReporter.builder(sender)
-            // TODO .metrics()
-            .build();
+                // TODO .metrics()
+                .build();
     }
 }

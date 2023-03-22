@@ -36,7 +36,7 @@ import lombok.ToString;
  * <h2>Test Setup</h2>
  * <p>
  * In order to activate you add {@link EnablePortalConfiguration} to your test class
- *
+ * <p>
  * Now you can inject the {@link PortalTestConfiguration}
  *
  * <pre>

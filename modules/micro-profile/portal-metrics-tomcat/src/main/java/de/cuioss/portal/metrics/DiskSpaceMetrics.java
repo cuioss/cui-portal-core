@@ -49,8 +49,7 @@ final class DiskSpaceMetrics {
     }
 
     /**
-     * @param registry
-     * @param exportType
+     * @param registry to be bound to
      *
      * @throws NullPointerException if registry or exportType are {@code null}
      */

@@ -57,7 +57,7 @@ public class ConnectionMetadataProducer {
         "Portal-526: Invalid content for '%s', expected a number but was '%s'";
 
     /**
-     * Try to create {@linkplain ConnectionMetadata}<br/>
+     * Try to create {@linkplain ConnectionMetadata}<br>
      * <h2>Attention</h2>
      * If configuration is invalid and validation should be done the injection will failed with
      * {@linkplain javax.enterprise.inject.CreationException} caused by

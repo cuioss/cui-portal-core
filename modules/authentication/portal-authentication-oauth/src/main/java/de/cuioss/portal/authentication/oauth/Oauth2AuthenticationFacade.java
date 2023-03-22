@@ -132,7 +132,7 @@ public interface Oauth2AuthenticationFacade extends AuthenticationFacade {
     /**
      * Logout URL to trigger OpenID-Connect RP-Initiated logout (RP=Relying Party).
      *
-     * @param additionalUrlParams additional URL parameters. E.g. from {@link OauthLogoutParameters#asArray()}. Can be null.
+     * @param additionalUrlParams additional URL parameters. Can be null.
      * @return IDP logout URL including {@code id_token_hint} and {@code post_logout_redirect_uri} parameters as well
      *         as any {@code additionalUrlParams} URL parameter
      * @throws IllegalStateException in case a mandatory configuration is missing

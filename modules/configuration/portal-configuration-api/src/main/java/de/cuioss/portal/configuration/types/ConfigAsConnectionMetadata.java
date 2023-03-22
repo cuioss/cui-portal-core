@@ -27,7 +27,8 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * configuring the connection of the value-set-client.
  * </p>
  *
- * The expected structure is:
+ * The expected structure is
+ * <h3>Basic Information</h3>
  * <ul>
  * <li><code>baseName.id</code>: Optional, id for that connection, usually used for URL parameter or
  * similar. If it is not set the baseName will be used</li>
@@ -35,12 +36,19 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * <li><code>baseName.url</code>: Required, the URL of the service to connect to.</li>
  * <li><code>baseName.type</code>: Optional, must be one of "JMX", "REST","DATABASE"
  * "UNDEFINED" (case insensitive). If not set it defaults to "UNDEFINED"</li>
+ * </ul>
+ * 
+ * <h3>Authentication</h3>
+ * <ul>
  * <li>
  * <code>baseName.authentication</code>: Must be one of "none", "basic",
  * "certificate", "token.application" or "token.user" (case insensitive). Defaults to "none"
+ * </li>
+ * </ul>
  * <p>
  * In case of authentication type "certificate" a key-store can be configured for this connection:
- * If it is not configured the key-store configured for the system will be used</p>
+ * If it is not configured the key-store configured for the system will be used
+ * </p>
  * <ul>
  * <li><code>baseName.authentication.certificate.keystore.location</code></li>
  * <li><code>baseName.authentication.certificate.keystore.password</code></li>
@@ -48,7 +56,6 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * cases where the actual certificate has a different password compared to the
  * {@code keystore.password})</li>
  * </ul>
- * </li>
  * <p>
  * In case of authentication type "basic" the following properties must be defined:
  * </p>
@@ -65,8 +72,6 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * <li><code>baseName.authentication.token.application.key</code>: Identifying the name of the
  * header under which the token is added to the request, e.g. "X-Vault-Token"</li>
  * </ul>
- * </li>
- * <ul>
  * <p>
  * <em>Caution: The approach with "token.user" s work in progress / experimental </em>
  * In case of authentication type "token.user" the following properties must be defined:
@@ -77,10 +82,11 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * <li><code>baseName.authentication.token.user.key</code>: Identifying the name of the
  * header under which the token is added to the request, e.g. "X-Vault-Token"</li>
  * </ul>
- * </li>
- * <li>In case your connection uses a secured transport like https you can optionally configure a
+ * <p>
+ * In case your connection uses a secured transport like https you can optionally configure a
  * specific keystore / truststore for this connection. If not the corresponding system settings will
  * be used
+ * </p>
  * <ul>
  * <li><code>baseName.transport.secure.keystore.location</code></li>
  * <li><code>baseName.transport.secure.keystore.password</code></li>
@@ -93,9 +99,11 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * the hostname will not be validated for this connection. <em>Caution:</em> Setting this value will
  * compromise security: Only to be used for testing!!</li>
  * </ul>
- * </li>
- * <li>In addition to the standard configuration you can configure connection specific parameter.
+ * <h3>Additional Parameter</h3>
+ * <p>
+ * In addition to the standard configuration you can configure connection specific parameter.
  * The base-name therefore is <code>baseName.config</code>.
+ * </p>
  * <ul>
  * <li>{@code baseName.config.client}:okclient Enables the okHttpClient for connections of
  * type REST. This client is more efficient and reliable within complex network scenarios and
@@ -111,8 +119,6 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * <li>{@code baseName.config.min-fresh}: Sets the minimum number of minutes that a
  * response will continue to be fresh for. If the response will be stale when minFresh have elapsed,
  * the cached response will not be used and a network request will be made.</li>
- * </ul>
- * </li>
  * </ul>
  *
  *

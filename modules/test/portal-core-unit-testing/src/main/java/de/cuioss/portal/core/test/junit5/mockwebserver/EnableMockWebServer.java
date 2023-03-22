@@ -15,7 +15,7 @@ import okhttp3.mockwebserver.MockWebServer;
  * Using this annotations at type-level of a junit 5 test will control an instance of
  * {@link MockWebServer}. The class where this annotation is used must implement
  * {@link MockWebServerHolder}.
- *
+ * <p>
  * As default the mock server will automatically be started before each test.
  * To disable this behavior and start the mock server manually please set {@link #manualStart()} to
  * true.

@@ -37,7 +37,7 @@ import lombok.ToString;
 
 /**
  * Properties provider for YAML files.
- *
+ * <p>
  * Some code is copied from: https://github.com/spring-projects/spring-framework/blob/v5.1.8.RELEASE
  * /spring-beans/src/main/java/org/springframework/beans/factory/config/YamlPropertiesFactoryBean.java
  * /spring-beans/src/main/java/org/springframework/beans/factory/config/YamlProcessor.java

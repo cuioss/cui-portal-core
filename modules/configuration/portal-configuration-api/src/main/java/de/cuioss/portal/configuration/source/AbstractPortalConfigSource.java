@@ -39,7 +39,7 @@ public abstract class AbstractPortalConfigSource implements ConfigSource {
 
     /**
      * Do not overwrite this function. Use {@link #getPortalPriority()} instead.
-     *
+     * <p>
      * As Portal priorities are within the range 0-150, the final value will fit nicely within the MP config source
      * ordinals 100-250. Hence all portal config sources sit below the "EnvConfigSource".
      *

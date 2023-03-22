@@ -51,9 +51,9 @@ import de.cuioss.tools.string.Splitter;
 /**
  * Default implementation of {@link Oauth2AuthenticationFacade}. Uses {@link Oauth2Service} to
  * access the oauth2 rest interface.
- *
+ * <p>
  * Stores the requested and confirmed scopes with key SCOPES_KEY in the current session.
- *
+ * <p>
  * Other internal values like STATE_KEY, NONCE_KEY and PKCE_CODE_KEY are also stored in the current
  * session.
  *

@@ -6,7 +6,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * A {@linkplain ConfigurationSource} returns a {@linkplain Map} of concrete configurations.
- *
+ * <p>
  * Alternatively a {@link FileConfigurationSource} or {@link ConfigSource} could be used instead.
  *
  * @author Oliver Wolff

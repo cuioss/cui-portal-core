@@ -42,8 +42,8 @@ final class FileDescriptorMetrics {
     /**
      * Adds the metrics to the given registry.
      *
-     * @param registry
-     * @param tags
+     * @param registry to be bound to
+     * @param micrometerFormat whether to use the micrometer format
      *
      * @throws NullPointerException if registry is null
      */

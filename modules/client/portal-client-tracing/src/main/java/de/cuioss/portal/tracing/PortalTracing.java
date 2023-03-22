@@ -42,7 +42,7 @@ import zipkin2.reporter.brave.ZipkinSpanHandler;
 
 /**
  * Provides producers for tracing aspects.
- *
+ * <p>
  * Spans are reported to {@link PortalLogSpanHandler} and all other span handlers discovered via {@link Instance}.
  * Furthermore, {@link B3Propagation} is used.
  * All tracing features are also provided to log4j2 by using {@link ThreadContextScopeDecorator}.

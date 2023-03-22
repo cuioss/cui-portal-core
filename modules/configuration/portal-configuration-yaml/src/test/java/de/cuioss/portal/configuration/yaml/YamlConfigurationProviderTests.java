@@ -33,7 +33,7 @@ import de.cuioss.tools.io.UrlLoader;
 
 /**
  * Tests for {@link YamlConfigurationProvider}.
- *
+ * <p>
  * COPIED FROM:
  * https://github.com/spring-projects/spring-framework/blob/v5.1.8
  * .RELEASE/spring-beans/src/test/java/org/springframework/beans/factory/config/YamlPropertiesFactoryBeanTests.java
