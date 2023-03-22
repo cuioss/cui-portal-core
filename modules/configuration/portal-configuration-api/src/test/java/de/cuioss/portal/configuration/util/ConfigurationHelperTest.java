@@ -180,7 +180,7 @@ class ConfigurationHelperTest {
         });
 
         assertThrows(NullPointerException.class, () -> {
-            ConfigurationHelper.resolveAnnotation(EmptyInjectionPoint.INSTANCE, Test.class).isPresent();
+            ConfigurationHelper.resolveAnnotation(EmptyInjectionPoint.INSTANCE, Test.class);
         });
     }
 

@@ -65,9 +65,9 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      */
     public Optional<Metric> getMetric(final String name) {
         return metricMap.entrySet().stream()
-            .filter(e -> e.getKey().getName().equals(name))
-            .map(Map.Entry::getValue)
-            .findAny();
+                .filter(e -> e.getKey().getName().equals(name))
+                .map(Map.Entry::getValue)
+                .findAny();
     }
 
     /**
@@ -77,8 +77,8 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      */
     public Optional<MetricID> getMetricID(final String name) {
         return metricMap.keySet().stream()
-            .filter(metric -> metric.getName().equals(name))
-            .findAny();
+                .filter(metric -> metric.getName().equals(name))
+                .findAny();
     }
 
     /**
@@ -333,10 +333,10 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
         metricMap.put(id, timer);
         metadataMap.put(name, new MetadataBuilder()
-            .withName(name)
-            .withType(MetricType.TIMER)
-            .withUnit(MetricUnits.NANOSECONDS)
-            .build());
+                .withName(name)
+                .withType(MetricType.TIMER)
+                .withUnit(MetricUnits.NANOSECONDS)
+                .build());
         return timer;
     }
 
@@ -448,9 +448,9 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public SortedSet<String> getNames() {
         return Collections.unmodifiableSortedSet(
-            new TreeSet<>(metricMap.keySet().stream()
-                .map(MetricID::getName)
-                .collect(Collectors.toSet())));
+                new TreeSet<>(metricMap.keySet().stream()
+                        .map(MetricID::getName)
+                        .collect(Collectors.toSet())));
     }
 
     @Override
@@ -508,12 +508,12 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public SortedMap<MetricID, Meter> getMeters() {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public SortedMap<MetricID, Meter> getMeters(final MetricFilter filter) {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
@@ -529,37 +529,37 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public SortedMap<MetricID, Timer> getTimers(final MetricFilter filter) {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public SortedMap<MetricID, SimpleTimer> getSimpleTimers() {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public SortedMap<MetricID, SimpleTimer> getSimpleTimers(final MetricFilter filter) {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public SortedMap<MetricID, Metric> getMetrics(MetricFilter metricFilter) {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public <T extends Metric> SortedMap<MetricID, T> getMetrics(Class<T> aClass, MetricFilter metricFilter) {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public Map<MetricID, Metric> getMetrics() {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override
     public Map<String, Metadata> getMetadata() {
-        return null;
+        return Collections.emptySortedMap();
     }
 
     @Override

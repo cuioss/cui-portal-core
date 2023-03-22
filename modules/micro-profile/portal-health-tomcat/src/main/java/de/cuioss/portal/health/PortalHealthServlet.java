@@ -221,7 +221,7 @@ public class PortalHealthServlet extends AbstractPortalServlet {
 
         if (shouldDisplayDetails()) {
             log.debug("Evaluating health check details");
-            responseJson.addAll(MicroProfileToIcwResponseFormatMapper.apply(health));
+            responseJson.addAll(MicroProfileToSpringResponseFormatMapper.apply(health));
         } // else only global status is returned
 
         final var json = responseJson.build().toString();

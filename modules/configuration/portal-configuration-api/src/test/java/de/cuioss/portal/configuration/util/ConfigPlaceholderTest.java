@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ConfigPlaceholderTest {
 
@@ -73,35 +75,17 @@ class ConfigPlaceholderTest {
         assertTrue(result.getDefaultValue().isEmpty());
     }
 
-    @Test
-    void splitPlaceholderWithDefault() {
-        var result = ConfigPlaceholder.split("${key:default}");
+    @ParameterizedTest
+    @CsvSource({
+        "${key:default}, key, default",
+        "${key:${key2}}, key, ${key2}",
+        "${key:${key2}crap}, key, ${key2}crap",
+        "${key:foo:bar}, key, foo:bar"
+    })
+    void splitPlaceholderWithDefault(String full, String expected1, String expected2) {
+        var result = ConfigPlaceholder.split(full);
 
-        assertEquals("key", result.getConfigKey());
-        assertEquals("default", result.getDefaultValue().orElse(null));
-    }
-
-    @Test
-    void splitPlaceholderWithNestedDefault() {
-        var result = ConfigPlaceholder.split("${key:${key2}}");
-
-        assertEquals("key", result.getConfigKey());
-        assertEquals("${key2}", result.getDefaultValue().orElse(null));
-    }
-
-    @Test
-    void splitPlaceholderWithNestedInvalidDefault() {
-        var result = ConfigPlaceholder.split("${key:${key2}crap}");
-
-        assertEquals("key", result.getConfigKey());
-        assertEquals("${key2}crap", result.getDefaultValue().orElse(null));
-    }
-
-    @Test
-    void splitPlaceholderWithDefaultContainingDoubleColon() {
-        var result = ConfigPlaceholder.split("${key:foo:bar}");
-
-        assertEquals("key", result.getConfigKey());
-        assertEquals("foo:bar", result.getDefaultValue().orElse(null));
+        assertEquals(expected1, result.getConfigKey());
+        assertEquals(expected2, result.getDefaultValue().orElse(null));
     }
 }

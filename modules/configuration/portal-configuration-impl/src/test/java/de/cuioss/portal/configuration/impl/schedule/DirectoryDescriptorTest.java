@@ -43,9 +43,6 @@ class DirectoryDescriptorTest {
         final var descriptor2 = AbstractFileDescriptor.create(newDirectory).get();
 
         assertNotEquals(descriptor1, descriptor2);
-        assertEquals(descriptor1, descriptor1);
-
-        assertEquals(descriptor1.hashCode(), descriptor1.hashCode());
 
         assertNotEquals(descriptor1.hashCode(), descriptor2.hashCode());
 

@@ -132,7 +132,7 @@ public class CuiRestClientBuilder {
         return this;
     }
 
-    public CuiRestClientBuilder registerExceptionMapper(final ResponseExceptionMapper mapper) {
+    public CuiRestClientBuilder registerExceptionMapper(final ResponseExceptionMapper<?> mapper) {
         mpRestClientBuilder.register(mapper);
         return this;
     }
@@ -278,10 +278,10 @@ public class CuiRestClientBuilder {
      */
     public CuiRestClientBuilder enableDefaultExceptionHandler() {
         try {
-            Class defaultResponseExceptionMapper = Class.forName(
+            Class<?> defaultResponseExceptionMapper = Class.forName(
                     "org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper",
                     false, CuiRestClientBuilder.class.getClassLoader());
-            register(defaultResponseExceptionMapper.newInstance(), Integer.MIN_VALUE);
+            register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();
         } catch (final Exception e) {
             log.error(

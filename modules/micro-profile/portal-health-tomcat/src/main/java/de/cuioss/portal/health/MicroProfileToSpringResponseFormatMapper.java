@@ -9,16 +9,18 @@ import javax.json.JsonValue;
 
 import de.cuioss.tools.logging.CuiLogger;
 import io.smallrye.health.SmallRyeHealth;
+import lombok.experimental.UtilityClass;
 
 /**
  * Transforms a {@link SmallRyeHealth} object into a {@link JsonObjectBuilder}, representing the
- * custom ICW format.
+ * custom spring format.
  *
  * @author Sven Haag
  */
-class MicroProfileToIcwResponseFormatMapper {
+@UtilityClass
+class MicroProfileToSpringResponseFormatMapper {
 
-    private static final CuiLogger log = new CuiLogger(MicroProfileToIcwResponseFormatMapper.class);
+    private static final CuiLogger log = new CuiLogger(MicroProfileToSpringResponseFormatMapper.class);
 
     private static final String CHECKS = "checks";
     private static final String NAME = "name";

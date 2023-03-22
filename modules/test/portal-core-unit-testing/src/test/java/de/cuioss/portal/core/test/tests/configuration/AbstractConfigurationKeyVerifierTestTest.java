@@ -42,7 +42,9 @@ class AbstractConfigurationKeyVerifierTestTest extends AbstractConfigurationKeyV
     @Test
     void shouldDetectMissingKeyInConfiguration() {
         underTest = new MockConfigurationSource(PATH3);
-        // TODO super.configurationKeysShouldReverseMapToKeyNames();
+        assertThrows(AssertionError.class, () -> {
+            super.configurationKeysShouldReverseMapToKeyNames();
+        });
     }
 
     @Test

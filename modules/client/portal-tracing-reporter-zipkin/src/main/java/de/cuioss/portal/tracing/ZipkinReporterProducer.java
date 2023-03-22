@@ -38,7 +38,7 @@ public class ZipkinReporterProducer {
     @Produces
     @Dependent
     @Alternative
-    static Reporter<Span> zipkinReporter(
+    Reporter<Span> zipkinReporter(
             @ConfigProperty(name = PORTAL_TRACING_REPORTER_URL) final Optional<String> url) {
 
         if (!url.isPresent()) {

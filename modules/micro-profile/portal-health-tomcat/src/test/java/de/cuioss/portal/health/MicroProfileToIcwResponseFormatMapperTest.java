@@ -21,6 +21,6 @@ class MicroProfileToIcwResponseFormatMapperTest {
             .getResourceAsStream("/health_mp_down_wo_data.json")))
             .readObject();
         final var health = new SmallRyeHealth(response);
-        assertDoesNotThrow(() -> MicroProfileToIcwResponseFormatMapper.apply(health));
+        assertDoesNotThrow(() -> MicroProfileToSpringResponseFormatMapper.apply(health));
     }
 }
