@@ -30,7 +30,8 @@ import de.cuioss.tools.string.MoreStrings;
 /**
  * Builder for a JAVA MicroProfile based REST client.
  * <p>
- * To enable log debugging / tracing set package de.cuioss.portal.core.restclient to TRACE level in your logger
+ * To enable log debugging / tracing set package de.cuioss.portal.core.restclient to TRACE level in
+ * your logger
  * configuration.
  */
 public class CuiRestClientBuilder {
@@ -49,20 +50,24 @@ public class CuiRestClientBuilder {
     /**
      * Creates a REST client builder.
      *
-     * <p>Enables the trace-logging, if either the given logger or the {@link CuiRestClientBuilder} logger returns true
-     * for {@link CuiLogger#isTraceEnabled()}.</p>
+     * <p>
+     * Enables the trace-logging, if either the given logger or the {@link CuiRestClientBuilder}
+     * logger returns true
+     * for {@link CuiLogger#isTraceEnabled()}.
+     * </p>
      *
      * @param logger for trace-logging.
      */
     public CuiRestClientBuilder(final CuiLogger logger) {
-        this.mpRestClientBuilder = RestClientBuilder.newBuilder();
+        mpRestClientBuilder = RestClientBuilder.newBuilder();
         this.logger = logger;
-        this.traceLogEnabled = logger.isTraceEnabled() || log.isTraceEnabled();
-        this.tracingEnabled = true;
+        traceLogEnabled = logger.isTraceEnabled() || log.isTraceEnabled();
+        tracingEnabled = true;
 
         // Advice RestEasy not to add its default exception handler.
         // It would serve the request before we can trace-log anything.
-        // Furthermore, it throws an Exception in case the service interfaces return type is javax.ws.rs.core.Response.
+        // Furthermore, it throws an Exception in case the service interfaces return type is
+        // javax.ws.rs.core.Response.
         // Both things we don't admire.
         // Also see: https://github.com/eclipse/microprofile-rest-client/issues/195
         disableDefaultExceptionHandler();
@@ -83,18 +88,18 @@ public class CuiRestClientBuilder {
                 "Links: {}\n" +
                 "Location: {}\n" +
                 "MediaType: {}\n",
-            response.getStatus(),
-            response.getStatusInfo(),
-            response.getAllowedMethods(),
-            response.getEntityTag(),
-            response.getCookies(),
-            response.getDate(),
-            response.getHeaders(),
-            response.getLanguage(),
-            response.getLastModified(),
-            response.getLinks(),
-            response.getLocation(),
-            response.getMediaType());
+                response.getStatus(),
+                response.getStatusInfo(),
+                response.getAllowedMethods(),
+                response.getEntityTag(),
+                response.getCookies(),
+                response.getDate(),
+                response.getHeaders(),
+                response.getLanguage(),
+                response.getLastModified(),
+                response.getLinks(),
+                response.getLocation(),
+                response.getMediaType());
     }
 
     public CuiRestClientBuilder url(final String url) {
@@ -140,14 +145,14 @@ public class CuiRestClientBuilder {
     /**
      * Sets various properties based on the given <code>connectionMeta</code>.
      * <ul>
-     *     <li>service url</li>
-     *     <li>tracing enabled</li>
-     *     <li>ssl context</li>
-     *     <li>login credentials</li>
-     *     <li>context map</li>
-     *     <li>hostname verifier</li>
-     *     <li>connection timeout</li>
-     *     <li>read timeout</li>
+     * <li>service url</li>
+     * <li>tracing enabled</li>
+     * <li>ssl context</li>
+     * <li>login credentials</li>
+     * <li>context map</li>
+     * <li>hostname verifier</li>
+     * <li>connection timeout</li>
+     * <li>read timeout</li>
      * </ul>
      *
      * @param connectionMeta
@@ -156,7 +161,7 @@ public class CuiRestClientBuilder {
      */
     @SuppressWarnings("squid:S3510") // owolff: False Positive, By design
     public CuiRestClientBuilder connectionMetadata(final ConnectionMetadata connectionMeta) {
-        this.connectionMetadata = connectionMeta;
+        connectionMetadata = connectionMeta;
         url(connectionMeta.getServiceUrl());
         tracingEnabled(connectionMeta.isTracingEnabled());
 
@@ -177,7 +182,12 @@ public class CuiRestClientBuilder {
             mpRestClientBuilder.property(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
         }
         if (connectionMeta.isDisableHostNameVerification()) {
-            mpRestClientBuilder.hostnameVerifier((hostname, sslSession) -> true);
+            mpRestClientBuilder.hostnameVerifier((hostname, sslSession) -> true); // NOSONAR:
+                                                                                  // owolff: This is
+                                                                                  // documented to
+                                                                                  // be only used in
+                                                                                  // context of
+                                                                                  // testing
         }
         if (connectionMeta.getConnectionTimeout() > 0) {
             mpRestClientBuilder.connectTimeout(connectionMeta.getConnectionTimeout(),
@@ -195,8 +205,8 @@ public class CuiRestClientBuilder {
 
     /**
      * @param value Enable|Disable trace logging capabilities for this REST client.
-     *         Defaults to {@link CuiLogger#isTraceEnabled()} for the given logger.
-     *         This is unrelated to the distributed tracing capabilities.
+     *            Defaults to {@link CuiLogger#isTraceEnabled()} for the given logger.
+     *            This is unrelated to the distributed tracing capabilities.
      *
      * @return this builder
      * @see LogClientRequestFilter
@@ -209,8 +219,9 @@ public class CuiRestClientBuilder {
 
     /**
      * @param value Enable|Disable the distributed tracing for this client. Only effective if
-     *         {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED} is enabled.
-     *         This could be overwritten by {@link #connectionMetadata(ConnectionMetadata)}.
+     *            {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED} is
+     *            enabled.
+     *            This could be overwritten by {@link #connectionMetadata(ConnectionMetadata)}.
      *
      * @return this builder
      */
@@ -256,10 +267,12 @@ public class CuiRestClientBuilder {
 
     /**
      * Enables the RestEasy default exception mapper for this MP REST client.
-     * Per default, this exception mapper is disabled. It registers it with priority {@link Integer#MIN_VALUE},
+     * Per default, this exception mapper is disabled. It registers it with priority
+     * {@link Integer#MIN_VALUE},
      * instead of {@link Integer#MAX_VALUE}, to allow trace-logging of responses.
      * <p>
-     * Effect: Every response code of >=400 throws a general {@link javax.ws.rs.WebApplicationException}.
+     * Effect: Every response code of >=400 throws a general
+     * {@link javax.ws.rs.WebApplicationException}.
      *
      * @return this builder
      */
@@ -282,7 +295,8 @@ public class CuiRestClientBuilder {
      * Disables the RestEasy default exception mapper for this MP REST client.
      * Per default, this exception mapper is disabled.
      * <p>
-     * Effect: Exceptions like {@link javax.ws.rs.BadRequestException} are thrown instead of a general
+     * Effect: Exceptions like {@link javax.ws.rs.BadRequestException} are thrown instead of a
+     * general
      * {@link javax.ws.rs.WebApplicationException}.
      *
      * @return this builder
@@ -362,8 +376,9 @@ public class CuiRestClientBuilder {
         log.debug("Using serviceName: {}", serviceName);
 
         // HttpTracing is closed on response at: brave.jaxrs2.TracingClientFilter#filter
-        @SuppressWarnings("squid:S2095") final var tracing =
-                HttpTracing.create(PortalTracing.createTracing()).clientOf(serviceName);
+        @SuppressWarnings("squid:S2095")
+        final var tracing =
+            HttpTracing.create(PortalTracing.createTracing()).clientOf(serviceName);
         register(new TracingRequestFilter(tracing));
         register(new TracingResponseFilter(tracing));
     }
