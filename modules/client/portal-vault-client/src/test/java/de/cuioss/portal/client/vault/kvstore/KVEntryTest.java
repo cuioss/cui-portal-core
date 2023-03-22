@@ -16,19 +16,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
 import de.cuioss.test.valueobjects.api.object.ObjectTestConfig;
+import de.cuioss.test.valueobjects.api.property.PropertyConfig;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileSystemLoader;
 import de.cuioss.tools.io.IOStreams;
 
-@PropertyReflectionConfig(of = { "key", "value", "metadata" }, required = { "key", "metadata" })
+@PropertyReflectionConfig(skip = true)
 @ObjectTestConfig(equalsAndHashCodeBasicOnly = true)
+@PropertyConfig(name = "key", propertyClass = String.class, required = true)
+@PropertyConfig(name = "value", propertyClass = Serializable.class, required = false)
+@PropertyConfig(name = "metadata", propertyClass = Metadata.class, required = true)
 @VerifyBuilder
 class KVEntryTest extends ValueObjectTest<KVEntry> {
 
