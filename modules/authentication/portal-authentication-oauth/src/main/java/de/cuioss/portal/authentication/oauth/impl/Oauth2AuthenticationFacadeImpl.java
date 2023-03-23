@@ -33,7 +33,6 @@ import de.cuioss.portal.authentication.facade.AuthenticationSource;
 import de.cuioss.portal.authentication.facade.BaseAuthenticationFacade;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
-import de.cuioss.portal.authentication.oauth.DeprecatedOauth2ConfigurationKeys;
 import de.cuioss.portal.authentication.oauth.LoginPagePath;
 import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
 import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
@@ -222,7 +221,8 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         if (null != oauthUser) {
             LOGGER.debug("authenticated oauth user info was retrieved: {}", oauthUser);
             if (null == sessionUser || !sessionUser.isAuthenticated()) {
-                LOGGER.debug("session user missing or not authenticated. invalidating session! (change session after login)");
+                LOGGER.debug(
+                        "session user missing or not authenticated. invalidating session! (change session after login)");
                 servletRequest.getSession().invalidate();
             }
             oauthUser = enrich(oauthUser);
@@ -426,9 +426,8 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         var config = configurationProvider.get();
 
         if (MoreStrings.isEmpty(config.getLogoutUri())) {
-            var errMsg = String.format("Portal-160: Missing config for logout URI. Check %s " +
-                    "or the end_session_endpoint property from userinfo endpoint.",
-                DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI);
+            var errMsg = String.format("Portal-160: Missing config for logout URI. Check " +
+                    "the end_session_endpoint property from userinfo endpoint.");
             LOGGER.warn(errMsg);
             throw new IllegalStateException(errMsg);
         }
@@ -436,18 +435,18 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         CollectionBuilder<UrlParameter> queryParams = CollectionBuilder.copyFrom(additionalUrlParams);
 
         if (config.isLogoutWithIdTokenHintEnabled()
-            && queryParams.stream()
-            .map(UrlParameter::getName)
-            .noneMatch(OidcRpInitiatedLogoutParams.ID_TOKEN_HINT::equals)) {
+                && queryParams.stream()
+                        .map(UrlParameter::getName)
+                        .noneMatch(OidcRpInitiatedLogoutParams.ID_TOKEN_HINT::equals)) {
 
             LOGGER.debug("Adding id-token-hint as recommended by spec.");
             getIdTokenFromCurrentUser()
-                .map(OidcRpInitiatedLogoutParams::getIdTokenHintUrlParam)
-                .ifPresent(queryParams::add);
+                    .map(OidcRpInitiatedLogoutParams::getIdTokenHintUrlParam)
+                    .ifPresent(queryParams::add);
         }
 
         final var logoutUrl = config.getLogoutUri()
-            + UrlParameter.createParameterString(queryParams.toArray(UrlParameter.class));
+                + UrlParameter.createParameterString(queryParams.toArray(UrlParameter.class));
         LOGGER.trace("logoutUrl: {}", logoutUrl);
 
         return logoutUrl;

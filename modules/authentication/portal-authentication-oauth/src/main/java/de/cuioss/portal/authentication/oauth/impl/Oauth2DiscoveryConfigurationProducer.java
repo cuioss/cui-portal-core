@@ -32,8 +32,7 @@ import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 
 /**
- * Produces {@link Oauth2Configuration} either based on {@link DefaultOauth2ConfigurationProducer} or
- * by using the new config params ({@see OAuthConfigKeys}).
+ * Produces {@link Oauth2Configuration} using the new config params ({@see OAuthConfigKeys}).
  *
  * @author Matthias Walliczek
  */
@@ -95,9 +94,6 @@ public class Oauth2DiscoveryConfigurationProducer {
     @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL)
     private Provider<Optional<String>> internalUserInfoUrl;
 
-    @Inject
-    private DefaultOauth2ConfigurationProducer defaultOauth2ConfigurationProducer;
-
     /**
      * The request to retrieve information about the current authenticated user.
      */
@@ -121,17 +117,16 @@ public class Oauth2DiscoveryConfigurationProducer {
             LOGGER.debug("Using discoveryURI {}", discoveryURI);
             try {
                 final var discovery = builder
-                    .url(discoveryURI)
-                    .build(RequestDiscovery.class)
-                    .getDiscovery();
+                        .url(discoveryURI)
+                        .build(RequestDiscovery.class)
+                        .getDiscovery();
                 configuration = createConfiguration(discovery);
             } catch (final Exception e) {
                 LOGGER.error(e, "Auto discovery of oauth config failed, using URI: {}", discoveryURI);
             }
         } else {
             LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback",
-                OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH);
-            configuration = defaultOauth2ConfigurationProducer.getConfiguration();
+                    OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH);
         }
 
         LOGGER.debug("oauth config: {}", configuration);
@@ -175,12 +170,12 @@ public class Oauth2DiscoveryConfigurationProducer {
 
         internalTokenUrl.get().ifPresent(url -> {
             LOGGER.debug("overwrite well-known token-url '{}' with: {}",
-                newConfiguration.getTokenUri(), url);
+                    newConfiguration.getTokenUri(), url);
             newConfiguration.setTokenUri(url);
         });
         internalUserInfoUrl.get().ifPresent(url -> {
             LOGGER.debug("overwrite well-known userinfo-url '{}' with: {}",
-                newConfiguration.getUserInfoUri(), url);
+                    newConfiguration.getUserInfoUri(), url);
             newConfiguration.setUserInfoUri(url);
         });
 
@@ -188,7 +183,8 @@ public class Oauth2DiscoveryConfigurationProducer {
     }
 
     /**
-     * Listener for {@link PortalConfigurationChangeEvent}s. Reconfigures the default-resource-configuration
+     * Listener for {@link PortalConfigurationChangeEvent}s. Reconfigures the
+     * default-resource-configuration
      *
      * @param deltaMap include difference to current configuration settings
      */
@@ -196,7 +192,6 @@ public class Oauth2DiscoveryConfigurationProducer {
     void configurationChangeEventListener(
             @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
         LOGGER.info("Change in oauth2 configuration found, reconfigure");
-        defaultOauth2ConfigurationProducer.init();
         init();
     }
 }

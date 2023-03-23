@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -23,20 +23,24 @@ import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
-import de.cuioss.portal.authentication.oauth.DeprecatedOauth2ConfigurationKeys;
 import de.cuioss.portal.authentication.oauth.LoginPagePath;
 import de.cuioss.portal.authentication.oauth.Oauth2Service;
 import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
 import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
+import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
+import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
@@ -44,12 +48,17 @@ import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.net.UrlParameter;
 import de.cuioss.tools.string.MoreStrings;
 import lombok.Getter;
+import lombok.Setter;
+import okhttp3.mockwebserver.MockWebServer;
 
+@EnableMockWebServer
 @EnableAutoWeld
 @EnablePortalConfiguration
 @AddBeanClasses({ Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
     RedirectorMock.class })
-class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl> {
+@AddExtensions(ResteasyCdiExtension.class)
+class Oauth2AuthenticationFacadeImplTest
+        implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl>, MockWebServerHolder {
 
     @Inject
     @PortalAuthenticationFacade
@@ -74,14 +83,17 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
     @Produces
     private final Oauth2Service service = new Oauth2ServiceMock();
 
+    @Setter
+    private MockWebServer mockWebServer;
+
+    @Getter
+    private OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
+
     @BeforeEach
     void beforeEach() {
         servletRequest = new CuiMockHttpServletRequest();
         servletRequest.setPathInfo("some.url");
-        configuration.put(DeprecatedOauth2ConfigurationKeys.CLIENT_ID, DeprecatedOauth2ConfigurationKeys.CLIENT_ID);
-        configuration.put(DeprecatedOauth2ConfigurationKeys.OAUTH2_SERVER_AUTHENTICATION_URI,
-                DeprecatedOauth2ConfigurationKeys.OAUTH2_SERVER_AUTHENTICATION_URI);
-        configuration.fireEvent();
+        dispatcher.configure(configuration, mockWebServer);
     }
 
     @Test
@@ -94,7 +106,7 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
     @Test
     void testTestLoginWithParams() {
         underTest.sendRedirect("scope");
-        assertTrue(redirectorMock.getRedirectUrl().startsWith("oauth2authorize"));
+        dispatcher.assertAuthorizeURL(redirectorMock.getRedirectUrl());
         var result = underTest.testLogin(calculateUrlParameter(), "scope");
         assertTrue(result.isAuthenticated());
         assertTrue(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
@@ -103,21 +115,18 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
     @Test
     void testTestLoginWithErrorFails() {
         underTest.sendRedirect("scope");
-        try {
-            underTest
-                    .testLogin(mutableList(getStateParameter(), new UrlParameter("error", "server_error")),
-                            "scope");
-            fail("should fail with OauthAuthenticationException");
-        } catch (OauthAuthenticationException e) {
-            assertEquals("system.exception.oauth.login", e.getMessage());
-        }
-        try {
-            underTest.testLogin(mutableList(getStateParameter(), new UrlParameter("error", "access_denied")),
-                    "scope");
-            fail("should fail with OauthAuthenticationException");
-        } catch (OauthAuthenticationException e) {
-            assertEquals("system.exception.oauth.consent", e.getMessage());
-        }
+        UrlParameter stateParameter = getStateParameter();
+        UrlParameter urlParameter = new UrlParameter("error", "server_error");
+        List<UrlParameter> parameterList = mutableList(stateParameter, urlParameter);
+        OauthAuthenticationException exception = assertThrows(OauthAuthenticationException.class, () -> underTest
+                .testLogin(parameterList, "scope"));
+        assertEquals("system.exception.oauth.login", exception.getMessage());
+
+        var parameterList2 = mutableList(stateParameter, new UrlParameter("error", "access_denied"));
+
+        exception = assertThrows(OauthAuthenticationException.class, () -> underTest
+                .testLogin(parameterList2, "scope"));
+        assertEquals("system.exception.oauth.consent", exception.getMessage());
 
     }
 
@@ -197,7 +206,7 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
         var result =
             underTest.retrieveToken("scope new");
         assertNull(result);
-        assertTrue(redirectorMock.getRedirectUrl().startsWith("oauth2authorize"));
+        dispatcher.assertAuthorizeURL(redirectorMock.getRedirectUrl());
         result = underTest.retrieveToken("scope new");
         assertTrue(MoreStrings.isEmpty(result));
     }
@@ -215,8 +224,8 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
     @Test
     void testRetrieveOauth2RedirectUrlWithPKCEChallenge() throws NoSuchAlgorithmException {
         var url = underTest.retrieveOauth2RedirectUrl("scope", null);
-        assertTrue(
-                url.startsWith("oauth2authorize?response_type=code&scope=scope&client_id=oauth2clientId&state="));
+        dispatcher.assertAuthorizeURL(url, "response_type=code&scope=scope&client_id="
+                + OIDCWellKnownDispatcher.CLIENT_ID + "&state=");
         assertNotNull(servletRequest.getSession().getAttribute("PKCE_CODE"));
         assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() >= 43, "PKCE Code is too"
                 + " short (minimum 43 characters");
@@ -231,9 +240,9 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
         assertTrue(url.contains("&code_challenge=" + code_challenge));
         assertTrue(url.endsWith("&redirect_uri=nulllogin.jsf"));
         url = underTest.retrieveOauth2RedirectUrl("scope", "idtoken");
-        assertTrue(
-                url.startsWith("oauth2authorize?response_type=code&scope=scope&client_id=oauth2clientId&state="));
-        assertTrue(url.endsWith("&id_token_hint=idtoken&redirect_uri=nulllogin.jsf"));
+
+        dispatcher.assertAuthorizeURL(url, "response_type=code&scope=scope&client_id="
+                + OIDCWellKnownDispatcher.CLIENT_ID + "&state=", "&id_token_hint=idtoken&redirect_uri=nulllogin.jsf");
     }
 
     @Test
@@ -246,30 +255,27 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
         var match2 = pattern.matcher(url2);
         assertTrue(match2.matches());
         assertEquals(match1.group(1), match2.group(1));
-        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        underTest.testLogin(calculateUrlParameter(), "scope");
         var url3 = underTest.retrieveOauth2RedirectUrl("scope", null);
         var match3 = pattern.matcher(url3);
         assertTrue(match3.matches());
         assertNotEquals(match1.group(1), match3.group(1));
     }
 
-    /*
-     * @Test
-     * void testRetrieveOauth2RenewUrl() {
-     * underTest.sendRedirect("scope");
-     * AuthenticatedUserInfo userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
-     * ((Token)
-     * userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
-     * assertNotNull(underTest.retrieveOauth2RenewUrl());
-     * assertTrue(underTest.retrieveOauth2RenewUrl().endsWith("prompt=none"));
-     * assertNotNull(underTest.retrieveRenewInterval());
-     * userInfo.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
-     * (int) (System.currentTimeMillis() / 1000L) - 200);
-     * assertNotNull(underTest.retrieveOauth2RenewUrl());
-     * assertFalse(underTest.retrieveOauth2RenewUrl().endsWith("prompt=none"));
-     * assertEquals("-110", underTest.retrieveRenewInterval());
-     * }
-     */
+    @Test
+    void testRetrieveOauth2RenewUrl() {
+        underTest.sendRedirect("scope");
+        AuthenticatedUserInfo userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
+        ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
+        assertNotNull(underTest.retrieveOauth2RenewUrl());
+        assertTrue(underTest.retrieveOauth2RenewUrl().contains("prompt=none"), underTest.retrieveOauth2RenewUrl());
+        assertNotNull(underTest.retrieveRenewInterval());
+        userInfo.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
+                (int) (System.currentTimeMillis() / 1000L) - 200);
+        assertNotNull(underTest.retrieveOauth2RenewUrl());
+        assertFalse(underTest.retrieveOauth2RenewUrl().endsWith("prompt=none"));
+        assertEquals("-110", underTest.retrieveRenewInterval());
+    }
 
     @Test
     void testRetrieveIdToken() {
@@ -287,7 +293,8 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
 
     @Test
     void retrieveClientLogoutUrlWithParams() {
-        configuration.fireEvent(DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI, "http://logout");
+        // configuration.fireEvent(DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI,
+        // "http://logout");
 
         var token = new Token();
         token.setId_token("idtoken");
@@ -300,18 +307,14 @@ class Oauth2AuthenticationFacadeImplTest implements ShouldHandleObjectContracts<
                         new UrlParameter("foo", "bar"),
                         new UrlParameter("baz", "buz"))));
 
-        assertTrue(logoutUrl.startsWith("http://logout?"));
-        assertTrue(logoutUrl.contains("foo=bar"));
-        assertTrue(logoutUrl.contains("baz=buz"));
-        assertTrue(logoutUrl.contains("id_token_hint=idtoken"));
+        dispatcher.assertLogoutURL(logoutUrl, "foo=bar", "baz=buz", "id_token_hint=idtoken");
     }
 
     @Test
     void retrieveClientLogoutUrlWithNoParams() {
-        configuration.fireEvent(DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI, "http://logout");
 
         var logoutUrl = assertDoesNotThrow(() -> underTest.retrieveClientLogoutUrl(null));
 
-        assertEquals("http://logout", logoutUrl);
+        dispatcher.assertLogoutURL(logoutUrl);
     }
 }

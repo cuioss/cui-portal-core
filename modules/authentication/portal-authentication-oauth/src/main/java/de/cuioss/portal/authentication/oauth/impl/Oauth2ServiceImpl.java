@@ -120,11 +120,11 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         var configuration = configurationProvider.get();
         Token token;
         final var builder = new CuiRestClientBuilder(log)
-            .basicAuth(configuration.getClientId(), configuration.getClientSecret())
-            .register(new AcceptJsonHeaderFilter());
+                .basicAuth(configuration.getClientId(), configuration.getClientSecret())
+                .register(new AcceptJsonHeaderFilter());
         try (final var requestToken = builder.url(configuration.getTokenUri().trim()).build(RequestToken.class)) {
             token = requestToken.requestToken("authorization_code", code.getValue(), state.getValue(), codeVerifier,
-                configuration.getExternalContextPath().trim() + servletRequest.getRequestURI());
+                    configuration.getExternalContextPath().trim() + servletRequest.getRequestURI());
         } catch (IllegalArgumentException e) {
             log.warn("Portal-106: Retrieving request token failed", e);
             return null;
@@ -148,18 +148,18 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     private AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Oauth2Configuration configuration,
             Token token, int tokenTimestamp) {
         final var builder =
-                new CuiRestClientBuilder(log).register(new AcceptJsonHeaderFilter());
+            new CuiRestClientBuilder(log).register(new AcceptJsonHeaderFilter());
 
         try (var client = builder.url(configuration.getUserInfoUri().trim()).bearerAuthToken(token.getAccess_token())
                 .build(RequestUserInfo.class)) {
             var userInfo = client.getUserInfo();
 
             var baseAuthenticatedUserInfoBuilder =
-                    BaseAuthenticatedUserInfo.builder().authenticated(true)
-                            .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_SCOPES_KEY, scopes)
-                            .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token)
-                            .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
-                                    tokenTimestamp);
+                BaseAuthenticatedUserInfo.builder().authenticated(true)
+                        .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_SCOPES_KEY, scopes)
+                        .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token)
+                        .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
+                                tokenTimestamp);
 
             for (Entry<String, Object> entry : userInfo.entrySet()) {
                 if ("preferred_username".equals(entry.getKey())) {
@@ -197,13 +197,12 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         }
         List<String> result = new ArrayList<>();
         if (value instanceof Iterable) {
-            ((Iterable) value).forEach(item -> result.addAll(asStringList(item)));
+            ((Iterable<?>) value).forEach(item -> result.addAll(asStringList(item)));
         } else {
             result.add(value.toString());
         }
         return result;
     }
-
 
     @Override
     public String retrieveClientToken(String scopes) {
@@ -232,7 +231,7 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     public String refreshToken(OauthAuthenticatedUserInfo currentUser) {
         var configuration = configurationProvider.get();
         final var builder = new CuiRestClientBuilder(log).basicAuth(configuration.getClientId(),
-                        configuration.getClientSecret())
+                configuration.getClientSecret())
                 .register(new AcceptJsonHeaderFilter());
 
         try (var requestToken = builder.url(configuration.getTokenUri().trim())
@@ -241,7 +240,8 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
             var token = requestToken.requestToken("refresh_token", currentUser.getToken().getRefresh_token());
             if (null != token) {
                 currentUser.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_KEY, token);
-                currentUser.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY, (int) (System.currentTimeMillis() / 1000L));
+                currentUser.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
+                        (int) (System.currentTimeMillis() / 1000L));
                 return token.getAccess_token();
             }
             return null;
