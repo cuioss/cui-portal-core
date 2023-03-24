@@ -1,5 +1,6 @@
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsIterableContaining.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +32,7 @@ import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
+import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandler;
 import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
@@ -68,8 +70,8 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     void beforeEach() {
         servletRequest = new CuiMockHttpServletRequest();
         servletRequest.setPathInfo("some.url");
-        dispatcher.configure(configuration, mockWebServer);
         dispatcher.reset();
+        dispatcher.configure(configuration, mockWebServer);
     }
 
     @Test
@@ -80,7 +82,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
 
     @Test
     void testCreateAuthenticatedUserInfoFailed() {
-        dispatcher.setActualUserInfo(null);
+        dispatcher.setTokenResult(EndpointAnswerHandler.RESPONSE_NOT_FOUND);
 
         var result =
             underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
@@ -159,7 +161,6 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
 
     @Test
     void testRetrieveClientToken() throws IOException, InterruptedException {
-        dispatcher.setActualToken(OIDCWellKnownDispatcher.CLIENT_TOKEN);
 
         var token = underTest.retrieveClientToken(null);
         assertNotNull(token);
@@ -173,6 +174,56 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         var contentTypeHeader = request.getHeaders().values("Content-Type");
         assertFalse(contentTypeHeader.isEmpty());
         assertEquals(MediaType.APPLICATION_FORM_URLENCODED, contentTypeHeader.get(0));
+    }
+
+    @Test
+    void shouldRefreshTokenHappyCase() throws InterruptedException {
+        var user = setupAuthorizedUser();
+
+        String refreshToken = letterStrings(4, 24).next();
+
+        user.getToken().setRefresh_token(refreshToken);
+        user.getToken().setAccess_token(null);
+
+        var result = underTest.refreshToken(user);
+        assertNotNull(result);
+
+        assertNotNull(user.getToken().getAccess_token());
+
+        var requests = dispatcher.nonWellKnownRequests(mockWebServer);
+        assertFalse(requests.isEmpty());
+        var request = requests.get(2);
+        assertNotNull(request);
+        var body = request.getBody().toString();
+        assertTrue(body.contains("grant_type=refresh_token"));
+        assertTrue(body.contains("refresh_token=" + refreshToken));
+    }
+
+    private OauthAuthenticatedUserInfo setupAuthorizedUser() {
+        var code = new BigInteger(260, new Random()).toString(32);
+
+        var initialUser = underTest.createAuthenticatedUserInfo(
+                servletRequest,
+                new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"),
+                "scopes",
+                code);
+        var user = OauthAuthenticatedUserInfo.createOf(initialUser);
+        return user;
+    }
+
+    @Test
+    void shouldHandleMissingRefreshToken() throws InterruptedException {
+        var user = setupAuthorizedUser();
+        user.getToken().setRefresh_token(null);
+        user.getToken().setAccess_token(null);
+
+        dispatcher.setTokenResult(EndpointAnswerHandler.RESPONSE_NOT_FOUND);
+
+        var result = underTest.refreshToken(user);
+        assertNull(result);
+
+        assertNull(user.getToken().getAccess_token());
     }
 
 }

@@ -47,22 +47,29 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     public static final FileLoader USER_INFO =
         FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/userInfo.json");
+
     public static final String OIDC_DISCOVERY_PATH = ".well-known/openid-configuration";
 
     @Getter
     @Setter
-    private FileLoader actualToken;
+    private MockResponse tokenResult;
 
     @Getter
     @Setter
-    private FileLoader actualUserInfo;
+    private MockResponse userInfoResult;
 
     @Getter
     private String currentPort;
 
     public void reset() {
-        actualToken = TOKEN;
-        actualUserInfo = USER_INFO;
+        tokenResult =
+            new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .setBody(FileLoaderUtility.toStringUnchecked(TOKEN));
+        userInfoResult =
+            new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .setBody(FileLoaderUtility.toStringUnchecked(USER_INFO));
     }
 
     public void assertAuthorizeURL(String actualUrl, String... parts) {
@@ -108,24 +115,16 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+        LOGGER.info(() -> "Serve request " + request.getPath());
         switch (request.getPath()) {
             case "/" + OIDC_DISCOVERY_PATH:
                 return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
                         .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                        .setBody(FileLoaderUtility.toStringUnchecked(CONFIGURATION).replaceAll("5602",
-                                currentPort));
+                        .setBody(FileLoaderUtility.toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
             case "/auth/realms/master/protocol/openid-connect/userinfo":
-                if (null != actualUserInfo) {
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                            .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                            .setBody(FileLoaderUtility.toStringUnchecked(actualUserInfo));
-                }
-                return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND)
-                        .addHeader("Content-Type", MediaType.APPLICATION_JSON);
+                return userInfoResult;
             case "/auth/realms/master/protocol/openid-connect/token":
-                return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                        .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                        .setBody(FileLoaderUtility.toStringUnchecked(actualToken));
+                return tokenResult;
             default:
                 LOGGER.warn(() -> "Unable to serve request " + request.getPath());
                 return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);

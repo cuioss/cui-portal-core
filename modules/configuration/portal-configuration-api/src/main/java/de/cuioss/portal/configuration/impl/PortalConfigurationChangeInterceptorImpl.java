@@ -2,7 +2,6 @@ package de.cuioss.portal.configuration.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +23,9 @@ import de.cuioss.tools.logging.CuiLogger;
  */
 @Interceptor
 @PortalConfigurationChangeInterceptor
-public class PortalConfigurationChangeInterceptorImpl implements Serializable {
+public class PortalConfigurationChangeInterceptorImpl {
 
-    private static final long serialVersionUID = 1607859007412749185L;
-    private static final CuiLogger log = new CuiLogger(PortalConfigurationChangeInterceptorImpl.class);
+    private static final CuiLogger LOGGER = new CuiLogger(PortalConfigurationChangeInterceptorImpl.class);
 
     /**
      * @param invocationContext
@@ -37,7 +35,7 @@ public class PortalConfigurationChangeInterceptorImpl implements Serializable {
     @AroundInvoke
     public Object around(final InvocationContext invocationContext) throws Exception {
         var method = invocationContext.getMethod();
-        log.trace("around {}", method);
+        LOGGER.trace("around {}", method);
         var filterConfig =
             requireNonNull(method.getAnnotation(PortalConfigurationChangeInterceptor.class));
         List<String> filterKeys = Arrays.asList(filterConfig.key());
@@ -50,13 +48,13 @@ public class PortalConfigurationChangeInterceptorImpl implements Serializable {
         var deltaMap = accessMap(invocationContext);
         for (String key : filterKeys) {
             if (deltaMap.containsKey(key)) {
-                log.trace("deltaMap {} contains key {}", deltaMap, key);
+                LOGGER.trace("deltaMap {} contains key {}", deltaMap, key);
                 return invocationContext.proceed();
             }
         }
         for (String key : startsWithKeys) {
             if (!ConfigurationHelper.getFilteredPropertyMap(deltaMap, key, false).isEmpty()) {
-                log.trace("deltaMap {} contains startsWithKeys {}", deltaMap, key);
+                LOGGER.trace("deltaMap {} contains startsWithKeys {}", deltaMap, key);
                 return invocationContext.proceed();
             }
         }

@@ -62,11 +62,11 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
         Token requestToken(
-                @FormParam("grant_type") String grant_type,
+                @FormParam("grant_type") String grantType,
                 @FormParam("code") String code,
                 @FormParam("state") String state,
-                @FormParam("code_verifier") String code_verifier,
-                @FormParam("redirect_uri") String redirect_uri);
+                @FormParam("code_verifier") String codeVerifier,
+                @FormParam("redirect_uri") String redirectUri);
     }
 
     public interface RequestRefreshToken extends Closeable {
@@ -74,8 +74,8 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
         Token requestToken(
-                @FormParam("grant_type") String grant_type,
-                @FormParam("refresh_token") String refresh_token);
+                @FormParam("grant_type") String grantType,
+                @FormParam("refresh_token") String refreshToken);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
 
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        Token requestToken(@FormParam("grant_type") String grant_type);
+        Token requestToken(@FormParam("grant_type") String grantType);
     }
 
     /**
