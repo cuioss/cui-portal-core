@@ -1,6 +1,5 @@
 package de.cuioss.portal.configuration.connections.exception;
 
-import de.cuioss.portal.configuration.connections.SystemConnection;
 import lombok.Getter;
 
 /**
@@ -42,8 +41,7 @@ public enum ErrorReason {
     INVALID_PROXY("The proxy is invalid"),
 
     /**
-     * {@link SystemConnection#openConnection()} usually calls
-     * {@link SystemConnection#checkConnection()} before actually trying to
+     * before actually trying to
      * establish a connection. If this fails without {@link ConnectionException}
      * this {@link ErrorReason} will be chosen.
      */
