@@ -1,6 +1,9 @@
 package de.cuioss.portal.authentication.model;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -41,6 +44,20 @@ class BaseAuthenticatedUserInfoTest extends ValueObjectTest<BaseAuthenticatedUse
                 .build();
 
         assertEquals(2, info.getContextMap().size());
+    }
+
+    @Test
+    void shouldHandleRoles() {
+        var someRole = letterStrings(2, 5).next();
+        var info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next())
+                .displayName(keys.next())
+                .identifier(keys.next()).build();
+        assertFalse(info.isUserInRole(someRole));
+
+        info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next())
+                .displayName(keys.next()).roles(immutableList(someRole))
+                .identifier(keys.next()).build();
+        assertTrue(info.isUserInRole(someRole));
     }
 
 }

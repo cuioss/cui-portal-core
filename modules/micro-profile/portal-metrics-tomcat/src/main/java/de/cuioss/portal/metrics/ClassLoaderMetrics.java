@@ -58,7 +58,7 @@ final class ClassLoaderMetrics {
                             .withOpenMetricsKeyOverride("jvm_classes_loaded_classes")
                             .skipsScopeInOpenMetricsExportCompletely(true)
                             .build(),
-                    (Gauge) classLoadingBean::getLoadedClassCount);
+                    (Gauge<?>) classLoadingBean::getLoadedClassCount);
 
             registry.register(
                     new ExtendedMetadataBuilder()
@@ -70,7 +70,7 @@ final class ClassLoaderMetrics {
                             .withOpenMetricsKeyOverride("jvm_classes_loaded_classes_total")
                             .skipsScopeInOpenMetricsExportCompletely(true)
                             .build(),
-                    (Gauge) classLoadingBean::getTotalLoadedClassCount);
+                    (Gauge<?>) classLoadingBean::getTotalLoadedClassCount);
 
             registry.register(
                     new ExtendedMetadataBuilder()
@@ -99,7 +99,7 @@ final class ClassLoaderMetrics {
                             .withDescription("Displays the number of classes that are currently loaded in the " +
                                     "Java Virtual Machine")
                             .build(),
-                    (Gauge) classLoadingBean::getLoadedClassCount);
+                    (Gauge<?>) classLoadingBean::getLoadedClassCount);
 
             registry.register(
                     new MetadataBuilder()

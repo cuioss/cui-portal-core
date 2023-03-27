@@ -9,7 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 /**
@@ -20,19 +19,7 @@ import javax.inject.Qualifier;
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({TYPE, METHOD, FIELD, PARAMETER})
+@Target({ TYPE, METHOD, FIELD, PARAMETER })
 public @interface PortalConfigurationSource {
 
-    /**
-     * The {@link AnnotationLiteral} of this annotation
-     */
-    final class Literal extends AnnotationLiteral<PortalConfigurationSource>
-        implements PortalConfigurationSource {
-        private static final long serialVersionUID = 1L;
-
-        public static final PortalConfigurationSource INSTANCE = new Literal();
-
-        private Literal() {
-        }
-    }
 }

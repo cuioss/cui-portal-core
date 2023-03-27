@@ -89,5 +89,9 @@
             <groupId>de.cuioss.test</groupId>
             <artifactId>cui-test-value-objects</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.cuioss.test</groupId>
+            <artifactId>cui-jsf-test-basic</artifactId>
+        </dependency>
     </dependencies>
 </project>

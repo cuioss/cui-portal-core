@@ -14,7 +14,6 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.http.ssl.SSLContexts;
 
-import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
 import de.cuioss.portal.configuration.connections.exception.ErrorReason;
@@ -141,7 +140,8 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Enable or disable distributed tracing for this connection.
-     * Only effective if {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED} is enabled.
+     * Only effective if
+     * {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED} is enabled.
      * Defaults to <code>true</code>.
      */
     @Getter

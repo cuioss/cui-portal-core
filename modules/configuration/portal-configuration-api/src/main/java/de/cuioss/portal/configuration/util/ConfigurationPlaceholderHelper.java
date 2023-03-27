@@ -5,7 +5,6 @@ import static java.util.regex.Matcher.quoteReplacement;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 

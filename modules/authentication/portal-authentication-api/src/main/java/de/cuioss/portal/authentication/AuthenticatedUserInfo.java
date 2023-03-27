@@ -12,12 +12,16 @@ import java.util.Map;
  *
  * @author Stephan Babkin
  */
-@SuppressWarnings("squid:S1214") // We allow constants in interfaces, if they belong together (coherence).
+@SuppressWarnings("squid:S1214") // We allow constants in interfaces, if they belong together
+                                 // (coherence).
 public interface AuthenticatedUserInfo extends Serializable {
 
     /**
      * Bean name for looking up instances.
+     * 
+     * @deprecated owolff: Should solely be used with types
      */
+    @Deprecated(forRemoval = true)
     String BEAN_NAME = "authenticatedUserInfoBean";
 
     /**
