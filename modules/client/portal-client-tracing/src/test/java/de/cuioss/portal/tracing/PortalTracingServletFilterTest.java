@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import brave.Tracing;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 
 @EnableAutoWeld
 @AddBeanClasses(PortalTracing.class)

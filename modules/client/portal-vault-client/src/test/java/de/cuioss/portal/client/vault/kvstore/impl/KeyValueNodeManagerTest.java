@@ -15,7 +15,7 @@ import de.cuioss.portal.client.vault.VaultEndpoint;
 import de.cuioss.portal.client.vault.kvstore.KVEntry;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.VaultClientConfigKeys;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 
 @EnableVaultTest

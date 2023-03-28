@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import lombok.Getter;

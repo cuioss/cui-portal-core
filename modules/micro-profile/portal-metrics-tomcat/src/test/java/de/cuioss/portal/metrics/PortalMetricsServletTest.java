@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import io.smallrye.metrics.MetricRegistries;

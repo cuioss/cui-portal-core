@@ -15,7 +15,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "key1:value1")

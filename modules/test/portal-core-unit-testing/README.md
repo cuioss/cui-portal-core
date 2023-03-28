@@ -59,7 +59,7 @@ class ConfigurationEnabledTest {
         configuration.fireEvent("someKey", "someValue");
     }
 ```
-Caution: de.cuioss.portal.core.test.mocks.PortalTestConfiguration is the successor of com.icw.ehf.cui.portal.configuration.PortalConfigurationMock that will be deprecated soon.
+Caution: de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration is the successor of com.icw.ehf.cui.portal.configuration.PortalConfigurationMock that will be deprecated soon.
 
 ### Testing in a CDI / Portal / JSF Context
 The quickest variant is using @EnablePortalUiEnvironment. This is the typical one-stop annotation for testing UI-related modules in the portal-context.

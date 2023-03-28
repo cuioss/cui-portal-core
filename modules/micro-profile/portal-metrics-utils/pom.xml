@@ -18,5 +18,9 @@
             <groupId>de.cuioss.portal.authentication</groupId>
             <artifactId>portal-authentication-mock</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
     </dependencies>
 </project>

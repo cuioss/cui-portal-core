@@ -473,7 +473,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @SuppressWarnings("rawtypes")
     @Override
     public SortedMap<MetricID, Gauge> getGauges(final MetricFilter filter) {
-        throw new UnsupportedOperationException();
+        return Collections.emptySortedMap();
     }
 
     @Override

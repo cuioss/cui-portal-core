@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 
 /**
  * There are several use-cases to test for the test config source.

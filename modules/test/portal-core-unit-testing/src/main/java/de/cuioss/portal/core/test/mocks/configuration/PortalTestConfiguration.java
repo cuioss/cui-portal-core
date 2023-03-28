@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.test.mocks;
+package de.cuioss.portal.core.test.mocks.configuration;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 import static de.cuioss.tools.base.Preconditions.checkArgument;

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import de.cuioss.portal.client.vault.EnableVaultTest;
 import de.cuioss.portal.client.vault.EnabledIfVaultIsReachable;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.uimodel.service.ServiceState;

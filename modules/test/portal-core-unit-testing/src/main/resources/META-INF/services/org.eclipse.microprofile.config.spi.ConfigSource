@@ -1,2 +1,2 @@
-de.cuioss.portal.core.test.mocks.PortalTestConfiguration
+de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration
 de.cuioss.portal.core.test.tests.configuration.ApplicationContextNameConfigSource

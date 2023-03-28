@@ -12,7 +12,7 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
 import de.cuioss.portal.configuration.OAuthConfigKeys;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;

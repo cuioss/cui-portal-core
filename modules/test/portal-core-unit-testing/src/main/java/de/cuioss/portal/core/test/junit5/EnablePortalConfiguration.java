@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
 import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
-import de.cuioss.portal.core.test.mocks.PortalTestConfiguration;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import io.smallrye.config.inject.ConfigProducer;
 
 /**
