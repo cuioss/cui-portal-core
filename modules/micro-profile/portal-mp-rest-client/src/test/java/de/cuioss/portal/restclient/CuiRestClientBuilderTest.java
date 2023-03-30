@@ -2,6 +2,9 @@ package de.cuioss.portal.restclient;
 
 import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
 import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_REPORTER_URL;
+import static de.cuioss.test.generator.Generators.enumValues;
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 import static okhttp3.tls.internal.TlsUtil.localhost;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -16,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +44,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
@@ -63,6 +69,8 @@ import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.portal.tracing.PortalTracing;
 import de.cuioss.test.generator.Generators;
+import de.cuioss.test.generator.TypedGenerator;
+import de.cuioss.test.generator.impl.URLGenerator;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -250,6 +258,17 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     }
 
     @Test
+    void shouldLogHappyCase() {
+        service = new CuiRestClientBuilder(LOG)
+                .url(mockWebServer.url("").toString())
+                .build(TestResource.class);
+        var response = service.getResponse();
+        assertNotNull(response);
+        CuiRestClientBuilder.debugResponse(response, LOG);
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG, "-- Client response filter --");
+    }
+
+    @Test
     void shouldDeactivateLogTracing() {
         service = new CuiRestClientBuilder(LOG)
                 .traceLogEnabled(false)
@@ -317,8 +336,12 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         mockWebServer.setDispatcher(getDispatcher());
 
         service = new CuiRestClientBuilder(LOG)
-                .sslContext(handshakeCertificates.sslContext())
-                .url(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
+                .connectionMetadata(ConnectionMetadata.builder()
+                        .serviceUrl(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
+                        .tracingEnabled(false).authenticationType(AuthenticationType.BASIC)
+                        .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
+                        .sslContext(handshakeCertificates.sslContext())
+                        .build())
                 .build(TestResource.class);
 
         assertThrows(ProcessingException.class, () -> service.test());
@@ -379,6 +402,19 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         assertDoesNotThrow(() -> service.test());
         final var headers = takeRequest().getHeaders();
         assertEquals("BEARER abc", headers.get("Authentication"));
+    }
+
+    @Test
+    void shouldHandleAllAttributes() {
+        var builder = new CuiRestClientBuilder(LOG)
+                .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
+                        .authenticationType(AuthenticationType.NONE).connectionTimeout(4)
+                        .proxyHost("host").proxyPort(8080).disableHostNameVerification(true)
+                        .contextMap(immutableMap("key", "value"))
+                        .connectionTimeoutUnit(TimeUnit.MICROSECONDS).readTimeout(7)
+                        .build());
+        assertDoesNotThrow(() -> builder.build(TestResource.class));
+
     }
 
     @Test
@@ -443,6 +479,21 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         // RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json
         // and type interface java.util.List
         assertThrows(ProcessingException.class, () -> service.collection());
+    }
+
+    @Test
+    void builderShouldHandleAdditionalAttributes() throws URISyntaxException {
+        CuiRestClientBuilder builder = new CuiRestClientBuilder(LOG);
+        TypedGenerator<URL> urls = new URLGenerator();
+        builder.url(urls.next());
+        builder.uri(urls.next().toURI());
+        String name = letterStrings().next();
+        assertThrows(IllegalArgumentException.class, () -> builder.url(name));
+        builder.bearerAuthToken(name);
+        builder.queryParamStyle(enumValues(QueryParamStyle.class).next());
+        builder.followRedirects(true);
+        assertNotNull(builder.getConfiguration());
+        assertDoesNotThrow(() -> builder.build(TestResource.class));
     }
 
     @Test

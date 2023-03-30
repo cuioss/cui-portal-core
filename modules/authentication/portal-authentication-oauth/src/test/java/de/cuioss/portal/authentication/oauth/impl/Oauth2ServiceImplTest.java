@@ -226,4 +226,13 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertNull(user.getToken().getAccess_token());
     }
 
+    @Test
+    void shouldRetrieveAuthenticatedUser() throws InterruptedException {
+        var user = setupAuthorizedUser();
+        var result = underTest.retrieveAuthenticatedUser("scoe", user.getToken(), 0);
+        assertNotNull(result);
+        assertTrue(user.isAuthenticated());
+
+    }
+
 }

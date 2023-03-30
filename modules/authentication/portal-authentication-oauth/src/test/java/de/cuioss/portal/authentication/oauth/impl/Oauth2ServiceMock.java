@@ -9,11 +9,26 @@ import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.Oauth2Service;
 import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.tools.net.UrlParameter;
+import lombok.Getter;
+import lombok.Setter;
 
 @SuppressWarnings("javadoc")
 public class Oauth2ServiceMock implements Oauth2Service, Serializable {
 
     private static final long serialVersionUID = -2635417375165112609L;
+
+    @Getter
+    @Setter
+    private String clientToken;
+
+    @Getter
+    @Setter
+    private String refreshToken;
+
+    public void reset() {
+        clientToken = null;
+        refreshToken = null;
+    }
 
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,
@@ -41,11 +56,11 @@ public class Oauth2ServiceMock implements Oauth2Service, Serializable {
 
     @Override
     public String retrieveClientToken(String scopes) {
-        return null;
+        return clientToken;
     }
 
     @Override
     public String refreshToken(OauthAuthenticatedUserInfo currentUser) {
-        return null;
+        return refreshToken;
     }
 }

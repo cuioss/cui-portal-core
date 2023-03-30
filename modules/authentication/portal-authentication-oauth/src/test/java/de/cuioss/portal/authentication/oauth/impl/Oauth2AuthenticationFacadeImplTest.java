@@ -1,5 +1,6 @@
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +35,6 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.LoginPagePath;
-import de.cuioss.portal.authentication.oauth.Oauth2Service;
 import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
 import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
@@ -81,7 +81,7 @@ class Oauth2AuthenticationFacadeImplTest
     private MockHttpServletRequest servletRequest;
 
     @Produces
-    private final Oauth2Service service = new Oauth2ServiceMock();
+    private final Oauth2ServiceMock service = new Oauth2ServiceMock();
 
     @Setter
     private MockWebServer mockWebServer;
@@ -94,6 +94,7 @@ class Oauth2AuthenticationFacadeImplTest
         servletRequest = new CuiMockHttpServletRequest();
         servletRequest.setPathInfo("some.url");
         dispatcher.configure(configuration, mockWebServer);
+        service.reset();
     }
 
     @Test
@@ -316,5 +317,36 @@ class Oauth2AuthenticationFacadeImplTest
         var logoutUrl = assertDoesNotThrow(() -> underTest.retrieveClientLogoutUrl(null));
 
         dispatcher.assertLogoutURL(logoutUrl);
+    }
+
+    @Test
+    void shouldResolveLoginURL() {
+        assertNotNull(underTest.getLoginUrl());
+    }
+
+    @Test
+    void shouldRefreshUserInfo() {
+        underTest.sendRedirect("scope");
+        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        assertTrue(result.isAuthenticated());
+        assertNotNull(underTest.refreshUserinfo());
+    }
+
+    @Test
+    void shouldRetrieveToken() {
+        underTest.sendRedirect("scope");
+        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        assertTrue(result.isAuthenticated());
+        assertNotNull(underTest.retrieveToken(result, "scope"));
+    }
+
+    @Test
+    void shouldRetrieveClientToken() {
+        var clientToken = letterStrings(10, 12).next();
+        service.setClientToken(clientToken);
+        underTest.sendRedirect("scope");
+        var result = underTest.testLogin(calculateUrlParameter(), "scope");
+        assertTrue(result.isAuthenticated());
+        assertEquals(clientToken, underTest.retrieveClientToken("scope"));
     }
 }

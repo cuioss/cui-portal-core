@@ -74,6 +74,12 @@ public class CuiRestClientBuilder {
         // register(DefaultResponseExceptionMapper.class, Integer.MIN_VALUE - 1);
     }
 
+    /**
+     * Debugs a given Response to the given logger
+     * 
+     * @param response must not be null
+     * @param log must not be null
+     */
     public static void debugResponse(final Response response, final CuiLogger log) {
         log.debug("-- Client response filter --\n" +
                 "Status: {}\n" +
@@ -102,46 +108,6 @@ public class CuiRestClientBuilder {
                 response.getMediaType());
     }
 
-    public CuiRestClientBuilder url(final String url) {
-        try {
-            mpRestClientBuilder.baseUrl(new URL(url));
-            this.url = url;
-        } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException("The URL '" + url + "' could not be parsed!", e);
-        }
-        return this;
-    }
-
-    public CuiRestClientBuilder url(final URL url) {
-        mpRestClientBuilder.baseUrl(url);
-        return this;
-    }
-
-    public CuiRestClientBuilder uri(final URI uri) {
-        mpRestClientBuilder.baseUri(uri);
-        return this;
-    }
-
-    public CuiRestClientBuilder basicAuth(final String username, final String password) {
-        mpRestClientBuilder.register(new BasicAuthenticationFilter(username, password));
-        return this;
-    }
-
-    public CuiRestClientBuilder bearerAuthToken(final String token) {
-        mpRestClientBuilder.register(new BearerTokenAuthFilter(token));
-        return this;
-    }
-
-    public CuiRestClientBuilder registerExceptionMapper(final ResponseExceptionMapper<?> mapper) {
-        mpRestClientBuilder.register(mapper);
-        return this;
-    }
-
-    public CuiRestClientBuilder sslContext(final SSLContext sslContext) {
-        mpRestClientBuilder.sslContext(sslContext);
-        return this;
-    }
-
     /**
      * Sets various properties based on the given <code>connectionMeta</code>.
      * <ul>
@@ -165,7 +131,7 @@ public class CuiRestClientBuilder {
         url(connectionMeta.getServiceUrl());
         tracingEnabled(connectionMeta.isTracingEnabled());
 
-        mpRestClientBuilder.sslContext(connectionMeta.resolveSSLContext());
+        sslContext(connectionMeta.resolveSSLContext());
         switch (connectionMeta.getAuthenticationType()) {
             case BASIC:
                 basicAuth(connectionMeta.getLoginCredentials().getUsername(),
@@ -182,23 +148,23 @@ public class CuiRestClientBuilder {
             mpRestClientBuilder.property(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
         }
         if (connectionMeta.isDisableHostNameVerification()) {
-            mpRestClientBuilder.hostnameVerifier((hostname, sslSession) -> true); // NOSONAR:
-                                                                                  // owolff: This is
-                                                                                  // documented to
-                                                                                  // be only used in
-                                                                                  // context of
-                                                                                  // testing
+            hostnameVerifier((hostname, sslSession) -> true); // NOSONAR:
+                                                              // owolff: This is
+                                                              // documented to
+                                                              // be only used in
+                                                              // context of
+                                                              // testing
         }
         if (connectionMeta.getConnectionTimeout() > 0) {
-            mpRestClientBuilder.connectTimeout(connectionMeta.getConnectionTimeout(),
+            connectTimeout(connectionMeta.getConnectionTimeout(),
                     connectionMeta.getConnectionTimeoutUnit());
         }
         if (connectionMeta.getReadTimeout() > 0) {
-            mpRestClientBuilder.readTimeout(connectionMeta.getReadTimeout(), connectionMeta.getReadTimeoutUnit());
+            readTimeout(connectionMeta.getReadTimeout(), connectionMeta.getReadTimeoutUnit());
         }
         if (!MoreStrings.isBlank(connectionMeta.getProxyHost()) && null != connectionMeta.getProxyPort()
                 && connectionMeta.getProxyPort() > 0) {
-            mpRestClientBuilder.proxyAddress(connectionMeta.getProxyHost(), connectionMeta.getProxyPort());
+            proxyAddress(connectionMeta.getProxyHost(), connectionMeta.getProxyPort());
         }
         return this;
     }
@@ -306,36 +272,168 @@ public class CuiRestClientBuilder {
         return this;
     }
 
+    /**
+     * Adds the target url
+     * 
+     * @param url to be passed to he contained builder
+     * @return this builder
+     */
+    public CuiRestClientBuilder url(final String url) {
+        try {
+            mpRestClientBuilder.baseUrl(new URL(url));
+            this.url = url;
+        } catch (final MalformedURLException e) {
+            throw new IllegalArgumentException("The URL '" + url + "' could not be parsed!", e);
+        }
+        return this;
+    }
+
+    /**
+     * Adds the target url
+     * 
+     * @param url to be passed to he contained builder
+     * @return this builder
+     */
+    public CuiRestClientBuilder url(final URL url) {
+        mpRestClientBuilder.baseUrl(url);
+        return this;
+    }
+
+    /**
+     * Adds the target uri
+     * 
+     * @param uri to be passed to he contained builder
+     * @return this builder
+     */
+    public CuiRestClientBuilder uri(final URI uri) {
+        mpRestClientBuilder.baseUri(uri);
+        return this;
+    }
+
+    /**
+     * Adds the credentials for basic-auth
+     * 
+     * @param username to be passed to he contained builder
+     * @param password to be passed to he contained builder
+     * 
+     * @return this builder
+     */
+    public CuiRestClientBuilder basicAuth(final String username, final String password) {
+        mpRestClientBuilder.register(new BasicAuthenticationFilter(username, password));
+        return this;
+    }
+
+    /**
+     * Adds the the credentials for bearer-auth
+     * 
+     * @param token to be passed to he contained builder
+     * 
+     * @return this builder
+     */
+    public CuiRestClientBuilder bearerAuthToken(final String token) {
+        mpRestClientBuilder.register(new BearerTokenAuthFilter(token));
+        return this;
+    }
+
+    /**
+     * Adds the ResponseExceptionMapper
+     * 
+     * @param mapper to be passed to he contained builder
+     * 
+     * @return this builder
+     */
+    public CuiRestClientBuilder registerExceptionMapper(final ResponseExceptionMapper<?> mapper) {
+        mpRestClientBuilder.register(mapper);
+        return this;
+    }
+
+    /**
+     * Adds the sslContext
+     * 
+     * @param sslContext to be passed to he contained builder
+     * 
+     * @return this builder
+     */
+    public CuiRestClientBuilder sslContext(final SSLContext sslContext) {
+        mpRestClientBuilder.sslContext(sslContext);
+        return this;
+    }
+
+    /**
+     * Adds the connection timeout
+     * 
+     * @param amount to be passed to he contained builder
+     * @param timeUnit to be passed to he contained builder
+     * @return this builder
+     */
     public CuiRestClientBuilder connectTimeout(long amount, TimeUnit timeUnit) {
         mpRestClientBuilder.connectTimeout(amount, timeUnit);
         return this;
     }
 
+    /**
+     * Adds the read timeout
+     * 
+     * @param amount to be passed to he contained builder
+     * @param timeUnit to be passed to he contained builder
+     * @return this builder
+     */
     public CuiRestClientBuilder readTimeout(long amount, TimeUnit timeUnit) {
         mpRestClientBuilder.readTimeout(amount, timeUnit);
         return this;
     }
 
+    /**
+     * Adds the QueryParamStyle
+     * 
+     * @param queryParamStyle to be passed to he contained builder
+     * @return this builder
+     */
     public CuiRestClientBuilder queryParamStyle(QueryParamStyle queryParamStyle) {
         mpRestClientBuilder.queryParamStyle(queryParamStyle);
         return this;
     }
 
+    /**
+     * Adds the proxy address
+     * 
+     * @param host to be passed to he contained builder
+     * @param port to be passed to he contained builder
+     * 
+     * @return this builder
+     */
     public CuiRestClientBuilder proxyAddress(String host, int port) {
         mpRestClientBuilder.proxyAddress(host, port);
         return this;
     }
 
+    /**
+     * Adds the followRedirects
+     * 
+     * @param followRedirects to be passed to he contained builder
+     * 
+     * @return this builder
+     */
     public CuiRestClientBuilder followRedirects(boolean followRedirects) {
         mpRestClientBuilder.followRedirects(followRedirects);
         return this;
     }
 
+    /**
+     * Adds the hostnameVerifier
+     * 
+     * @param hostnameVerifier to be passed to he contained builder
+     * 
+     * @return this builder
+     */
     public CuiRestClientBuilder hostnameVerifier(HostnameVerifier hostnameVerifier) {
         mpRestClientBuilder.hostnameVerifier(hostnameVerifier);
         return this;
     }
 
+    /**
+     * @return the current configuration of the contained builder
+     */
     public Configuration getConfiguration() {
         return mpRestClientBuilder.getConfiguration();
     }

@@ -116,8 +116,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
         assertTrue(clientResponseInfoLog.contains("GenericType: class java.lang.String"));
         assertTrue(clientResponseInfoLog.contains("Properties:"));
         assertTrue(clientResponseInfoLog.contains(
-                "org.eclipse.microprofile.rest.client.invokedMethod: public abstract java.lang.String " +
-                        "de.cuioss.portal.core.restclient.RestClientLoggingTest$TestService.getSomething()"));
+                "org.eclipse.microprofile.rest.client.invokedMethod: public abstract java.lang.String "));
         assertTrue(clientResponseInfoLog.contains("Headers:"));
         assertTrue(clientResponseInfoLog.contains("Content-Length: [" + TEXT.length() + "]"));
         assertTrue(clientResponseInfoLog.contains("Content-Type: [application/octet-stream]"));

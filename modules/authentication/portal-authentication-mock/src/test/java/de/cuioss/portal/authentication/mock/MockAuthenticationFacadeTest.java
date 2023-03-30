@@ -1,5 +1,6 @@
 package de.cuioss.portal.authentication.mock;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,6 +19,8 @@ import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import de.cuioss.uimodel.application.LoginCredentials;
+import de.cuioss.uimodel.result.ResultState;
 import lombok.Getter;
 
 @EnableAutoWeld
@@ -79,5 +82,27 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
         final var userInfo = underTest
                 .retrieveCurrentAuthenticationContext(servletRequest);
         assertEquals(0, userInfo.getRoles().size());
+    }
+
+    @Test
+    void shouldProvideAvailableUserStores() {
+        assertNotNull(underTest.getAvailableUserStores());
+        assertEquals(2, underTest.getAvailableUserStores().size());
+    }
+
+    @Test
+    void shouldLoginWithUsernameAndPassword() {
+        var name = letterStrings(3, 8).next();
+        var password = letterStrings(3, 8).next();
+        var result =
+            underTest.login(servletRequest, LoginCredentials.builder().username(name).password(password).build());
+        assertEquals(ResultState.ERROR, result.getState());
+        // Incomplete Credentials
+        result =
+            underTest.login(servletRequest, LoginCredentials.builder().username(name).build());
+        assertEquals(ResultState.ERROR, result.getState());
+        result =
+            underTest.login(servletRequest, LoginCredentials.builder().username(name).password(name).build());
+        assertEquals(ResultState.VALID, result.getState());
     }
 }
