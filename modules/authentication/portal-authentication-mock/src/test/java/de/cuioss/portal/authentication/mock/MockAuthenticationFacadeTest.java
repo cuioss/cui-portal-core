@@ -32,7 +32,6 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
 
     @BeforeEach
     void beforeEach() {
-        configuration.initializeConfigurationSystem();
         servletRequest = new CuiMockHttpServletRequest();
         servletRequest.setPathInfo("some.url");
     }

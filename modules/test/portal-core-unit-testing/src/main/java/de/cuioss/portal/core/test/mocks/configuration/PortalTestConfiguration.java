@@ -3,12 +3,9 @@ package de.cuioss.portal.core.test.mocks.configuration;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static java.util.Collections.synchronizedMap;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Priority;
@@ -136,22 +133,6 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
      */
     public void fireEvent(final String key1, final String value1, final String key2, final String value2) {
         fireEvent(immutableMap(key1, value1, key2, value2));
-    }
-
-    /**
-     * Clears the local storage and delta map.
-     * Initializes the configuration system explicitly. This is usually done by a servlet-event
-     * but must be explicitly done if used in unit-tests
-     */
-    public void initializeConfigurationSystem() {
-        clear();
-
-        final List<ApplicationInitializer> initializers =
-            mutableList(applicationInitializers);
-        Collections.sort(initializers);
-        for (final ApplicationInitializer applicationInitializer : initializers) {
-            applicationInitializer.initialize();
-        }
     }
 
     /**

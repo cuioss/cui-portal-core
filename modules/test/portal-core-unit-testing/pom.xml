@@ -79,5 +79,10 @@
             <artifactId>weld-se-core</artifactId>
             <scope>compile</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.smallrye</groupId>-->
+<!--            <artifactId>smallrye-metrics</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

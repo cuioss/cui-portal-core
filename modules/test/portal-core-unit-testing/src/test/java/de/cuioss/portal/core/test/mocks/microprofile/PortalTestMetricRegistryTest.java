@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
@@ -33,10 +34,22 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
     private static final TypedGenerator<Metadata> metadata = new MetricMetadataGenerator();
     private static final TypedGenerator<MetricID> ids = new MetricIDGenerator();
     private static final TypedGenerator<String> names = letterStrings(1, 5);
+    private static final TypedGenerator<Metric> metrics = new MetricGenerator();
 
     @Inject
     @Getter
     private PortalTestMetricRegistry underTest;
+
+    @Test
+    void shouldRegisterMetric() {
+        var name = names.next();
+        underTest.register(metadata.next(), metrics.next());
+        underTest.register(name, metrics.next());
+        underTest.register(metadata.next(), metrics.next(), tags.next());
+        assertNotNull(underTest.getMetric(name));
+        assertNotNull(underTest.getMetricID(name));
+        assertTrue(underTest.getTags(name).isPresent());
+    }
 
     @Test
     void shouldHandleMissingEntries() {
