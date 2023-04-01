@@ -14,7 +14,7 @@
     <name>Portal Modules for micro-profile</name>
     <modules>
         <module>portal-health-tomcat</module>
-        <module>portal-metrics-utils</module>
+        <module>portal-metrics-api</module>
         <module>portal-metrics-tomcat</module>
         <module>portal-mp-rest-client</module>
     </modules>

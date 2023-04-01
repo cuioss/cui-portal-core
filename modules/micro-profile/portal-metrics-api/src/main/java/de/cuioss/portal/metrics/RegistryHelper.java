@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.metrics;
+package de.cuioss.portal.metrics;
 
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;

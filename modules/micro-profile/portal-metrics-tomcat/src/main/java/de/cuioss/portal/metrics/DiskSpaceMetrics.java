@@ -10,7 +10,6 @@ import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Tag;
 
-import de.cuioss.portal.core.metrics.RegistryHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import io.smallrye.metrics.ExtendedMetadataBuilder;
 import lombok.EqualsAndHashCode;

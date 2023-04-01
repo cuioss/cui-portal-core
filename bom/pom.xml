@@ -77,7 +77,7 @@
             </dependency>
             <dependency>
                 <groupId>de.cuioss.portal.mirco-profile</groupId>
-                <artifactId>portal-metrics-utils</artifactId>
+                <artifactId>portal-metrics-api</artifactId>
                 <version>${project.version}</version>
                 <scope>compile</scope>
             </dependency>

@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.metrics;
+package de.cuioss.portal.metrics;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

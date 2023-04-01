@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.metrics;
+package de.cuioss.portal.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,6 +12,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.cuioss.portal.configuration.cache.CacheConfig;
+import de.cuioss.portal.metrics.CaffeineCacheMetrics;
 
 class CaffeineCacheMetricsTest {
 

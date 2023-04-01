@@ -13,7 +13,6 @@ import java.util.List;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 
-import de.cuioss.portal.core.metrics.RegistryHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import io.smallrye.metrics.ExtendedMetadataBuilder;
 import lombok.experimental.UtilityClass;

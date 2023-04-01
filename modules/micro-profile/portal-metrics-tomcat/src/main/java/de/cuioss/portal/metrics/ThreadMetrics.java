@@ -1,6 +1,6 @@
 package de.cuioss.portal.metrics;
 
-import static de.cuioss.portal.core.metrics.RegistryHelper.THREADS_SUFFIX;
+import static de.cuioss.portal.metrics.RegistryHelper.THREADS_SUFFIX;
 import static java.util.Objects.requireNonNull;
 
 import java.lang.management.ManagementFactory;

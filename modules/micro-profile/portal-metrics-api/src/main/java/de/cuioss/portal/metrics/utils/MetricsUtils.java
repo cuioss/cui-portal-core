@@ -17,6 +17,10 @@ import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Provides some convenience methods for metric related data
+ *
+ */
 @UtilityClass
 public class MetricsUtils {
 
@@ -30,32 +34,32 @@ public class MetricsUtils {
                 ? createHttpStatusCodeTag(((WebApplicationException) cause).getResponse())
                 : null;
 
-    private static String metrics_app_name;
-    private static Tag metrics_app_tag;
+    private static String metricsAppName;
+    private static Tag metricsAppTag;
 
     /**
      * @return this applications name for the metrics Tag {@code _app}.
      */
     public static String getAppName() {
-        if (null == metrics_app_name) {
-            metrics_app_name = resolveConfigProperty(MetricsConfigKeys.MP_METRICS_APP_NAME)
+        if (null == metricsAppName) {
+            metricsAppName = resolveConfigProperty(MetricsConfigKeys.MP_METRICS_APP_NAME)
                     .orElseGet(() -> resolveConfigProperty(MetricsConfigKeys.PORTAL_METRICS_APP_NAME)
                             .orElseGet(() -> resolveConfigProperty(PortalConfigurationKeys.APPLICATION_CONTEXT_NAME)
                                     .orElseThrow(() -> new NoSuchElementException(
                                             "Invalid config. Missing 'mp.metrics.appName' or 'portal.metrics.appName'"))));
-            LOGGER.info("Portal-019: Metrics App-Name: {}", metrics_app_name);
+            LOGGER.info("Portal-019: Metrics App-Name: {}", metricsAppName);
         }
-        return metrics_app_name;
+        return metricsAppName;
     }
 
     /**
      * @return Tag with key {@code _app} and value {@link #getAppName()}.
      */
     public static Tag getAppTag() {
-        if (null == metrics_app_tag) {
-            metrics_app_tag = new Tag("_app", getAppName());
+        if (null == metricsAppTag) {
+            metricsAppTag = new Tag("_app", getAppName());
         }
-        return metrics_app_tag;
+        return metricsAppTag;
     }
 
     /**
@@ -120,6 +124,10 @@ public class MetricsUtils {
         return idBuilder;
     }
 
+    /**
+     * @param response providing the Status Code
+     * @return the resulting {@link Tag}
+     */
     public static Tag createHttpStatusCodeTag(final javax.ws.rs.core.Response response) {
         if (null != response) {
             return createHttpStatusCodeTag(response.getStatus());
@@ -127,6 +135,10 @@ public class MetricsUtils {
         return null;
     }
 
+    /**
+     * @param statusCode to create the {@link Tag}
+     * @return the resulting {@link Tag}
+     */
     public static Tag createHttpStatusCodeTag(final int statusCode) {
         return new Tag("httpStatusCode", String.valueOf(statusCode));
     }

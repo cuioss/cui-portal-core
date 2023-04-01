@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.metrics;
+package de.cuioss.portal.metrics;
 
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
 import static java.util.Objects.requireNonNull;

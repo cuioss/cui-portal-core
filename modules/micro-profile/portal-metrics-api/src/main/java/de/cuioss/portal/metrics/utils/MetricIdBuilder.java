@@ -14,7 +14,7 @@ import de.cuioss.tools.string.MoreStrings;
 import lombok.Getter;
 
 /**
- * Builder class for MicroProfile {@link MetricID}.
+ * Builder for MicroProfile {@link MetricID}.
  */
 @Getter
 public class MetricIdBuilder {
@@ -27,6 +27,9 @@ public class MetricIdBuilder {
 
     private final List<Function<Throwable, Tag>> exceptionTagMappers;
 
+    /**
+     * Default Constructor
+     */
     public MetricIdBuilder() {
         tags = new ArrayList<>();
         exceptionTagMappers = new ArrayList<>();
@@ -48,7 +51,7 @@ public class MetricIdBuilder {
      * @return this builder
      */
     public MetricIdBuilder exception(final Throwable cause) {
-        this.exception = cause;
+        exception = cause;
         return this;
     }
 
@@ -58,14 +61,14 @@ public class MetricIdBuilder {
      * @return this builder
      */
     public MetricIdBuilder exceptionTagMapper(final Function<Throwable, Tag> mapper) {
-        this.exceptionTagMappers.add(mapper);
+        exceptionTagMappers.add(mapper);
         return this;
     }
 
     /**
      * @param tags to be added to the metrics tags.
      *
-     * @return
+     * @return the {@link MetricIdBuilder} with the given Tags
      */
     public MetricIdBuilder tags(Tag[] tags) {
         if (null != tags) {
@@ -81,10 +84,10 @@ public class MetricIdBuilder {
     /**
      * @param tag to be added to the metrics tags.
      *
-     * @return
+     * @return the {@link MetricIdBuilder} with the given Tag
      */
     public MetricIdBuilder tag(Tag tag) {
-        this.tags.add(deepCopy(tag));
+        tags.add(deepCopy(tag));
         return this;
     }
 
@@ -92,13 +95,16 @@ public class MetricIdBuilder {
         return new Tag(tag.getTagName(), tag.getTagValue());
     }
 
+    /**
+     * @return the create {@link MetricID}
+     */
     public MetricID build() {
         checkArgument(!MoreStrings.isEmpty(name), "name must not be null nor empty");
 
         if (null != exception) {
             for (Function<Throwable, Tag> exceptionTagMapper : exceptionTagMappers) {
                 Optional.ofNullable(exceptionTagMapper.apply(exception))
-                    .ifPresent(tags::add);
+                        .ifPresent(tags::add);
             }
         }
 
