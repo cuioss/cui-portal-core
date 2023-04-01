@@ -28,12 +28,12 @@ class PortalConfigurationLoggerTest {
     private Instance<ApplicationInitializer> applicationInitializers;
 
     @BeforeEach
-    public void beforeTest() {
+    void beforeTest() {
         applicationInitializers.forEach(ApplicationInitializer::initialize);
     }
 
     @Test
-    public void shouldIgnoreOnInfoLevel() {
+    void shouldIgnoreOnInfoLevel() {
         TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
         underTest.initialize();
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.WARN, PortalConfigurationLogger.class);

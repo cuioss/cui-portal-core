@@ -25,7 +25,7 @@ class PortalConfigurationChangeInvalidFilterInterceptorTest {
     private Event<String> event;
 
     @Test
-    public void shouldFailOnEvent() {
+    void shouldFailOnEvent() {
         assertTrue(invalidConfiguration.isEmpty());
         assertThrows(IllegalStateException.class, () -> {
             event.fire("boom");

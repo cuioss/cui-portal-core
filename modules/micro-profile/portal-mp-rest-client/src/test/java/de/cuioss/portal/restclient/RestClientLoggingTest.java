@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Closeable;
+import java.util.List;
 import java.util.logging.LogRecord;
 
 import javax.servlet.http.HttpServletResponse;
@@ -127,6 +128,14 @@ class RestClientLoggingTest implements MockWebServerHolder {
         assertTrue(allMsgs.stream().anyMatch(msg -> msg.getMessage().contains("[First ClientResponseFilter]")));
         assertTrue(allMsgs.stream().anyMatch(msg -> msg.getMessage().contains("[Last ClientResponseFilter]")));
 
+        assertClientResponseFIlter(allMsgs);
+
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.TRACE, "-- LogClientRequestFilter42 --");
+        assertLogMessageBeforeOther(LogClientRequestFilter42.class, LogClientRequestFilter.class,
+                "LogClientRequestFilter42 runs before LogClientRequestFilter because it has a lower prio");
+    }
+
+    private void assertClientResponseFIlter(List<LogRecord> allMsgs) throws AssertionError {
         final var lastClientResponseFilter = allMsgs.stream()
                 .map(LogRecord::getMessage)
                 .filter(msg -> msg.contains("[Last ClientResponseFilter]"))
@@ -145,10 +154,6 @@ class RestClientLoggingTest implements MockWebServerHolder {
         assertTrue(lastClientResponseFilter.contains("Links: []"));
         assertTrue(lastClientResponseFilter.contains("Location: null"));
         assertTrue(lastClientResponseFilter.contains("MediaType: null"));
-
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.TRACE, "-- LogClientRequestFilter42 --");
-        assertLogMessageBeforeOther(LogClientRequestFilter42.class, LogClientRequestFilter.class,
-                "LogClientRequestFilter42 runs before LogClientRequestFilter because it has a lower prio");
     }
 
     @Test

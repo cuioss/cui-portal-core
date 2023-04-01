@@ -27,7 +27,6 @@ final class SafeGauge {
     static Gauge<Double> doubleGauge(final Callable<Object> callable) {
         return () -> {
             try {
-                // return Double.parseDouble(callable.call().toString());
                 return (Double) callable.call();
             } catch (final Exception e) {
                 LOGGER.error(ERROR_MSG, e);
@@ -44,7 +43,6 @@ final class SafeGauge {
     static Gauge<Integer> intGauge(final Callable<Object> callable) {
         return () -> {
             try {
-                // return Integer.parseInt(callable.call().toString());
                 return (Integer) callable.call();
             } catch (final Exception e) {
                 LOGGER.error(ERROR_MSG, e);
@@ -61,7 +59,6 @@ final class SafeGauge {
     static Gauge<Long> longGauge(final Callable<Object> callable) {
         return () -> {
             try {
-                // return Long.parseLong(callable.call().toString());
                 return (Long) callable.call();
             } catch (final Exception e) {
                 LOGGER.error(ERROR_MSG, e);

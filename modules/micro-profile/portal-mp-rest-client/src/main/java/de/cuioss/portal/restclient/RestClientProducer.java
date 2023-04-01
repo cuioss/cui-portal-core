@@ -58,8 +58,8 @@ public class RestClientProducer {
                 ConnectionMetadataProducer.createConnectionMetadata(baseName, failOnInvalidConfiguration);
             return new RestClientHolder<>(
                     new CuiRestClientBuilder(resolveCuiLogger(injectionPoint, serviceInterface))
-                        .connectionMetadata(connectionMetadata)
-                        .build(serviceInterface));
+                            .connectionMetadata(connectionMetadata)
+                            .build(serviceInterface));
         } catch (IllegalArgumentException e) {
             log.error("Initialization of RestClientHolder failed", e);
             return new RestClientHolder<>(null);
@@ -74,10 +74,10 @@ public class RestClientProducer {
         return name.endsWith(".") ? name : name + ".";
     }
 
-    private Optional<Class> resolveCallerClass(InjectionPoint ip) {
+    private Optional<Class<?>> resolveCallerClass(InjectionPoint ip) {
         if (null != ip
-            && null != ip.getMember()
-            && null != ip.getMember().getDeclaringClass()) {
+                && null != ip.getMember()
+                && null != ip.getMember().getDeclaringClass()) {
 
             // works only due to @Dependent scope injection point!
             final Class<?> clazz = ip.getMember().getDeclaringClass();
@@ -90,7 +90,7 @@ public class RestClientProducer {
         return Optional.empty();
     }
 
-    private CuiLogger resolveCuiLogger(InjectionPoint ip, Class fallback) {
+    private CuiLogger resolveCuiLogger(InjectionPoint ip, Class<?> fallback) {
         final var clazz = resolveCallerClass(ip).orElse(fallback);
         log.debug("Using logger class: {}", clazz.getName());
         return new CuiLogger(clazz);
