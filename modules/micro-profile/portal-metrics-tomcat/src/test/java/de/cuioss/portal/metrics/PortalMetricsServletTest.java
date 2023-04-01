@@ -89,7 +89,7 @@ class PortalMetricsServletTest {
     }
 
     @Test
-    void shouldRespondInIcwFormat() throws IOException {
+    void shouldRespondInSpringFormat() throws IOException {
         configuration.fireEvent(PORTAL_METRICS_ENABLED, "true");
         servletRequest.setPathInfo("/");
         metricsInitializer.initialize();
