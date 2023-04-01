@@ -96,12 +96,6 @@
             <!-- Client-->
             <dependency>
                 <groupId>de.cuioss.portal.client</groupId>
-                <artifactId>portal-vault-client</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.cuioss.portal.client</groupId>
                 <artifactId>portal-client-tracing</artifactId>
                 <version>${project.version}</version>
                 <scope>compile</scope>

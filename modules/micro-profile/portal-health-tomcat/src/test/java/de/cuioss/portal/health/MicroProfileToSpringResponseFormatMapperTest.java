@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.smallrye.health.SmallRyeHealth;
 
-class MicroProfileToIcwResponseFormatMapperTest {
+class MicroProfileToSpringResponseFormatMapperTest {
 
     /**
      * Read a MP response, containing a health check without data.

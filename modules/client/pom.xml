@@ -62,7 +62,6 @@
         </dependency>
     </dependencies>
     <modules>
-        <module>portal-vault-client</module>
         <module>portal-client-tracing</module>
         <module>portal-tracing-reporter-zipkin</module>
     </modules>
