@@ -12,6 +12,6 @@
     <description>Groups all core modules of the portal</description>
     <name>Portal Core Modules</name>
     <modules>
-        <module>portal-core-servlet</module>
+        <module>portal-core</module>
     </modules>
 </project>

@@ -11,7 +11,7 @@
         <!-- Authenticated User Info -->
         <dependency>
             <groupId>de.cuioss.portal.core</groupId>
-            <artifactId>portal-core-servlet</artifactId>
+            <artifactId>portal-core</artifactId>
         </dependency>
         <!-- MicroProfile Metrics -->
         <dependency>

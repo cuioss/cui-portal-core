@@ -64,7 +64,7 @@
             <!-- Portal-Core-Servlet-->
             <dependency>
                 <groupId>de.cuioss.portal.core</groupId>
-                <artifactId>portal-core-servlet</artifactId>
+                <artifactId>portal-core</artifactId>
                 <version>${project.version}</version>
                 <scope>compile</scope>
             </dependency>
