@@ -87,6 +87,7 @@ class MetricsInitializer implements ApplicationInitializer {
                 LOGGER.warn(e, "Could not close: {}", closeable.getClass());
             }
         }
+        CLOSEABLE_LIST.clear();
         initialized = false;
     }
 
