@@ -10,15 +10,12 @@
     <name>portal-core modules</name>
     <description>Aggreagator for all portal-core-modules</description>
     <properties>
-        <version.cui.parent>0.2.6</version.cui.parent>
-        <version.okhttp3>5.0.0-alpha.11</version.okhttp3>
+        <version.cui.parent>0.2.7</version.cui.parent>
         <version.zipkin.brave>5.15.1</version.zipkin.brave>
         <version.zipkin.reporter>2.16.3</version.zipkin.reporter>
-        <version.javax.json.impl>1.1.4</version.javax.json.impl>
     </properties>
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>de.cuioss.portal</groupId>
                 <artifactId>bom</artifactId>
@@ -39,18 +36,6 @@
                 <version>${version.cui.parent}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>mockwebserver</artifactId>
-                <version>${version.okhttp3}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp-tls</artifactId>
-                <version>${version.okhttp3}</version>
-                <scope>test</scope>
             </dependency>
             <!-- TRACING -->
             <dependency>
