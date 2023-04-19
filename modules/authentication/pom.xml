@@ -15,7 +15,6 @@
         <module>portal-authentication-api</module>
         <module>portal-authentication-mock</module>
         <module>portal-authentication-oauth</module>
-        <module>portal-authentication-servlet-container</module>
         <module>portal-authentication-dummy</module>
     </modules>
     <dependencies>

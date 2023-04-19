@@ -13,9 +13,7 @@
     <description>Groups all micro-profile implementations of the portal</description>
     <name>Portal Modules for micro-profile</name>
     <modules>
-        <module>portal-health-tomcat</module>
         <module>portal-metrics-api</module>
-        <module>portal-metrics-tomcat</module>
         <module>portal-mp-rest-client</module>
     </modules>
     <dependencies>
