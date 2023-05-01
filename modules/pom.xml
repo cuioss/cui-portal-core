@@ -12,7 +12,7 @@
     <properties>
         <version.cui.parent>0.2.7</version.cui.parent>
         <version.zipkin.brave>5.15.1</version.zipkin.brave>
-        <version.zipkin.reporter>2.16.3</version.zipkin.reporter>
+        <version.zipkin.reporter>2.16.4</version.zipkin.reporter>
     </properties>
     <dependencyManagement>
         <dependencies>
