@@ -30,10 +30,10 @@ class ExternalHostnameProducerTest {
 
     @BeforeEach
     void beforeEach() {
-        String context = "/context";
-        String path = "/request";
+        var context = "/context";
+        var path = "/request";
         host = "https://myapp:8080";
-        String currentUrl = host + context + path;
+        var currentUrl = host + context + path;
         request.setRequestUrl(currentUrl);
         request.setContextPath(context);
         request.setPathInfo(path);

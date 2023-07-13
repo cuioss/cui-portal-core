@@ -19,56 +19,55 @@ public class EndpointAnswerHandler {
     /**
      * Empty response transporting {@link HttpServletResponse#SC_FORBIDDEN}
      */
-    public static final MockResponse RESPONSE_FORBIDDEN =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_FORBIDDEN);
+    public static final MockResponse RESPONSE_FORBIDDEN = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_FORBIDDEN);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_UNAUTHORIZED}
      */
-    public static final MockResponse RESPONSE_UNAUTHORIZED =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_UNAUTHORIZED);
+    public static final MockResponse RESPONSE_UNAUTHORIZED = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_UNAUTHORIZED);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_OK}
      */
-    public static final MockResponse RESPONSE_OK =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_OK);
+    public static final MockResponse RESPONSE_OK = new MockResponse().setResponseCode(HttpServletResponse.SC_OK);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_NO_CONTENT}
      */
-    public static final MockResponse RESPONSE_NO_CONTENT =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_NO_CONTENT);
+    public static final MockResponse RESPONSE_NO_CONTENT = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_NO_CONTENT);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_NOT_FOUND}
      */
-    public static final MockResponse RESPONSE_NOT_FOUND =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+    public static final MockResponse RESPONSE_NOT_FOUND = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_NOT_FOUND);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_NOT_IMPLEMENTED}
      */
-    public static final MockResponse RESPONSE_NOT_IMPLEMENTED =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_IMPLEMENTED);
+    public static final MockResponse RESPONSE_NOT_IMPLEMENTED = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_NOT_IMPLEMENTED);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_CREATED}
      */
-    public static final MockResponse RESPONSE_CREATED =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED);
+    public static final MockResponse RESPONSE_CREATED = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_CREATED);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_MOVED_PERMANENTLY}
      */
-    public static final MockResponse RESPONSE_MOVED_PERMANENTLY =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_MOVED_PERMANENTLY);
+    public static final MockResponse RESPONSE_MOVED_PERMANENTLY = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_MOVED_PERMANENTLY);
 
     /**
      * Empty response transporting {@link HttpServletResponse#SC_MOVED_TEMPORARILY}
      */
-    public static final MockResponse RESPONSE_MOVED_TEMPORARILY =
-        new MockResponse().setResponseCode(HttpServletResponse.SC_MOVED_TEMPORARILY);
+    public static final MockResponse RESPONSE_MOVED_TEMPORARILY = new MockResponse()
+            .setResponseCode(HttpServletResponse.SC_MOVED_TEMPORARILY);
 
     @Getter
     @Setter
@@ -200,36 +199,40 @@ public class EndpointAnswerHandler {
     }
 
     /**
-     * @return An {@link EndpointAnswerHandler} initialized with {@link #RESPONSE_OK}
+     * @return An {@link EndpointAnswerHandler} initialized with
+     *         {@link #RESPONSE_OK}
      */
     public static EndpointAnswerHandler forPositiveGetRequest() {
         return new EndpointAnswerHandler(RESPONSE_OK, HttpMethodMapper.GET).resetToDefaultResponse();
     }
 
     /**
-     * @return An {@link EndpointAnswerHandler} initialized with {@link #RESPONSE_OK}
+     * @return An {@link EndpointAnswerHandler} initialized with
+     *         {@link #RESPONSE_OK}
      */
     public static EndpointAnswerHandler forPositivePostRequest() {
         return new EndpointAnswerHandler(RESPONSE_OK, HttpMethodMapper.POST).resetToDefaultResponse();
     }
 
     /**
-     * @return An {@link EndpointAnswerHandler} initialized with {@link #RESPONSE_CREATED}
+     * @return An {@link EndpointAnswerHandler} initialized with
+     *         {@link #RESPONSE_CREATED}
      */
     public static EndpointAnswerHandler forPositivePutRequest() {
         return new EndpointAnswerHandler(RESPONSE_CREATED, HttpMethodMapper.PUT).resetToDefaultResponse();
     }
 
     /**
-     * @return An {@link EndpointAnswerHandler} initialized with {@link #RESPONSE_NO_CONTENT}
+     * @return An {@link EndpointAnswerHandler} initialized with
+     *         {@link #RESPONSE_NO_CONTENT}
      */
     public static EndpointAnswerHandler forPositiveDeleteRequest() {
         return new EndpointAnswerHandler(RESPONSE_NO_CONTENT, HttpMethodMapper.DELETE).resetToDefaultResponse();
     }
 
     /**
-     * @return An {@link EndpointAnswerHandler} resulting {@link #respond()} to return
-     *         {@link Optional#empty()}
+     * @return An {@link EndpointAnswerHandler} resulting {@link #respond()} to
+     *         return {@link Optional#empty()}
      */
     public static EndpointAnswerHandler noContent(HttpMethodMapper httpMethod) {
         return new EndpointAnswerHandler(null, httpMethod);

@@ -19,17 +19,19 @@ import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
 import lombok.ToString;
 
 /**
- * Mock implementation of {@link FileWatcherService} that is solely capable of managing paths.
- * It is defined as an {@link Alternative}, therefore you need to activate it like
- * 
+ * Mock implementation of {@link FileWatcherService} that is solely capable of
+ * managing paths. It is defined as an {@link Alternative}, therefore you need
+ * to activate it like
+ *
  * <pre>
  *  &#64;ActivatedAlternatives(FileWatcherServiceMock.class)
  * </pre>
- * 
- * In case your test needs {@link FileChangedEvent}s you can directly handle the in you unit-test:
- * 
+ *
+ * In case your test needs {@link FileChangedEvent}s you can directly handle the
+ * in you unit-test:
+ *
  * <pre>
- * 
+ *
  * &#64;Inject
  * &#64;FileChangedEvent
  * private Event&lt;Path&gt; fileChangeEvent;

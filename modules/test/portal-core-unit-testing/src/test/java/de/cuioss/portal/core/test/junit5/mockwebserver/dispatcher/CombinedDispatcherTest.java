@@ -72,8 +72,7 @@ class CombinedDispatcherTest {
 
     static RecordedRequest createRequestFor(HttpMethodMapper mapper, CombinedDispatcher dispatcher, String urlPart) {
         return new RecordedRequest(mapper.name() + " " + urlPart + "someResource  HTTP/1.1",
-                Headers.of("key=value", "key2=value2"), Collections.emptyList(), 0,
-                new Buffer(), 0, new Socket());
+                Headers.of("key=value", "key2=value2"), Collections.emptyList(), 0, new Buffer(), 0, new Socket());
     }
 
 }

@@ -23,8 +23,8 @@ import de.cuioss.tools.logging.CuiLogger;
  * Central Listener for Application life-cycle events.
  * <p>
  * Currently it listens to the {@link Initialized} for the
- * {@link ServletContext} and {@link PreDestroy}, uses it for an ordered configuration, see
- * {@link ApplicationInitializer}
+ * {@link ServletContext} and {@link PreDestroy}, uses it for an ordered
+ * configuration, see {@link ApplicationInitializer}
  * </p>
  *
  * @author Oliver Wolff
@@ -43,22 +43,20 @@ public class ServletLifecycleListener {
     private Instance<String> contextPath;
 
     /**
-     * Stores contextPath locally for situations, where the resolving is not posible anymore, what
-     * may happen on shutdown of a system.
+     * Stores contextPath locally for situations, where the resolving is not posible
+     * anymore, what may happen on shutdown of a system.
      */
     private String resolvedContextPath;
 
     /**
-     * Initializes all available {@link ApplicationInitializer} instances according to their
-     * {@link ApplicationInitializer#getOrder()}
+     * Initializes all available {@link ApplicationInitializer} instances according
+     * to their {@link ApplicationInitializer#getOrder()}
      *
      * @param context currently unused
      */
-    public void applicationInitializerListener(
-            @Observes @Initialized final ServletContext context) {
+    public void applicationInitializerListener(@Observes @Initialized final ServletContext context) {
         var path = getContextPath();
-        final List<ApplicationInitializer> initializers =
-            mutableList(applicationInitializers);
+        final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
         Collections.sort(initializers);
         LOGGER.debug("ServletLifecycleListener called for '{}', initializing with order: {}", path, initializers);
         for (final ApplicationInitializer applicationInitializer : initializers) {
@@ -69,16 +67,15 @@ public class ServletLifecycleListener {
     }
 
     /**
-     * Destroys all available {@link ApplicationInitializer} instances according to their
-     * <em>reversed</em> {@link ApplicationInitializer#getOrder()}
+     * Destroys all available {@link ApplicationInitializer} instances according to
+     * their <em>reversed</em> {@link ApplicationInitializer#getOrder()}
      */
     @PreDestroy
     public void applicationDestroyListener() {
         LOGGER.debug("Executing applicationDestroyListener");
         var path = getContextPath();
         LOGGER.info("Portal-008: Shutting down '{}'", path);
-        final List<ApplicationInitializer> finalizer =
-            mutableList(applicationInitializers);
+        final List<ApplicationInitializer> finalizer = mutableList(applicationInitializers);
         Collections.sort(finalizer, Collections.reverseOrder());
         LOGGER.debug("ServletLifecycleListener called for '{}', finalizing with order: {}", path, finalizer);
         for (final ApplicationInitializer applicationInitializer : finalizer) {
@@ -88,8 +85,7 @@ public class ServletLifecycleListener {
             } catch (RuntimeException e) {
                 LOGGER.warn(
                         "Runtime Exception occurred while trying to destroy '{}' for '{}'. message='{}', stracktrace will be available at DEBUG-level",
-                        applicationInitializer,
-                        path, e.getMessage());
+                        applicationInitializer, path, e.getMessage());
                 LOGGER.debug("Detailed exception", e);
             }
         }

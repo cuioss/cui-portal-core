@@ -53,7 +53,7 @@ public enum HttpMethodMapper {
 
     /**
      * @param dispatcherElement must not be null
-     * @param request must not be null
+     * @param request           must not be null
      * @return see ModuleDispatcherElement
      */
     public abstract Optional<MockResponse> handleMethod(ModuleDispatcherElement dispatcherElement,

@@ -4,9 +4,10 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
 
 /**
- * Holder class for instances of {@link MockWebServer}. It provides an injection point for the
- * actual {@link MockWebServer} and provides an optional Callback for an Dispatcher to be used
- * within {@link MockWebServer}, see {@link MockWebServer#setDispatcher(Dispatcher)}
+ * Holder class for instances of {@link MockWebServer}. It provides an injection
+ * point for the actual {@link MockWebServer} and provides an optional Callback
+ * for an Dispatcher to be used within {@link MockWebServer}, see
+ * {@link MockWebServer#setDispatcher(Dispatcher)}
  *
  * @author Oliver Wolff
  *

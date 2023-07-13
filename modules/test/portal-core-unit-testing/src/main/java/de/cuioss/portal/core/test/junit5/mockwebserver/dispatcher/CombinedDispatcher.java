@@ -12,7 +12,8 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
- * Aggregates a number of {@link ModuleDispatcherElement}s in order to reuse functionality
+ * Aggregates a number of {@link ModuleDispatcherElement}s in order to reuse
+ * functionality
  */
 @NoArgsConstructor
 public class CombinedDispatcher extends Dispatcher {
@@ -24,8 +25,8 @@ public class CombinedDispatcher extends Dispatcher {
     private static final CuiLogger LOGGER = new CuiLogger(CombinedDispatcher.class);
 
     /**
-     * If set to {@code true} on mismatch of the request will return a Http-Code '418', '404'
-     * otherwise
+     * If set to {@code true} on mismatch of the request will return a Http-Code
+     * '418', '404' otherwise
      */
     private boolean endWithTeapot = true;
 
@@ -48,7 +49,8 @@ public class CombinedDispatcher extends Dispatcher {
     /*
      * (non-Javadoc)
      *
-     * @see okhttp3.mockwebserver.Dispatcher#dispatch(okhttp3.mockwebserver.RecordedRequest)
+     * @see okhttp3.mockwebserver.Dispatcher#dispatch(okhttp3.mockwebserver.
+     * RecordedRequest)
      */
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
@@ -83,8 +85,8 @@ public class CombinedDispatcher extends Dispatcher {
     }
 
     /**
-     * @param endWithTeapot If set to {@code true} on mismatch of the request will return a
-     *            Http-Code '418', '404' otherwise
+     * @param endWithTeapot If set to {@code true} on mismatch of the request will
+     *                      return a Http-Code '418', '404' otherwise
      * @return The instance itself in order to use it in a builder-style
      */
     public CombinedDispatcher endWithTeapot(boolean endWithTeapot) {

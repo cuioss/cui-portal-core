@@ -13,8 +13,9 @@ import java.util.ResourceBundle;
 import javax.inject.Qualifier;
 
 /**
- * Marker identifying instances of {@link ResourceBundle}s that are unified ResourceBundles,
- * analogous to CuiResourceBundle. Caution it should always be used as {@link ResourceBundle}
+ * Marker identifying instances of {@link ResourceBundle}s that are unified
+ * ResourceBundles, analogous to CuiResourceBundle. Caution it should always be
+ * used as {@link ResourceBundle}
  *
  * @author Oliver Wolff
  */

@@ -29,10 +29,12 @@ import lombok.ToString;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
- * <em>Caution:</em> The described Configuration only works in context of junit 5
+ * <em>Caution:</em> The described Configuration only works in context of junit
+ * 5
  * <h2>Test Setup</h2>
  * <p>
- * In order to activate you add {@link EnablePortalConfiguration} to your test class
+ * In order to activate you add {@link EnablePortalConfiguration} to your test
+ * class
  * <p>
  * Now you can inject the {@link PortalTestConfiguration}
  *
@@ -63,9 +65,9 @@ import lombok.ToString;
  * </code>
  * </pre>
  *
- * To explicitly remove/erase a property use {@link #remove(String)} or {@link #removeAll()}.
- * This sets the given property value to an empty string, which in MP-Config terms defines the
- * removal of a property.
+ * To explicitly remove/erase a property use {@link #remove(String)} or
+ * {@link #removeAll()}. This sets the given property value to an empty string,
+ * which in MP-Config terms defines the removal of a property.
  *
  * @author Oliver Wolff
  */
@@ -106,7 +108,8 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     /**
      * Fires the given map directly as {@link ConfigurationSourceChangeEvent}
      *
-     * @param deltaMap the deltaMap implicitly fired as {@link ConfigurationSourceChangeEvent}
+     * @param deltaMap the deltaMap implicitly fired as
+     *                 {@link ConfigurationSourceChangeEvent}
      */
     public void fireEvent(final Map<String, String> deltaMap) {
         deltaMap.forEach(this::put);
@@ -114,9 +117,10 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     }
 
     /**
-     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a map
+     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a
+     * map
      *
-     * @param key of the entry
+     * @param key   of the entry
      * @param value of the entry
      */
     public void fireEvent(final String key, final String value) {
@@ -124,11 +128,12 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     }
 
     /**
-     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a map
+     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a
+     * map
      *
-     * @param key1 of the entry1
+     * @param key1   of the entry1
      * @param value1 of the entry1
-     * @param key2 of the entry2
+     * @param key2   of the entry2
      * @param value2 of the entry2
      */
     public void fireEvent(final String key1, final String value1, final String key2, final String value2) {
@@ -157,8 +162,8 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     }
 
     /**
-     * Clears the local storage and the delta map.
-     * Usually used in {@link org.junit.jupiter.api.BeforeEach}.
+     * Clears the local storage and the delta map. Usually used in
+     * {@link org.junit.jupiter.api.BeforeEach}.
      *
      * @see #removeAll()
      */
@@ -169,9 +174,8 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     }
 
     /**
-     * If the key exists in the local storage:
-     * Marks it as removed in the delta map and
-     * removes it from the local storage.
+     * If the key exists in the local storage: Marks it as removed in the delta map
+     * and removes it from the local storage.
      *
      * @param key
      */
@@ -183,8 +187,8 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     }
 
     /**
-     * Marks all current properties as removed in the delta map.
-     * Removes all properties from the local storage.
+     * Marks all current properties as removed in the delta map. Removes all
+     * properties from the local storage.
      */
     public void removeAll() {
         properties.forEach((k, v) -> delta.put(k, ""));

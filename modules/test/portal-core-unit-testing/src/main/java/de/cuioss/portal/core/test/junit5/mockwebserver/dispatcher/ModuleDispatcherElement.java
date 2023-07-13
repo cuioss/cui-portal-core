@@ -9,20 +9,21 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
- * The idea of an {@link ModuleDispatcherElement} is the reuse of answers in the context of
- * {@link EnableMockWebServer}. In essence calls to {@link MockWebServerHolder#getDispatcher()} can
- * be replaced with this structure.
- * The general idea is to return an {@link Optional} {@link MockResponse} if the concrete handle can
- * answer the call, {@link Optional#empty()} otherwise.
+ * The idea of an {@link ModuleDispatcherElement} is the reuse of answers in the
+ * context of {@link EnableMockWebServer}. In essence calls to
+ * {@link MockWebServerHolder#getDispatcher()} can be replaced with this
+ * structure. The general idea is to return an {@link Optional}
+ * {@link MockResponse} if the concrete handle can answer the call,
+ * {@link Optional#empty()} otherwise.
  */
 
 public interface ModuleDispatcherElement {
 
     /**
-     * @return the base URl for this Dispatcher part. The runtime will ensure that only elements
-     *         will called, where the current url starts with the one given here. If you want to
-     *         filter yourself you may return '/'. The {@link Optional} contract is unaffected by
-     *         this.
+     * @return the base URl for this Dispatcher part. The runtime will ensure that
+     *         only elements will called, where the current url starts with the one
+     *         given here. If you want to filter yourself you may return '/'. The
+     *         {@link Optional} contract is unaffected by this.
      */
     String getBaseUrl();
 

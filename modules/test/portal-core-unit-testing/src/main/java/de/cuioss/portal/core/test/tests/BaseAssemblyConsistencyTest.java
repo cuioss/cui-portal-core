@@ -12,9 +12,9 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Base class for testing the consistency / structure of an assembly module by starting up a
- * {@link WeldContainer} and checking whether the module provides a beans.xml-file. This is a
- * variant of {@link BaseModuleConsistencyTest}
+ * Base class for testing the consistency / structure of an assembly module by
+ * starting up a {@link WeldContainer} and checking whether the module provides
+ * a beans.xml-file. This is a variant of {@link BaseModuleConsistencyTest}
  *
  * @author Oliver Wolff
  *

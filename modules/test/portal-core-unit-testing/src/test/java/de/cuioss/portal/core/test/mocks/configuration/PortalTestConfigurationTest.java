@@ -139,10 +139,8 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
     }
 
     void assertConfigNotPresent(String key) {
-        if (!isEmpty(fromEvent)) {
-            if (fromEvent.containsKey(key)) {
-                assertTrue(isEmpty(fromEvent.get(key)));
-            }
+        if (!isEmpty(fromEvent) && fromEvent.containsKey(key)) {
+            assertTrue(isEmpty(fromEvent.get(key)));
         }
     }
 

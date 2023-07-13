@@ -16,7 +16,8 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
- * Base class returning sensible return positive values for all supported methods
+ * Base class returning sensible return positive values for all supported
+ * methods
  *
  * @author Oliver Wolff
  *
@@ -75,27 +76,28 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
     /**
      * Sets the result for a certain method
      *
-     * @param mapper One or more mapper to identify the corresponding {@link HttpMethodMapper}
+     * @param mapper       One or more mapper to identify the corresponding
+     *                     {@link HttpMethodMapper}
      * @param mockResponse may be null
      * @return The instance itself
      */
     public BaseAllAcceptDispatcher setMethodToResult(MockResponse mockResponse, HttpMethodMapper... mapper) {
         for (HttpMethodMapper element : mapper) {
             switch (element) {
-                case GET:
-                    getResult.setResponse(mockResponse);
-                    break;
-                case POST:
-                    postResult.setResponse(mockResponse);
-                    break;
-                case PUT:
-                    putResult.setResponse(mockResponse);
-                    break;
-                case DELETE:
-                    deleteResult.setResponse(mockResponse);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown method: " + mapper);
+            case GET:
+                getResult.setResponse(mockResponse);
+                break;
+            case POST:
+                postResult.setResponse(mockResponse);
+                break;
+            case PUT:
+                putResult.setResponse(mockResponse);
+                break;
+            case DELETE:
+                deleteResult.setResponse(mockResponse);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown method: " + mapper);
             }
         }
         return this;
@@ -104,7 +106,8 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
     /**
      * Sets the result for all but the given
      *
-     * @param mapper One or more mapper to identify the corresponding {@link HttpMethodMapper}
+     * @param mapper       One or more mapper to identify the corresponding
+     *                     {@link HttpMethodMapper}
      * @param mockResponse may be null
      * @return The instance itself
      */

@@ -64,13 +64,13 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
     @Setter
     private AuthenticationSource authenticationSource = AuthenticationSource.MOCK;
 
-    private static final AuthenticatedUserInfo NOT_LOGGED_IN =
-        new BaseAuthenticatedUserInfo(false, null, null, null, null);
+    private static final AuthenticatedUserInfo NOT_LOGGED_IN = new BaseAuthenticatedUserInfo(false, null, null, null,
+            null);
 
     @Setter // setter only for test proposal available
     @Getter
-    private List<UserStore> availableUserStores =
-        immutableList(DEFAULT_USER_STORE, SOME_OTHER_LDAP_USER_STORE, SOME_LDAP_USER_STORE);
+    private List<UserStore> availableUserStores = immutableList(DEFAULT_USER_STORE, SOME_OTHER_LDAP_USER_STORE,
+            SOME_LDAP_USER_STORE);
 
     @Setter
     private AuthenticatedUserInfo current;
@@ -128,8 +128,7 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
      * @param username
      * @param password
      *
-     * @return created {@link LoginCredentials} with a given Username /
-     *         password.
+     * @return created {@link LoginCredentials} with a given Username / password.
      */
     public static LoginCredentials createLoginCredentials(final String username, final String password) {
         final var credentials = new LoginCredentials();
@@ -144,8 +143,7 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
      *
      * @param username
      *
-     * @return created {@link LoginCredentials} with a given Username /
-     *         password.
+     * @return created {@link LoginCredentials} with a given Username / password.
      */
     public static LoginCredentials createLoginCredentials(final String username) {
         return createLoginCredentials(username, username);

@@ -17,7 +17,6 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
-import org.eclipse.microprofile.metrics.Timer;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
@@ -114,11 +113,11 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
     void shouldReturnNullOnMissingImplementationsTimer() {
         assertNull(underTest.timer(ids.next()));
         assertNull(underTest.getTimer(ids.next()));
-        String timeName = names.next();
+        var timeName = names.next();
         assertNull(underTest.timer(timeName));
         assertNull(underTest.timer(metadata.next()));
         assertNull(underTest.timer(metadata.next(), tags.next()));
-        Timer timer = underTest.timer(timeName, tags.next());
+        var timer = underTest.timer(timeName, tags.next());
         // Reentrant
         underTest.timer(timeName, tags.next());
         assertNotNull(timer);

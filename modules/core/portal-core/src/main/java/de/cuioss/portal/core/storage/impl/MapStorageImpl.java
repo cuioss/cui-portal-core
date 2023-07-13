@@ -14,16 +14,15 @@ import lombok.ToString;
  * Map like wrapper around session storage. Analogous to
  * com.icw.ehf.cui.application.storage.SessionStorage
  * </p>
- * the actual map is backed by {@link ConcurrentHashMap}, therefore there is no need to synchronize
- * the access.
+ * the actual map is backed by {@link ConcurrentHashMap}, therefore there is no
+ * need to synchronize the access.
  *
  * @param <T> type of key. Must implement at least {@link Serializable}
  * @param <V> value, must implement at least {@link Serializable}
  */
 @EqualsAndHashCode
 @ToString
-public class MapStorageImpl<T extends Serializable, V extends Serializable>
-        implements MapStorage<T, V> {
+public class MapStorageImpl<T extends Serializable, V extends Serializable> implements MapStorage<T, V> {
 
     private static final long serialVersionUID = 6490210131979783018L;
 

@@ -17,20 +17,20 @@ import de.cuioss.portal.authentication.PortalUser;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Provides a minimal layer for modeling {@link Servlet}s that can be enabled by role or
- * configuration. Currently only get-requests are supported
- * ->{@link #executeDoGet(HttpServletRequest, HttpServletResponse)}. If you need to implement a
- * different method you can call {@link #checkAccess(HttpServletResponse)} in order to participate
- * in the checks
- * The algorithm:
+ * Provides a minimal layer for modeling {@link Servlet}s that can be enabled by
+ * role or configuration. Currently only get-requests are supported
+ * ->{@link #executeDoGet(HttpServletRequest, HttpServletResponse)}. If you need
+ * to implement a different method you can call
+ * {@link #checkAccess(HttpServletResponse)} in order to participate in the
+ * checks The algorithm:
  * <ul>
  * <li>Check enabled: {@link #isEnabled()}</li>
  * <li>Check authentication status: {@link #isLoggedInUserRequired()}</li>
  * <li>Check required roles: {@link #getRequiredRoles()}</li>
  * </ul>
  * If all previous checks are passed the method
- * {@link AbstractPortalServlet#executeDoGet(HttpServletRequest, HttpServletResponse)} will be
- * called.
+ * {@link AbstractPortalServlet#executeDoGet(HttpServletRequest, HttpServletResponse)}
+ * will be called.
  *
  * @author Oliver Wolff
  *
@@ -40,10 +40,8 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     /** Portal-523: Could not process Request, due to {}. */
     public static final String PORTAL_523 = "Portal-523: Could not process Request, due to {}";
 
-    private static final String NOT_LOGGED_IN =
-        "Portal-523: Could not process Request, because the user must be logged in for this request";
-    private static final String USER =
-        "Portal-523: Could not process Request, because of the condition '{}' is not met for user '{}'";
+    private static final String NOT_LOGGED_IN = "Portal-523: Could not process Request, because the user must be logged in for this request";
+    private static final String USER = "Portal-523: Could not process Request, because of the condition '{}' is not met for user '{}'";
 
     private static final long serialVersionUID = 5418492528395532112L;
 
@@ -67,9 +65,10 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     }
 
     /**
-     * Helper method that checks whether the payload method is allowed to be called. It checks the
-     * parameter as defined at class-level. It modifies the {@link HttpServletResponse} with the
-     * corresponding Http-Codes and logs the findings on the appropriate level.
+     * Helper method that checks whether the payload method is allowed to be called.
+     * It checks the parameter as defined at class-level. It modifies the
+     * {@link HttpServletResponse} with the corresponding Http-Codes and logs the
+     * findings on the appropriate level.
      *
      * @param resp must not be null
      * @return boolean indicating whether all checks are passed or not.
@@ -99,20 +98,22 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     }
 
     /**
-     * The actual payload method for the concrete servlet. If it is called all checks are already
-     * done and the implementor can focus on the business logic. All {@link RuntimeException} are
-     * translated to an {@link HttpServletResponse#SC_INTERNAL_SERVER_ERROR}
+     * The actual payload method for the concrete servlet. If it is called all
+     * checks are already done and the implementor can focus on the business logic.
+     * All {@link RuntimeException} are translated to an
+     * {@link HttpServletResponse#SC_INTERNAL_SERVER_ERROR}
      *
-     * @param request to be passed
+     * @param request  to be passed
      * @param response to be passed
      * @throws IOException in case an IO-Error occurs
      */
     public abstract void executeDoGet(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
-     * @return boolean indicating whether the Servlet-Request is enabled at all. Usually this is
-     *         controlled by a configured-property. If this method returns false it will be
-     *         translated to {@link HttpServletResponse#SC_SERVICE_UNAVAILABLE}. Defaults to
+     * @return boolean indicating whether the Servlet-Request is enabled at all.
+     *         Usually this is controlled by a configured-property. If this method
+     *         returns false it will be translated to
+     *         {@link HttpServletResponse#SC_SERVICE_UNAVAILABLE}. Defaults to
      *         {@code true}
      */
     public boolean isEnabled() {
@@ -120,19 +121,20 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     }
 
     /**
-     * @return boolean indicating whether the servlet needs a logged in user. If it is {@code true}
-     *         the system will check whether the current user is logged in. If the user is not
-     *         logged in it will return {@link HttpServletResponse#SC_FORBIDDEN}. Defaults to
-     *         {@code false}
+     * @return boolean indicating whether the servlet needs a logged in user. If it
+     *         is {@code true} the system will check whether the current user is
+     *         logged in. If the user is not logged in it will return
+     *         {@link HttpServletResponse#SC_FORBIDDEN}. Defaults to {@code false}
      */
     public boolean isLoggedInUserRequired() {
         return false;
     }
 
     /**
-     * @return a {@link Collection} of roles that are <em>all</em> required in order to render the
-     *         content. The default implementation will return an empty {@link Collection}. If this
-     *         method provides at least one role that user does not provide the servlet will return
+     * @return a {@link Collection} of roles that are <em>all</em> required in order
+     *         to render the content. The default implementation will return an
+     *         empty {@link Collection}. If this method provides at least one role
+     *         that user does not provide the servlet will return
      *         {@link HttpServletResponse#SC_FORBIDDEN}
      */
     public Collection<String> getRequiredRoles() {
@@ -140,7 +142,8 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     }
 
     /**
-     * @return the {@link AuthenticatedUserInfo} resolved against the injected {@link PortalUser}
+     * @return the {@link AuthenticatedUserInfo} resolved against the injected
+     *         {@link PortalUser}
      */
     protected AuthenticatedUserInfo getUserInfo() {
         return userInfoProvider.get();

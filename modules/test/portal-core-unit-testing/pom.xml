@@ -9,7 +9,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>portal-core-unit-testing</artifactId>
-    <description>Provides a number of structures to enable junit 5 and weld-junit testing</description>
+    <description>Provides a number of structures to enable junit 5 and
+        weld-junit testing</description>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -71,6 +72,12 @@
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-junit5</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Needed for TestServletMockProducers -->
+        <dependency>
+            <groupId>de.cuioss.test</groupId>
+            <artifactId>cui-jsf-test-basic</artifactId>
             <scope>compile</scope>
         </dependency>
         <!-- Needed for ModuleConsistencyTest -->

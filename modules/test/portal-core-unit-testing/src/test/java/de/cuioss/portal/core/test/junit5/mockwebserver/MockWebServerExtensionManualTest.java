@@ -31,10 +31,10 @@ class MockWebServerExtensionManualTest implements MockWebServerHolder {
             @Override
             public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
                 switch (request.getPath()) {
-                    case "/index":
-                        return new MockResponse().setResponseCode(200);
-                    default:
-                        return new MockResponse().setResponseCode(403);
+                case "/index":
+                    return new MockResponse().setResponseCode(200);
+                default:
+                    return new MockResponse().setResponseCode(403);
                 }
             }
         };

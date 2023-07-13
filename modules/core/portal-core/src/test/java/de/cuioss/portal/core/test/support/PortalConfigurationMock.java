@@ -36,7 +36,8 @@ import lombok.ToString;
  * Mock variant of configuration, overwriting all other configuration elements.
  * <h2>Test Setup</h2>
  * <p>
- * In order to activate the needed classes you must add them by using {@link AddBeanClasses}:
+ * In order to activate the needed classes you must add them by using
+ * {@link AddBeanClasses}:
  *
  * <pre>
  * <code>
@@ -45,20 +46,22 @@ import lombok.ToString;
  * </pre>
  * </p>
  * <p>
- * If you need the portal specific extension like {@link ConfigAsList} you need to add
+ * If you need the portal specific extension like {@link ConfigAsList} you need
+ * to add
  * {@code de.cuioss.portal.configuration.impl.producer.PortalConfigProducer} to
  * {@link AddBeanClasses} as well.
  * </p>
  * <p>
  * If you want to add the portal-default configuration you need to add
- * {@code de.cuioss.portal.configuration.impl.source.PortalDefaultConfiguration} to
- * {@link AddBeanClasses} as well.
+ * {@code de.cuioss.portal.configuration.impl.source.PortalDefaultConfiguration}
+ * to {@link AddBeanClasses} as well.
  * </p>
  * <p>
- * If your configuration listens to {@link PortalConfigurationChangeEvent}s and are annotated with
- * {@link PortalConfigurationChangeInterceptor} you need to add
- * {@code de.cuioss.portal.configuration.impl.PortalConfigurationChangeInterceptorImpl} to
- * {@link AddBeanClasses} as well.
+ * If your configuration listens to {@link PortalConfigurationChangeEvent}s and
+ * are annotated with {@link PortalConfigurationChangeInterceptor} you need to
+ * add
+ * {@code de.cuioss.portal.configuration.impl.PortalConfigurationChangeInterceptorImpl}
+ * to {@link AddBeanClasses} as well.
  * </p>
  * Now you can inject the {@link PortalConfigurationMock}
  *
@@ -131,7 +134,8 @@ public class PortalConfigurationMock extends AbstractPortalConfigSource implemen
     /**
      * Fires the given map directly as {@link ConfigurationSourceChangeEvent}
      *
-     * @param deltaMap the deltaMap implicitly fired as {@link ConfigurationSourceChangeEvent}
+     * @param deltaMap the deltaMap implicitly fired as
+     *                 {@link ConfigurationSourceChangeEvent}
      */
     public void fireEvent(Map<String, String> deltaMap) {
         configurationMap.putAll(deltaMap);
@@ -139,9 +143,10 @@ public class PortalConfigurationMock extends AbstractPortalConfigSource implemen
     }
 
     /**
-     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a map
+     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a
+     * map
      *
-     * @param key of the entry
+     * @param key   of the entry
      * @param value of the entry
      *
      */
@@ -150,11 +155,12 @@ public class PortalConfigurationMock extends AbstractPortalConfigSource implemen
     }
 
     /**
-     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a map
+     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a
+     * map
      *
-     * @param key1 of the entry1
+     * @param key1   of the entry1
      * @param value1 of the entry1
-     * @param key2 of the entry2
+     * @param key2   of the entry2
      * @param value2 of the entry2
      *
      */
@@ -163,12 +169,11 @@ public class PortalConfigurationMock extends AbstractPortalConfigSource implemen
     }
 
     /**
-     * Initializes the configuration system explicitly. This is usually done by a servlet-event
-     * but must be explicitly done if used in unit-tests
+     * Initializes the configuration system explicitly. This is usually done by a
+     * servlet-event but must be explicitly done if used in unit-tests
      */
     public void initializeConfigurationSystem() {
-        final List<ApplicationInitializer> initializers =
-            mutableList(applicationInitializers);
+        final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
         Collections.sort(initializers);
         for (final ApplicationInitializer applicationInitializer : initializers) {
             applicationInitializer.initialize();

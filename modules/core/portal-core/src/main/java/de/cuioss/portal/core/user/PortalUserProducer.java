@@ -23,7 +23,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Stateful producer for the {@link AuthenticatedUserInfo} identified by {@link PortalUser}
+ * Stateful producer for the {@link AuthenticatedUserInfo} identified by
+ * {@link PortalUser}
  *
  * @author Oliver Wolff
  */
@@ -53,9 +54,7 @@ public class PortalUserProducer implements Serializable {
      */
     @PostConstruct
     public void initBean() {
-        userInfo =
-            authenticationFacade
-                    .retrieveCurrentAuthenticationContext(servletRequestProvider.get());
+        userInfo = authenticationFacade.retrieveCurrentAuthenticationContext(servletRequestProvider.get());
     }
 
     @Produces

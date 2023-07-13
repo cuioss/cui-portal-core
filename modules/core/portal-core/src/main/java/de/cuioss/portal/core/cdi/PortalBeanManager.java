@@ -24,8 +24,8 @@ import de.cuioss.portal.configuration.common.PriorityComparator;
 import lombok.experimental.UtilityClass;
 
 /**
- * Utility classes for dealing with CDI-Beans. In essence it contains some convenient ways to call
- * the Bean manger like instantiating the Annotations.
+ * Utility classes for dealing with CDI-Beans. In essence it contains some
+ * convenient ways to call the Bean manger like instantiating the Annotations.
  *
  * @author Oliver Wolff
  */
@@ -33,19 +33,22 @@ import lombok.experimental.UtilityClass;
 public final class PortalBeanManager {
 
     /**
-     * Looks up a normal scoped CDI-bean programmatically. In case of {@link Dependent} scoped beans
-     * with life-cycle you should use {@link #getDependentProvider(BeanManager, Class, Class)}.
+     * Looks up a normal scoped CDI-bean programmatically. In case of
+     * {@link Dependent} scoped beans with life-cycle you should use
+     * {@link #getDependentProvider(BeanManager, Class, Class)}.
      *
-     * @param beanManager an instance of the beanManager for doing the lookup.
-     * @param beanClass identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with, may be null
+     * @param beanManager     an instance of the beanManager for doing the lookup.
+     * @param beanClass       identifying the type to be loaded, must not be null
+     * @param annotationClass the class the concrete type must be annotated with,
+     *                        may be null
      *
      * @return the found bean, or null if none could be found. It will throw an
-     *         {@link IllegalArgumentException} in case of the bean cannot be identified exactly.
+     *         {@link IllegalArgumentException} in case of the bean cannot be
+     *         identified exactly.
      */
     @SuppressWarnings("unchecked")
-    private static <T, V extends Annotation> T getCDIBean(final BeanManager beanManager,
-            final Class<T> beanClass, final Class<V> annotationClass) {
+    private static <T, V extends Annotation> T getCDIBean(final BeanManager beanManager, final Class<T> beanClass,
+            final Class<V> annotationClass) {
         requireNonNull(beanClass, "beanClass");
         requireNonNull(beanManager, "beanManager");
 
@@ -78,76 +81,77 @@ public final class PortalBeanManager {
     /**
      * Shorthand for resolving a CDI Bean
      *
-     * @param beanClass identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with, may be null
+     * @param beanClass       identifying the type to be loaded, must not be null
+     * @param annotationClass the class the concrete type must be annotated with,
+     *                        may be null
      * @param <T>
      * @param <V>
      *
      * @return the found bean, or {@link Optional#empty()} if none could be found
      */
-    public static <T, V extends Annotation> Optional<T> resolveBean(
-            final Class<T> beanClass, final Class<V> annotationClass) {
+    public static <T, V extends Annotation> Optional<T> resolveBean(final Class<T> beanClass,
+            final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass));
     }
 
     /**
-     * Shorthand for resolving a CDI Bean or throwing an IllegalStateException otherwise.
+     * Shorthand for resolving a CDI Bean or throwing an IllegalStateException
+     * otherwise.
      *
-     * @param beanClass identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with, may be null
+     * @param beanClass       identifying the type to be loaded, must not be null
+     * @param annotationClass the class the concrete type must be annotated with,
+     *                        may be null
      * @param <T>
      * @param <V>
      *
      * @return the found bean
      */
-    public static <T, V extends Annotation> T resolveBeanOrThrowIllegalStateException(
-            final Class<T> beanClass, final Class<V> annotationClass) {
-        return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass))
-                .orElseThrow(() -> new IllegalStateException(
-                        "Portal-532: " + createErrorMessage(beanClass, annotationClass)));
+    public static <T, V extends Annotation> T resolveBeanOrThrowIllegalStateException(final Class<T> beanClass,
+            final Class<V> annotationClass) {
+        return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass)).orElseThrow(
+                () -> new IllegalStateException("Portal-532: " + createErrorMessage(beanClass, annotationClass)));
     }
 
     /**
      * Helper method for resolving the beanTypes according to the given identifier.
      *
-     * @param beanManager an instance of the beanManager for doing the lookup.
-     * @param beanClass identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with, may be null
+     * @param beanManager     an instance of the beanManager for doing the lookup.
+     * @param beanClass       identifying the type to be loaded, must not be null
+     * @param annotationClass the class the concrete type must be annotated with,
+     *                        may be null
      * @param <T>
      * @param <V>
      *
      * @return the resolved beanTypes.
      */
     @SuppressWarnings("squid:S1452") // owolff: Not able to avoid the wildcard call here
-    public static <T, V extends Annotation> Set<Bean<?>> resolveBeanTypes(
-            final BeanManager beanManager, final Class<T> beanClass,
-            final Class<V> annotationClass) {
+    public static <T, V extends Annotation> Set<Bean<?>> resolveBeanTypes(final BeanManager beanManager,
+            final Class<T> beanClass, final Class<V> annotationClass) {
         Set<Bean<?>> beanTypes;
         if (null == annotationClass) {
             beanTypes = beanManager.getBeans(beanClass);
         } else {
-            beanTypes = beanManager.getBeans(beanClass,
-                    AnnotationInstanceProvider.of(annotationClass));
+            beanTypes = beanManager.getBeans(beanClass, AnnotationInstanceProvider.of(annotationClass));
         }
         return beanTypes;
     }
 
     /**
-     * Access a dependent provider according to the given identifier. A {@link DependentProvider} is
-     * a proxy that incorporates simplified access on destroy methods by calling
-     * {@link DependentProvider#destroy()}
+     * Access a dependent provider according to the given identifier. A
+     * {@link DependentProvider} is a proxy that incorporates simplified access on
+     * destroy methods by calling {@link DependentProvider#destroy()}
      *
-     * @param beanManager an instance of the beanManager for doing the lookup.
-     * @param beanClass identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with, may be null
+     * @param beanManager     an instance of the beanManager for doing the lookup.
+     * @param beanClass       identifying the type to be loaded, must not be null
+     * @param annotationClass the class the concrete type must be annotated with,
+     *                        may be null
      * @param <T>
      * @param <V>
      *
      * @return the resolved {@link DependentProvider} for that concrete bean
      */
-    public static <T, V extends Annotation> DependentProvider<T> getDependentProvider(
-            final BeanManager beanManager, final Class<T> beanClass,
-            final Class<V> annotationClass) {
+    public static <T, V extends Annotation> DependentProvider<T> getDependentProvider(final BeanManager beanManager,
+            final Class<T> beanClass, final Class<V> annotationClass) {
         DependentProvider<T> provider;
         if (null == annotationClass) {
             provider = BeanProvider.getDependent(beanManager, beanClass);
@@ -159,18 +163,19 @@ public final class PortalBeanManager {
     }
 
     /**
-     * Shorthand for calling {@link #getDependentProvider(BeanManager, Class, Class)} but with
-     * Implicitly using {@link #getBeanManager()}
+     * Shorthand for calling
+     * {@link #getDependentProvider(BeanManager, Class, Class)} but with Implicitly
+     * using {@link #getBeanManager()}
      *
-     * @param beanClass identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with, may be null
+     * @param beanClass       identifying the type to be loaded, must not be null
+     * @param annotationClass the class the concrete type must be annotated with,
+     *                        may be null
      * @param <T>
      * @param <V>
      *
      * @return the resolved {@link DependentProvider} for that concrete bean
      */
-    public static <T, V extends Annotation> DependentProvider<T> getDependentProvider(
-            final Class<T> beanClass,
+    public static <T, V extends Annotation> DependentProvider<T> getDependentProvider(final Class<T> beanClass,
             final Class<V> annotationClass) {
         return getDependentProvider(getBeanManager(), beanClass, annotationClass);
     }
@@ -199,27 +204,24 @@ public final class PortalBeanManager {
      *
      * @return the created error-message
      */
-    public static <T, V extends Annotation> String createErrorMessage(
-            final Class<T> beanClass,
+    public static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
             final Class<V> annotationClass) {
-        return "No bean of type " + beanClass + " and annotation " + (
-                null != annotationClass ? annotationClass.getName() : "(null)") + " could be found";
+        return "No bean of type " + beanClass + " and annotation "
+                + (null != annotationClass ? annotationClass.getName() : "(null)") + " could be found";
     }
 
     /**
-     * Use this method if {@link #resolveBean(Class, Class)} returned an {@link Optional#empty()}
-     * and you want to create
-     * a Portal log message string.
+     * Use this method if {@link #resolveBean(Class, Class)} returned an
+     * {@link Optional#empty()} and you want to create a Portal log message string.
      *
-     * @param beanClass tried to resolve
+     * @param beanClass       tried to resolve
      * @param annotationClass tried to resolve
      * @param <T>
      * @param <V>
      *
      * @return Portal-532 log message
      */
-    public static <T, V extends Annotation> String createLogMessage(
-            final Class<T> beanClass,
+    public static <T, V extends Annotation> String createLogMessage(final Class<T> beanClass,
             final Class<V> annotationClass) {
         return "Portal-532: " + createErrorMessage(beanClass, annotationClass);
     }

@@ -25,11 +25,12 @@ import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
  * <li>It starts with an empty property map.</li>
  * <li>It only fires the delta to its previous config</li>
  * <li>It allows to explicitly set an empty property</li>
- * <li>It allows clearing of its local storage as a re-init for a new unit test</li>
- * <li>Previously added and then removed properties are present in the delta with an empty string
- * value</li>
+ * <li>It allows clearing of its local storage as a re-init for a new unit
+ * test</li>
+ * <li>Previously added and then removed properties are present in the delta
+ * with an empty string value</li>
  * </ul>
- * 
+ *
  * @author Sven Haag
  */
 @EnableAutoWeld
@@ -98,8 +99,7 @@ public class PortalTestConfigurationTest {
         underTest.remove(KEY1);
         underTest.fireEvent();
         assertNotNull(configSourceChanges);
-        assertEquals("", configSourceChanges.get(KEY1),
-                "key1 should be indicated as removed via an empty string");
+        assertEquals("", configSourceChanges.get(KEY1), "key1 should be indicated as removed via an empty string");
     }
 
     @Test
@@ -124,8 +124,8 @@ public class PortalTestConfigurationTest {
 
     void configSourceChangeEventListener(@Observes @ConfigurationSourceChangeEvent final Map<String, String> deltaMap) {
         assertNotNull(deltaMap, "ConfigurationSourceChangeEvent payload must never be null!");
-        assertFalse(deltaMap.isEmpty(), "An empty delta map is useless. " +
-                "Removed properties must be indicated via an empty string value");
+        assertFalse(deltaMap.isEmpty(),
+                "An empty delta map is useless. " + "Removed properties must be indicated via an empty string value");
         assertUnmodifiable(deltaMap);
         configSourceChanges = deltaMap;
     }

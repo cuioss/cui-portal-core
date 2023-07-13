@@ -9,7 +9,8 @@ import javax.inject.Qualifier;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Identifier for the Context Path. Provides the context path from the {@link HttpServletRequest}.
+ * Identifier for the Context Path. Provides the context path from the
+ * {@link HttpServletRequest}.
  *
  * @author Matthias Walliczek
  */

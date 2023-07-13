@@ -15,8 +15,8 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import okhttp3.mockwebserver.MockWebServer;
 
 /**
- * Handle the lifetime of an instance of {@link MockWebServer}, see {@link EnableMockWebServer} for
- * details on using
+ * Handle the lifetime of an instance of {@link MockWebServer}, see
+ * {@link EnableMockWebServer} for details on using
  *
  * @author Oliver Wolff
  */
@@ -25,8 +25,8 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
     private static final Logger log = LoggerFactory.getLogger(MockWebServerExtension.class);
 
     /**
-     * Identifies the {@link Namespace} under which the concrete instance of {@link MockWebServer}
-     * is stored.
+     * Identifies the {@link Namespace} under which the concrete instance of
+     * {@link MockWebServer} is stored.
      */
     public static final Namespace NAMESPACE = Namespace.create("test", "portal", "MockWebServer");
 
@@ -69,13 +69,12 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
     }
 
     private Optional<MockWebServer> get(ExtensionContext context) {
-        return Optional
-                .ofNullable((MockWebServer) context.getStore(NAMESPACE).get(MockWebServer.class.getName()));
+        return Optional.ofNullable((MockWebServer) context.getStore(NAMESPACE).get(MockWebServer.class.getName()));
     }
 
     private static Optional<EnableMockWebServer> extractAnnotation(Class<?> testClass) {
-        Optional<EnableMockWebServer> annotation =
-            AnnotationSupport.findAnnotation(testClass, EnableMockWebServer.class);
+        Optional<EnableMockWebServer> annotation = AnnotationSupport.findAnnotation(testClass,
+                EnableMockWebServer.class);
         if (annotation.isPresent()) {
             return annotation;
         }

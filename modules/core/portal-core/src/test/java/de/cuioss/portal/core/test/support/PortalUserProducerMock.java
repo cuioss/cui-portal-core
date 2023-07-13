@@ -29,10 +29,8 @@ public class PortalUserProducerMock {
     public static final String BEAN_NAME = "portalUser";
 
     @Delegate
-    private final BaseAuthenticatedUserInfoBuilder userInfoBuilder =
-        BaseAuthenticatedUserInfo.builder().displayName("user")
-                .identifier("user")
-                .qualifiedIdentifier("user");
+    private final BaseAuthenticatedUserInfoBuilder userInfoBuilder = BaseAuthenticatedUserInfo.builder()
+            .displayName("user").identifier("user").qualifiedIdentifier("user");
 
     /**
      * Sets an authenticated default user.
