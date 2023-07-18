@@ -6,7 +6,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,6 @@ import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 class ExternalHostnameProducerTest {
 
     @Produces
-    @DeltaSpike
     private CuiMockHttpServletRequest request = new CuiMockHttpServletRequest();
 
     @CuiExternalHostname

@@ -12,8 +12,6 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUser;
 import de.cuioss.portal.authentication.UserChangeEvent;
@@ -46,7 +44,6 @@ public class PortalUserProducer implements Serializable {
     private AuthenticationFacade authenticationFacade;
 
     @Inject
-    @DeltaSpike
     private Provider<HttpServletRequest> servletRequestProvider;
 
     /**

@@ -7,14 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.servlet.ServletContextEvent;
 
+import org.apache.myfaces.test.mock.MockServletContext;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.core.servlet.CuiContextPath;
-import de.cuioss.test.generator.Generators;
+import de.cuioss.test.jsf.mocks.CuiMockServletContext;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -34,14 +37,16 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
     @Dependent
     private MockInitializer mockInitializer;
 
-    private boolean shouldExplodeCallingContextPath = false;
+    private static final String CONTEXT_PATH = "mock-context";
+    private static final MockServletContext SERVLET_CONTEXT = new CuiMockServletContext();
 
-    private static final String CONTEXT_PATH = "testContextPath";
+    @Inject
+    @CuiContextPath
+    private Provider<String> contextPathProvider;
 
     @BeforeEach
     void before() {
         mockInitializer = new MockInitializer();
-        shouldExplodeCallingContextPath = false;
     }
 
     @Test
@@ -49,7 +54,8 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
         assertFalse(mockInitializer.isInitializeCalled());
         assertFalse(mockInitializer.isDestroyCalled());
 
-        underTest.applicationInitializerListener(null);
+        underTest.contextInitialized(new ServletContextEvent(SERVLET_CONTEXT));
+
         assertTrue(mockInitializer.isInitializeCalled());
         assertFalse(mockInitializer.isDestroyCalled());
 
@@ -70,23 +76,15 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
 
     @Test
     void shouldHandleDefaultContextPath() {
-        assertEquals(CONTEXT_PATH, underTest.getContextPath());
-        // Should be cached
-        assertEquals(CONTEXT_PATH, underTest.getContextPath());
+        assertEquals("portal", contextPathProvider.get());
+
+        underTest.contextInitialized(new ServletContextEvent(SERVLET_CONTEXT));
+        assertEquals(CONTEXT_PATH, contextPathProvider.get());
     }
 
     @Test
-    void shouldHandleFailingContextPath() {
-        shouldExplodeCallingContextPath = true;
-        assertEquals("portal", underTest.getContextPath());
+    void shouldHandleContextPathNotSet() {
+        assertEquals("portal", contextPathProvider.get());
     }
 
-    @Produces
-    @CuiContextPath
-    String produceContextPath() {
-        if (shouldExplodeCallingContextPath) {
-            throw Generators.runtimeExceptions().next();
-        }
-        return CONTEXT_PATH;
-    }
 }

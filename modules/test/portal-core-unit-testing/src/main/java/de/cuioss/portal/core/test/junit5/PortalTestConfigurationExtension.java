@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.enterprise.inject.spi.CDI;
 
-import org.apache.deltaspike.core.util.metadata.AnnotationInstanceProvider;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -15,14 +14,16 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.core.cdi.AnnotationInstanceProvider;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.string.Splitter;
 
 /**
- * Junit 5 {@link Extension} controlling the initialization process of a unit-test annotated with
- * {@link EnablePortalConfiguration}. The algorithm:
+ * Junit 5 {@link Extension} controlling the initialization process of a
+ * unit-test annotated with {@link EnablePortalConfiguration}. The algorithm:
  * <ul>
- * <li>Access the instance of {@link PortalTestConfiguration} by using CDI.current().select()</li>
+ * <li>Access the instance of {@link PortalTestConfiguration} by using
+ * CDI.current().select()</li>
  * <li>Calling {@link PortalTestConfiguration#clear()}</li>
  * </ul>
  *
@@ -48,8 +49,9 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
                     e);
         }
 
-        var configuration = cdi.select(PortalTestConfiguration.class,
-                AnnotationInstanceProvider.of(PortalConfigurationSource.class)).get();
+        var configuration = cdi
+                .select(PortalTestConfiguration.class, AnnotationInstanceProvider.of(PortalConfigurationSource.class))
+                .get();
         log.debug(() -> "Resolved " + configuration);
 
         configuration.clear();
@@ -69,8 +71,8 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
     }
 
     private static Optional<EnablePortalConfiguration> extractAnnotation(Class<?> testClass) {
-        Optional<EnablePortalConfiguration> annotation =
-            AnnotationSupport.findAnnotation(testClass, EnablePortalConfiguration.class);
+        Optional<EnablePortalConfiguration> annotation = AnnotationSupport.findAnnotation(testClass,
+                EnablePortalConfiguration.class);
         if (annotation.isPresent()) {
             return annotation;
         }

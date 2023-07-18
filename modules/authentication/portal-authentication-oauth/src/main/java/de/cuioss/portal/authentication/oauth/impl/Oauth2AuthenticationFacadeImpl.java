@@ -23,8 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,13 +46,14 @@ import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
 
 /**
- * Default implementation of {@link Oauth2AuthenticationFacade}. Uses {@link Oauth2Service} to
- * access the oauth2 rest interface.
+ * Default implementation of {@link Oauth2AuthenticationFacade}. Uses
+ * {@link Oauth2Service} to access the oauth2 rest interface.
  * <p>
- * Stores the requested and confirmed scopes with key SCOPES_KEY in the current session.
- * <p>
- * Other internal values like STATE_KEY, NONCE_KEY and PKCE_CODE_KEY are also stored in the current
+ * Stores the requested and confirmed scopes with key SCOPES_KEY in the current
  * session.
+ * <p>
+ * Other internal values like STATE_KEY, NONCE_KEY and PKCE_CODE_KEY are also
+ * stored in the current session.
  *
  * @author Matthias Walliczek
  */
@@ -79,8 +78,8 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     private final transient Object codeLock = new Object();
 
-    private static final AuthenticatedUserInfo NOT_LOGGED_IN = BaseAuthenticatedUserInfo.builder()
-            .authenticated(false).build();
+    private static final AuthenticatedUserInfo NOT_LOGGED_IN = BaseAuthenticatedUserInfo.builder().authenticated(false)
+            .build();
 
     @SuppressWarnings("cdi-ambiguous-dependency")
     @Inject
@@ -97,7 +96,6 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private Provider<Redirector> redirector;
 
     @Inject
-    @DeltaSpike
     private Provider<HttpServletRequest> servletRequestProvider;
 
     private final SecureRandom random = new SecureRandom();
@@ -125,8 +123,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @Override
     public void invalidateToken() {
-        final var currentUser =
-            retrieveCurrentUserIfPresent(servletRequestProvider.get());
+        final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
         currentUser
                 .ifPresent(oauthAuthenticatedUserInfo -> oauthAuthenticatedUserInfo.getToken().setAccess_token(null));
     }
@@ -139,8 +136,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @Override
     public void sendRedirect() {
-        sendRedirect((String) servletRequestProvider.get().getSession().getAttribute(SCOPES_KEY),
-                null);
+        sendRedirect((String) servletRequestProvider.get().getSession().getAttribute(SCOPES_KEY), null);
     }
 
     private void sendRedirect(final String scopes, final String idToken) {
@@ -155,12 +151,9 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     private Optional<AuthenticatedUserInfo> triggerAuthenticate(final List<UrlParameter> parameters,
             final String scopes) {
-        final var code =
-            parameters.stream().filter(parameter -> "code".equals(parameter.getName())).findAny();
-        final var state =
-            parameters.stream().filter(parameter -> "state".equals(parameter.getName())).findAny();
-        final var error =
-            parameters.stream().filter(parameter -> "error".equals(parameter.getName())).findAny();
+        final var code = parameters.stream().filter(parameter -> "code".equals(parameter.getName())).findAny();
+        final var state = parameters.stream().filter(parameter -> "state".equals(parameter.getName())).findAny();
+        final var error = parameters.stream().filter(parameter -> "error".equals(parameter.getName())).findAny();
         if (state.isPresent()) {
             if (code.isPresent()) {
                 return handleTriggerAuthenticate(scopes, code.get(), state.get());
@@ -198,8 +191,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 sessionUser = (AuthenticatedUserInfo) servletRequest.getSession()
                         .getAttribute(AUTHENTICATED_USER_INFO_KEY);
             } else {
-                LOGGER.debug("state parameter {} differs from stored value {}",
-                        state.getValue(),
+                LOGGER.debug("state parameter {} differs from stored value {}", state.getValue(),
                         servletRequest.getSession().getAttribute(STATE_KEY));
                 sessionUser = null;
             }
@@ -215,12 +207,12 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             servletRequest.getSession().removeAttribute(PKCE_CODE_KEY);
         }
         LOGGER.trace("handleTriggerAuthenticate codeVerifier: {}", codeVerifier);
-        var oauthUser =
-            oauth2ServiceImpl.createAuthenticatedUserInfo(servletRequest, code, state, retrievedScoped, codeVerifier);
+        var oauthUser = oauth2ServiceImpl.createAuthenticatedUserInfo(servletRequest, code, state, retrievedScoped,
+                codeVerifier);
 
         if (null != oauthUser) {
             LOGGER.debug("authenticated oauth user info was retrieved: {}", oauthUser);
-            if (null == sessionUser || !sessionUser.isAuthenticated()) {
+            if ((null == sessionUser) || !sessionUser.isAuthenticated()) {
                 LOGGER.debug(
                         "session user missing or not authenticated. invalidating session! (change session after login)");
                 servletRequest.getSession().invalidate();
@@ -265,20 +257,17 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             throw new IllegalStateException(e);
         }
 
-        final var code_challenge =
-            Base64.getUrlEncoder().withoutPadding()
-                    .encodeToString(digest.digest(code.getBytes(StandardCharsets.US_ASCII)));
+        final var code_challenge = Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(digest.digest(code.getBytes(StandardCharsets.US_ASCII)));
         LOGGER.trace("retrieveOauth2RedirectUrl code_challenge: {}", code_challenge);
 
         final var scopesParameter = encode(scopes, StandardCharsets.UTF_8);
         final var configuration = configurationProvider.get();
 
         final var url = configuration.getAuthorizeUri().trim() + UrlParameter.createParameterString(false,
-                new UrlParameter("response_type", "code", false),
-                new UrlParameter("scope", scopesParameter, false),
+                new UrlParameter("response_type", "code", false), new UrlParameter("scope", scopesParameter, false),
                 new UrlParameter("client_id", configuration.getClientId().trim(), false),
-                new UrlParameter("state", state, false),
-                new UrlParameter("nonce", nonce, false),
+                new UrlParameter("state", state, false), new UrlParameter("nonce", nonce, false),
                 new UrlParameter("code_challenge", code_challenge, false),
                 new UrlParameter("code_challenge_method", "S256", false),
                 new UrlParameter("id_token_hint", idToken, false),
@@ -303,9 +292,8 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             if (MoreStrings.isEmpty(scopes)) {
                 return null;
             }
-            if (token != null && checkToken(token, currentUser.get().getTokenTimestamp())) {
-                return retrieveOauth2RedirectUrl(scopes, token.getId_token())
-                        + "&prompt=none&response_mode=cors";
+            if ((token != null) && checkToken(token, currentUser.get().getTokenTimestamp())) {
+                return retrieveOauth2RedirectUrl(scopes, token.getId_token()) + "&prompt=none&response_mode=cors";
             }
             return retrieveOauth2RedirectUrl(scopes, null);
         }
@@ -317,8 +305,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         requireNonNull(emptyToNull(loginUrl.get()));
         requireNonNull(emptyToNull(scopes));
         LOGGER.trace("retrieveToken for scopes: {}", scopes);
-        final var currentUser =
-            retrieveCurrentUserIfPresent(servletRequestProvider.get());
+        final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
         String idToken = null;
         if (currentUser.isPresent()) {
             final var token = currentUser.get().getToken();
@@ -351,7 +338,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     @Override
     public Map<String, Object> retrieveIdToken(final AuthenticatedUserInfo currentUser) {
         final var token = new OauthAuthenticatedUserInfo(currentUser).getToken();
-        if (null == token || MoreStrings.isEmpty(token.getId_token())) {
+        if ((null == token) || MoreStrings.isEmpty(token.getId_token())) {
             return Collections.emptyMap();
         }
         final var tokenParts = token.getId_token().split("\\.");
@@ -375,8 +362,8 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         final var session = servletRequest.getSession(false);
         if (null != session) {
             try {
-                return Optional.ofNullable(OauthAuthenticatedUserInfo.createOf((AuthenticatedUserInfo) session
-                        .getAttribute(AUTHENTICATED_USER_INFO_KEY)));
+                return Optional.ofNullable(OauthAuthenticatedUserInfo
+                        .createOf((AuthenticatedUserInfo) session.getAttribute(AUTHENTICATED_USER_INFO_KEY)));
             } catch (final IllegalStateException e) {
                 LOGGER.debug("getAttribute failed: ", e);
             }
@@ -386,14 +373,12 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @Override
     public String retrieveRenewInterval() {
-        final var currentUser =
-            retrieveCurrentUserIfPresent(servletRequestProvider.get());
+        final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
         if (currentUser.isPresent()) {
             try {
-                final var interval = currentUser.get().getTokenTimestamp()
-                        - (int) (System.currentTimeMillis() / 1000L)
-                        + Integer.parseInt(currentUser.get().getToken().getExpires_in())
-                        - 10;
+                final var interval = ((currentUser.get().getTokenTimestamp()
+                        - (int) (System.currentTimeMillis() / 1000L))
+                        + Integer.parseInt(currentUser.get().getToken().getExpires_in())) - 10;
                 return String.valueOf(interval);
             } catch (final NumberFormatException e) {
                 LOGGER.debug("token.expires_in not a valid number", e);
@@ -404,8 +389,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @Override
     public AuthenticatedUserInfo refreshUserinfo() {
-        final var currentUser =
-            retrieveCurrentUserIfPresent(servletRequestProvider.get());
+        final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
         if (currentUser.isPresent()) {
             final var token = currentUser.get().getToken();
             if (null != token) {
@@ -426,22 +410,19 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         var config = configurationProvider.get();
 
         if (MoreStrings.isEmpty(config.getLogoutUri())) {
-            var errMsg = String.format("Portal-160: Missing config for logout URI. Check " +
-                    "the end_session_endpoint property from userinfo endpoint.");
+            var errMsg = String.format("Portal-160: Missing config for logout URI. Check "
+                    + "the end_session_endpoint property from userinfo endpoint.");
             LOGGER.warn(errMsg);
             throw new IllegalStateException(errMsg);
         }
 
         CollectionBuilder<UrlParameter> queryParams = CollectionBuilder.copyFrom(additionalUrlParams);
 
-        if (config.isLogoutWithIdTokenHintEnabled()
-                && queryParams.stream()
-                        .map(UrlParameter::getName)
-                        .noneMatch(OidcRpInitiatedLogoutParams.ID_TOKEN_HINT::equals)) {
+        if (config.isLogoutWithIdTokenHintEnabled() && queryParams.stream().map(UrlParameter::getName)
+                .noneMatch(OidcRpInitiatedLogoutParams.ID_TOKEN_HINT::equals)) {
 
             LOGGER.debug("Adding id-token-hint as recommended by spec.");
-            getIdTokenFromCurrentUser()
-                    .map(OidcRpInitiatedLogoutParams::getIdTokenHintUrlParam)
+            getIdTokenFromCurrentUser().map(OidcRpInitiatedLogoutParams::getIdTokenHintUrlParam)
                     .ifPresent(queryParams::add);
         }
 
@@ -461,8 +442,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         return Optional.empty();
     }
 
-    private String checkAndRetrieveToken(final OauthAuthenticatedUserInfo currentUser,
-            final String scopes) {
+    private String checkAndRetrieveToken(final OauthAuthenticatedUserInfo currentUser, final String scopes) {
         final var token = currentUser.getToken();
         if (checkToken(token, currentUser.getTokenTimestamp())) {
             var allFound = true;
@@ -492,7 +472,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             return true;
         }
         try {
-            final var expires = timestamp + Integer.parseInt(token.getExpires_in()) - 10;
+            final var expires = (timestamp + Integer.parseInt(token.getExpires_in())) - 10;
             return expires > (int) (System.currentTimeMillis() / 1000L);
         } catch (final NumberFormatException e) {
             LOGGER.warn("Portal-149: Oauth2 token.expires_in not a valid number", e);

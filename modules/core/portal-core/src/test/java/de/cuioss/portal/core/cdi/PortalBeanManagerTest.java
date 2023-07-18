@@ -1,9 +1,7 @@
 package de.cuioss.portal.core.cdi;
 
-import static de.cuioss.portal.core.cdi.PortalBeanManager.getDependentProvider;
 import static de.cuioss.portal.core.cdi.PortalBeanManager.resolveBean;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,7 +9,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
-import org.apache.deltaspike.core.api.provider.DependentProvider;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
@@ -64,14 +61,6 @@ class PortalBeanManagerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class);
         });
-    }
-
-    @Test
-    void shouldReturnDependentScopedProviderWithoutQualifier() {
-        final DependentProvider<DependentTestBeanWithoutQualifier> check = getDependentProvider(
-                DependentTestBeanWithoutQualifier.class, null);
-        assertNotNull(check);
-        assertEquals(TestBeanWithQualifier.MESSAGE, check.get().getInitMessage());
     }
 
 }

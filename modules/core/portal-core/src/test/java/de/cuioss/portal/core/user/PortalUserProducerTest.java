@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.easymock.EasyMock;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
@@ -29,7 +28,6 @@ import lombok.Getter;
 class PortalUserProducerTest implements ShouldHandleObjectContracts<PortalUserProducer> {
 
     @Produces
-    @DeltaSpike
     @RequestScoped
     HttpServletRequest produceEasyMockServletRequest() {
         return EasyMock.createNiceMock(HttpServletRequest.class);

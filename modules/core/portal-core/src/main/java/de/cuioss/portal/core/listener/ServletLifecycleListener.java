@@ -7,12 +7,16 @@ import java.util.List;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
-
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
@@ -30,7 +34,8 @@ import de.cuioss.tools.logging.CuiLogger;
  * @author Oliver Wolff
  */
 @ApplicationScoped
-public class ServletLifecycleListener {
+@WebListener
+public class ServletLifecycleListener implements ServletContextListener {
 
     private static final CuiLogger LOGGER = new CuiLogger(ServletLifecycleListener.class);
 
@@ -38,15 +43,18 @@ public class ServletLifecycleListener {
     @PortalInitializer
     private Instance<ApplicationInitializer> applicationInitializers;
 
-    @Inject
+    @Produces
+    @Dependent
+    @Named
     @CuiContextPath
-    private Instance<String> contextPath;
+    private String contextPath = "portal";
 
-    /**
-     * Stores contextPath locally for situations, where the resolving is not posible
-     * anymore, what may happen on shutdown of a system.
-     */
-    private String resolvedContextPath;
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        contextPath = sce.getServletContext().getContextPath();
+        LOGGER.info("Initializing Context for {}", contextPath);
+        applicationInitializerListener(sce.getServletContext());
+    }
 
     /**
      * Initializes all available {@link ApplicationInitializer} instances according
@@ -54,16 +62,16 @@ public class ServletLifecycleListener {
      *
      * @param context currently unused
      */
-    public void applicationInitializerListener(@Observes @Initialized final ServletContext context) {
-        var path = getContextPath();
+    private void applicationInitializerListener(final ServletContext context) {
         final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
         Collections.sort(initializers);
-        LOGGER.debug("ServletLifecycleListener called for '{}', initializing with order: {}", path, initializers);
+        LOGGER.debug("ServletLifecycleListener called for '{}', initializing with order: {}", contextPath,
+                initializers);
         for (final ApplicationInitializer applicationInitializer : initializers) {
-            LOGGER.trace("Initializing '{}' for '{}'", applicationInitializer, path);
+            LOGGER.trace("Initializing '{}' for '{}'", applicationInitializer, context);
             applicationInitializer.initialize();
         }
-        LOGGER.debug("Initialize successfully called for all elements for '{}'", path);
+        LOGGER.debug("Initialize successfully called for all elements for '{}'", contextPath);
     }
 
     /**
@@ -73,40 +81,22 @@ public class ServletLifecycleListener {
     @PreDestroy
     public void applicationDestroyListener() {
         LOGGER.debug("Executing applicationDestroyListener");
-        var path = getContextPath();
-        LOGGER.info("Portal-008: Shutting down '{}'", path);
+        LOGGER.info("Portal-008: Shutting down '{}'", contextPath);
         final List<ApplicationInitializer> finalizer = mutableList(applicationInitializers);
         Collections.sort(finalizer, Collections.reverseOrder());
-        LOGGER.debug("ServletLifecycleListener called for '{}', finalizing with order: {}", path, finalizer);
+        LOGGER.debug("ServletLifecycleListener called for '{}', finalizing with order: {}", contextPath, finalizer);
         for (final ApplicationInitializer applicationInitializer : finalizer) {
-            LOGGER.trace("Destroying '{}' for '{}'", applicationInitializer, path);
+            LOGGER.trace("Destroying '{}' for '{}'", applicationInitializer, contextPath);
             try {
                 applicationInitializer.destroy();
             } catch (RuntimeException e) {
                 LOGGER.warn(
                         "Runtime Exception occurred while trying to destroy '{}' for '{}'. message='{}', stracktrace will be available at DEBUG-level",
-                        applicationInitializer, path, e.getMessage());
+                        applicationInitializer, contextPath, e.getMessage());
                 LOGGER.debug("Detailed exception", e);
             }
         }
-        LOGGER.debug("Finalize successfully called for all elements for '{}'", path);
-    }
-
-    String getContextPath() {
-        if (null != resolvedContextPath) {
-            return resolvedContextPath;
-        }
-        LOGGER.debug("Resolving context path from @CuiContextPath");
-        if (contextPath.isResolvable()) {
-            try {
-                resolvedContextPath = contextPath.get();
-                return resolvedContextPath;
-                // isResolvable does not prevent runtime exceptions
-            } catch (RuntimeException e) {
-                LOGGER.debug("Unable to resolve contextPath at runtime", e);
-            }
-        }
-        return "portal";
+        LOGGER.debug("Finalize successfully called for all elements for '{}'", contextPath);
     }
 
 }

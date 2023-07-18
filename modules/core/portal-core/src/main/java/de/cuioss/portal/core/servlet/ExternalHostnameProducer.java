@@ -8,8 +8,6 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
-
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
@@ -21,7 +19,6 @@ public class ExternalHostnameProducer {
     private static final CuiLogger log = new CuiLogger(ExternalHostnameProducer.class);
 
     @Inject
-    @DeltaSpike
     private Provider<HttpServletRequest> httpServletRequest;
 
     @Produces

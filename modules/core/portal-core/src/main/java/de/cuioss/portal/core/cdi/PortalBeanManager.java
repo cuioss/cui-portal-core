@@ -16,10 +16,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.apache.deltaspike.core.api.provider.DependentProvider;
-import org.apache.deltaspike.core.util.metadata.AnnotationInstanceProvider;
-
 import de.cuioss.portal.configuration.common.PriorityComparator;
 import lombok.experimental.UtilityClass;
 
@@ -134,50 +130,6 @@ public final class PortalBeanManager {
             beanTypes = beanManager.getBeans(beanClass, AnnotationInstanceProvider.of(annotationClass));
         }
         return beanTypes;
-    }
-
-    /**
-     * Access a dependent provider according to the given identifier. A
-     * {@link DependentProvider} is a proxy that incorporates simplified access on
-     * destroy methods by calling {@link DependentProvider#destroy()}
-     *
-     * @param beanManager     an instance of the beanManager for doing the lookup.
-     * @param beanClass       identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with,
-     *                        may be null
-     * @param <T>
-     * @param <V>
-     *
-     * @return the resolved {@link DependentProvider} for that concrete bean
-     */
-    public static <T, V extends Annotation> DependentProvider<T> getDependentProvider(final BeanManager beanManager,
-            final Class<T> beanClass, final Class<V> annotationClass) {
-        DependentProvider<T> provider;
-        if (null == annotationClass) {
-            provider = BeanProvider.getDependent(beanManager, beanClass);
-        } else {
-            provider = BeanProvider.getDependent(beanManager, beanClass,
-                    AnnotationInstanceProvider.of(annotationClass));
-        }
-        return provider;
-    }
-
-    /**
-     * Shorthand for calling
-     * {@link #getDependentProvider(BeanManager, Class, Class)} but with Implicitly
-     * using {@link #getBeanManager()}
-     *
-     * @param beanClass       identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with,
-     *                        may be null
-     * @param <T>
-     * @param <V>
-     *
-     * @return the resolved {@link DependentProvider} for that concrete bean
-     */
-    public static <T, V extends Annotation> DependentProvider<T> getDependentProvider(final Class<T> beanClass,
-            final Class<V> annotationClass) {
-        return getDependentProvider(getBeanManager(), beanClass, annotationClass);
     }
 
     /**

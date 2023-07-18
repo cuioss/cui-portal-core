@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
@@ -55,7 +54,7 @@ import okhttp3.mockwebserver.MockWebServer;
 @EnableAutoWeld
 @EnablePortalConfiguration
 @AddBeanClasses({ Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
-    RedirectorMock.class })
+        RedirectorMock.class })
 @AddExtensions(ResteasyCdiExtension.class)
 class Oauth2AuthenticationFacadeImplTest
         implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl>, MockWebServerHolder {
@@ -77,7 +76,6 @@ class Oauth2AuthenticationFacadeImplTest
     private RedirectorMock redirectorMock;
 
     @Produces
-    @DeltaSpike
     private MockHttpServletRequest servletRequest;
 
     @Produces
@@ -119,14 +117,14 @@ class Oauth2AuthenticationFacadeImplTest
         UrlParameter stateParameter = getStateParameter();
         UrlParameter urlParameter = new UrlParameter("error", "server_error");
         List<UrlParameter> parameterList = mutableList(stateParameter, urlParameter);
-        OauthAuthenticationException exception = assertThrows(OauthAuthenticationException.class, () -> underTest
-                .testLogin(parameterList, "scope"));
+        OauthAuthenticationException exception = assertThrows(OauthAuthenticationException.class,
+                () -> underTest.testLogin(parameterList, "scope"));
         assertEquals("system.exception.oauth.login", exception.getMessage());
 
         var parameterList2 = mutableList(stateParameter, new UrlParameter("error", "access_denied"));
 
-        exception = assertThrows(OauthAuthenticationException.class, () -> underTest
-                .testLogin(parameterList2, "scope"));
+        exception = assertThrows(OauthAuthenticationException.class,
+                () -> underTest.testLogin(parameterList2, "scope"));
         assertEquals("system.exception.oauth.consent", exception.getMessage());
 
     }
@@ -170,8 +168,7 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveTokenWithInvalidExpiresIn() {
         underTest.sendRedirect("scope");
-        var userInfo =
-            underTest.testLogin(calculateUrlParameter(), "scope");
+        var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("abc");
         var result = underTest.retrieveToken("scope");
         assertNull(result);
@@ -180,8 +177,7 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveTokenWithOldExpiresIn() {
         underTest.sendRedirect("scope");
-        var userInfo =
-            underTest.testLogin(calculateUrlParameter(), "scope");
+        var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
         userInfo.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
                 (int) (System.currentTimeMillis() / 1000L) - 200);
@@ -192,10 +188,8 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveTokenWithValidExpiresIn() {
         underTest.sendRedirect("scope");
-        var userInfo =
-            underTest.testLogin(calculateUrlParameter(), "scope");
-        ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY))
-                .setExpires_in("1000");
+        var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
+        ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("1000");
         var result = underTest.retrieveToken("scope");
         assertFalse(MoreStrings.isEmpty(result));
     }
@@ -204,8 +198,7 @@ class Oauth2AuthenticationFacadeImplTest
     void testRetrieveTokenWithNewScope() {
         underTest.sendRedirect("scope");
         underTest.testLogin(calculateUrlParameter(), "scope");
-        var result =
-            underTest.retrieveToken("scope new");
+        var result = underTest.retrieveToken("scope new");
         assertNull(result);
         dispatcher.assertAuthorizeURL(redirectorMock.getRedirectUrl());
         result = underTest.retrieveToken("scope new");
@@ -225,25 +218,24 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveOauth2RedirectUrlWithPKCEChallenge() throws NoSuchAlgorithmException {
         var url = underTest.retrieveOauth2RedirectUrl("scope", null);
-        dispatcher.assertAuthorizeURL(url, "response_type=code&scope=scope&client_id="
-                + OIDCWellKnownDispatcher.CLIENT_ID + "&state=");
+        dispatcher.assertAuthorizeURL(url,
+                "response_type=code&scope=scope&client_id=" + OIDCWellKnownDispatcher.CLIENT_ID + "&state=");
         assertNotNull(servletRequest.getSession().getAttribute("PKCE_CODE"));
-        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() >= 43, "PKCE Code is too"
-                + " short (minimum 43 characters");
-        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() <= 128, "PKCE Code is too"
-                + " long (maximum 128 characters");
+        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() >= 43,
+                "PKCE Code is too" + " short (minimum 43 characters");
+        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() <= 128,
+                "PKCE Code is too" + " long (maximum 128 characters");
         MessageDigest digest;
         digest = MessageDigest.getInstance("SHA-256");
-        final var code_challenge =
-            Base64.getUrlEncoder().withoutPadding().encodeToString(digest.digest(
-                    ((String) servletRequest.getSession().getAttribute("PKCE_CODE"))
-                            .getBytes(StandardCharsets.US_ASCII)));
+        final var code_challenge = Base64.getUrlEncoder().withoutPadding().encodeToString(digest.digest(
+                ((String) servletRequest.getSession().getAttribute("PKCE_CODE")).getBytes(StandardCharsets.US_ASCII)));
         assertTrue(url.contains("&code_challenge=" + code_challenge));
         assertTrue(url.endsWith("&redirect_uri=nulllogin.jsf"));
         url = underTest.retrieveOauth2RedirectUrl("scope", "idtoken");
 
-        dispatcher.assertAuthorizeURL(url, "response_type=code&scope=scope&client_id="
-                + OIDCWellKnownDispatcher.CLIENT_ID + "&state=", "&id_token_hint=idtoken&redirect_uri=nulllogin.jsf");
+        dispatcher.assertAuthorizeURL(url,
+                "response_type=code&scope=scope&client_id=" + OIDCWellKnownDispatcher.CLIENT_ID + "&state=",
+                "&id_token_hint=idtoken&redirect_uri=nulllogin.jsf");
     }
 
     @Test
@@ -281,10 +273,8 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveIdToken() {
         var token = new Token();
-        token.setId_token(
-                "eyJraWQiOiJXMGZvIiwiYWxnIjoiUlMyNTYifQ"
-                        +
-                        ".eyJzdWIiOiIwMjNlYmU3NC1mMzI4LTQ0NjUtYjJkMi1hOTNjOGMwMzU0MzAiLCJhdWQiOiI1eGtnZnBob2pxbTY1NWJqbnc2czJqcGFycSIsImFjciI6Imh0dHA6XC9cL2lkbWFuYWdlbWVudC5nb3ZcL25zXC9hc3N1cmFuY2VcL2xvYVwvMiIsImlzcyI6Imh0dHBzOlwvXC9yaS11eC1pbmJvdW5kLTAxLmNpLmRldi5pY3cuaW50XC9jMmlkLWZhY2FkZVwvYzJpZCIsImV4cCI6MTUwODMzMzIyOCwiaWF0IjoxNTA4MzMyMzI4LCJub25jZSI6InVuYXA0ZGtsMzl0MmdzNWJrbGMxMTdhM3FoIn0.kFcTjbTLcAbUmWWK1uo6vvl_vSC09UBa2IOF8HuQBqKUnIbLRf1vbe-WnDN1r2Eh_-NgNnPDr07eRRUjmq3wh6e-wU2IcIILry_tH6GFjAeTajuO4JKfIvEyrHI7NbUu3Wvn_iieT0dOIb0Ugoh7nMR1DdpEGsKP5nfcl9P6R8d9ewwlDLyxeGLqrQUmKlBAe2xTHr3t6FFsRcHh0gBbfEg3D0KCKjPMfDJfMf1qAYqUagFJ4fp40XXpqvlRYOkv_8gZVYxxQsAJphoDHiZl_iQLRHl-boM4ePBIMyLSAaO0ye2wN6WBaduFVhPpLpxmpBV_izujji5oaIhiNY3m7w");
+        token.setId_token("eyJraWQiOiJXMGZvIiwiYWxnIjoiUlMyNTYifQ"
+                + ".eyJzdWIiOiIwMjNlYmU3NC1mMzI4LTQ0NjUtYjJkMi1hOTNjOGMwMzU0MzAiLCJhdWQiOiI1eGtnZnBob2pxbTY1NWJqbnc2czJqcGFycSIsImFjciI6Imh0dHA6XC9cL2lkbWFuYWdlbWVudC5nb3ZcL25zXC9hc3N1cmFuY2VcL2xvYVwvMiIsImlzcyI6Imh0dHBzOlwvXC9yaS11eC1pbmJvdW5kLTAxLmNpLmRldi5pY3cuaW50XC9jMmlkLWZhY2FkZVwvYzJpZCIsImV4cCI6MTUwODMzMzIyOCwiaWF0IjoxNTA4MzMyMzI4LCJub25jZSI6InVuYXA0ZGtsMzl0MmdzNWJrbGMxMTdhM3FoIn0.kFcTjbTLcAbUmWWK1uo6vvl_vSC09UBa2IOF8HuQBqKUnIbLRf1vbe-WnDN1r2Eh_-NgNnPDr07eRRUjmq3wh6e-wU2IcIILry_tH6GFjAeTajuO4JKfIvEyrHI7NbUu3Wvn_iieT0dOIb0Ugoh7nMR1DdpEGsKP5nfcl9P6R8d9ewwlDLyxeGLqrQUmKlBAe2xTHr3t6FFsRcHh0gBbfEg3D0KCKjPMfDJfMf1qAYqUagFJ4fp40XXpqvlRYOkv_8gZVYxxQsAJphoDHiZl_iQLRHl-boM4ePBIMyLSAaO0ye2wN6WBaduFVhPpLpxmpBV_izujji5oaIhiNY3m7w");
         var testUser = BaseAuthenticatedUserInfo.builder()
                 .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token).build();
         var result = underTest.retrieveIdToken(testUser);
@@ -304,9 +294,7 @@ class Oauth2AuthenticationFacadeImplTest
         servletRequest.getSession().setAttribute("AuthenticatedUserInfo", testUser);
 
         var logoutUrl = assertDoesNotThrow(() -> underTest.retrieveClientLogoutUrl(
-                CollectionLiterals.immutableSet(
-                        new UrlParameter("foo", "bar"),
-                        new UrlParameter("baz", "buz"))));
+                CollectionLiterals.immutableSet(new UrlParameter("foo", "bar"), new UrlParameter("baz", "buz"))));
 
         dispatcher.assertLogoutURL(logoutUrl, "foo=bar", "baz=buz", "id_token_hint=idtoken");
     }

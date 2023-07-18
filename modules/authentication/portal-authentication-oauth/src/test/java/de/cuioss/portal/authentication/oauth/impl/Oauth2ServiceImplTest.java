@@ -17,7 +17,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
@@ -60,7 +59,6 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     private PortalTestConfiguration configuration;
 
     @Produces
-    @DeltaSpike
     private MockHttpServletRequest servletRequest;
 
     @Getter
@@ -84,18 +82,16 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     void testCreateAuthenticatedUserInfoFailed() {
         dispatcher.setTokenResult(EndpointAnswerHandler.RESPONSE_NOT_FOUND);
 
-        var result =
-            underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
-                    new UrlParameter("state", "456"), "scopes", "code");
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
         assertNull(result);
     }
 
     @Test
     void testDeprecatedCreateAuthenticatedUserInfo() throws IOException, InterruptedException {
 
-        var result =
-            underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
-                    new UrlParameter("state", "456"), "scopes", "code");
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
 
         var requests = dispatcher.nonWellKnownRequests(mockWebServer);
 
@@ -106,8 +102,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertFalse(authHeader.isEmpty());
         assertEquals("Bearer SlAV32hkKG", authHeader.get(0));
         assertNotNull(result);
-        assertTrue(
-                result.getContextMap().containsKey(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
+        assertTrue(result.getContextMap().containsKey(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
         assertEquals("user",
                 result.getContextMap().get(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
     }
@@ -120,12 +115,8 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
 
         var code = new BigInteger(260, new Random()).toString(32);
 
-        var result = underTest.createAuthenticatedUserInfo(
-                servletRequest,
-                new UrlParameter("code", "123"),
-                new UrlParameter("state", "456"),
-                "scopes",
-                code);
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", code);
 
         var requests = dispatcher.nonWellKnownRequests(mockWebServer);
 
@@ -139,10 +130,8 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         var acceptHeader = request.getHeaders().values("Accept");
         assertFalse(acceptHeader.isEmpty());
         assertEquals(MediaType.APPLICATION_JSON, acceptHeader.get(0));
-        assertEquals(
-                "grant_type=authorization_code&code=123&state=456&code_verifier=" + code + "&redirect_uri=http%3A%2F"
-                        + "%2Fpathsome.url",
-                request.getBody().readUtf8());
+        assertEquals("grant_type=authorization_code&code=123&state=456&code_verifier=" + code
+                + "&redirect_uri=http%3A%2F" + "%2Fpathsome.url", request.getBody().readUtf8());
 
         request = requests.get(1);
         assertNotNull(request);
@@ -153,8 +142,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertEquals("j.doe", result.getDisplayName());
         assertThat(result.getRoles(), hasItem("testRole"));
         assertThat(result.getRoles(), hasItem("patientRole"));
-        assertTrue(
-                result.getContextMap().containsKey(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
+        assertTrue(result.getContextMap().containsKey(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
         assertEquals("user",
                 result.getContextMap().get(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
     }
@@ -202,12 +190,8 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     private OauthAuthenticatedUserInfo setupAuthorizedUser() {
         var code = new BigInteger(260, new Random()).toString(32);
 
-        var initialUser = underTest.createAuthenticatedUserInfo(
-                servletRequest,
-                new UrlParameter("code", "123"),
-                new UrlParameter("state", "456"),
-                "scopes",
-                code);
+        var initialUser = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", code);
         var user = OauthAuthenticatedUserInfo.createOf(initialUser);
         return user;
     }
