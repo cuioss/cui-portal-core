@@ -22,8 +22,7 @@ class GeneratorMetadata extends DefaultMetadata {
     private static final TypedGenerator<String> names = letterStrings(1, 5);
 
     public GeneratorMetadata() {
-        super(names.next(), names.next(), names.next(), enumValues(MetricType.class).next(),
-                names.next());
+        super(names.next(), names.next(), names.next(), enumValues(MetricType.class).next(), names.next());
     }
 
 }

@@ -35,9 +35,7 @@ import de.cuioss.test.juli.junit5.EnableTestLogger;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
-@AddBeanClasses({
-    ConnectionMetadataProducer.class,
-    ConnectionMetadata.class })
+@AddBeanClasses({ ConnectionMetadataProducer.class, ConnectionMetadata.class })
 @EnableTestLogger
 class ConnectionMetadataProducerTest {
 
@@ -171,8 +169,7 @@ class ConnectionMetadataProducerTest {
         configuration.fireEvent();
         final var connectionMetadata = metadataProvider.get();
         assertNotNull(connectionMetadata);
-        assertEquals(AuthenticationType.BASIC,
-                connectionMetadata.getAuthenticationType());
+        assertEquals(AuthenticationType.BASIC, connectionMetadata.getAuthenticationType());
         assertEquals(USER, connectionMetadata.getLoginCredentials().getUsername());
         assertEquals(PASSWORD3, connectionMetadata.getLoginCredentials().getPassword());
         assertEquals(CONNECTION_URL, connectionMetadata.getServiceUrl());
@@ -379,8 +376,7 @@ class ConnectionMetadataProducerTest {
     @Test
     void shouldHandleConfigProperties() {
         defaultConfig();
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE,
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE,
                 AuthenticationType.NONE.name());
         configuration.fireEvent();
         assertTrue(metadataProvider.get().getContextMap().isEmpty());
@@ -394,8 +390,7 @@ class ConnectionMetadataProducerTest {
     @Test
     void shouldDetermineAuthenticationTypeForSubkey() {
         defaultConfig();
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, "");
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, "");
         configuration.fireEvent();
 
         assertEquals(AuthenticationType.BASIC, metadataProvider.get().getAuthenticationType());
@@ -439,86 +434,54 @@ class ConnectionMetadataProducerTest {
     }
 
     private void authTypeConfig() {
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY,
-                CONNECTION_URL);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY, CONNECTION_URL);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY,
-                DESCRIPTION);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY, DESCRIPTION);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE,
-                "none");
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, "none");
     }
 
     private void defaultConfig() {
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME,
-                USER);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME, USER);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD,
-                PASSWORD3);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD, PASSWORD3);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY,
-                CONNECTION_URL);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY, CONNECTION_URL);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY,
-                DESCRIPTION);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY, DESCRIPTION);
     }
 
     private void applicationTokenConfig() {
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY,
-                TOKEN_KEY);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY, TOKEN_KEY);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN,
-                TOKEN_VALUE);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN, TOKEN_VALUE);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY,
-                CONNECTION_URL);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY, CONNECTION_URL);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY,
-                DESCRIPTION);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY, DESCRIPTION);
     }
 
     private void certificateConfig() {
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION,
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION,
                 truststoreLocation);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD,
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD,
                 TRUSTSTORE_PASSWORD);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION,
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION,
                 keystoreLocation);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
                 KEYSTORE_PASSWORD);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
-                PASSWORD3);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD, PASSWORD3);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY,
-                CONNECTION_URL);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY, CONNECTION_URL);
 
-        configuration.put(
-                BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY,
-                DESCRIPTION);
+        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY, DESCRIPTION);
     }
 
     private void basicAuthConfig() {

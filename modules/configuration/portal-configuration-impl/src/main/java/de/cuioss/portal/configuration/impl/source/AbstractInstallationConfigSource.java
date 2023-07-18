@@ -15,8 +15,9 @@ import de.cuioss.tools.io.FileSystemLoader;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Abstract class for loading installation configuration such as application.yml.
- * A non existing file is nicely handled and re-loaded if it is added in a later point in time.
+ * Abstract class for loading installation configuration such as
+ * application.yml. A non existing file is nicely handled and re-loaded if it is
+ * added in a later point in time.
  *
  * @author Sven Haag
  */
@@ -65,9 +66,9 @@ public abstract class AbstractInstallationConfigSource extends AbstractPortalCon
     }
 
     /**
-     * A path is always initialized, despite the file might not exist yet!
-     * if {@link #reload()} is triggered, the file might actually exist and we can load properties
-     * from it.
+     * A path is always initialized, despite the file might not exist yet! if
+     * {@link #reload()} is triggered, the file might actually exist and we can load
+     * properties from it.
      */
     public void initPath() {
         LOGGER.debug(() -> "init path for: " + getName());

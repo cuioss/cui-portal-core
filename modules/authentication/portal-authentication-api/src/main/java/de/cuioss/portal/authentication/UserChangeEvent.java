@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Defines events that will be fired on changes on user-credentials. The payload is the new user of
- * type {@link AuthenticatedUserInfo}.
+ * Defines events that will be fired on changes on user-credentials. The payload
+ * is the new user of type {@link AuthenticatedUserInfo}.
  *
  * @author Oliver Wolff
  */

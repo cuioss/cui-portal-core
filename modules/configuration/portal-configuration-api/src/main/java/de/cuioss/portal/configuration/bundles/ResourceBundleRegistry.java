@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Registry for the ResourceBundleNames. Provides the resulting list of configured resource bundles
- * ordered by priority.
+ * Registry for the ResourceBundleNames. Provides the resulting list of
+ * configured resource bundles ordered by priority.
  *
  * @author Matthias Walliczek
  */

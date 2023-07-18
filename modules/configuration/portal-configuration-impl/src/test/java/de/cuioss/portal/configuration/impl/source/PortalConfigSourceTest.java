@@ -97,7 +97,7 @@ class PortalConfigSourceTest {
     }
 
     @Test
-    void listAndArrays(){
+    void listAndArrays() {
         assertNotNull(stringList);
         assertEquals(3, stringList.size());
 
@@ -226,9 +226,9 @@ class PortalConfigSourceTest {
         final var KEY = PREFIX.toLowerCase() + ".portal.test.env";
         final var ENV_KEY = PREFIX.toUpperCase() + "_" + "PORTAL_TEST_ENV";
 
-        assertTrue(StreamSupport.stream(
-                ConfigProvider.getConfig().getConfigSources().spliterator(), false)
-                .anyMatch(clazz -> clazz instanceof TestEnvConfigSource),
+        assertTrue(
+                StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
+                        .anyMatch(clazz -> clazz instanceof TestEnvConfigSource),
                 "TestEnvConfigSource class not available in configuration system");
 
         TestEnvConfigSource.getAdditionalProperties().put(ENV_KEY, "ENV");

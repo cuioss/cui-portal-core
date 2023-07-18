@@ -14,8 +14,7 @@ public class VaultClientConfigKeys {
     /**
      * Location of the property file for the default-configuration
      */
-    public static final String VAULT_DEFAULT_CONFIG_LOCATION =
-        "classpath:/META-INF/vault_client_default_configuration.yml";
+    public static final String VAULT_DEFAULT_CONFIG_LOCATION = "classpath:/META-INF/vault_client_default_configuration.yml";
 
     private static final String VAULT_BASE = PortalConfigurationKeys.INTEGRATION_BASE + "vault.";
     private static final String VAULT_ENDPOINT_BASE = VAULT_BASE + "endpoint.";

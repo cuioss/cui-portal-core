@@ -7,7 +7,8 @@ import javax.ws.rs.client.ClientRequestFilter;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Runs before {@link LogReaderInterceptor} because it has a lower {@link Priority}.
+ * Runs before {@link LogReaderInterceptor} because it has a lower
+ * {@link Priority}.
  */
 @Priority(42)
 public class LogClientRequestFilter42 implements ClientRequestFilter {

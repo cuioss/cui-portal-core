@@ -18,8 +18,8 @@ import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
 
 /**
- * Helper class that will log the final configuration derived by all sources. It will only run if it
- * is set on info-level.
+ * Helper class that will log the final configuration derived by all sources. It
+ * will only run if it is set on info-level.
  *
  * @author Oliver Wolff
  * @see "io.smallrye.config.LoggingConfigSourceInterceptor"
@@ -41,8 +41,8 @@ public class PortalConfigurationLogger implements ApplicationInitializer {
 
         log.info("JVM Configuration:\n" + Joiner.on('\n').join(extractSystemProperties()));
         log.info("Environment Configuration:\n" + Joiner.on('\n').join(extractProperties(System.getenv())));
-        log.info("Portal Configuration:\n" + Joiner.on('\n').join(extractProperties(
-            ConfigurationHelper.resolveConfigProperties())));
+        log.info("Portal Configuration:\n"
+                + Joiner.on('\n').join(extractProperties(ConfigurationHelper.resolveConfigProperties())));
     }
 
     private List<String> extractProperties(final Map<String, String> input) {
@@ -74,14 +74,13 @@ public class PortalConfigurationLogger implements ApplicationInitializer {
     /**
      * Simple helper method that filters password keys
      *
-     * @param key must not be null
+     * @param key   must not be null
      * @param value value
-     * @return the string literal "FILTERED_PASSWORD" in case the given key contains the token
-     *         "password" or "Password", otherwise the given value
+     * @return the string literal "FILTERED_PASSWORD" in case the given key contains
+     *         the token "password" or "Password", otherwise the given value
      */
     public static String filterPassword(final String key, final String value) {
-        if (!isEmpty(value)
-            && (key.contains("password") || key.contains("Password"))) {
+        if (!isEmpty(value) && (key.contains("password") || key.contains("Password"))) {
             return FILTERED_PASSWORD;
         }
         return value;

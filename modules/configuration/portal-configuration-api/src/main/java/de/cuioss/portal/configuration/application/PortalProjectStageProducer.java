@@ -14,9 +14,9 @@ import javax.inject.Qualifier;
 import de.cuioss.uimodel.application.CuiProjectStage;
 
 /**
- * Marker identifying concrete instances of the {@link CuiProjectStage}.
- * The implementation must ensure that it never returns <code>null</code>.
- * Fallback must always be "production".
+ * Marker identifying concrete instances of the {@link CuiProjectStage}. The
+ * implementation must ensure that it never returns <code>null</code>. Fallback
+ * must always be "production".
  *
  * @author Oliver Wolff
  */

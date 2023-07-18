@@ -17,8 +17,8 @@ import de.cuioss.portal.configuration.impl.source.InstallationProductionFileConf
 import io.smallrye.config.inject.ConfigProducer;
 
 /**
- * Using this annotations at type-level of a junit 5 test provides the basic types for handling
- * configuration in unit-tests. It includes the types:
+ * Using this annotations at type-level of a junit 5 test provides the basic
+ * types for handling configuration in unit-tests. It includes the types:
  *
  * <ul>
  * <li>{@link ConfigProducer}</li>
@@ -33,11 +33,7 @@ import io.smallrye.config.inject.ConfigProducer;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-@AddBeanClasses({
-    ConfigProducer.class,
-    PortalConfigProducer.class,
-    PortalConfigurationMock.class,
-    InstallationConfigSourcePathInitializer.class,
-    ConfigChangeObserver.class})
+@AddBeanClasses({ ConfigProducer.class, PortalConfigProducer.class, PortalConfigurationMock.class,
+        InstallationConfigSourcePathInitializer.class, ConfigChangeObserver.class })
 public @interface EnablePortalConfiguration {
 }

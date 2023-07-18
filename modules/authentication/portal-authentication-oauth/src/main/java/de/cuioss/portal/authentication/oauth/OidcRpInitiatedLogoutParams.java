@@ -31,9 +31,9 @@ public class OidcRpInitiatedLogoutParams {
     public static final String UI_LOCALES = "ui_locales";
 
     /**
-     * A valid ID token attribute is required, in order for the IDP to check the given redirect URI
-     * against the oauth clients post_logout_redirect_uris list.
-     * 
+     * A valid ID token attribute is required, in order for the IDP to check the
+     * given redirect URI against the oauth clients post_logout_redirect_uris list.
+     *
      * @param idTokenHint to be created
      * @return The correctly prefixed parameter
      */

@@ -27,7 +27,6 @@ public class InstallationProductionFileConfigSource extends AbstractInstallation
         return false;
     }
 
-
     @Override
     public int getPortalPriority() {
         return super.getPortalPriority() + 5;

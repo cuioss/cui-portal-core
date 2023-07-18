@@ -24,7 +24,8 @@ import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Provides a factory for programmatically creating and registering cache metrics.
+ * Provides a factory for programmatically creating and registering cache
+ * metrics.
  * <p>
  * {@code Caffeine.newBuilder().recordStats()} should be used!
  *
@@ -36,11 +37,8 @@ import de.cuioss.tools.logging.CuiLogger;
  * &#64;Inject
  * &#64;RegistryType(type = MetricRegistry.Type.APPLICATION)
  * private MetricRegistry appRegistry;
- * final Cache<String, String> cache = Caffeine.newBuilder()
- *         .maximumSize(cacheConfig.getSize())
- *         .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
- *         .recordStats()
- *         .build();
+ * final Cache<String, String> cache = Caffeine.newBuilder().maximumSize(cacheConfig.getSize())
+ *         .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit()).recordStats().build();
  * new CaffeineCacheMetrics("my-cache-name", cache, cacheConfig).bindTo(appRegistry);
  * </pre>
  *
@@ -56,25 +54,23 @@ public class CaffeineCacheMetrics {
     private final Tag[] tags;
 
     /**
-     * @param namePrefix must not be null nor empty. Used to separate different caches
-     * @param cache must not be null
+     * @param namePrefix  must not be null nor empty. Used to separate different
+     *                    caches
+     * @param cache       must not be null
      * @param cacheConfig the configuration for that cache must not be null
      */
-    public CaffeineCacheMetrics(final String namePrefix,
-            final Cache<?, ?> cache,
-            final CacheConfig cacheConfig) {
+    public CaffeineCacheMetrics(final String namePrefix, final Cache<?, ?> cache, final CacheConfig cacheConfig) {
         this(namePrefix, cache, cacheConfig, Collections.emptySet());
     }
 
     /**
-     * @param namePrefix must not be null nor empty. Used to separate different caches
-     * @param cache must not be null
+     * @param namePrefix  must not be null nor empty. Used to separate different
+     *                    caches
+     * @param cache       must not be null
      * @param cacheConfig the configuration for that cache must not be null
-     * @param tags tags to be added to each metric
+     * @param tags        tags to be added to each metric
      */
-    public CaffeineCacheMetrics(final String namePrefix,
-            final Cache<?, ?> cache,
-            final CacheConfig cacheConfig,
+    public CaffeineCacheMetrics(final String namePrefix, final Cache<?, ?> cache, final CacheConfig cacheConfig,
             final Iterable<Tag> tags) {
         requireNonNull(emptyToNull(namePrefix));
         requireNonNull(cache);
@@ -87,8 +83,8 @@ public class CaffeineCacheMetrics {
     }
 
     /**
-     * @return a newly created {@link Map} with {@link Metric} providing a number of {@link Gauge}s
-     *         with a consistent naming-scheme
+     * @return a newly created {@link Map} with {@link Metric} providing a number of
+     *         {@link Gauge}s with a consistent naming-scheme
      */
     private HashMap<Metadata, Metric> createMetrics() {
         final var metrics = new HashMap<Metadata, Metric>();
@@ -111,11 +107,8 @@ public class CaffeineCacheMetrics {
     }
 
     private Metadata getMetadata(final String name) {
-        return new MetadataBuilder()
-                .withName(name(namePrefix, name))
-                .withType(MetricType.GAUGE)
-                .withUnit(MetricUnits.NONE)
-                .build();
+        return new MetadataBuilder().withName(name(namePrefix, name)).withType(MetricType.GAUGE)
+                .withUnit(MetricUnits.NONE).build();
     }
 
     /**
@@ -135,15 +128,13 @@ public class CaffeineCacheMetrics {
 
     /**
      * @param namePrefix must not be null
-     * @param registry to remove from
+     * @param registry   to remove from
      *
      * @throws NullPointerException if namePrefix or registry is null
      */
     public static void remove(final String namePrefix, final MetricRegistry registry) {
         requireNonNull(emptyToNull(namePrefix));
         requireNonNull(registry);
-        registry.getNames().stream()
-                .filter(name -> name.startsWith(namePrefix))
-                .forEach(registry::remove);
+        registry.getNames().stream().filter(name -> name.startsWith(namePrefix)).forEach(registry::remove);
     }
 }

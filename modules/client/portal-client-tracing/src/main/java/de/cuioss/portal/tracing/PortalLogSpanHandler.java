@@ -25,8 +25,7 @@ final class PortalLogSpanHandler extends SpanHandler {
     public boolean end(final TraceContext context, final MutableSpan span, final Cause cause) {
         // doing maybeScope ensures that the MDC contains the correct tracing data
         try (final var scope = currentTraceContext.maybeScope(context)) {
-            var result = Arrays.asList(LoggingStrategies.values())
-                    .stream()
+            var result = Arrays.asList(LoggingStrategies.values()).stream()
                     .anyMatch(handler -> handler.doLogHandled(span));
             if (!result) {
                 log.debug("Scope '%s' could not be handled", scope);
@@ -84,8 +83,7 @@ final class PortalLogSpanHandler extends SpanHandler {
 
             @Override
             public boolean doLogHandled(MutableSpan span) {
-                if (requestPathContains(span, "/status")
-                        || requestPathContains(span, "/health")
+                if (requestPathContains(span, "/status") || requestPathContains(span, "/health")
                         || requestPathContains(span, "/metrics")) {
                     log.trace(span.toString());
                     return true;

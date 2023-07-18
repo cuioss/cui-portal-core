@@ -26,9 +26,8 @@ class AuthenticationTypeTest {
 
     @Test
     void shouldResolveCertificate() {
-        assertEquals(AuthenticationType.CERTIFICATE,
-                AuthenticationType.resolveFrom(TEST,
-                        immutableMap("authentication", AuthenticationType.CERTIFICATE.name())));
+        assertEquals(AuthenticationType.CERTIFICATE, AuthenticationType.resolveFrom(TEST,
+                immutableMap("authentication", AuthenticationType.CERTIFICATE.name())));
         assertEquals(AuthenticationType.CERTIFICATE,
                 AuthenticationType.resolveFrom(TEST, immutableMap(CERT_BASE + "keyStore", SOME_VALUE)));
         assertEquals(AuthenticationType.CERTIFICATE,

@@ -39,8 +39,7 @@ public class ConnectionMetadata implements Serializable {
 
     private static final CuiLogger log = new CuiLogger(ConnectionMetadata.class);
 
-    private static final String PORTAL_510 =
-        "Portal-510: Unable to create SSLContext for connection '{}', due to '{}', defaulting to default ssl configuration";
+    private static final String PORTAL_510 = "Portal-510: Unable to create SSLContext for connection '{}', due to '{}', defaulting to default ssl configuration";
 
     private static final long serialVersionUID = -8168073688801716947L;
 
@@ -82,8 +81,8 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Defines the {@link SSLContext} derived from {@link #getKeyStoreInfo()} and
-     * {@link #getTrustStoreInfo()} or the Default-context, if at least one of the other contexts is
-     * {@code null}
+     * {@link #getTrustStoreInfo()} or the Default-context, if at least one of the
+     * other contexts is {@code null}
      */
     private transient SSLContext sslContext;
 
@@ -139,10 +138,9 @@ public class ConnectionMetadata implements Serializable {
     private TimeUnit readTimeoutUnit = TimeUnit.SECONDS;
 
     /**
-     * Enable or disable distributed tracing for this connection.
-     * Only effective if
-     * {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED} is enabled.
-     * Defaults to <code>true</code>.
+     * Enable or disable distributed tracing for this connection. Only effective if
+     * {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED}
+     * is enabled. Defaults to <code>true</code>.
      */
     @Getter
     @Setter
@@ -158,9 +156,8 @@ public class ConnectionMetadata implements Serializable {
     private Integer proxyPort;
 
     /**
-     * @return boolean indicating whether credentials are necessary. It is true
-     *         if {@link #getAuthenticationType()} is
-     *         {@link AuthenticationType#BASIC}
+     * @return boolean indicating whether credentials are necessary. It is true if
+     *         {@link #getAuthenticationType()} is {@link AuthenticationType#BASIC}
      */
     public boolean isLoginCredentialsNecessary() {
         return AuthenticationType.BASIC.equals(getAuthenticationType());
@@ -169,7 +166,7 @@ public class ConnectionMetadata implements Serializable {
     /**
      * Adds an entry to the contained contextMap
      *
-     * @param key to be added, must not be null
+     * @param key   to be added, must not be null
      * @param value to be added, must not be null
      * @return The {@link ConnectionMetadata} itself providing fluent-style-api
      */
@@ -180,8 +177,8 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Creates an {@link SSLContext} created from the information derived by
-     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}. If this fail it will default to
-     * the platform defaults.
+     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}. If this fail it
+     * will default to the platform defaults.
      *
      * @return the created {@link SSLContext}
      */
@@ -198,8 +195,8 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Creates an {@link SSLContext} created from the information derived by
-     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}. If this fail it will return
-     * {@link Optional#empty()}.
+     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}. If this fail it
+     * will return {@link Optional#empty()}.
      *
      * @return the created {@link SSLContext}
      */
@@ -216,31 +213,28 @@ public class ConnectionMetadata implements Serializable {
                 var trustStore = getTrustStoreInfo().resolveKeyStore();
                 if (trustStore.isPresent()) {
                     contextBuilder.loadTrustMaterial(trustStore.get(), null);
-                    log.debug("truststore '{}' set for connection: {}",
-                            getTrustStoreInfo(), getConnectionId());
+                    log.debug("truststore '{}' set for connection: {}", getTrustStoreInfo(), getConnectionId());
                 }
             }
             if (null != getKeyStoreInfo()) {
                 var keyStore = getKeyStoreInfo().resolveKeyStore();
                 if (keyStore.isPresent()) {
-                    contextBuilder.loadKeyMaterial(keyStore.get(),
-                            getKeyStoreInfo().getKeyOrStorePassword());
-                    log.debug("keystore {} set for connection: {}",
-                            getKeyStoreInfo().getLocation(), getConnectionId());
+                    contextBuilder.loadKeyMaterial(keyStore.get(), getKeyStoreInfo().getKeyOrStorePassword());
+                    log.debug("keystore {} set for connection: {}", getKeyStoreInfo().getLocation(), getConnectionId());
                 }
             }
             return Optional.of(contextBuilder.build());
-        } catch (final NoSuchAlgorithmException | UnrecoverableKeyException
-                | KeyStoreException | KeyManagementException e) {
+        } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
+                | KeyManagementException e) {
             log.error(e, PORTAL_510, connectionId, e.getMessage());
             return Optional.empty();
         }
     }
 
     /**
-     * Checks whether this object is correctly configured. If not it will throw
-     * an {@link ConnectionConfigurationException} communicating what is not
-     * configured correctly.
+     * Checks whether this object is correctly configured. If not it will throw an
+     * {@link ConnectionConfigurationException} communicating what is not configured
+     * correctly.
      *
      * @throws ConnectionConfigurationException if a mandatory property is not set.
      */
@@ -263,8 +257,8 @@ public class ConnectionMetadata implements Serializable {
         if (authenticationType.isTokenType() && null == tokenResolver) {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_TOKEN);
         }
-        if (!MoreStrings.isBlank(proxyHost) && (null == proxyPort || proxyPort <= 0) ||
-                null != proxyPort && proxyPort > 0 && MoreStrings.isBlank(proxyHost)) {
+        if (!MoreStrings.isBlank(proxyHost) && (null == proxyPort || proxyPort <= 0)
+                || null != proxyPort && proxyPort > 0 && MoreStrings.isBlank(proxyHost)) {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_PROXY);
         }
     }

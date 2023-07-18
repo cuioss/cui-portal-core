@@ -10,7 +10,8 @@ import javax.inject.Named;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 
 /**
- * Expose the application configuration as resource bundle to allow EL expressions like
+ * Expose the application configuration as resource bundle to allow EL
+ * expressions like
  *
  * <pre>
  * #{configuration['xzy']}

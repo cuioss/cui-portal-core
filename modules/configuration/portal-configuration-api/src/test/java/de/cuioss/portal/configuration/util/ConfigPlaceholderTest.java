@@ -76,12 +76,8 @@ class ConfigPlaceholderTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "${key:default}, key, default",
-        "${key:${key2}}, key, ${key2}",
-        "${key:${key2}crap}, key, ${key2}crap",
-        "${key:foo:bar}, key, foo:bar"
-    })
+    @CsvSource({ "${key:default}, key, default", "${key:${key2}}, key, ${key2}", "${key:${key2}crap}, key, ${key2}crap",
+            "${key:foo:bar}, key, foo:bar" })
     void splitPlaceholderWithDefault(String full, String expected1, String expected2) {
         var result = ConfigPlaceholder.split(full);
 

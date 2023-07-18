@@ -35,8 +35,7 @@ import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
 
 /**
- * Simple Mock variant of {@link MetricRegistry}.
- * Partially implemented.
+ * Simple Mock variant of {@link MetricRegistry}. Partially implemented.
  *
  * @author Oliver Wolff
  * @author Sven Haag
@@ -44,8 +43,8 @@ import org.eclipse.microprofile.metrics.Timer;
 @ApplicationScoped
 public class PortalTestMetricRegistry implements MetricRegistry {
 
-    private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION =
-        new UnsupportedOperationException("Not implemented yet");
+    private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException(
+            "Not implemented yet");
 
     private final Map<String, Metadata> metadataMap = new HashMap<>();
     private final Map<MetricID, Metric> metricMap = new ConcurrentHashMap<>();
@@ -56,10 +55,8 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      * @return the metric with the given name
      */
     public Optional<Metric> getMetric(final String name) {
-        return metricMap.entrySet().stream()
-            .filter(e -> e.getKey().getName().equals(name))
-            .map(Map.Entry::getValue)
-            .findAny();
+        return metricMap.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).map(Map.Entry::getValue)
+                .findAny();
     }
 
     /**
@@ -68,9 +65,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      * @return {@link Optional} on the requested {@link MetricID}
      */
     public Optional<MetricID> getMetricID(final String name) {
-        return metricMap.keySet().stream()
-            .filter(metric -> metric.getName().equals(name))
-            .findAny();
+        return metricMap.keySet().stream().filter(metric -> metric.getName().equals(name)).findAny();
     }
 
     /**
@@ -324,11 +319,8 @@ public class PortalTestMetricRegistry implements MetricRegistry {
         };
 
         metricMap.put(id, timer);
-        metadataMap.put(name, new MetadataBuilder()
-            .withName(name)
-            .withType(MetricType.TIMER)
-            .withUnit(MetricUnits.NANOSECONDS)
-            .build());
+        metadataMap.put(name, new MetadataBuilder().withName(name).withType(MetricType.TIMER)
+                .withUnit(MetricUnits.NANOSECONDS).build());
         return timer;
     }
 

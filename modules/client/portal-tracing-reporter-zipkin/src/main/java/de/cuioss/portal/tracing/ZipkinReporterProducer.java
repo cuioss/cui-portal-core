@@ -38,8 +38,7 @@ public class ZipkinReporterProducer {
     @Produces
     @Dependent
     @Alternative
-    Reporter<Span> zipkinReporter(
-            @ConfigProperty(name = PORTAL_TRACING_REPORTER_URL) final Optional<String> url) {
+    Reporter<Span> zipkinReporter(@ConfigProperty(name = PORTAL_TRACING_REPORTER_URL) final Optional<String> url) {
 
         if (!url.isPresent()) {
             LOGGER.debug("Zipkin reporting disabled due to missing value for configuration key: "
@@ -48,10 +47,7 @@ public class ZipkinReporterProducer {
         }
 
         LOGGER.info("Span reporting enabled. URL: {}", url.get());
-        final Sender sender = URLConnectionSender.newBuilder()
-                .endpoint(url.get())
-                .encoding(Encoding.JSON)
-                .build();
+        final Sender sender = URLConnectionSender.newBuilder().endpoint(url.get()).encoding(Encoding.JSON).build();
 
         return AsyncReporter.builder(sender)
                 // TODO .metrics()

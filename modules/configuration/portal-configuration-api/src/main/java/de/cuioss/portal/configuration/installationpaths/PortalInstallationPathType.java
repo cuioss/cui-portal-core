@@ -13,7 +13,8 @@ public enum PortalInstallationPathType {
     CUSTOMIZATION_DIRECTORY;
 
     /**
-     * Simple Helper method for creating {@link PortalInstallationPathChangedPayload}s
+     * Simple Helper method for creating
+     * {@link PortalInstallationPathChangedPayload}s
      *
      * @param oldPath may be null
      * @param newPath may be null

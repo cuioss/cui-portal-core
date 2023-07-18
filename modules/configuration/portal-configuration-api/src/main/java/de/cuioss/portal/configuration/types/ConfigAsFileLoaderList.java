@@ -17,9 +17,10 @@ import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.io.FileLoader;
 
 /**
- * Injects a config property as an immutable {@link List} of {@link FileLoader}. The corresponding
- * producer may return an empty {@link List}.See {@link #failOnNotAccessible()} for details
- * regarding handling of not accessible files.
+ * Injects a config property as an immutable {@link List} of {@link FileLoader}.
+ * The corresponding producer may return an empty {@link List}.See
+ * {@link #failOnNotAccessible()} for details regarding handling of not
+ * accessible files.
  *
  * @author Oliver Wolff
  */
@@ -36,8 +37,8 @@ public @interface ConfigAsFileLoaderList {
 
     /**
      * @return boolean indicating whether the corresponding producer should throw an
-     *         {@link IllegalArgumentException} in case the filepath derived by the property is not
-     *         accessible. Defaults to {@code true}.
+     *         {@link IllegalArgumentException} in case the filepath derived by the
+     *         property is not accessible. Defaults to {@code true}.
      */
     @Nonbinding
     boolean failOnNotAccessible() default true;

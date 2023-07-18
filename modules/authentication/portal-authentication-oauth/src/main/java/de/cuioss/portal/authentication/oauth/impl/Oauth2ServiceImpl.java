@@ -53,19 +53,15 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     private static final String RETRIEVE_CLIENT_TOKEN_FAILED_MSG = "Portal-135: Retrieving client token failed";
 
     /**
-     * The request to retrieve a user specific token from the c2id-server after being redirected
-     * from the login page to
-     * the application again.
+     * The request to retrieve a user specific token from the c2id-server after
+     * being redirected from the login page to the application again.
      */
     public interface RequestToken extends Closeable {
 
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        Token requestToken(
-                @FormParam("grant_type") String grantType,
-                @FormParam("code") String code,
-                @FormParam("state") String state,
-                @FormParam("code_verifier") String codeVerifier,
+        Token requestToken(@FormParam("grant_type") String grantType, @FormParam("code") String code,
+                @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
                 @FormParam("redirect_uri") String redirectUri);
     }
 
@@ -73,15 +69,13 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
 
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        Token requestToken(
-                @FormParam("grant_type") String grantType,
-                @FormParam("refresh_token") String refreshToken);
+        Token requestToken(@FormParam("grant_type") String grantType, @FormParam("refresh_token") String refreshToken);
     }
 
     /**
-     * The request to retrieve a client application specific token form the c2d-server to be used
-     * for services without
-     * having an authenticated user (registration, forget password e.g.).
+     * The request to retrieve a client application specific token form the
+     * c2d-server to be used for services without having an authenticated user
+     * (registration, forget password e.g.).
      */
     public interface RequestClientToken extends Closeable {
 
@@ -147,19 +141,16 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
 
     private AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Oauth2Configuration configuration,
             Token token, int tokenTimestamp) {
-        final var builder =
-            new CuiRestClientBuilder(log).register(new AcceptJsonHeaderFilter());
+        final var builder = new CuiRestClientBuilder(log).register(new AcceptJsonHeaderFilter());
 
         try (var client = builder.url(configuration.getUserInfoUri().trim()).bearerAuthToken(token.getAccess_token())
                 .build(RequestUserInfo.class)) {
             var userInfo = client.getUserInfo();
 
-            var baseAuthenticatedUserInfoBuilder =
-                BaseAuthenticatedUserInfo.builder().authenticated(true)
-                        .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_SCOPES_KEY, scopes)
-                        .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token)
-                        .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
-                                tokenTimestamp);
+            var baseAuthenticatedUserInfoBuilder = BaseAuthenticatedUserInfo.builder().authenticated(true)
+                    .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_SCOPES_KEY, scopes)
+                    .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token)
+                    .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY, tokenTimestamp);
 
             for (Entry<String, Object> entry : userInfo.entrySet()) {
                 if ("preferred_username".equals(entry.getKey())) {
@@ -167,16 +158,16 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
                 } else if ("sub".equals(entry.getKey())) {
                     baseAuthenticatedUserInfoBuilder.identifier(entry.getValue().toString());
                 } else if ("email".equals(entry.getKey())) {
-                    baseAuthenticatedUserInfoBuilder
-                            .contextMapElement(Oauth2AuthenticationFacade.EMAIL_KEY, entry.getValue().toString());
+                    baseAuthenticatedUserInfoBuilder.contextMapElement(Oauth2AuthenticationFacade.EMAIL_KEY,
+                            entry.getValue().toString());
                 } else if (configuration.getRoleMapperClaims().contains(entry.getKey())) {
                     baseAuthenticatedUserInfoBuilder.roles(asStringList(entry.getValue()));
                 } else {
                     // parse domain specific user info entries as key / value information in the
                     // contextMap
-                    baseAuthenticatedUserInfoBuilder
-                            .contextMapElement(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + entry.getKey(),
-                                    entry.getValue().toString());
+                    baseAuthenticatedUserInfoBuilder.contextMapElement(
+                            Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + entry.getKey(),
+                            entry.getValue().toString());
                 }
             }
 
@@ -207,12 +198,11 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     @Override
     public String retrieveClientToken(String scopes) {
         var configuration = configurationProvider.get();
-        final var builder = new CuiRestClientBuilder(log).basicAuth(configuration.getClientId(),
-                configuration.getClientSecret())
+        final var builder = new CuiRestClientBuilder(log)
+                .basicAuth(configuration.getClientId(), configuration.getClientSecret())
                 .register(new AcceptJsonHeaderFilter());
 
-        try (var requestToken = builder.url(configuration.getTokenUri().trim())
-                .build(RequestClientToken.class)) {
+        try (var requestToken = builder.url(configuration.getTokenUri().trim()).build(RequestClientToken.class)) {
 
             var token = requestToken.requestToken("client_credentials");
             return token.getAccess_token();
@@ -230,12 +220,11 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     @Override
     public String refreshToken(OauthAuthenticatedUserInfo currentUser) {
         var configuration = configurationProvider.get();
-        final var builder = new CuiRestClientBuilder(log).basicAuth(configuration.getClientId(),
-                configuration.getClientSecret())
+        final var builder = new CuiRestClientBuilder(log)
+                .basicAuth(configuration.getClientId(), configuration.getClientSecret())
                 .register(new AcceptJsonHeaderFilter());
 
-        try (var requestToken = builder.url(configuration.getTokenUri().trim())
-                .build(RequestRefreshToken.class)) {
+        try (var requestToken = builder.url(configuration.getTokenUri().trim()).build(RequestRefreshToken.class)) {
 
             var token = requestToken.requestToken("refresh_token", currentUser.getToken().getRefresh_token());
             if (null != token) {

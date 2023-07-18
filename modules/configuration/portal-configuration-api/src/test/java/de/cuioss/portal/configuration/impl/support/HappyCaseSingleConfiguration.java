@@ -21,8 +21,7 @@ public class HappyCaseSingleConfiguration {
     public static final String SINGLE_KEY = PREFIX + "single";
     public static final String SINGLE_VALUE = "singleHappyValue";
 
-    public static final Map<String, String> HAPPY_CASE_MAP =
-        immutableMap(SINGLE_KEY, SINGLE_VALUE);
+    public static final Map<String, String> HAPPY_CASE_MAP = immutableMap(SINGLE_KEY, SINGLE_VALUE);
 
     @Getter
     @Setter

@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Marker identifying instances of {@link ResourceBundleRegistry}s that define the location of
- * ResourceBundles
+ * Marker identifying instances of {@link ResourceBundleRegistry}s that define
+ * the location of ResourceBundles
  *
  * @author Matthias Walliczek
  */

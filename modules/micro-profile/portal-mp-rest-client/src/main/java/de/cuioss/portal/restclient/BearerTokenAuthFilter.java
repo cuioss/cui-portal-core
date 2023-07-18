@@ -8,8 +8,8 @@ import de.cuioss.tools.string.MoreStrings;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Client filter that will do token authentication.  You must allocate it and then register it with the Client or
- * WebTarget.
+ * Client filter that will do token authentication. You must allocate it and
+ * then register it with the Client or WebTarget.
  */
 @RequiredArgsConstructor
 public class BearerTokenAuthFilter implements ClientRequestFilter {

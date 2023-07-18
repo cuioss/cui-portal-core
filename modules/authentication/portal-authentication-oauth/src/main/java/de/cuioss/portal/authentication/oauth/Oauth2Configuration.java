@@ -14,14 +14,16 @@ public interface Oauth2Configuration extends Serializable {
     String getAuthorizeUri();
 
     /**
-     * @return The client-id of the portal-application. This is provided / maintained by the
-     *         corresponding SSO-Server. Must be set by the installation.
+     * @return The client-id of the portal-application. This is provided /
+     *         maintained by the corresponding SSO-Server. Must be set by the
+     *         installation.
      */
     String getClientId();
 
     /**
-     * @return The client-secret of the portal-application. This is provided / maintained by the
-     *         corresponding SSO-Server. Must be set by the installation.
+     * @return The client-secret of the portal-application. This is provided /
+     *         maintained by the corresponding SSO-Server. Must be set by the
+     *         installation.
      */
     String getClientSecret();
 
@@ -32,14 +34,14 @@ public interface Oauth2Configuration extends Serializable {
     List<String> getRoleMapperClaims();
 
     /**
-     * @return The current external host name used to calculate the redirect uri for the browser of
-     *         the external user.
+     * @return The current external host name used to calculate the redirect uri for
+     *         the browser of the external user.
      */
     String getExternalContextPath();
 
     /**
-     * @return The default scopes to be requested by the client. The individual scopes are separated
-     *         by whitespaces.
+     * @return The default scopes to be requested by the client. The individual
+     *         scopes are separated by whitespaces.
      */
     String getInitialScopes();
 
@@ -51,7 +53,8 @@ public interface Oauth2Configuration extends Serializable {
     String getLogoutRedirectParamName();
 
     /**
-     * @return full URI to be used for the {@code post_logout_redirect_uri} parameter.
+     * @return full URI to be used for the {@code post_logout_redirect_uri}
+     *         parameter.
      */
     String getPostLogoutRedirectUri();
 

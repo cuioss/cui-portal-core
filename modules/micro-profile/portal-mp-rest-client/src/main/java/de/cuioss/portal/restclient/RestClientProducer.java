@@ -33,10 +33,9 @@ public class RestClientProducer {
     @Dependent
     @PortalRestClient(baseName = "unused")
     <T extends Closeable> RestClientHolder<T> produceRestClient(final InjectionPoint injectionPoint) {
-        final var annotationMetaData =
-            ConfigurationHelper.resolveAnnotation(injectionPoint, PortalRestClient.class)
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Expected injectionPoint annotated with @PortalRestClient, but was not:" + injectionPoint));
+        final var annotationMetaData = ConfigurationHelper.resolveAnnotation(injectionPoint, PortalRestClient.class)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Expected injectionPoint annotated with @PortalRestClient, but was not:" + injectionPoint));
 
         var type = requireType(injectionPoint.getType(), ParameterizedType.class);
         List<Type> arguments = mutableList(type.getActualTypeArguments());
@@ -46,20 +45,16 @@ public class RestClientProducer {
         var serviceInterface = (Class<T>) arguments.get(0);
 
         // Basename must be present
-        final var baseName =
-            suffixNameWithDot(
-                    requireNotEmpty(annotationMetaData.baseName(), MISSING_BASENAME_MSG));
+        final var baseName = suffixNameWithDot(requireNotEmpty(annotationMetaData.baseName(), MISSING_BASENAME_MSG));
 
         log.debug("Producing DsmlClient for baseName ='{}'", baseName);
 
         final var failOnInvalidConfiguration = annotationMetaData.failOnInvalidConfiguration();
         try {
-            var connectionMetadata =
-                ConnectionMetadataProducer.createConnectionMetadata(baseName, failOnInvalidConfiguration);
-            return new RestClientHolder<>(
-                    new CuiRestClientBuilder(resolveCuiLogger(injectionPoint, serviceInterface))
-                            .connectionMetadata(connectionMetadata)
-                            .build(serviceInterface));
+            var connectionMetadata = ConnectionMetadataProducer.createConnectionMetadata(baseName,
+                    failOnInvalidConfiguration);
+            return new RestClientHolder<>(new CuiRestClientBuilder(resolveCuiLogger(injectionPoint, serviceInterface))
+                    .connectionMetadata(connectionMetadata).build(serviceInterface));
         } catch (IllegalArgumentException e) {
             log.error("Initialization of RestClientHolder failed", e);
             return new RestClientHolder<>(null);
@@ -75,9 +70,7 @@ public class RestClientProducer {
     }
 
     private Optional<Class<?>> resolveCallerClass(InjectionPoint ip) {
-        if (null != ip
-                && null != ip.getMember()
-                && null != ip.getMember().getDeclaringClass()) {
+        if (null != ip && null != ip.getMember() && null != ip.getMember().getDeclaringClass()) {
 
             // works only due to @Dependent scope injection point!
             final Class<?> clazz = ip.getMember().getDeclaringClass();

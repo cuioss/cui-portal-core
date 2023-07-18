@@ -13,7 +13,7 @@ import de.cuioss.portal.configuration.bundles.PortalResourceBundleRegistry;
 import lombok.Getter;
 
 @EnableAutoWeld
-@AddBeanClasses({MediumPrioBundles.class, HighPrioBundles.class, DefectBundle.class})
+@AddBeanClasses({ MediumPrioBundles.class, HighPrioBundles.class, DefectBundle.class })
 class ResourceBundleRegistryTest {
 
     @Inject

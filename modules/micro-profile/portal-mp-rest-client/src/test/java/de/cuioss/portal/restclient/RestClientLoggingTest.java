@@ -37,10 +37,8 @@ import okhttp3.mockwebserver.RecordedRequest;
 @EnableAutoWeld
 @EnableMockWebServer
 // FIXME only works with root level TRACE since Java 11 compile level
-@EnableTestLogger(rootLevel = TestLogLevel.TRACE,
-        trace = { RestClientLoggingTest.class,
-            LogClientRequestFilter.class, LogClientRequestFilter42.class,
-            LogReaderInterceptor.class, LogClientResponseFilter.class })
+@EnableTestLogger(rootLevel = TestLogLevel.TRACE, trace = { RestClientLoggingTest.class, LogClientRequestFilter.class,
+        LogClientRequestFilter42.class, LogReaderInterceptor.class, LogClientResponseFilter.class })
 @AddExtensions(ResteasyCdiExtension.class)
 @Disabled("org.jboss.weld.exceptions.UnsatisfiedResolutionException: WELD-001334: Unsatisfied dependencies for type Tracing with qualifiers")
 class RestClientLoggingTest implements MockWebServerHolder {
@@ -70,18 +68,17 @@ class RestClientLoggingTest implements MockWebServerHolder {
             @Override
             public MockResponse dispatch(final RecordedRequest request) {
                 switch (request.getPath()) {
-                    case "/something":
-                        if (HttpMethod.GET.equals(request.getMethod())) {
-                            return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                                    .addHeader("x-header-key", "x-header-value")
-                                    .setBody(TEXT);
-                        }
-                        if (HttpMethod.POST.equals(request.getMethod())) {
-                            return new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED)
-                                    .addHeader("x-header-key", "x-header-value");
-                        }
-                    default:
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                case "/something":
+                    if (HttpMethod.GET.equals(request.getMethod())) {
+                        return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                                .addHeader("x-header-key", "x-header-value").setBody(TEXT);
+                    }
+                    if (HttpMethod.POST.equals(request.getMethod())) {
+                        return new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED)
+                                .addHeader("x-header-key", "x-header-value");
+                    }
+                default:
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
                 }
             }
         };
@@ -89,35 +86,29 @@ class RestClientLoggingTest implements MockWebServerHolder {
 
     @Test
     void shouldLogGetRequestsAndResponses() {
-        final var underTest = new CuiRestClientBuilder(LOGGER)
-                .url(mockWebServer.url("").toString())
-                .enableDefaultExceptionHandler()
-                .register(new LogClientRequestFilter42());
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString())
+                .enableDefaultExceptionHandler().register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
         assertEquals(TEXT, service.getSomething());
 
         var allMsgs = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.INFO);
 
-        final var clientRequestInfoLog = allMsgs.stream()
-                .map(LogRecord::getMessage)
-                .filter(msg -> msg.startsWith("-- Client request info --"))
-                .findFirst()
+        final var clientRequestInfoLog = allMsgs.stream().map(LogRecord::getMessage)
+                .filter(msg -> msg.startsWith("-- Client request info --")).findFirst()
                 .orElseThrow(() -> new AssertionError("client request info not logged"));
         assertTrue(clientRequestInfoLog.contains("Request URI: " + mockWebServer.url("something")));
         assertTrue(clientRequestInfoLog.contains("Method: GET"));
         assertTrue(clientRequestInfoLog.contains("Headers:"));
         assertTrue(clientRequestInfoLog.contains("Accept: [application/json]"));
 
-        final var clientResponseInfoLog = allMsgs.stream()
-                .map(LogRecord::getMessage)
-                .filter(msg -> msg.startsWith("-- Client response info --"))
-                .findFirst()
+        final var clientResponseInfoLog = allMsgs.stream().map(LogRecord::getMessage)
+                .filter(msg -> msg.startsWith("-- Client response info --")).findFirst()
                 .orElseThrow(() -> new AssertionError("client response info not logged"));
         assertTrue(clientResponseInfoLog.contains("MediaType: application/octet-stream"));
         assertTrue(clientResponseInfoLog.contains("GenericType: class java.lang.String"));
         assertTrue(clientResponseInfoLog.contains("Properties:"));
-        assertTrue(clientResponseInfoLog.contains(
-                "org.eclipse.microprofile.rest.client.invokedMethod: public abstract java.lang.String "));
+        assertTrue(clientResponseInfoLog
+                .contains("org.eclipse.microprofile.rest.client.invokedMethod: public abstract java.lang.String "));
         assertTrue(clientResponseInfoLog.contains("Headers:"));
         assertTrue(clientResponseInfoLog.contains("Content-Length: [" + TEXT.length() + "]"));
         assertTrue(clientResponseInfoLog.contains("Content-Type: [application/octet-stream]"));
@@ -136,10 +127,8 @@ class RestClientLoggingTest implements MockWebServerHolder {
     }
 
     private void assertClientResponseFIlter(List<LogRecord> allMsgs) throws AssertionError {
-        final var lastClientResponseFilter = allMsgs.stream()
-                .map(LogRecord::getMessage)
-                .filter(msg -> msg.contains("[Last ClientResponseFilter]"))
-                .findFirst()
+        final var lastClientResponseFilter = allMsgs.stream().map(LogRecord::getMessage)
+                .filter(msg -> msg.contains("[Last ClientResponseFilter]")).findFirst()
                 .orElseThrow(() -> new AssertionError("client response info not logged"));
         assertTrue(lastClientResponseFilter.contains("Status: 200"));
         assertTrue(lastClientResponseFilter.contains("StatusInfo: OK"));
@@ -147,8 +136,8 @@ class RestClientLoggingTest implements MockWebServerHolder {
         assertTrue(lastClientResponseFilter.contains("EntityTag: null"));
         assertTrue(lastClientResponseFilter.contains("Cookies: {}"));
         assertTrue(lastClientResponseFilter.contains("Date: null"));
-        assertTrue(lastClientResponseFilter.contains(
-                "Headers: [Content-Length=" + TEXT.length() + ",x-header-key=x-header-value]"));
+        assertTrue(lastClientResponseFilter
+                .contains("Headers: [Content-Length=" + TEXT.length() + ",x-header-key=x-header-value]"));
         assertTrue(lastClientResponseFilter.contains("Language: null"));
         assertTrue(lastClientResponseFilter.contains("LastModified: null"));
         assertTrue(lastClientResponseFilter.contains("Links: []"));
@@ -158,15 +147,14 @@ class RestClientLoggingTest implements MockWebServerHolder {
 
     @Test
     void shouldLogPostRequestsAndResponses() {
-        final var underTest =
-            new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString());
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString());
         underTest.register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
         service.postSomething();
 
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: "
-                + mockWebServer.url("something"));
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO,
+                "Request URI: " + mockWebServer.url("something"));
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: POST");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/json]");
@@ -198,8 +186,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
         var posCurrentLog = 0;
         var posFirstClazzLog = -1;
         var posSecondClazzLog = -1;
-        final var recordedLogs = CollectionBuilder
-                .copyFrom(TestLoggerFactory.getTestHandler().getRecords())
+        final var recordedLogs = CollectionBuilder.copyFrom(TestLoggerFactory.getTestHandler().getRecords())
                 .toImmutableList();
         for (LogRecord logRecord : recordedLogs) {
             if (firstClazz.getName().equals(logRecord.getSourceClassName())) {

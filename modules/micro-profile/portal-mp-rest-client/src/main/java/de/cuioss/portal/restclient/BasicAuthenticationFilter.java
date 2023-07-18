@@ -13,13 +13,13 @@ import lombok.NonNull;
 /**
  * Filter to set basic authentication header.
  */
-public class BasicAuthenticationFilter implements ClientRequestFilter  {
+public class BasicAuthenticationFilter implements ClientRequestFilter {
 
     private final String headerValue;
 
     public BasicAuthenticationFilter(@NonNull String username, @NonNull String password) {
-        headerValue =
-                "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.US_ASCII));
+        headerValue = "Basic "
+                + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.US_ASCII));
     }
 
     @Override

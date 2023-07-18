@@ -39,7 +39,8 @@ import lombok.ToString;
 /**
  * Properties provider for YAML files.
  * <p>
- * Some code is copied from: https://github.com/spring-projects/spring-framework/blob/v5.1.8.RELEASE
+ * Some code is copied from:
+ * https://github.com/spring-projects/spring-framework/blob/v5.1.8.RELEASE
  * /spring-beans/src/main/java/org/springframework/beans/factory/config/YamlPropertiesFactoryBean.java
  * /spring-beans/src/main/java/org/springframework/beans/factory/config/YamlProcessor.java
  *
@@ -59,7 +60,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
 
     /**
      * @param fileLoader must not be null and the file must be readable:
-     *            {@link FileLoader#isReadable()}
+     *                   {@link FileLoader#isReadable()}
      */
     public YamlConfigurationProvider(final FileLoader fileLoader) {
         requireNonNull(fileLoader, "fileLoader");
@@ -70,7 +71,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
 
     /**
      * @param pathName must not be null and the file must be readable:
-     *            {@link FileLoader#isReadable()}
+     *                 {@link FileLoader#isReadable()}
      */
     public YamlConfigurationProvider(final String pathName) {
         requireNonNull(pathName, "pathName");
@@ -96,9 +97,9 @@ public class YamlConfigurationProvider implements ConfigurationSource {
     }
 
     /**
-     * Template method that subclasses may override to construct the object
-     * returned by this factory. The default implementation returns a
-     * properties with the content of all resources.
+     * Template method that subclasses may override to construct the object returned
+     * by this factory. The default implementation returns a properties with the
+     * content of all resources.
      *
      * @return the object returned by this factory
      */
@@ -110,7 +111,8 @@ public class YamlConfigurationProvider implements ConfigurationSource {
 
     /**
      * Create a variant of {@code java.util.Properties} that automatically adapts
-     * non-String values to String representations on {@link Properties#getProperty}.
+     * non-String values to String representations on
+     * {@link Properties#getProperty}.
      *
      * @return a new {@code Properties} instance
      */
@@ -131,8 +133,9 @@ public class YamlConfigurationProvider implements ConfigurationSource {
     /**
      *
      * @param source identifying the possible yml file.
-     * @return an {@link Optional} on a {@link YamlConfigurationProvider} in case the given sources
-     *         references a readable files ending with "yml" or "yaml", empty Optional otherwise.
+     * @return an {@link Optional} on a {@link YamlConfigurationProvider} in case
+     *         the given sources references a readable files ending with "yml" or
+     *         "yaml", empty Optional otherwise.
      */
     public static Optional<YamlConfigurationProvider> createFromFile(FileLoader source) {
         if (null == source || isEmpty(source.getFileName().getOriginalName())) {
@@ -156,8 +159,9 @@ public class YamlConfigurationProvider implements ConfigurationSource {
     /**
      *
      * @param source identifying the possible yml file.
-     * @return an {@link Optional} on a {@link YamlConfigurationProvider} in case the given sources
-     *         references a readable files ending with "yml" or "yaml", empty Optional otherwise.
+     * @return an {@link Optional} on a {@link YamlConfigurationProvider} in case
+     *         the given sources references a readable files ending with "yml" or
+     *         "yaml", empty Optional otherwise.
      */
     public static Optional<YamlConfigurationProvider> createFromFile(FileConfigurationSource source) {
         if (null == source || isEmpty(source.getPath())) {
@@ -221,10 +225,11 @@ public class YamlConfigurationProvider implements ConfigurationSource {
     }
 
     /**
-     * Return a flattened version of the given map, recursively following any nested Map
-     * or Collection values. Entries from the resulting map retain the same order as the
-     * source. When called with the Map from a {@link MatchCallback} the result will
-     * contain the same values as the {@link MatchCallback} Properties.
+     * Return a flattened version of the given map, recursively following any nested
+     * Map or Collection values. Entries from the resulting map retain the same
+     * order as the source. When called with the Map from a {@link MatchCallback}
+     * the result will contain the same values as the {@link MatchCallback}
+     * Properties.
      *
      * @param source the source map
      *
@@ -236,9 +241,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
         return result;
     }
 
-    private static void buildFlattenedMap(
-            final Map<String, Object> result,
-            final Map<String, Object> source,
+    private static void buildFlattenedMap(final Map<String, Object> result, final Map<String, Object> source,
             final String path) {
 
         for (final Map.Entry<String, Object> entry : source.entrySet()) {
@@ -257,8 +260,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
                 final var collection = (Collection<Object>) value;
                 var count = 0;
                 for (final Object object : collection) {
-                    buildFlattenedMap(result,
-                            Collections.singletonMap("[" + count + "]", object), key);
+                    buildFlattenedMap(result, Collections.singletonMap("[" + count + "]", object), key);
                     count++;
                 }
             } else {
@@ -285,10 +287,10 @@ public class YamlConfigurationProvider implements ConfigurationSource {
         /**
          * Process the given representation of the parsing results.
          *
-         * @param properties the properties to process (as a flattened
-         *            representation with indexed keys in case of a collection or map)
-         * @param map the result map (preserving the original value structure
-         *            in the YAML document)
+         * @param properties the properties to process (as a flattened representation
+         *                   with indexed keys in case of a collection or map)
+         * @param map        the result map (preserving the original value structure in
+         *                   the YAML document)
          */
         void process(Properties properties, Map<String, Object> map);
     }
@@ -308,8 +310,8 @@ public class YamlConfigurationProvider implements ConfigurationSource {
             try {
                 return super.constructMapping(node);
             } catch (final IllegalStateException ex) {
-                throw new ParserException("while parsing MappingNode",
-                        node.getStartMark(), ex.getMessage(), node.getEndMark());
+                throw new ParserException("while parsing MappingNode", node.getStartMark(), ex.getMessage(),
+                        node.getEndMark());
             }
         }
 

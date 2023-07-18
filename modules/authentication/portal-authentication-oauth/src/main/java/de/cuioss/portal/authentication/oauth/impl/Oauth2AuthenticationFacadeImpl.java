@@ -212,7 +212,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
         if (null != oauthUser) {
             LOGGER.debug("authenticated oauth user info was retrieved: {}", oauthUser);
-            if ((null == sessionUser) || !sessionUser.isAuthenticated()) {
+            if (null == sessionUser || !sessionUser.isAuthenticated()) {
                 LOGGER.debug(
                         "session user missing or not authenticated. invalidating session! (change session after login)");
                 servletRequest.getSession().invalidate();
@@ -292,7 +292,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             if (MoreStrings.isEmpty(scopes)) {
                 return null;
             }
-            if ((token != null) && checkToken(token, currentUser.get().getTokenTimestamp())) {
+            if (token != null && checkToken(token, currentUser.get().getTokenTimestamp())) {
                 return retrieveOauth2RedirectUrl(scopes, token.getId_token()) + "&prompt=none&response_mode=cors";
             }
             return retrieveOauth2RedirectUrl(scopes, null);
@@ -338,7 +338,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     @Override
     public Map<String, Object> retrieveIdToken(final AuthenticatedUserInfo currentUser) {
         final var token = new OauthAuthenticatedUserInfo(currentUser).getToken();
-        if ((null == token) || MoreStrings.isEmpty(token.getId_token())) {
+        if (null == token || MoreStrings.isEmpty(token.getId_token())) {
             return Collections.emptyMap();
         }
         final var tokenParts = token.getId_token().split("\\.");
@@ -376,9 +376,8 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
         if (currentUser.isPresent()) {
             try {
-                final var interval = ((currentUser.get().getTokenTimestamp()
-                        - (int) (System.currentTimeMillis() / 1000L))
-                        + Integer.parseInt(currentUser.get().getToken().getExpires_in())) - 10;
+                final var interval = currentUser.get().getTokenTimestamp() - (int) (System.currentTimeMillis() / 1000L)
+                        + Integer.parseInt(currentUser.get().getToken().getExpires_in()) - 10;
                 return String.valueOf(interval);
             } catch (final NumberFormatException e) {
                 LOGGER.debug("token.expires_in not a valid number", e);
@@ -472,7 +471,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             return true;
         }
         try {
-            final var expires = (timestamp + Integer.parseInt(token.getExpires_in())) - 10;
+            final var expires = timestamp + Integer.parseInt(token.getExpires_in()) - 10;
             return expires > (int) (System.currentTimeMillis() / 1000L);
         } catch (final NumberFormatException e) {
             LOGGER.warn("Portal-149: Oauth2 token.expires_in not a valid number", e);

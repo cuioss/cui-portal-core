@@ -40,11 +40,8 @@ class ResponseLoggerTest {
 
     private static final String STRING = Generators.nonEmptyStrings().next();
     private static final boolean HAS_BODY = Generators.booleans().next();
-    private static final MediaType MEDIA_TYPE = Generators.fixedValues(
-            MediaType.WILDCARD_TYPE,
-            MediaType.TEXT_PLAIN_TYPE,
-            MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_XML_TYPE).next();
+    private static final MediaType MEDIA_TYPE = Generators.fixedValues(MediaType.WILDCARD_TYPE,
+            MediaType.TEXT_PLAIN_TYPE, MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE).next();
     private boolean inputStreamSet;
     private boolean proceedExecuted;
 
@@ -62,8 +59,8 @@ class ResponseLoggerTest {
 
             @Override
             public InputStream getInputStream() {
-                return new BufferedInputStream(new ByteArrayInputStream(
-                        (HAS_BODY ? STRING : "").getBytes(StandardCharsets.UTF_8)));
+                return new BufferedInputStream(
+                        new ByteArrayInputStream((HAS_BODY ? STRING : "").getBytes(StandardCharsets.UTF_8)));
             }
 
             @Override

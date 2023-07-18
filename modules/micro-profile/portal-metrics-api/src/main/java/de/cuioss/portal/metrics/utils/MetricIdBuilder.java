@@ -56,7 +56,8 @@ public class MetricIdBuilder {
     }
 
     /**
-     * @param mapper a mapper to process the given {@link #exception(Throwable)} into a {@link Tag}.
+     * @param mapper a mapper to process the given {@link #exception(Throwable)}
+     *               into a {@link Tag}.
      *
      * @return this builder
      */
@@ -103,8 +104,7 @@ public class MetricIdBuilder {
 
         if (null != exception) {
             for (Function<Throwable, Tag> exceptionTagMapper : exceptionTagMappers) {
-                Optional.ofNullable(exceptionTagMapper.apply(exception))
-                        .ifPresent(tags::add);
+                Optional.ofNullable(exceptionTagMapper.apply(exception)).ifPresent(tags::add);
             }
         }
 

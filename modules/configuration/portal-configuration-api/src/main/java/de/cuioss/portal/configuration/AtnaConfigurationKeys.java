@@ -21,8 +21,8 @@ public class AtnaConfigurationKeys {
      * Context parameter within configuration-subsystem with the name
      * 'integration.audit.sourceId'
      * <p>
-     * Identifies the sourceId for the audit-events. If it is not defined the implementation will
-     * choose the context-path
+     * Identifies the sourceId for the audit-events. If it is not defined the
+     * implementation will choose the context-path
      * </p>
      */
     public static final String PORTAL_AUDIT_SOURCE_ID = AUDIT_BASE + "sourceId";
@@ -31,8 +31,9 @@ public class AtnaConfigurationKeys {
      * Context parameter within configuration-subsystem with the name
      * 'integration.audit.enterpriseSiteId'
      * <p>
-     * Identifies the enterpriseSiteId for the audit-events. If it is not defined the implementation
-     * will choose the context-path suffixed with "-enterprise-id"
+     * Identifies the enterpriseSiteId for the audit-events. If it is not defined
+     * the implementation will choose the context-path suffixed with
+     * "-enterprise-id"
      * </p>
      */
     public static final String PORTAL_AUDIT_ENTERPRISE_SITE_ID = AUDIT_BASE + "enterpriseSiteId";
@@ -59,7 +60,8 @@ public class AtnaConfigurationKeys {
      * Context parameter within configuration-subsystem with the name
      * 'integration.audit.sourceType'
      * <p>
-     * Identifies the type of the audit-source. Defaults to "4" = AuditSourceType.ApplicationServerProcess
+     * Identifies the type of the audit-source. Defaults to "4" =
+     * AuditSourceType.ApplicationServerProcess
      * </p>
      */
     public static final String PORTAL_AUDIT_SOURCE_TYPE = AUDIT_BASE + "sourceType";
@@ -68,8 +70,8 @@ public class AtnaConfigurationKeys {
      * Context parameter within configuration-subsystem with the name
      * 'integration.audit.sendingApplication'
      * <p>
-     * Identifies the sender of the audit-events. If it is not defined the implementation will
-     * choose the context-path
+     * Identifies the sender of the audit-events. If it is not defined the
+     * implementation will choose the context-path
      * </p>
      */
     public static final String PORTAL_AUDIT_SENDING_APPLICATION = AUDIT_BASE + "sendingApplication";
@@ -87,10 +89,10 @@ public class AtnaConfigurationKeys {
      * Context parameter within configuration-subsystem with the name
      * 'integration.audit.includeParticipantsFromResponse'
      * <p>
-     * Defines whether to include participant information to the audit-events. Defaults to
-     * {@code false}
+     * Defines whether to include participant information to the audit-events.
+     * Defaults to {@code false}
      * </p>
      */
-    public static final String PORTAL_AUDIT_INCLUDE_PARTICIPANTS_FROM_RESPONSE =
-        AUDIT_BASE + "includeParticipantsFromResponse";
+    public static final String PORTAL_AUDIT_INCLUDE_PARTICIPANTS_FROM_RESPONSE = AUDIT_BASE
+            + "includeParticipantsFromResponse";
 }

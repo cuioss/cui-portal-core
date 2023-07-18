@@ -10,9 +10,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Helper class for sorting elements regarding to its {@link Priority} annotation. In case the given
- * class does not have a {@link Priority} annotation present an order of
- * {@code 0} is assumed.
+ * Helper class for sorting elements regarding to its {@link Priority}
+ * annotation. In case the given class does not have a {@link Priority}
+ * annotation present an order of {@code 0} is assumed.
  *
  * @author Oliver Wolff
  */

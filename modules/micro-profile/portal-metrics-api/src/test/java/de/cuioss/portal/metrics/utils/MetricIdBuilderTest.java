@@ -37,15 +37,13 @@ class MetricIdBuilderTest {
     @Test
     void processedExceptionMappers() {
         final var countDown = new CountDownLatch(2);
-        var builder = new MetricIdBuilder().name("test").exception(new Exception())
-            .exceptionTagMapper(throwable -> {
-                countDown.countDown();
-                return null;
-            })
-            .exceptionTagMapper(throwable -> {
-                countDown.countDown();
-                return null;
-            });
+        var builder = new MetricIdBuilder().name("test").exception(new Exception()).exceptionTagMapper(throwable -> {
+            countDown.countDown();
+            return null;
+        }).exceptionTagMapper(throwable -> {
+            countDown.countDown();
+            return null;
+        });
         assertDoesNotThrow(() -> builder.build());
         assertEquals(0L, countDown.getCount());
     }
@@ -56,10 +54,7 @@ class MetricIdBuilderTest {
         var testTag2 = new Tag("test2", "value");
         var testTag3 = new Tag("test3", "value");
 
-        var builder = new MetricIdBuilder().name("test")
-            .tag(testTag1)
-            .tag(testTag2)
-            .tags(new Tag[]{testTag3});
+        var builder = new MetricIdBuilder().name("test").tag(testTag1).tag(testTag2).tags(new Tag[] { testTag3 });
         var metricID = assertDoesNotThrow(() -> builder.build());
 
         assertTrue(metricID.getTags().containsKey("test1"), "test Tag 1 missing");

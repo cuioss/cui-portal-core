@@ -17,25 +17,25 @@ import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * <p>
- * A {@link ReaderInterceptor} to log the response headers and body received from the server using
- * {@link CuiLogger#trace}.
+ * A {@link ReaderInterceptor} to log the response headers and body received
+ * from the server using {@link CuiLogger#trace}.
  * </p>
  * <p>
- * To enable logging set package <code>de.cuioss.portal.core.restclient</code> to
- * <code>TRACE</code> in your logger configuration.
+ * To enable logging set package <code>de.cuioss.portal.core.restclient</code>
+ * to <code>TRACE</code> in your logger configuration.
  * </p>
  * <p>
- * This is a {@link ReaderInterceptor} instead of a {@link ClientResponseFilter}, because
- * ReaderInterceptors are
- * executed
- * after ClientResponseFilters. For logging we are interested in the data that is actually coming
- * from the server
- * before hitting any subsequent processing. Furthermore, this class is annotated with
- * {@link Priority} with value
- * {@link Integer#MIN_VALUE} to ensure it is the very first reader interceptor that is called.
+ * This is a {@link ReaderInterceptor} instead of a
+ * {@link ClientResponseFilter}, because ReaderInterceptors are executed after
+ * ClientResponseFilters. For logging we are interested in the data that is
+ * actually coming from the server before hitting any subsequent processing.
+ * Furthermore, this class is annotated with {@link Priority} with value
+ * {@link Integer#MIN_VALUE} to ensure it is the very first reader interceptor
+ * that is called.
  * <p>
  * <p>
- * This interceptor is executed when the client runs {@link Response#readEntity}.
+ * This interceptor is executed when the client runs
+ * {@link Response#readEntity}.
  * </p>
  */
 @Priority(Integer.MIN_VALUE)
@@ -74,9 +74,7 @@ class LogReaderInterceptor implements ReaderInterceptor {
             body = IOStreams.toString(inputStream, StandardCharsets.UTF_8);
         }
 
-        logMsg.append("Body:")
-            .append(LINE_BREAK)
-            .append(body);
+        logMsg.append("Body:").append(LINE_BREAK).append(body);
 
         // put the read body back into the response
         context.setInputStream(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
@@ -94,10 +92,7 @@ class LogReaderInterceptor implements ReaderInterceptor {
     private void logProperties(StringBuilder logMsg, final ReaderInterceptorContext context) {
         logMsg.append("Properties:").append(LINE_BREAK);
         for (final String name : context.getPropertyNames()) {
-            logMsg.append(name)
-                .append(": ")
-                .append(context.getProperty(name))
-                .append(LINE_BREAK);
+            logMsg.append(name).append(": ").append(context.getProperty(name)).append(LINE_BREAK);
         }
     }
 }

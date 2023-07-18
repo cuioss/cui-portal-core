@@ -168,7 +168,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     void shouldRefreshTokenHappyCase() throws InterruptedException {
         var user = setupAuthorizedUser();
 
-        String refreshToken = letterStrings(4, 24).next();
+        var refreshToken = letterStrings(4, 24).next();
 
         user.getToken().setRefresh_token(refreshToken);
         user.getToken().setAccess_token(null);
@@ -192,8 +192,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
 
         var initialUser = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", code);
-        var user = OauthAuthenticatedUserInfo.createOf(initialUser);
-        return user;
+        return OauthAuthenticatedUserInfo.createOf(initialUser);
     }
 
     @Test

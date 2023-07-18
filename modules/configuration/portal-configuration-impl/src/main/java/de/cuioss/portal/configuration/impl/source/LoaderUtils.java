@@ -15,8 +15,8 @@ import de.cuioss.tools.logging.CuiLogger;
 import lombok.experimental.UtilityClass;
 
 /**
- * Provides utilities for loading / managing Resources that are used for obtaining actual
- * configurations
+ * Provides utilities for loading / managing Resources that are used for
+ * obtaining actual configurations
  *
  * @author Oliver Wolff
  */
@@ -27,8 +27,7 @@ public class LoaderUtils {
 
     private static final CuiLogger log = new CuiLogger(LoaderUtils.class);
 
-    private static final String FILETYPE_NOT_PROVIDED_MSG =
-        "Portal-151: Unsupported configuration file type: {}. Supported is: yml, yaml, properties";
+    private static final String FILETYPE_NOT_PROVIDED_MSG = "Portal-151: Unsupported configuration file type: {}. Supported is: yml, yaml, properties";
 
     /**
      * Loads the the content of a given {@link FileConfigurationSource}
@@ -48,8 +47,7 @@ public class LoaderUtils {
             return ymlProvider.get().getConfigurationMap();
         }
 
-        final var propertiesProvider = loadPropertiesFromFile(
-                FileLoaderUtility.getLoaderForPath(source.getPath()));
+        final var propertiesProvider = loadPropertiesFromFile(FileLoaderUtility.getLoaderForPath(source.getPath()));
         if (propertiesProvider.isPresent()) {
             return propertiesProvider.get().getConfigurationMap();
         }
@@ -83,9 +81,9 @@ public class LoaderUtils {
     /**
      * @param source identifying the possible properties file.
      *
-     * @return an {@link Optional} on a {@link PropertiesConfigurationProvider} in case the given
-     *         source references a readable files ending with "properties", empty Optional
-     *         otherwise.
+     * @return an {@link Optional} on a {@link PropertiesConfigurationProvider} in
+     *         case the given source references a readable files ending with
+     *         "properties", empty Optional otherwise.
      */
     private static Optional<PropertiesConfigurationProvider> loadPropertiesFromFile(final FileLoader source) {
         if (null == source || isEmpty(source.getFileName().getOriginalName())) {

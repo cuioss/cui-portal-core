@@ -71,8 +71,8 @@ class Oauth2DiscoveryConfigurationProducerTest
     @Test
     void shouldOverwriteInternalUrls() {
         dispatcher.configure(configuration, mockWebServer);
-        String url1 = new URLGenerator().next().toString();
-        String url2 = new URLGenerator().next().toString();
+        var url1 = new URLGenerator().next().toString();
+        var url2 = new URLGenerator().next().toString();
         configuration.fireEvent(OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
                 OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, url2);
 

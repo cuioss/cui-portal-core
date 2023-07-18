@@ -23,8 +23,9 @@ import lombok.Setter;
 /**
  * Dummy implementation of the {@link AuthenticationFacade} interface.
  * <p>
- * In contrast to the MockAuthenticationFacade this one always returns an user that is not logged
- * in. Therefore there is no further configuration capability available
+ * In contrast to the MockAuthenticationFacade this one always returns an user
+ * that is not logged in. Therefore there is no further configuration capability
+ * available
  * </p>
  *
  * @author Oliver Wolff
@@ -36,16 +37,15 @@ public class DummyAuthenticationFacade implements FormBasedAuthenticationFacade 
     private static final String DUMMY = "dummy";
     private static final CuiLogger log = new CuiLogger(DummyAuthenticationFacade.class);
 
-    static final AuthenticatedUserInfo NOT_LOGGED_IN =
-        new BaseAuthenticatedUserInfo(false, DUMMY, DUMMY, DUMMY, DUMMY);
+    static final AuthenticatedUserInfo NOT_LOGGED_IN = new BaseAuthenticatedUserInfo(false, DUMMY, DUMMY, DUMMY, DUMMY);
 
     @Getter
     @Setter
     private AuthenticationSource authenticationSource = AuthenticationSource.DUMMY;
 
     /**
-     * The dummy implementation provides a successful login in case the
-     * identifier and password are equal.
+     * The dummy implementation provides a successful login in case the identifier
+     * and password are equal.
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
@@ -61,8 +61,7 @@ public class DummyAuthenticationFacade implements FormBasedAuthenticationFacade 
     }
 
     @Override
-    public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(
-            final HttpServletRequest servletRequest) {
+    public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(final HttpServletRequest servletRequest) {
         log.debug("retrieveCurrentAuthenticationContext called");
         return NOT_LOGGED_IN;
     }

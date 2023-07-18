@@ -12,7 +12,6 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.cuioss.portal.configuration.cache.CacheConfig;
-import de.cuioss.portal.metrics.CaffeineCacheMetrics;
 
 class CaffeineCacheMetricsTest {
 
@@ -20,11 +19,8 @@ class CaffeineCacheMetricsTest {
     void shouldRegisterCachedMetrics() {
         final var prefix = "test";
         final var cacheConfig = new CacheConfig(2, TimeUnit.MINUTES, 10, true);
-        final Cache<String, String> cache = Caffeine.newBuilder()
-            .maximumSize(cacheConfig.getSize())
-            .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
-            .recordStats()
-            .build();
+        final Cache<String, String> cache = Caffeine.newBuilder().maximumSize(cacheConfig.getSize())
+                .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit()).recordStats().build();
         final MetricRegistry registry = new PortalTestMetricRegistry();
         new CaffeineCacheMetrics(prefix, cache, cacheConfig).bindTo(registry);
 

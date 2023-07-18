@@ -15,10 +15,10 @@ import javax.inject.Qualifier;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 
 /**
- * Injects a config property as an immutable list of trimmed Strings. In case the property is null
- * or empty
- * and there is no {@link #defaultValue()} set it will be an empty list. The default splitting
- * character is {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}.
+ * Injects a config property as an immutable list of trimmed Strings. In case
+ * the property is null or empty and there is no {@link #defaultValue()} set it
+ * will be an empty list. The default splitting character is
+ * {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}.
  *
  * @author Oliver Wolff
  */

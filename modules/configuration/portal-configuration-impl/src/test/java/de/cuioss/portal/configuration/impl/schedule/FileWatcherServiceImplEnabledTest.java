@@ -139,12 +139,10 @@ class FileWatcherServiceImplEnabledTest {
 
     private void assertFileChangeEvent(final Path filePath) throws IOException {
         // wait for FileChangedEvent
-        assertDoesNotThrow(() -> await().atMost(3, TimeUnit.SECONDS)
-                .until(() -> null != pathFromEvent),
+        assertDoesNotThrow(() -> await().atMost(3, TimeUnit.SECONDS).until(() -> null != pathFromEvent),
                 "did not receive file change event");
 
-        assertTrue(Files.isSameFile(filePath, pathFromEvent),
-                "file paths are expected to be equal:\n\tfilePath=" + filePath.toAbsolutePath()
-                        + "\n\tpathFromEvent=" + pathFromEvent + "\n");
+        assertTrue(Files.isSameFile(filePath, pathFromEvent), "file paths are expected to be equal:\n\tfilePath="
+                + filePath.toAbsolutePath() + "\n\tpathFromEvent=" + pathFromEvent + "\n");
     }
 }

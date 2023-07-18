@@ -16,9 +16,9 @@ import lombok.ToString;
 
 /**
  * Defines the base bundles to be defined within a portal application, that are
- * "com.icw.ehf.cui.portal.i18n.portal-messages", "de.icw.cui.core.l18n.messages",
- * "com.icw.ehf.cui.components.bundle.messages" with the Priority
- * {@link PortalPriorities#PORTAL_CORE_LEVEL}
+ * "com.icw.ehf.cui.portal.i18n.portal-messages",
+ * "de.icw.cui.core.l18n.messages", "com.icw.ehf.cui.components.bundle.messages"
+ * with the Priority {@link PortalPriorities#PORTAL_CORE_LEVEL}
  *
  * @author Matthias Walliczek
  */
@@ -32,7 +32,6 @@ public class PortalDefaultResourceBundleLocator implements ResourceBundleLocator
     private static final long serialVersionUID = -8478481710191113463L;
 
     @Getter
-    private final List<String> configuredResourceBundles =
-        immutableList("com.icw.ehf.cui.portal.i18n.portal-messages",
-                "de.icw.cui.core.l18n.messages");
+    private final List<String> configuredResourceBundles = immutableList("com.icw.ehf.cui.portal.i18n.portal-messages",
+            "de.icw.cui.core.l18n.messages");
 }

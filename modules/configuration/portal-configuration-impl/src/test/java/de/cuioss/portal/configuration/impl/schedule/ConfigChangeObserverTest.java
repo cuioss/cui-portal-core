@@ -31,7 +31,7 @@ import de.cuioss.tools.collect.MapBuilder;
 import lombok.Getter;
 
 @EnableAutoWeld
-@AddBeanClasses({PortalConfigProducer.class})
+@AddBeanClasses({ PortalConfigProducer.class })
 class ConfigChangeObserverTest implements ShouldBeNotNull<ConfigChangeObserver> {
 
     private static final String CHILD_KEY = "child.key";
@@ -39,8 +39,8 @@ class ConfigChangeObserverTest implements ShouldBeNotNull<ConfigChangeObserver> 
     private static final String CHILD_KEY_W_DEFAULT = "child.key.with.default";
     private static final String PARENT_KEY = "parent.key";
 
-    private static final Path ARBITRARY_PROPERTIES_PATH = Paths.get(
-        "target/test-classes/META-INF/config-change-observer-test/arbitrary.properties");
+    private static final Path ARBITRARY_PROPERTIES_PATH = Paths
+            .get("target/test-classes/META-INF/config-change-observer-test/arbitrary.properties");
 
     @Inject
     @PortalInitializer
@@ -61,11 +61,11 @@ class ConfigChangeObserverTest implements ShouldBeNotNull<ConfigChangeObserver> 
 
     private Map<String, String> deltaMap;
 
-    private final HighReloadableConfigSource highTestConfigSource =
-        (HighReloadableConfigSource) getConfigSource(HighReloadableConfigSource.NAME);
+    private final HighReloadableConfigSource highTestConfigSource = (HighReloadableConfigSource) getConfigSource(
+            HighReloadableConfigSource.NAME);
 
-    private final LowReloadableConfigSource lowTestConfigSource =
-        (LowReloadableConfigSource) getConfigSource(LowReloadableConfigSource.NAME);
+    private final LowReloadableConfigSource lowTestConfigSource = (LowReloadableConfigSource) getConfigSource(
+            LowReloadableConfigSource.NAME);
 
     @Test
     void deltaMapContainsAffectedKeys() {
@@ -122,7 +122,8 @@ class ConfigChangeObserverTest implements ShouldBeNotNull<ConfigChangeObserver> 
         return null;
     }
 
-    void configurationChangeEventListener(@Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
+    void configurationChangeEventListener(
+            @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
         this.deltaMap = MapBuilder.copyFrom(deltaMap).toImmutableMap();
     }
 }

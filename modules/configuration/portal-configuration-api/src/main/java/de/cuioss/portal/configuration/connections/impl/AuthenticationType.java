@@ -39,28 +39,36 @@ public enum AuthenticationType {
 
     private final String keyName;
 
-    /** Flag whether the concrete {@link AuthenticationType} needs a token for Authorization. */
+    /**
+     * Flag whether the concrete {@link AuthenticationType} needs a token for
+     * Authorization.
+     */
     @Getter
     private final boolean tokenType;
 
     private static final CuiLogger log = new CuiLogger(AuthenticationType.class);
 
     /**
-     * Determines the authentication-type from a given map with connection related properties. The
-     * map contents should contain information as described in {@link ConfigAsConnectionMetadata}
-     * with 'basename' already been stripped, usually this is done by using
-     * {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}.
-     * The getFilteredPropertyMap also removes properties with empty values.
+     * Determines the authentication-type from a given map with connection related
+     * properties. The map contents should contain information as described in
+     * {@link ConfigAsConnectionMetadata} with 'basename' already been stripped,
+     * usually this is done by using
+     * {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}. The
+     * getFilteredPropertyMap also removes properties with empty values.
      *
-     * @param basename for the properties, used for logging / tracing in case of errors
-     * @param configuration to be used for determining the concrete {@link AuthenticationType}
+     * @param basename      for the properties, used for logging / tracing in case
+     *                      of errors
+     * @param configuration to be used for determining the concrete
+     *                      {@link AuthenticationType}
      * @return the resolved {@link AuthenticationType} if it can be extracted,
-     *         {@link AuthenticationType#NONE} otherwise. The algorithm checks the keys for
-     *         containing corresponding token, saying in case of containing the substring
-     *         "authentication.certificate" it will return {@link AuthenticationType#CERTIFICATE},
-     *         in case of containing the substring "authentication.basic" it will return
+     *         {@link AuthenticationType#NONE} otherwise. The algorithm checks the
+     *         keys for containing corresponding token, saying in case of containing
+     *         the substring "authentication.certificate" it will return
+     *         {@link AuthenticationType#CERTIFICATE}, in case of containing the
+     *         substring "authentication.basic" it will return
      *         {@link AuthenticationType#BASIC}. It will detect variants like
-     *         'authentication=certificate' as well. The first match of enum {@link AuthenticationType} is used.
+     *         'authentication=certificate' as well. The first match of enum
+     *         {@link AuthenticationType} is used.
      */
     public static AuthenticationType resolveFrom(String basename, Map<String, String> configuration) {
         if (null == configuration || configuration.isEmpty()) {
@@ -81,7 +89,8 @@ public enum AuthenticationType {
                 return TOKEN_FROM_USER;
             }
             if (lowerCaseKey.contains(".")) {
-                // This filtering is needed to catch elements that are part of a longer key, e.g.:
+                // This filtering is needed to catch elements that are part of a longer key,
+                // e.g.:
                 // "authentication.certificate.keyStore.location"
                 elements.add(lowerCaseKey.substring(0, lowerCaseKey.indexOf('.')).trim());
             } else {
@@ -104,8 +113,7 @@ public enum AuthenticationType {
             }
         }
         log.warn("Portal-131: Unable to determine AuthenticationType for connection='{}' and properties, returning "
-                + "AuthenticationType.NONE",
-                basename, configuration);
+                + "AuthenticationType.NONE", basename, configuration);
         return AuthenticationType.NONE;
     }
 

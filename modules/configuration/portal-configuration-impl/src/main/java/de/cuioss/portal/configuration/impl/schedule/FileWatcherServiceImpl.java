@@ -36,14 +36,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
- * Replacement for initial quartz based module (cdi-portal-core-scheduler). It uses
- * {@link WatchService} and {@link Executors} in order to work. It can be dynamically switched on /
- * without losing the registered {@link Path} elements.
+ * Replacement for initial quartz based module (cdi-portal-core-scheduler). It
+ * uses {@link WatchService} and {@link Executors} in order to work. It can be
+ * dynamically switched on / without losing the registered {@link Path}
+ * elements.
  * <p>
- * TODO owolff: Reconsider thread handling
- * TODO owolff: Consider changing the event / api contract in order to transport more precise
- * information, like "I'm interested in changed / added / removed files".
- * TODO owolff consider api changes in order to align with {@link WatchService} design, especially
+ * TODO owolff: Reconsider thread handling TODO owolff: Consider changing the
+ * event / api contract in order to transport more precise information, like
+ * "I'm interested in changed / added / removed files". TODO owolff consider api
+ * changes in order to align with {@link WatchService} design, especially
  * regarding directory instead of file-based-handling
  *
  * @author Oliver Wolff
@@ -71,8 +72,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     /**
      * {@code true} if the service is configured to run
-     * {@link PortalConfigurationKeys#SCHEDULER_FILE_SCAN_ENABLED} at all and initialized
-     * properly.
+     * {@link PortalConfigurationKeys#SCHEDULER_FILE_SCAN_ENABLED} at all and
+     * initialized properly.
      */
     @Getter(AccessLevel.MODULE)
     private boolean upAndRunning = false;
@@ -94,8 +95,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     watcherService = FileSystems.getDefault().newWatchService();
                 } catch (IOException | UnsupportedOperationException e) {
                     log.error(
-                            "Portal-515: Unable to access File-system for detecting changes, due to '{}', use the " +
-                                    "configuration property '{}' to disable this feature",
+                            "Portal-515: Unable to access File-system for detecting changes, due to '{}', use the "
+                                    + "configuration property '{}' to disable this feature",
                             e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED, e);
                     upAndRunning = false;
                     return;
@@ -184,19 +185,17 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     @Override
     public List<Path> getRegisteredPaths() {
-        List<Path> paths =
-            registeredPaths.values().stream().map(AbstractFileDescriptor::getPath).collect(Collectors.toList());
+        List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath)
+                .collect(Collectors.toList());
         log.trace("getRegisteredPaths callled, returning {}", paths);
         return paths;
     }
 
-    void configurationChangeEventListener(
-            @Observes @PortalConfigurationChangeEvent Map<String, String> deltaMap) {
+    void configurationChangeEventListener(@Observes @PortalConfigurationChangeEvent Map<String, String> deltaMap) {
         if (deltaMap.containsKey(SCHEDULER_FILE_SCAN_ENABLED)) {
             final var enabled = Boolean.parseBoolean(deltaMap.get(SCHEDULER_FILE_SCAN_ENABLED));
             log.debug("Portal-011: Changed configuration of '{}' found, new value is '{}', reconfigure",
-                    SCHEDULER_FILE_SCAN_ENABLED,
-                    enabled);
+                    SCHEDULER_FILE_SCAN_ENABLED, enabled);
             if (enabled) {
                 initialize();
             } else {
@@ -242,8 +241,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             log.trace("Handling WatchKey-Events {}",
                     events.stream().map(w -> w.context() + "-" + w.kind()).collect(Collectors.toList()));
         }
-        List<AbstractFileDescriptor> changed =
-            registeredPaths.values().stream().filter(AbstractFileDescriptor::isUpdated).collect(Collectors.toList());
+        List<AbstractFileDescriptor> changed = registeredPaths.values().stream()
+                .filter(AbstractFileDescriptor::isUpdated).collect(Collectors.toList());
 
         if (changed.isEmpty()) {
             log.debug("No actual changes found for path-change WatchKey-Events {}", events);
@@ -253,7 +252,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             try {
                 // Handling the event should not throw an exception, because this will break the
                 // iteration over all
-                // event listener - however, if it happens (it is a file system operation that may
+                // event listener - however, if it happens (it is a file system operation that
+                // may
                 // fail due to IO
                 // errors) it should at least not crash the service at all.
                 fileChangeEvent.fire(element.getPath());

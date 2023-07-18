@@ -15,8 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Base Implementation of {@link AuthenticatedUserInfo} suitable for most uses-cases. It can be
- * overwritten but the extension point for custom attributes is {@link #getContextMap()}
+ * Base Implementation of {@link AuthenticatedUserInfo} suitable for most
+ * uses-cases. It can be overwritten but the extension point for custom
+ * attributes is {@link #getContextMap()}
  *
  * @author Oliver Wolff
  */
@@ -105,8 +106,7 @@ public class BaseAuthenticatedUserInfo implements AuthenticatedUserInfo {
          * @param qualifiedIdentifier
          * @return the builder for {@link BaseAuthenticatedUserInfo}
          */
-        public BaseAuthenticatedUserInfoBuilder qualifiedIdentifier(
-                final String qualifiedIdentifier) {
+        public BaseAuthenticatedUserInfoBuilder qualifiedIdentifier(final String qualifiedIdentifier) {
             this.qualifiedIdentifier = qualifiedIdentifier;
             return this;
         }
@@ -144,8 +144,7 @@ public class BaseAuthenticatedUserInfo implements AuthenticatedUserInfo {
          * @param contextMap
          * @return the builder for {@link BaseAuthenticatedUserInfo}
          */
-        public BaseAuthenticatedUserInfoBuilder contextMap(
-                final Map<Serializable, Serializable> contextMap) {
+        public BaseAuthenticatedUserInfoBuilder contextMap(final Map<Serializable, Serializable> contextMap) {
             this.contextMap = contextMap;
             return this;
         }
@@ -155,8 +154,7 @@ public class BaseAuthenticatedUserInfo implements AuthenticatedUserInfo {
          * @param value
          * @return the builder for {@link BaseAuthenticatedUserInfo}
          */
-        public BaseAuthenticatedUserInfoBuilder contextMapElement(final Serializable key,
-                final Serializable value) {
+        public BaseAuthenticatedUserInfoBuilder contextMapElement(final Serializable key, final Serializable value) {
             contextMap.put(key, value);
             return this;
         }
@@ -165,10 +163,8 @@ public class BaseAuthenticatedUserInfo implements AuthenticatedUserInfo {
          * @return the built {@link BaseAuthenticatedUserInfo}
          */
         public BaseAuthenticatedUserInfo build() {
-            final var baseAuthenticatedUserInfo =
-                new BaseAuthenticatedUserInfo(
-                        authenticated, displayName, identifier,
-                        qualifiedIdentifier, system);
+            final var baseAuthenticatedUserInfo = new BaseAuthenticatedUserInfo(authenticated, displayName, identifier,
+                    qualifiedIdentifier, system);
             if (!contextMap.isEmpty()) {
                 baseAuthenticatedUserInfo.contextMap.putAll(contextMap);
             }

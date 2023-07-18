@@ -12,7 +12,8 @@ public class OauthAuthenticatedUserInfo implements AuthenticatedUserInfo {
 
     private static final long serialVersionUID = 1L;
     /**
-     * The key of the accessToken to be stored in the {@link AuthenticatedUserInfo#getContextMap()}.
+     * The key of the accessToken to be stored in the
+     * {@link AuthenticatedUserInfo#getContextMap()}.
      */
     static final String TOKEN_KEY = "token";
     static final String TOKEN_SCOPES_KEY = "tokenScopes";

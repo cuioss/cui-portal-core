@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Defines events that will be fired at login attempt. The payload is {@link LoginEvent}.
+ * Defines events that will be fired at login attempt. The payload is
+ * {@link LoginEvent}.
  *
  * @author Matthias Walliczek
  */

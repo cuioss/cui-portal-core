@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Payload of a {@link PortalInstallationPathChangedEvent}. Contains an enum describing which path
- * was changed and the new path.
+ * Payload of a {@link PortalInstallationPathChangedEvent}. Contains an enum
+ * describing which path was changed and the new path.
  *
  * @author Matthias Walliczek
  *

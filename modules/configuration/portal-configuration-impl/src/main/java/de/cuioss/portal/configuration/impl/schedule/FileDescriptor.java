@@ -33,8 +33,7 @@ final class FileDescriptor extends AbstractFileDescriptor {
         try {
             modificationDate = retrieveModificationDate();
         } catch (final IOException e) {
-            log.warn("Unable to read metadata for file " + getPath().toString(),
-                    e);
+            log.warn("Unable to read metadata for file " + getPath().toString(), e);
         }
     }
 
@@ -44,8 +43,7 @@ final class FileDescriptor extends AbstractFileDescriptor {
         try {
             newdate = retrieveModificationDate();
         } catch (final IOException e) {
-            log.warn("Unable to read metadata for file " + getPath().toString(),
-                    e);
+            log.warn("Unable to read metadata for file " + getPath().toString(), e);
         }
 
         return newdate > modificationDate;

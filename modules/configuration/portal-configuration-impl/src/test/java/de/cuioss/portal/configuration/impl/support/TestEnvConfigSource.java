@@ -11,11 +11,10 @@ import io.smallrye.config.common.AbstractConfigSource;
 import lombok.Getter;
 
 /**
- * Copy of SmallRye EnvConfigSource.
- * Allows additional properties.
- * Objective: Allow addition of "environment" properties. It should eliminate calls to the SmallRye
- * EnvConfigSource.
- * Rational: We cannot modify environment properties in unit tests.
+ * Copy of SmallRye EnvConfigSource. Allows additional properties. Objective:
+ * Allow addition of "environment" properties. It should eliminate calls to the
+ * SmallRye EnvConfigSource. Rational: We cannot modify environment properties
+ * in unit tests.
  *
  * @author Sven Haag
  */
@@ -32,16 +31,14 @@ public class TestEnvConfigSource extends AbstractConfigSource {
      * Constructor
      */
     public TestEnvConfigSource() {
-        // 399 is just below SysPropConfigSource, which is the highest SmallRye config source
+        // 399 is just below SysPropConfigSource, which is the highest SmallRye config
+        // source
         super("TestEnvConfigSource", 399);
     }
 
     @Override
     public Map<String, String> getProperties() {
-        return MapBuilder
-                .copyFrom(SecuritySupport.accessSystemEnv())
-                .putAll(additionalProperties)
-                .toImmutableMap();
+        return MapBuilder.copyFrom(SecuritySupport.accessSystemEnv()).putAll(additionalProperties).toImmutableMap();
     }
 
     @Override

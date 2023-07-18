@@ -16,8 +16,8 @@ public interface FileWatcherService {
     void register(Path... paths);
 
     /**
-     * Unregisters one or more {@link Path}s to be watched. Not existing paths will be silently
-     * ignored
+     * Unregisters one or more {@link Path}s to be watched. Not existing paths will
+     * be silently ignored
      *
      * @param paths to be unregistered.
      */

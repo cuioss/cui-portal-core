@@ -27,7 +27,8 @@ import de.cuioss.test.generator.Generators;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Ensure we always get what we expect from the MicroProfile config implementation.
+ * Ensure we always get what we expect from the MicroProfile config
+ * implementation.
  *
  * @author Sven Haag
  */
@@ -41,12 +42,12 @@ class MPProducerTest {
     private static final String KEY_EMPTY_DEFAULT = KEY_BASE + "emptyDefault";
     private static final String KEY_NO_DEFAULT = KEY_BASE + "noDefault";
     private static final String VALUE = Generators.nonEmptyStrings().next()
-        // don't test escaping
-        .replace("\\", "")
-        // don't test list separator
-        .replace(",", "")
-        // don't test variable resolution
-        .replace("$", "");
+            // don't test escaping
+            .replace("\\", "")
+            // don't test list separator
+            .replace(",", "")
+            // don't test variable resolution
+            .replace("$", "");
     private static final String ESCAPE_VALUE_IN = "V/J\\&LkK8+g@x^vs{Q[XfR5";
     private static final String ESCAPE_VALUE_OUT = "V/J&LkK8+g@x^vs{Q[XfR5";
     private static final String KEY_UNTRIMMED_STRING = KEY_BASE + "untrimmedString";
@@ -101,7 +102,7 @@ class MPProducerTest {
     void listEmptyDefault() {
         // empty string means: remove that property
         assertThrows(NoSuchElementException.class, () -> stringListEmptyDefaultValueProvider.get(),
-            "List property with empty string as defaultValue should inject NULL");
+                "List property with empty string as defaultValue should inject NULL");
 
         configuration.fireEvent(KEY_EMPTY_DEFAULT, ESCAPE_VALUE_IN);
 
@@ -143,7 +144,7 @@ class MPProducerTest {
     @Test
     void listNoDefault() {
         assertThrows(NoSuchElementException.class, () -> stringListNoDefaultValueProvider.get(),
-            "List property without defaultValue should result in empty collection but is null");
+                "List property without defaultValue should result in empty collection but is null");
     }
 
     @Test

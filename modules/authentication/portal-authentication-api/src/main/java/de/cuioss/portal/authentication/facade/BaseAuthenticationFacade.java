@@ -21,10 +21,11 @@ public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
 
     /**
      * Enriches the given {@link AuthenticatedUserInfo} using the available
-     * {@link PortalUserEnricher} implemenentations that are part of the cdi-context.
+     * {@link PortalUserEnricher} implemenentations that are part of the
+     * cdi-context.
      * <p>
-     * The {@linkplain PortalUserEnricher} are sorted via {@link PortalPriorities} if multiple
-     * instances are found.
+     * The {@linkplain PortalUserEnricher} are sorted via {@link PortalPriorities}
+     * if multiple instances are found.
      * <p>
      * The enriched {@linkplain AuthenticatedUserInfo} is returned as result.
      *

@@ -44,8 +44,8 @@ public class RegistryHelper {
     }
 
     /**
-     * First removes and then adds the given metric.
-     * Typically only relevant for {@link Gauge} metrics.
+     * First removes and then adds the given metric. Typically only relevant for
+     * {@link Gauge} metrics.
      *
      * @param metadata
      * @param metric

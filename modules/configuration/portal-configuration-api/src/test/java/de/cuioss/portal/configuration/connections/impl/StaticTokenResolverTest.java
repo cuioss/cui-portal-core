@@ -10,8 +10,7 @@ import de.cuioss.test.valueobjects.api.contracts.VerifyConstructor;
 import de.cuioss.test.valueobjects.api.property.PropertyConfig;
 import de.cuioss.tools.property.PropertyReadWrite;
 
-@PropertyConfig(name = "token", propertyClass = String.class,
-        propertyReadWrite = PropertyReadWrite.WRITE_ONLY)
+@PropertyConfig(name = "token", propertyClass = String.class, propertyReadWrite = PropertyReadWrite.WRITE_ONLY)
 @VerifyConstructor(of = { "key", "token" })
 class StaticTokenResolverTest extends ValueObjectTest<StaticTokenResolver> {
 

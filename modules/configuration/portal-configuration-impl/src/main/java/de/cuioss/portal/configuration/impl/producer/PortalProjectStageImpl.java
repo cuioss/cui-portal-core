@@ -26,8 +26,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Portal variant of {@link CuiProjectStage}. It computes the project-stage from the parameter
- * {@link PortalConfigurationKeys#PORTAL_STAGE}
+ * Portal variant of {@link CuiProjectStage}. It computes the project-stage from
+ * the parameter {@link PortalConfigurationKeys#PORTAL_STAGE}
  * <p>
  * Currently it supports the following stages:
  * <ul>
@@ -36,7 +36,7 @@ import lombok.ToString;
  * <li>{@link ProjectStage#CONFIGURATION}</li>
  * <li>{@link ProjectStage#PRODUCTION}</li>
  * </ul>
- * 
+ *
  * @author Oliver Wolff
  * @author Sven Haag
  */
@@ -49,17 +49,13 @@ public class PortalProjectStageImpl implements PortalProjectStage, Serializable 
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalProjectStageImpl.class);
 
-    private static final String PROJECT_STAGE_XY_DETECTED =
-        "Portal-101: Project stage '{}' detected. "
-                + "Set the property '" + PortalConfigurationKeys.PORTAL_STAGE
-                + "' to 'production' for productive usage.";
+    private static final String PROJECT_STAGE_XY_DETECTED = "Portal-101: Project stage '{}' detected. "
+            + "Set the property '" + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.";
 
-    private static final String PROJECT_STAGE_CONFIGURATION_DETECTED =
-        "Portal-103: Project stage 'configuration' detected. Complete the configuration wizard or "
-                + "set the property 'icw.portal.configuration.stage' to 'production' for productive usage.";
+    private static final String PROJECT_STAGE_CONFIGURATION_DETECTED = "Portal-103: Project stage 'configuration' detected. Complete the configuration wizard or "
+            + "set the property 'icw.portal.configuration.stage' to 'production' for productive usage.";
 
-    private static final String PROJECT_STAGE_PRODUCTION_DETECTED =
-        "Portal-001: Running in Production-Mode";
+    private static final String PROJECT_STAGE_PRODUCTION_DETECTED = "Portal-001: Running in Production-Mode";
 
     /**
      * Bean name for looking up instances.
@@ -90,19 +86,19 @@ public class PortalProjectStageImpl implements PortalProjectStage, Serializable 
         projectStage = portalProjectStage;
 
         switch (portalProjectStage) {
-            case DEVELOPMENT:
-                LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "development");
-                break;
-            case TEST:
-                LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "test");
-                break;
-            case CONFIGURATION:
-                LOGGER.warn(PROJECT_STAGE_CONFIGURATION_DETECTED);
-                break;
-            case PRODUCTION:
-            default:
-                LOGGER.info(PROJECT_STAGE_PRODUCTION_DETECTED);
-                break;
+        case DEVELOPMENT:
+            LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "development");
+            break;
+        case TEST:
+            LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "test");
+            break;
+        case CONFIGURATION:
+            LOGGER.warn(PROJECT_STAGE_CONFIGURATION_DETECTED);
+            break;
+        case PRODUCTION:
+        default:
+            LOGGER.info(PROJECT_STAGE_PRODUCTION_DETECTED);
+            break;
         }
     }
 

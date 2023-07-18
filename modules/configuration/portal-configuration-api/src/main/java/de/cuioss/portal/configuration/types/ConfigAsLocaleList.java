@@ -17,8 +17,8 @@ import javax.inject.Qualifier;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 
 /**
- * Injects a config property as a {@link List} of {@link Locale}. The corresponding
- * producer may return an empty {@link List}.
+ * Injects a config property as a {@link List} of {@link Locale}. The
+ * corresponding producer may return an empty {@link List}.
  *
  * @author Oliver Wolff
  */
@@ -34,16 +34,17 @@ public @interface ConfigAsLocaleList {
     String name();
 
     /**
-     * @return boolean indicating whether the producer should return the system-locale
-     *         in case the given locale can not be parsed '{@code true}' or throw an
-     *         {@link IllegalArgumentException} {@code false}. Defaults to {@code true}
+     * @return boolean indicating whether the producer should return the
+     *         system-locale in case the given locale can not be parsed
+     *         '{@code true}' or throw an {@link IllegalArgumentException}
+     *         {@code false}. Defaults to {@code true}
      */
     @Nonbinding
     boolean defaultToSystem() default true;
 
     /**
-     * @return the separator char to separate the individual Locale elements, defaults to
-     *         {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
+     * @return the separator char to separate the individual Locale elements,
+     *         defaults to {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
     @Nonbinding
     char separator() default PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;

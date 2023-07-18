@@ -23,8 +23,7 @@ public class KeyStoreInfoGenerator implements TypedGenerator<KeyStoreProvider> {
     @Override
     public KeyStoreProvider next() {
         return KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
-                .location(keystores.next().getAbsoluteFile())
-                .storePassword(PASSWORD).build();
+                .location(keystores.next().getAbsoluteFile()).storePassword(PASSWORD).build();
     }
 
     @Override

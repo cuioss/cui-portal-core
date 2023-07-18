@@ -13,15 +13,13 @@ class YamlDefaultConfigSourceTest {
         assertEquals("test", underTest.getValue("yaml"));
         assertEquals("classpath:/META-INF/microprofile-config.yaml", underTest.getPath());
         assertEquals("YamlDefaultConfigSource[source=classpath:/META-INF/microprofile-config.yaml]",
-            underTest.getName());
+                underTest.getName());
         assertEquals(101, underTest.getOrdinal());
     }
 
     @Test
     void loadDefaultConfigFromUrl() {
-        var result = new YamlDefaultConfigSource(
-            getClass().getClassLoader().getResource("test.yml"))
-            .getProperties();
+        var result = new YamlDefaultConfigSource(getClass().getClassLoader().getResource("test.yml")).getProperties();
         assertEquals(6, result.size());
     }
 }

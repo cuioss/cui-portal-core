@@ -32,8 +32,8 @@ class ConfigPlaceholder {
     private final String defaultValue;
 
     /**
-     * Constructor for placeholders with a key only.
-     * Sets {@link #defaultValue} to {@code null}.
+     * Constructor for placeholders with a key only. Sets {@link #defaultValue} to
+     * {@code null}.
      */
     public ConfigPlaceholder(@NonNull final String configKey) {
         this(configKey, null);
@@ -54,7 +54,8 @@ class ConfigPlaceholder {
     /**
      * Parse the given string.
      * <p>
-     * Spring Framework will use an empty string, if there is nothing behind the double colon, see:
+     * Spring Framework will use an empty string, if there is nothing behind the
+     * double colon, see:
      * https://github.com/spring-projects/spring-framework/blob/dad0b1e98cacf417cc5c68b5884e7a1e47b85000/spring-core/src/main/java/org/springframework/util/PropertyPlaceholderHelper.java#L156
      *
      * @param placeholder must not be null
@@ -65,22 +66,20 @@ class ConfigPlaceholder {
             throw new IllegalArgumentException("Not a valid config placeholder: " + placeholder);
         }
 
-        final var placeholderContent = placeholder.substring(
-                PLACEHOLDER_PREFIX.length(),
+        final var placeholderContent = placeholder.substring(PLACEHOLDER_PREFIX.length(),
                 placeholder.length() - PLACEHOLDER_SUFFIX.length());
 
         if (placeholderContent.contains(PLACEHOLDER_DEFAULT_VALUE_SPLITTER)) {
             final var start = placeholderContent.indexOf(PLACEHOLDER_DEFAULT_VALUE_SPLITTER);
-            return new ConfigPlaceholder(
-                    placeholderContent.substring(0, start),
+            return new ConfigPlaceholder(placeholderContent.substring(0, start),
                     placeholderContent.substring(start + PLACEHOLDER_DEFAULT_VALUE_SPLITTER.length()));
         }
         return new ConfigPlaceholder(placeholderContent);
     }
 
     /**
-     * @return true, if the given string represents a placeholder.
-     *         false, otherwise, or the given string is null.
+     * @return true, if the given string represents a placeholder. false, otherwise,
+     *         or the given string is null.
      */
     public static boolean isPlaceholder(final String placeholder) {
         if (null == placeholder) {

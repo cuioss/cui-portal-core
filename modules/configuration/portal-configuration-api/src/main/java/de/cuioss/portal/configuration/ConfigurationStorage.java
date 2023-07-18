@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Configuration property persistence enabler.
- * Extends {@linkplain ConfigurationSource} in order to be able to decide what should be saved and
- * what not. Each {@linkplain ConfigurationStorage} should only store things they provide.
+ * Configuration property persistence enabler. Extends
+ * {@linkplain ConfigurationSource} in order to be able to decide what should be
+ * saved and what not. Each {@linkplain ConfigurationStorage} should only store
+ * things they provide.
  *
  * @author Sven Haag
  */
@@ -21,7 +22,8 @@ public interface ConfigurationStorage extends ConfigurationSource {
     void updateConfigurationMap(Map<String, String> map) throws IOException;
 
     /**
-     * Save configuration property. Overwrites an existing property or creates a new one.
+     * Save configuration property. Overwrites an existing property or creates a new
+     * one.
      *
      * @param key
      * @param value

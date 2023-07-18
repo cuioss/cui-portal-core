@@ -27,21 +27,16 @@ class BaseAuthenticatedUserInfoTest extends ValueObjectTest<BaseAuthenticatedUse
 
     @Test
     void shouldHandleContextMap() {
-        var info =
-            BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next())
-                    .displayName(keys.next())
-                    .identifier(keys.next()).build();
+        var info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next()).displayName(keys.next())
+                .identifier(keys.next()).build();
         assertTrue(info.getContextMap().isEmpty());
 
-        info = BaseAuthenticatedUserInfo.builder()
-                .contextMap(new HashMap<>()).build();
+        info = BaseAuthenticatedUserInfo.builder().contextMap(new HashMap<>()).build();
         assertTrue(info.getContextMap().isEmpty());
 
         var distinct = Generators.asCollectionGenerator(keys).set(10).iterator();
-        info = BaseAuthenticatedUserInfo.builder()
-                .contextMapElement(distinct.next(), values.next())
-                .contextMapElement(distinct.next(), values.next())
-                .build();
+        info = BaseAuthenticatedUserInfo.builder().contextMapElement(distinct.next(), values.next())
+                .contextMapElement(distinct.next(), values.next()).build();
 
         assertEquals(2, info.getContextMap().size());
     }
@@ -49,14 +44,12 @@ class BaseAuthenticatedUserInfoTest extends ValueObjectTest<BaseAuthenticatedUse
     @Test
     void shouldHandleRoles() {
         var someRole = letterStrings(2, 5).next();
-        var info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next())
-                .displayName(keys.next())
+        var info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next()).displayName(keys.next())
                 .identifier(keys.next()).build();
         assertFalse(info.isUserInRole(someRole));
 
-        info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next())
-                .displayName(keys.next()).roles(immutableList(someRole))
-                .identifier(keys.next()).build();
+        info = BaseAuthenticatedUserInfo.builder().authenticated(booleanGenerator.next()).displayName(keys.next())
+                .roles(immutableList(someRole)).identifier(keys.next()).build();
         assertTrue(info.isUserInRole(someRole));
     }
 

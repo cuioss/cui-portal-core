@@ -38,34 +38,29 @@ class ConfigurationPlaceholderHelperTest {
 
     @Test
     void placeNothing() {
-        assertEquals("test", assertDoesNotThrow(() ->
-            replacePlaceholders("test", true)));
+        assertEquals("test", assertDoesNotThrow(() -> replacePlaceholders("test", true)));
 
-        assertEquals("test:a", assertDoesNotThrow(() ->
-            replacePlaceholders("test:a", true)));
+        assertEquals("test:a", assertDoesNotThrow(() -> replacePlaceholders("test:a", true)));
 
-        assertEquals("{test:a}", assertDoesNotThrow(() ->
-            replacePlaceholders("{test:a}", true)));
+        assertEquals("{test:a}", assertDoesNotThrow(() -> replacePlaceholders("{test:a}", true)));
     }
 
     @Test
     void ignoreMissingKey() {
-        var result = assertDoesNotThrow(() ->
-            replacePlaceholders("start${missing.key}end", false));
+        var result = assertDoesNotThrow(() -> replacePlaceholders("start${missing.key}end", false));
 
         assertEquals("start${missing.key}end", result);
     }
 
     @Test
     void missingKeysAreLogged() {
-        assertDoesNotThrow(() ->
-            replacePlaceholders("${missing_1}${missing_2}", false));
+        assertDoesNotThrow(() -> replacePlaceholders("${missing_1}${missing_2}", false));
 
         var warnMsgs = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.WARN);
         assertEquals(1, warnMsgs.size(), "Missing WARN log statement for Portal-161 message");
         var firstWarnMsg = warnMsgs.get(0).getMessage();
         if ("Portal-161: Missing config key/s: missing_1, missing_2".equals(firstWarnMsg)
-            || "Portal-161: Missing config key/s: missing_2, missing_1".equals(firstWarnMsg)) {
+                || "Portal-161: Missing config key/s: missing_2, missing_1".equals(firstWarnMsg)) {
             // test passed
         } else {
             fail("Unexpected WARN log statement for Portal-161: " + firstWarnMsg);
@@ -74,41 +69,38 @@ class ConfigurationPlaceholderHelperTest {
 
     @Test
     void ignoreMissingKeyAsDefault() {
-        var result = assertDoesNotThrow(() ->
-            replacePlaceholders("start${key1:${key2}}end", false));
+        var result = assertDoesNotThrow(() -> replacePlaceholders("start${key1:${key2}}end", false));
 
         assertEquals("start${key2}end", result);
     }
 
     @Test
     void ignoreInvalidPlaceholder() {
-        assertEquals("start{missing.key}end", assertDoesNotThrow(() ->
-            replacePlaceholders("start{missing.key}end", false)));
+        assertEquals("start{missing.key}end",
+                assertDoesNotThrow(() -> replacePlaceholders("start{missing.key}end", false)));
 
-        assertEquals("start${missing.key end", assertDoesNotThrow(() ->
-            replacePlaceholders("start${missing.key end", false)));
+        assertEquals("start${missing.key end",
+                assertDoesNotThrow(() -> replacePlaceholders("start${missing.key end", false)));
     }
 
     @Test
     void usePlaceholderDefaultIfKeyMissing() {
-        var result = assertDoesNotThrow(() ->
-            replacePlaceholders("${MISSING_KEY:default}", false));
+        var result = assertDoesNotThrow(() -> replacePlaceholders("${MISSING_KEY:default}", false));
 
         assertEquals("default", result);
     }
 
     @Test
     void replaceNestedPlaceholders() {
-        assertEquals(">>default2<<", assertDoesNotThrow(() ->
-            replacePlaceholders(">>${$1:${NESTED_KEY_1:${NESTED_KEY_2:default2}}}<<", false)));
+        assertEquals(">>default2<<", assertDoesNotThrow(
+                () -> replacePlaceholders(">>${$1:${NESTED_KEY_1:${NESTED_KEY_2:default2}}}<<", false)));
     }
 
     @Test
     void replaceMultilineCRLF() {
         addSystemProperty("line.key", "line2");
 
-        var result = assertDoesNotThrow(() ->
-            replacePlaceholders("line1\r\n${line.key}\r\nline3", false));
+        var result = assertDoesNotThrow(() -> replacePlaceholders("line1\r\n${line.key}\r\nline3", false));
 
         assertEquals("line1\r\nline2\r\nline3", result);
     }
@@ -117,37 +109,35 @@ class ConfigurationPlaceholderHelperTest {
     void replaceMultilineCR() {
         addSystemProperty("line.key", "line2");
 
-        var result = assertDoesNotThrow(() ->
-            replacePlaceholders("line1\n${line.key}\nline3", false));
+        var result = assertDoesNotThrow(() -> replacePlaceholders("line1\n${line.key}\nline3", false));
 
         assertEquals("line1\nline2\nline3", result);
     }
 
     @Test
     void exception_dontThrowIfDefaultIsAvailable() {
-        var result = assertDoesNotThrow(() ->
-            replacePlaceholders("${MISSING_KEY:default}", true));
+        var result = assertDoesNotThrow(() -> replacePlaceholders("${MISSING_KEY:default}", true));
 
         assertEquals("default", result);
     }
 
     @Test
     void exception_throwIfKeyMissing() {
-        var ex = assertThrows(NoSuchElementException.class, () ->
-            replacePlaceholders("${MISSING_KEY}", true));
+        var ex = assertThrows(NoSuchElementException.class, () -> replacePlaceholders("${MISSING_KEY}", true));
 
         assertEquals("Portal-161: Missing config key/s: MISSING_KEY", ex.getMessage());
     }
 
     @Test
     void exceptionIfPlaceholdersNestedTooDeep() {
-        var ex = assertThrows(ConfigKeyNestingException.class, () ->
-            replacePlaceholders("${KEY_1:${KEY_2:${KEY_3:${KEY_4:${KEY_5:${KEY_6}}}}}}", false));
+        var ex = assertThrows(ConfigKeyNestingException.class,
+                () -> replacePlaceholders("${KEY_1:${KEY_2:${KEY_3:${KEY_4:${KEY_5:${KEY_6}}}}}}", false));
         assertEquals("Config key is nested too deep: KEY_1", ex.getMessage());
         assertEquals("Config key is nested too deep: KEY_2", ex.getCause().getMessage());
         assertEquals("Config key is nested too deep: KEY_3", ex.getCause().getCause().getMessage());
         assertEquals("Config key is nested too deep: KEY_4", ex.getCause().getCause().getCause().getMessage());
-        assertEquals("Config key is nested too deep: KEY_5", ex.getCause().getCause().getCause().getCause().getMessage());
+        assertEquals("Config key is nested too deep: KEY_5",
+                ex.getCause().getCause().getCause().getCause().getMessage());
     }
 
     private void addSystemProperty(final String key, final String value) {

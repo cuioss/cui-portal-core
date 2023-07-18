@@ -58,8 +58,8 @@ import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 
 /**
- * Provides specific producer methods for elements not covered by the standard deltaspike
- * configuration converter.
+ * Provides specific producer methods for elements not covered by the standard
+ * deltaspike configuration converter.
  *
  * @author Oliver Wolff
  */
@@ -70,15 +70,11 @@ public class PortalConfigProducer {
 
     static final String UNUSED = "unused";
 
-    private static final String INVALID_CONTENT_FOR_LONG =
-        "Portal-526: Invalid content for '{}{}', expected a number but was '{}'";
+    private static final String INVALID_CONTENT_FOR_LONG = "Portal-526: Invalid content for '{}{}', expected a number but was '{}'";
 
-    private static final String INVALID_CONTENT_FOR_TIME_UNIT =
-        "Portal-527: Invalid content for '{}{}', expected one of {} but was '{}'";
+    private static final String INVALID_CONTENT_FOR_TIME_UNIT = "Portal-527: Invalid content for '{}{}', expected one of {} but was '{}'";
 
-    private static final String INVALID_CONTENT_FOR_BOOLEAN =
-        "Portal-527: Invalid content for '{}{}', expected a boolean but was '{}'";
-
+    private static final String INVALID_CONTENT_FOR_BOOLEAN = "Portal-527: Invalid content for '{}{}', expected a boolean but was '{}'";
 
     @Inject
     @ConfigProperty(name = PORTAL_METRICS_ENABLED, defaultValue = "false")
@@ -87,8 +83,8 @@ public class PortalConfigProducer {
     /**
      * @param injectionPoint
      *
-     * @return the resolved value or {@code null} if the key could not be found or the resolved value is an
-     *     empty {@link String}.
+     * @return the resolved value or {@code null} if the key could not be found or
+     *         the resolved value is an empty {@link String}.
      */
     @Produces
     @Dependent
@@ -97,8 +93,7 @@ public class PortalConfigProducer {
         final var metaData = resolveAnnotationOrThrow(injectionPoint, ConfigPropertyNullable.class);
         final var key = metaData.name();
         try {
-            return resolveConfigProperty(key)
-                .orElse(emptyToNull(metaData.defaultValue()));
+            return resolveConfigProperty(key).orElse(emptyToNull(metaData.defaultValue()));
         } catch (final NoSuchElementException e) {
             LOGGER.debug(e, "Could not resolve config value for key {}", key);
         }
@@ -128,8 +123,8 @@ public class PortalConfigProducer {
     @ConfigAsSet(name = UNUSED)
     Set<String> produceSplittedSet(final InjectionPoint injectionPoint) {
         final var metaData = resolveAnnotationOrThrow(injectionPoint, ConfigAsSet.class);
-        return immutableSet(resolveConfigPropertyAsList(
-            metaData.name(), metaData.defaultValue(), metaData.separator()));
+        return immutableSet(
+                resolveConfigPropertyAsList(metaData.name(), metaData.defaultValue(), metaData.separator()));
     }
 
     @Produces
@@ -149,14 +144,13 @@ public class PortalConfigProducer {
         final var configValue = resolveConfigProperty(metaData.name()).orElse(null);
         final var pathAsString = nullToEmpty(configValue).trim();
         if (MoreStrings.isEmpty(pathAsString)) {
-            throw new IllegalArgumentException(
-                "Path must not be null nor empty, property is " + metaData.name());
+            throw new IllegalArgumentException("Path must not be null nor empty, property is " + metaData.name());
         }
 
         final var path = Paths.get(pathAsString).normalize();
         if (metaData.failOnNotAccessible()) {
             checkArgument(path.toFile().exists(),
-                "Path " + pathAsString + " does not denote an existing file/directory");
+                    "Path " + pathAsString + " does not denote an existing file/directory");
         }
         return path;
     }
@@ -179,8 +173,7 @@ public class PortalConfigProducer {
             if (metaData.defaultToSystem()) {
                 return Locale.getDefault();
             }
-            throw new IllegalArgumentException(
-                "Locale must not be null nor empty, property is " + metaData.name());
+            throw new IllegalArgumentException("Locale must not be null nor empty, property is " + metaData.name());
         }
         return resolveLocale(localeAsString, metaData.defaultToSystem());
     }
@@ -220,7 +213,7 @@ public class PortalConfigProducer {
      * @param injectionPoint
      *
      * @return a filtered map of properties filtered corresponding to
-     *     {@link ConfigAsFilteredMap#startsWith()}
+     *         {@link ConfigAsFilteredMap#startsWith()}
      */
     @Produces
     @Dependent
@@ -248,8 +241,8 @@ public class PortalConfigProducer {
             try {
                 expiration = Long.parseLong(configProperties.get(EXPIRATION_KEY).trim());
             } catch (final NumberFormatException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_LONG,
-                    configKeyPrefix, EXPIRATION_KEY, configProperties.get(EXPIRATION_KEY));
+                LOGGER.error(e, INVALID_CONTENT_FOR_LONG, configKeyPrefix, EXPIRATION_KEY,
+                        configProperties.get(EXPIRATION_KEY));
             }
         }
 
@@ -257,8 +250,7 @@ public class PortalConfigProducer {
             try {
                 size = Long.parseLong(configProperties.get(SIZE_KEY).trim());
             } catch (final NumberFormatException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_LONG,
-                    configKeyPrefix, SIZE_KEY, configProperties.get(SIZE_KEY));
+                LOGGER.error(e, INVALID_CONTENT_FOR_LONG, configKeyPrefix, SIZE_KEY, configProperties.get(SIZE_KEY));
             }
         }
 
@@ -266,16 +258,16 @@ public class PortalConfigProducer {
             try {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT,
-                    configKeyPrefix, SIZE_KEY, TimeUnit.values(), configProperties.get(SIZE_KEY));
+                LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT, configKeyPrefix, SIZE_KEY, TimeUnit.values(),
+                        configProperties.get(SIZE_KEY));
             }
         }
 
         if (configProperties.containsKey(CacheConfig.RECORD_STATISTICS_KEY)) {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
-                LOGGER.error(INVALID_CONTENT_FOR_BOOLEAN,
-                    configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY, configValue);
+                LOGGER.error(INVALID_CONTENT_FOR_BOOLEAN, configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
+                        configValue);
                 recordStats = false;
             } else {
                 recordStats = Boolean.parseBoolean(configValue);
@@ -283,8 +275,7 @@ public class PortalConfigProducer {
             LOGGER.trace("recordStats: {}", recordStats);
         }
 
-        final var cacheConfig = new CacheConfig(expiration, timeUnit, size,
-            recordStats && portalMetricsEnabled.get());
+        final var cacheConfig = new CacheConfig(expiration, timeUnit, size, recordStats && portalMetricsEnabled.get());
         LOGGER.trace("CacheConfig: {}", cacheConfig);
         return cacheConfig;
     }
@@ -314,18 +305,15 @@ public class PortalConfigProducer {
         if (defaultToSystem) {
             return Locale.getDefault();
         }
-        throw new IllegalArgumentException(
-            "Unable to determine locale for " + localeAsString);
+        throw new IllegalArgumentException("Unable to determine locale for " + localeAsString);
     }
 
-    private static FileLoader checkFileLoader(final String pathProperty,
-                                              final boolean failOnNotAccessible,
-                                              final String propertyName) {
+    private static FileLoader checkFileLoader(final String pathProperty, final boolean failOnNotAccessible,
+            final String propertyName) {
 
         final var path = nullToEmpty(pathProperty).trim();
         if (MoreStrings.isEmpty(path)) {
-            throw new IllegalArgumentException(
-                "Path must not be null nor empty, property is " + propertyName);
+            throw new IllegalArgumentException("Path must not be null nor empty, property is " + propertyName);
         }
 
         final var fileLoader = FileLoaderUtility.getLoaderForPath(path);

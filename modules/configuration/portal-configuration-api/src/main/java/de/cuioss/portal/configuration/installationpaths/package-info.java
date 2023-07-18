@@ -1,6 +1,6 @@
 /**
- * Members of this package provide Runtime Configuration about installation specific paths of a
- * portal application.
+ * Members of this package provide Runtime Configuration about installation
+ * specific paths of a portal application.
  *
  * @author Oliver Wolff
  *

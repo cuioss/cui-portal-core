@@ -19,14 +19,12 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Loads properties from a given {@link FileLoader}. It will not cache the content but always reload
- * from the source on {@link #getConfigurationMap()}.
+ * Loads properties from a given {@link FileLoader}. It will not cache the
+ * content but always reload from the source on {@link #getConfigurationMap()}.
  *
- * <blockquote>
- * This class remains part of the API because it is used by actual application implementations to
- * implement configuration providers, which should not lead to a portal-configuration-impl
- * dependency.
- * </blockquote>
+ * <blockquote> This class remains part of the API because it is used by actual
+ * application implementations to implement configuration providers, which
+ * should not lead to a portal-configuration-impl dependency. </blockquote>
  *
  * @author Oliver Wolff
  */
@@ -36,8 +34,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource, Ser
 
     private static final CuiLogger log = new CuiLogger(PropertiesConfigurationProvider.class);
 
-    private static final String PORTAL_503 =
-        "Portal-503: Unable to load from properties file described by '{}', due to: '{}'";
+    private static final String PORTAL_503 = "Portal-503: Unable to load from properties file described by '{}', due to: '{}'";
 
     private static final long serialVersionUID = -3827851969415677777L;
 
@@ -48,7 +45,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource, Ser
 
     /**
      * @param fileLoader must not be null and the file must be readable:
-     *            {@link FileLoader#isReadable()}
+     *                   {@link FileLoader#isReadable()}
      */
     public PropertiesConfigurationProvider(final FileLoader fileLoader) {
         requireNonNull(fileLoader, "fileLoader");
@@ -58,7 +55,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource, Ser
 
     /**
      * @param pathName must not be null and the file must be readable:
-     *            {@link FileLoader#isReadable()}
+     *                 {@link FileLoader#isReadable()}
      */
     public PropertiesConfigurationProvider(final String pathName) {
         this(FileLoaderUtility.getLoaderForPath(requireNonNull(pathName, "pathName")));
@@ -79,10 +76,10 @@ public class PropertiesConfigurationProvider implements ConfigurationSource, Ser
     }
 
     /**
-     * @return the properties identified by the given {@link FileLoader}. In case the
-     *         {@link FileLoader} is not set or does not provide a readable file it will return an
-     *         {@link Optional#empty()}. otherwise, e.g. on read errors it will return an empty
-     *         {@link Properties}
+     * @return the properties identified by the given {@link FileLoader}. In case
+     *         the {@link FileLoader} is not set or does not provide a readable file
+     *         it will return an {@link Optional#empty()}. otherwise, e.g. on read
+     *         errors it will return an empty {@link Properties}
      */
     public Optional<Properties> getAsProperties() {
         if (null == fileLoader || !fileLoader.isReadable()) {
@@ -90,8 +87,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource, Ser
             return Optional.empty();
         }
         final var properties = new Properties();
-        try (final var inputStream =
-            new BufferedInputStream(fileLoader.inputStream())) {
+        try (final var inputStream = new BufferedInputStream(fileLoader.inputStream())) {
             properties.load(inputStream);
             return Optional.of(properties);
         } catch (final IOException e) {

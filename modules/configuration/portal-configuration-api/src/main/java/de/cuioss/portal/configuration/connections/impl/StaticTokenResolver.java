@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Basic Implementation of {@link TokenResolver} used for static tokens that do not change for a
- * specific user.
+ * Basic Implementation of {@link TokenResolver} used for static tokens that do
+ * not change for a specific user.
  *
  * @author Oliver Wolff
  *

@@ -7,7 +7,8 @@ import lombok.NonNull;
 import lombok.Value;
 
 /**
- * To signal successful / failed login and logout events (e.g. to the atna logger).
+ * To signal successful / failed login and logout events (e.g. to the atna
+ * logger).
  */
 @Value
 @Builder

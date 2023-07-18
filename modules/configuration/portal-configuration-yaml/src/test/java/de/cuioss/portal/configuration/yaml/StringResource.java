@@ -16,8 +16,8 @@ import lombok.ToString;
 /**
  * Implementation of {@linkplain FileLoader}
  * <p>
- * Useful for loading content from any given String,
- * without having to resort to a single-use {@link InputStream}.
+ * Useful for loading content from any given String, without having to resort to
+ * a single-use {@link InputStream}.
  *
  * @author Sven Haag
  */
@@ -58,8 +58,8 @@ class StringResource implements FileLoader {
     }
 
     /**
-     * This implementation returns a ByteArrayInputStream for the
-     * underlying byte array.
+     * This implementation returns a ByteArrayInputStream for the underlying byte
+     * array.
      *
      * @see ByteArrayInputStream
      */

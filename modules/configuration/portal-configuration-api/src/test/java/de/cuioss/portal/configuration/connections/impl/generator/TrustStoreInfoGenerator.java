@@ -19,8 +19,7 @@ public class TrustStoreInfoGenerator implements TypedGenerator<KeyStoreProvider>
     @Override
     public KeyStoreProvider next() {
         return KeyStoreProvider.builder().keyStoreType(KeyStoreType.TRUST_STORE)
-                .location(trustores.next().getAbsoluteFile())
-                .storePassword(PASSWORD).build();
+                .location(trustores.next().getAbsoluteFile()).storePassword(PASSWORD).build();
     }
 
     @Override

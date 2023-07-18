@@ -23,7 +23,6 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 
     @Override
     public List<String> getKeysIgnoreList() {
-        return immutableList(
-            PORTAL_TRACING_REPORTER_URL);
+        return immutableList(PORTAL_TRACING_REPORTER_URL);
     }
 }

@@ -34,8 +34,9 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
      *
      * @param path to the properties file
      *
-     * @throws IllegalArgumentException if {@code path} is empty or {@code null} or does not have a
-     *     {@code properties} file extension.
+     * @throws IllegalArgumentException if {@code path} is empty or {@code null} or
+     *                                  does not have a {@code properties} file
+     *                                  extension.
      */
     public PropertiesConfigSource(final String path) {
         this(path, false);
@@ -45,11 +46,13 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
      * Instantly loads the given file. The path might be prefixed with one of the
      * {@link de.cuioss.tools.io.FileTypePrefix}s.
      *
-     * @param path to the properties file
-     * @param optional if true, doesn't throw an exception if the file isn't available.
+     * @param path     to the properties file
+     * @param optional if true, doesn't throw an exception if the file isn't
+     *                 available.
      *
-     * @throws IllegalArgumentException if {@code path} is empty or {@code null} or does not have a
-     *     {@code properties} file extension.
+     * @throws IllegalArgumentException if {@code path} is empty or {@code null} or
+     *                                  does not have a {@code properties} file
+     *                                  extension.
      */
     public PropertiesConfigSource(final String path, final boolean optional) {
         this.path = path;

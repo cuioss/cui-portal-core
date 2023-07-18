@@ -19,8 +19,8 @@ import de.cuioss.tools.collect.CollectionLiterals;
 @AddEnabledInterceptors(PortalConfigurationChangeInterceptorImpl.class)
 class PortalConfigurationChangeEmptyFilterInterceptorTest {
 
-    static final Map<String, String> UNKNOWN_ELEMENTS =
-        CollectionLiterals.immutableMap("key1", "value1", "key2", "value2", "key3", "value3");
+    static final Map<String, String> UNKNOWN_ELEMENTS = CollectionLiterals.immutableMap("key1", "value1", "key2",
+            "value2", "key3", "value3");
 
     @SuppressWarnings("unused")
     @Inject

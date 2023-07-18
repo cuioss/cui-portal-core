@@ -24,7 +24,10 @@ public class ConnectionMetadataKeys {
     private static final String AUTH_TOKEN_BASE = AUTH_BASE + "token.";
     private static final String AUTH_CERTIFICATE_KEYSTORE_BASE = AUTH_CERTIFICATE_BASE + KEYSTORE_PREFIX;
 
-    /** Prefix for configuring token based authentication: "authentication.token.application." */
+    /**
+     * Prefix for configuring token based authentication:
+     * "authentication.token.application."
+     */
     private static final String AUTH_TOKEN_APPLICATION_BASE = AUTH_TOKEN_BASE + "application.";
 
     /** Prefix for configuring token based authentication */
@@ -36,7 +39,9 @@ public class ConnectionMetadataKeys {
     /** "authentication.token.application.key". */
     public static final String AUTH_TOKEN_APPLICATION_KEY = AUTH_TOKEN_APPLICATION_BASE + "key";
 
-    /** User password for BASIC authentication type ("authentication.basic.password") */
+    /**
+     * User password for BASIC authentication type ("authentication.basic.password")
+     */
     public static final String AUTH_BASIC_USER_PASSWORD = AUTH_BASIC_BASE + PASSWORD;
 
     /** User name for BASIC authentication type ("authentication.basic.username") */
@@ -55,8 +60,8 @@ public class ConnectionMetadataKeys {
     public static final String AUTH_CERTIFICATE_KEYSTORE_PASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + PASSWORD;
 
     /**
-     * Private key password for accessing the key-store keys using CERTIFICATE authentication type
-     * ("authentication.certificate.keystore.keypassword")
+     * Private key password for accessing the key-store keys using CERTIFICATE
+     * authentication type ("authentication.certificate.keystore.keypassword")
      */
     public static final String AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + KEYPASSWORD;
 
@@ -66,23 +71,37 @@ public class ConnectionMetadataKeys {
 
     private static final String TRANSPORT_TRUSTSTORE_BASE = TRANSPORT_BASE + TRUSTSTORE_PREFIX;
 
-    /** Key store location for Transport-level ("transport.secure.keystore.location") */
+    /**
+     * Key store location for Transport-level ("transport.secure.keystore.location")
+     */
     public static final String TRANSPORT_KEYSTORE_LOCATION = TRANSPORT_KEYSTORE_BASE + LOCATION;
 
-    /** Key store password for Transport-level ("transport.secure.keystore.password") */
+    /**
+     * Key store password for Transport-level ("transport.secure.keystore.password")
+     */
     public static final String TRANSPORT_KEYSTORE_PASSWORD = TRANSPORT_KEYSTORE_BASE + PASSWORD;
 
-    /** Key store key-password for Transport-level ("transport.secure.keystore.keypassword") */
+    /**
+     * Key store key-password for Transport-level
+     * ("transport.secure.keystore.keypassword")
+     */
     public static final String TRANSPORT_KEYSTORE_KEYPASSWORD = TRANSPORT_KEYSTORE_BASE + KEYPASSWORD;
 
-    /** Trust-store location for Transport-level ("transport.secure.truststore.location") */
+    /**
+     * Trust-store location for Transport-level
+     * ("transport.secure.truststore.location")
+     */
     public static final String TRANSPORT_TRUSTSTORE_LOCATION = TRANSPORT_TRUSTSTORE_BASE + LOCATION;
 
-    /** Trust-store password for Transport-level ("transport.secure.truststore.password") */
+    /**
+     * Trust-store password for Transport-level
+     * ("transport.secure.truststore.password")
+     */
     public static final String TRANSPORT_TRUSTSTORE_PASSWORD = TRANSPORT_TRUSTSTORE_BASE + PASSWORD;
 
     /**
-     * Disable Verification of hostnames ("transport.secure.disableHostNameVerification")
+     * Disable Verification of hostnames
+     * ("transport.secure.disableHostNameVerification")
      */
     public static final String TRANSPORT_DISABLE_HOSTNAME_VALIDATION = TRANSPORT_BASE + "disableHostNameVerification";
 
@@ -99,8 +118,8 @@ public class ConnectionMetadataKeys {
     public static final String DESCRIPTION_KEY = "description";
 
     /**
-     * ID for this connection configuration.
-     * Usually the name of the service that is called, e.g. <code>provider-directory</code> or <code>app-gateway</code>.
+     * ID for this connection configuration. Usually the name of the service that is
+     * called, e.g. <code>provider-directory</code> or <code>app-gateway</code>.
      * This ID is also eventually used in distributed tracing.
      */
     public static final String ID_KEY = "id";

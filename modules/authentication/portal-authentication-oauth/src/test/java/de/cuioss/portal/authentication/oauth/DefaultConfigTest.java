@@ -30,14 +30,8 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 
     @Override
     public List<String> getKeysIgnoreList() {
-        return immutableList(
-                OPEN_ID_CLIENT_ID,
-                OPEN_ID_CLIENT_SECRET,
-                OPEN_ID_SERVER_BASE_URL,
-                EXTERNAL_HOSTNAME,
-                OPEN_ID_SERVER_TOKEN_URL,
-                OPEN_ID_SERVER_USER_INFO_URL,
-                OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
+        return immutableList(OPEN_ID_CLIENT_ID, OPEN_ID_CLIENT_SECRET, OPEN_ID_SERVER_BASE_URL, EXTERNAL_HOSTNAME,
+                OPEN_ID_SERVER_TOKEN_URL, OPEN_ID_SERVER_USER_INFO_URL, OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
     }
 
     @Override

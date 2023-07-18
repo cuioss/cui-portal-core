@@ -76,8 +76,8 @@ class ConfigurationHelperTest {
         assertEquals(2, getFilteredPropertyMap(SIMPLE_MAP, "key", false).size());
         final var strippedMap = getFilteredPropertyMap(SIMPLE_MAP, "key", true);
         assertEquals(2, strippedMap.size());
-        assertTrue(strippedMap.keySet().contains("1"));
-        assertTrue(strippedMap.keySet().contains("2"));
+        assertTrue(strippedMap.containsKey("1"));
+        assertTrue(strippedMap.containsKey("2"));
     }
 
     @Test

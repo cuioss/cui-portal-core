@@ -77,8 +77,8 @@ public class PortalConfigurationKeys implements Serializable {
      * portal.dashboard.widget.
      * <p>
      * Activates dashboard widgets (see
-     * com.icw.ehf.cui.portal.cdi.api.dashboard.PortalDashboardWidget) and
-     * defines their order.
+     * com.icw.ehf.cui.portal.cdi.api.dashboard.PortalDashboardWidget) and defines
+     * their order.
      */
     public static final String DASHBOARD_WIDGET = PORTAL_BASE + "dashboard.widget.";
 
@@ -92,9 +92,8 @@ public class PortalConfigurationKeys implements Serializable {
      * </p>
      * <p>
      * Each entry consists of a logical name matching
-     * com.icw.ehf.cui.components.bootstrap.menu.model.NavigationMenuItem#getId(), and the
-     * properties "enabled",
-     * "order" and "parent".
+     * com.icw.ehf.cui.components.bootstrap.menu.model.NavigationMenuItem#getId(),
+     * and the properties "enabled", "order" and "parent".
      * </p>
      * Example:
      *
@@ -106,24 +105,25 @@ public class PortalConfigurationKeys implements Serializable {
      *     parent: userMenuItem
      * </pre>
      * <ul>
-     * <li>"enabled" defaults to true and can be used to disable existing entries.</li>
-     * <li>"order" is used to define an order of the items. Consider reserving space between the
-     * items.</li>
-     * <li>"parent" is used to define a hierarchy. It can be a specific menu item id or
-     * {@value PortalConfigurationKeys#MENU_TOP_IDENTIFIER}.</li>
+     * <li>"enabled" defaults to true and can be used to disable existing
+     * entries.</li>
+     * <li>"order" is used to define an order of the items. Consider reserving space
+     * between the items.</li>
+     * <li>"parent" is used to define a hierarchy. It can be a specific menu item id
+     * or {@value PortalConfigurationKeys#MENU_TOP_IDENTIFIER}.</li>
      * </ul>
      * <em>Conventions</em>:
      * <ul>
-     * <li>To create a separator menu item, just create an entry starting with "separator". No
-     * NavigationMenuItem needs to be
-     * created.</li>
+     * <li>To create a separator menu item, just create an entry starting with
+     * "separator". No NavigationMenuItem needs to be created.</li>
      * </ul>
      */
     public static final String MENU_BASE = PORTAL_BASE + "menu.";
 
     /**
-     * This is used for setting the top-level menu as parent. In previous versions {@code null} as
-     * parent was interpreted as indicator for displaying the menu-item as top-level element
+     * This is used for setting the top-level menu as parent. In previous versions
+     * {@code null} as parent was interpreted as indicator for displaying the
+     * menu-item as top-level element
      *
      */
     public static final String MENU_TOP_IDENTIFIER = "top";
@@ -131,8 +131,7 @@ public class PortalConfigurationKeys implements Serializable {
     /**
      * Location of the property file for the portal-branding-configuration location
      */
-    public static final String PORTAL_BRANDING_CONFIG_LOCATION =
-        "classpath:/META-INF/portal_branding_configuration.properties";
+    public static final String PORTAL_BRANDING_CONFIG_LOCATION = "classpath:/META-INF/portal_branding_configuration.properties";
 
     /**
      * in minutes
@@ -148,8 +147,9 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.configuration.stage
      * <p>
-     * Used to set the operating mode aka project stage. Defaults to {@code production}.
-     * Valid values are: development|test|configuration|production
+     * Used to set the operating mode aka project stage. Defaults to
+     * {@code production}. Valid values are:
+     * development|test|configuration|production
      * </p>
      */
     public static final String PORTAL_STAGE = CONFIGURATION_BASE + "stage";
@@ -160,13 +160,14 @@ public class PortalConfigurationKeys implements Serializable {
      * <p>
      * Defines an interface for overwriting system-properties. The portal will pick
      * up all corresponding properties and sets them accordingly:
-     * portal.system_property.javax.net.ssl.trustStore=/config/ca.keystore will result in the
-     * system-property 'javax.net.ssl.trustStore' being set to '/config/ca.keystore'
+     * portal.system_property.javax.net.ssl.trustStore=/config/ca.keystore will
+     * result in the system-property 'javax.net.ssl.trustStore' being set to
+     * '/config/ca.keystore'
      * </p>
      * <p>
-     * <em>Caution:</em> The intend for this mechanism are corner-cases and tests. Therefore it
-     * should always be the exception and not the standard way to alter system-properties by the
-     * mechanism
+     * <em>Caution:</em> The intend for this mechanism are corner-cases and tests.
+     * Therefore it should always be the exception and not the standard way to alter
+     * system-properties by the mechanism
      * </p>
      */
     public static final String PORTAL_SYSTEM_PROPERTY_PREFIX = PORTAL_BASE + "system_property.";
@@ -175,8 +176,9 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter for the installation configuration directory with the name:
      * 'portal.configuration.dir'
      * <p>
-     * Used to locate the {@linkplain #PORTAL_CONFIG_FILENAME_DEFAULT} configuration file.
-     * If this parameter is not present the default is {@linkplain #PORTAL_CONFIG_DIR_DEFAULT}.
+     * Used to locate the {@linkplain #PORTAL_CONFIG_FILENAME_DEFAULT} configuration
+     * file. If this parameter is not present the default is
+     * {@linkplain #PORTAL_CONFIG_DIR_DEFAULT}.
      * </p>
      */
     public static final String PORTAL_CONFIG_DIR = CONFIGURATION_BASE + "dir";
@@ -193,7 +195,8 @@ public class PortalConfigurationKeys implements Serializable {
     public static final String PORTAL_CONFIG_FILENAME_DEFAULT = "application.yml";
 
     /**
-     * File name of the portal configuration production YAML file: application-production.yml
+     * File name of the portal configuration production YAML file:
+     * application-production.yml
      */
     public static final String PORTAL_CONFIG_PRODUCTION_FILENAME_DEFAULT = "application-production.yml";
 
@@ -201,77 +204,75 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * {@value #SCHEDULER_FILE_SCAN_CRON_EXPRESSION}
      * <p>
-     * Used for the configuration of the cron-based system for checking for changes within
-     * configuration files. The configuration is done using cron-expressions.
+     * Used for the configuration of the cron-based system for checking for changes
+     * within configuration files. The configuration is done using cron-expressions.
      * </p>
      * <p>
-     * The default value for the portal is '* 0/1 * * * ?' saying the files will be scanned every
-     * minute for changes. In case of system configuration you can lower it to e.g. every 5
-     * seconds: '0/5 * * * * ?'. Always set it to a production value like every minute if you
-     * finished configuration.
+     * The default value for the portal is '* 0/1 * * * ?' saying the files will be
+     * scanned every minute for changes. In case of system configuration you can
+     * lower it to e.g. every 5 seconds: '0/5 * * * * ?'. Always set it to a
+     * production value like every minute if you finished configuration.
      * </p>
      * <ul>
-     * <li><em>Caution</em>: Always keep in mind that this configuration change will only picked up
-     * at the next scan-interval.</li>
-     * <li><em>Caution</em>: Due to this nature long intervals like hourly or daily can only be
-     * reconfigured with a restart or a longer time to wait.</li>
-     * <li>Although the reconfiguration checks the new expression and ignores it on an invalid
-     * value, the value set on start-up time must always define a correct expression, because
-     * otherwise the cron-job won't start at all.</li>
-     * <li>You can use <a href="http://www.cronmaker.com/">Cronmaker</a> to validate you
-     * expressions.
-     * </li>
+     * <li><em>Caution</em>: Always keep in mind that this configuration change will
+     * only picked up at the next scan-interval.</li>
+     * <li><em>Caution</em>: Due to this nature long intervals like hourly or daily
+     * can only be reconfigured with a restart or a longer time to wait.</li>
+     * <li>Although the reconfiguration checks the new expression and ignores it on
+     * an invalid value, the value set on start-up time must always define a correct
+     * expression, because otherwise the cron-job won't start at all.</li>
+     * <li>You can use <a href="http://www.cronmaker.com/">Cronmaker</a> to validate
+     * you expressions.</li>
      * <li>The actual execution of the cron job will be logged at debug level of
      * de.cuioss.portal.configuration.application.schedule.FileWatcherScheduler</li>
      * </ul>
      */
-    public static final String SCHEDULER_FILE_SCAN_CRON_EXPRESSION =
-        SCHEDULER_BASE + "file_cron_expression";
+    public static final String SCHEDULER_FILE_SCAN_CRON_EXPRESSION = SCHEDULER_BASE + "file_cron_expression";
 
     /**
      * Context parameter within configuration-subsystem with the name
      * {@value #SCHEDULER_FILE_SCAN_ENABLED}
      * <p>
-     * Used for the configuration of tracking of changes in files, usually configuration files, see
-     * {@link FileWatcherService} for handling details. This is the successor of the previous
-     * cron-based approach.
-     * The default-value is {@code true}
+     * Used for the configuration of tracking of changes in files, usually
+     * configuration files, see {@link FileWatcherService} for handling details.
+     * This is the successor of the previous cron-based approach. The default-value
+     * is {@code true}
      * </p>
      */
-    public static final String SCHEDULER_FILE_SCAN_ENABLED =
-        CONFIGURATION_BASE + "file_watcher.enabled";
+    public static final String SCHEDULER_FILE_SCAN_ENABLED = CONFIGURATION_BASE + "file_watcher.enabled";
 
     /**
      * Context parameter within configuration-subsystem with the name
      * {@value #SCHEDULER_REST_SCAN_CRON_EXPRESSION}
      * <p>
-     * Used for the configuration of the cron-based system for checking for changes within
-     * configuration urls. The configuration is done using cron-expressions.
+     * Used for the configuration of the cron-based system for checking for changes
+     * within configuration urls. The configuration is done using cron-expressions.
      * </p>
      * <p>
-     * The default value for the portal is '* 0/1 * * * ?' saying the files will be scanned every
-     * minute for changes. In case of system configuration you can lower it to e.g. every 5
-     * seconds: '0/5 * * * * ?'. Always set it to a production value like every minute if you
-     * finished configuration.
+     * The default value for the portal is '* 0/1 * * * ?' saying the files will be
+     * scanned every minute for changes. In case of system configuration you can
+     * lower it to e.g. every 5 seconds: '0/5 * * * * ?'. Always set it to a
+     * production value like every minute if you finished configuration.
      * </p>
      */
-    public static final String SCHEDULER_REST_SCAN_CRON_EXPRESSION =
-        SCHEDULER_BASE + "rest_cron_expression";
+    public static final String SCHEDULER_REST_SCAN_CRON_EXPRESSION = SCHEDULER_BASE + "rest_cron_expression";
 
     /**
-     * Context parameter within configuration-subsystem with the name {@value #LOCALE_DEFAULT}
+     * Context parameter within configuration-subsystem with the name
+     * {@value #LOCALE_DEFAULT}
      * <p>
-     * Defines the default locale. <em>Caution:</em> the default locale must be defined within
-     * {@value #LOCALES_AVAILABLE}. The default value for the is: de
+     * Defines the default locale. <em>Caution:</em> the default locale must be
+     * defined within {@value #LOCALES_AVAILABLE}. The default value for the is: de
      * </p>
      */
     public static final String LOCALE_DEFAULT = LOCALE_BASE + "default";
 
     /**
-     * Context parameter within configuration-subsystem with the name {@value #LOCALES_AVAILABLE}
+     * Context parameter within configuration-subsystem with the name
+     * {@value #LOCALES_AVAILABLE}
      * <p>
-     * Defines the available locales for for the cdi-portal as a comma separated list. The default
-     * value for the is: en,de,fr
+     * Defines the available locales for for the cdi-portal as a comma separated
+     * list. The default value for the is: en,de,fr
      * </p>
      */
     public static final String LOCALES_AVAILABLE = LOCALE_BASE + "available";
@@ -285,9 +286,10 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.resource.handled_libraries
      * <p>
-     * A comma separated list of libraries that should be handled by the CuiResourceHandler. Handled
-     * by the resource handler means selecting the .min-version of the resource is available and
-     * adding a cache-buster to the resource request. The default value for the CDI portal is:
+     * A comma separated list of libraries that should be handled by the
+     * CuiResourceHandler. Handled by the resource handler means selecting the
+     * .min-version of the resource is available and adding a cache-buster to the
+     * resource request. The default value for the CDI portal is:
      * "com.icw.cui.fonts,com.icw.portal.css,com.icw.cui.javascript,thirdparty.legacy.js,thirdparty.js"
      * </p>
      */
@@ -297,9 +299,10 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.resource.handled_suffixes
      * <p>
-     * A comma separated list of suffixes that should be handled by the CuiResourceHandler. Handled
-     * by the resource handler means selecting the .min-version of the resource is available and
-     * adding a cache-buster to the resource request. The default value for the CDI portal is:
+     * A comma separated list of suffixes that should be handled by the
+     * CuiResourceHandler. Handled by the resource handler means selecting the
+     * .min-version of the resource is available and adding a cache-buster to the
+     * resource request. The default value for the CDI portal is:
      * "eot,ttf,svg,js,css,woff"
      * </p>
      */
@@ -309,8 +312,9 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.resource.version
      * <p>
-     * The String used for the cache buster for the resources under the control. The default value
-     * for the CDI portal is: The corresponding cui version, e.g. "4.2"
+     * The String used for the cache buster for the resources under the control. The
+     * default value for the CDI portal is: The corresponding cui version, e.g.
+     * "4.2"
      * </p>
      */
     public static final String RESOURCE_VERSION = RESOURCE_BASE + "version";
@@ -319,19 +323,20 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.resource.maxAge
      * <p>
-     * To allow caching of specific resources it allows to specify how long (in minutes) the
-     * browser does not need to retrieve the resource again. It will not be used in
-     * {@link ProjectStage#DEVELOPMENT}.
+     * To allow caching of specific resources it allows to specify how long (in
+     * minutes) the browser does not need to retrieve the resource again. It will
+     * not be used in {@link ProjectStage#DEVELOPMENT}.
      * </p>
      */
     public static final String RESOURCE_MAXAGE = RESOURCE_BASE + "maxAge";
 
     /**
-     * Context parameter within configuration-subsystem with the name portal.theme.default
+     * Context parameter within configuration-subsystem with the name
+     * portal.theme.default
      * <p>
-     * The configured default theme. The default value for the CDI portal is 'Default'
-     * <em>Caution: </em> In order to work the default theme must be defined at
-     * {@value #THEME_AVAILABLE}
+     * The configured default theme. The default value for the CDI portal is
+     * 'Default' <em>Caution: </em> In order to work the default theme must be
+     * defined at {@value #THEME_AVAILABLE}
      * </p>
      */
     public static final String THEME_DEFAULT = THEME_BASE + "default";
@@ -340,8 +345,8 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.theme.available_themes
      * <p>
-     * The configured available themes as comma separated list. The default value for the CDI portal
-     * is 'Default,High-Contrast'
+     * The configured available themes as comma separated list. The default value
+     * for the CDI portal is 'Default,High-Contrast'
      * </p>
      */
     public static final String THEME_AVAILABLE = THEME_BASE + "available_themes";
@@ -350,35 +355,41 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.view.non_secured
      * <p>
-     * Usually all our applications need authentication. This parameter defines the views / partial
-     * trees that do not need any authentication in order to be displayed, as comma separated list.
-     * Caution: The views are relative to the root, usually starting with /faces. The distinct
-     * values are to be checked using String#startsWith(). The default for the portal is
-     * '/faces/guest/'. In order to match all views you can use '/'.
+     * Usually all our applications need authentication. This parameter defines the
+     * views / partial trees that do not need any authentication in order to be
+     * displayed, as comma separated list. Caution: The views are relative to the
+     * root, usually starting with /faces. The distinct values are to be checked
+     * using String#startsWith(). The default for the portal is '/faces/guest/'. In
+     * order to match all views you can use '/'.
      * </p>
      */
     public static final String NON_SECURED_VIEWS = VIEW_BASE + "non_secured";
 
     /**
-     * Context parameter within configuration-subsystem with the name portal.view.suppressed
+     * Context parameter within configuration-subsystem with the name
+     * portal.view.suppressed
      * <p>
-     * Defines the view that are being suppressed: The portal provides many artifacts that can be
-     * overridden by concrete portals. This can be services or beans, usually to be overridden using
-     * the CDI way. In addition there are templates that can be overridden by our template
-     * mechanisms. But what about overriding pages that are delivered from the portal, e.g.
-     * faces/guest/login.jsf? If a concrete application has its own pages like in pep using
-     * /faces/pep-ui/guest/login.jsf for login. Due to the deployment mechanics of the portal
-     * faces/guest/login.jsf will still be accessible. In order to deal with this issue the portal
-     * view suppression mechanics may be used. Caution: The views are relative to the root, usually
-     * starting with /faces. The distinct values are to be checked using String#startsWith(). The
-     * default for the portal is '', saying no view is to be suppressed. Multiple view supressions
-     * can be configured by using the {@linkplain #CONTEXT_PARAM_SEPARATOR} character.
+     * Defines the view that are being suppressed: The portal provides many
+     * artifacts that can be overridden by concrete portals. This can be services or
+     * beans, usually to be overridden using the CDI way. In addition there are
+     * templates that can be overridden by our template mechanisms. But what about
+     * overriding pages that are delivered from the portal, e.g.
+     * faces/guest/login.jsf? If a concrete application has its own pages like in
+     * pep using /faces/pep-ui/guest/login.jsf for login. Due to the deployment
+     * mechanics of the portal faces/guest/login.jsf will still be accessible. In
+     * order to deal with this issue the portal view suppression mechanics may be
+     * used. Caution: The views are relative to the root, usually starting with
+     * /faces. The distinct values are to be checked using String#startsWith(). The
+     * default for the portal is '', saying no view is to be suppressed. Multiple
+     * view supressions can be configured by using the
+     * {@linkplain #CONTEXT_PARAM_SEPARATOR} character.
      * </p>
      */
     public static final String SUPPRESSED_VIEWS = VIEW_BASE + "suppressed";
 
     /**
-     * Context parameter within configuration-subsystem with the name portal.view.cache.enabled
+     * Context parameter within configuration-subsystem with the name
+     * portal.view.cache.enabled
      * <p>
      * Enables the view part cache (e.g. for the navigation menu).
      * </p>
@@ -386,28 +397,31 @@ public class PortalConfigurationKeys implements Serializable {
     public static final String ENABLE_CACHE = VIEW_BASE + "cache.enabled";
 
     /**
-     * Prefix for identifying context-parameter defining the restrictions for certain roles:
-     * "portal.view.restrict.role.".
-     * The portal defines a view-level access rights-managements. All Views can be found under
-     * '/faces/'. The matching of certain views is checked using String#startsWith(). Therefore you
-     * can omit any suffixes and define partial trees quite easily. The individual views and/or
-     * subtrees can be separated by colons. If subtree is defined it always has to finished by '/',
-     * in case of single page without '/'.
-     * A concrete view restriction is always prepended by the string
-     * 'portal.view.restrict.role.'
-     * Sample: portal.view.restrict.role.admin=/faces/admin/,/faces/content/verify
-     * will result in all views under '/faces/admin/' and the single view
-     * '/faces/content/verify.jsf' be only accessible if the user has the role 'admin'
+     * Prefix for identifying context-parameter defining the restrictions for
+     * certain roles: "portal.view.restrict.role.". The portal defines a view-level
+     * access rights-managements. All Views can be found under '/faces/'. The
+     * matching of certain views is checked using String#startsWith(). Therefore you
+     * can omit any suffixes and define partial trees quite easily. The individual
+     * views and/or subtrees can be separated by colons. If subtree is defined it
+     * always has to finished by '/', in case of single page without '/'. A concrete
+     * view restriction is always prepended by the string
+     * 'portal.view.restrict.role.' Sample:
+     * portal.view.restrict.role.admin=/faces/admin/,/faces/content/verify will
+     * result in all views under '/faces/admin/' and the single view
+     * '/faces/content/verify.jsf' be only accessible if the user has the role
+     * 'admin'
      */
     public static final String VIEW_ROLE_RESTRICTION_PREFIX = VIEW_BASE + "restrict.role.";
 
     /**
-     * Context parameter within configuration-subsystem with the name portal.view.transient
+     * Context parameter within configuration-subsystem with the name
+     * portal.view.transient
      * <p>
-     * Defines the view that are transient, therefore not part of the state saving. Caution: The
-     * views are relative to the root, usually starting with /faces. The distinct values are to be
-     * checked using String#startsWith(). The default for the portal is '/faces/guest/'. In order to
-     * match all views you can use '/'.
+     * Defines the view that are transient, therefore not part of the state saving.
+     * Caution: The views are relative to the root, usually starting with /faces.
+     * The distinct values are to be checked using String#startsWith(). The default
+     * for the portal is '/faces/guest/'. In order to match all views you can use
+     * '/'.
      * </p>
      */
     public static final String TRANSIENT_VIEWS = VIEW_BASE + "transient";
@@ -416,9 +430,10 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.history.exclude_parameter
      * <p>
-     * Defines the url-parameter to be ignored for the server side history manager as comma
-     * separated list. <em>Caution</em>: The checks are all lower-cased, therefore this parameter
-     * must be lower-cased as well The default for the portal is 'samlresponse,jsessionid,jfwid'
+     * Defines the url-parameter to be ignored for the server side history manager
+     * as comma separated list. <em>Caution</em>: The checks are all lower-cased,
+     * therefore this parameter must be lower-cased as well The default for the
+     * portal is 'samlresponse,jsessionid,jfwid'
      * </p>
      */
     public static final String HISTORY_EXCLUDE_PARAMETER = HISTORY_BASE + "exclude_parameter";
@@ -427,9 +442,10 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.history.view_excludes
      * <p>
-     * Defines the views that are to be excluded from the server-side history, as comma separated
-     * list. The distinct values are to be checked using String#startsWith(). The default for the
-     * portal is '/faces/guest/'. In order to match all views you can use '/'.
+     * Defines the views that are to be excluded from the server-side history, as
+     * comma separated list. The distinct values are to be checked using
+     * String#startsWith(). The default for the portal is '/faces/guest/'. In order
+     * to match all views you can use '/'.
      * </p>
      */
     public static final String HISTORY_VIEW_EXCLUDE_PARAMETER = HISTORY_BASE + "view_excludes";
@@ -438,9 +454,10 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.pages.login.logged_in_strategy
      * <p>
-     * Defines the behavior of the login page if called with an already logged-in user. Currently
-     * there are two strategies available: 'goto_home' resulting in a redirect to the home page and
-     * logout resulting in logging out the current logged in user. The portal default is 'goto_home'
+     * Defines the behavior of the login page if called with an already logged-in
+     * user. Currently there are two strategies available: 'goto_home' resulting in
+     * a redirect to the home page and logout resulting in logging out the current
+     * logged in user. The portal default is 'goto_home'
      * </p>
      */
     public static final String PAGES_LOGIN_ENTER_STRATEGY = PAGES_LOGIN_BASE + "logged_in_strategy";
@@ -449,8 +466,8 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.pages.login.default_userstore
      * <p>
-     * Define configuration for default selected user store. If no valid setting is defined first
-     * available user store should be used.
+     * Define configuration for default selected user store. If no valid setting is
+     * defined first available user store should be used.
      * </p>
      */
     public static final String PAGES_LOGIN_DEFAULT_USERSTORE = PAGES_LOGIN_BASE + "default_userstore";
@@ -459,10 +476,9 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.pages.error.404_redirect_to_home
      * <p>
-     * Defines the the behavior of the 404 / resource not found view.
-     * If set to 'true' the application will implicitly redirect to the home-view
-     * If set to 'false' it displays the 'home' link only
-     * The portal default is 'true'
+     * Defines the the behavior of the 404 / resource not found view. If set to
+     * 'true' the application will implicitly redirect to the home-view If set to
+     * 'false' it displays the 'home' link only The portal default is 'true'
      * </p>
      */
     public static final String PAGES_ERROR_404_REDIRECT = PAGES_ERROR_BASE + "404_redirect_to_home";
@@ -471,8 +487,8 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * portal.storage.cookieMaxAge
      * <p>
-     * Defines the maximum age of the cookie in seconds; if negative, means the cookie is not
-     * stored.
+     * Defines the maximum age of the cookie in seconds; if negative, means the
+     * cookie is not stored.
      * </p>
      */
     public static final String CLIENT_STORAGE_COOKIE_MAXAGE = STORAGE_BASE + "cookieMaxAge";
@@ -515,8 +531,8 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter for the customization directory with the name:
      * 'portal.customization.dir'
      * <p>
-     * Used to locate the folder for a customization.
-     * If this parameter is not present the default is
+     * Used to locate the folder for a customization. If this parameter is not
+     * present the default is
      * {@linkplain #PORTAL_CONFIG_DIR}/{@linkplain #PORTAL_CUSTOMIZATION_DIR_DEFAULT}.
      * </p>
      */
@@ -532,17 +548,16 @@ public class PortalConfigurationKeys implements Serializable {
     public static final String PORTAL_CUSTOMIZATION_ENABLED = CUSTOMIZATION_BASE + ENABLED;
 
     /**
-     * Defines the timeout to retrieve a backend request in seconds. After this timeout the request
-     * will be aborted.
+     * Defines the timeout to retrieve a backend request in seconds. After this
+     * timeout the request will be aborted.
      */
-    public static final String PORTAL_LAZYLOADING_REQUEST_RETRIEVE_TIMEOUT =
-        LAZYLOADING_BASE + "request.retrieve.timeout";
+    public static final String PORTAL_LAZYLOADING_REQUEST_RETRIEVE_TIMEOUT = LAZYLOADING_BASE
+            + "request.retrieve.timeout";
 
     /**
-     * Defines the timeout to handle a backend request in seconds. After this timeout the request
-     * will be aborted. This
-     * can happen if the initial rendering or the ajax update request was aborted because of
-     * redirect.
+     * Defines the timeout to handle a backend request in seconds. After this
+     * timeout the request will be aborted. This can happen if the initial rendering
+     * or the ajax update request was aborted because of redirect.
      */
     public static final String PORTAL_LAZYLOADING_REQUEST_HANDLE_TIMEOUT = LAZYLOADING_BASE + "request.handle.timeout";
 
@@ -587,10 +602,11 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name
      * 'portal.listener.Trace.enabled'
      * <p>
-     * Defines whether the listener for tracing faces-requests is enabled. Defaults to
-     * {@code false}. In order to activate tracing on the application log you must set the Logger
-     * for de.icw.cui.portal.application.metrics.RequestTracer to debug. In case of metrics being
-     * enabled as well it will register as metric.
+     * Defines whether the listener for tracing faces-requests is enabled. Defaults
+     * to {@code false}. In order to activate tracing on the application log you
+     * must set the Logger for de.icw.cui.portal.application.metrics.RequestTracer
+     * to debug. In case of metrics being enabled as well it will register as
+     * metric.
      * </p>
      */
     public static final String PORTAL_LISTENER_TRACE_ENABLED = PORTAL_LISTENER_TRACE_BASE + ENABLED;
@@ -619,11 +635,10 @@ public class PortalConfigurationKeys implements Serializable {
      * Context parameter within configuration-subsystem with the name:
      * portal.authentication.servlet.allowBasicAuth
      * <p>
-     * Used in the servlet authentication context to check whether BASIC authentication is allowed.
-     * Valid values are: true|false
-     * Default value: true
+     * Used in the servlet authentication context to check whether BASIC
+     * authentication is allowed. Valid values are: true|false Default value: true
      * </p>
      */
-    public static final String PORTAL_SERVLET_BASIC_AUTH_ALLOWED =
-        PORTAL_BASE + "authentication.servlet.allowBasicAuth";
+    public static final String PORTAL_SERVLET_BASIC_AUTH_ALLOWED = PORTAL_BASE
+            + "authentication.servlet.allowBasicAuth";
 }

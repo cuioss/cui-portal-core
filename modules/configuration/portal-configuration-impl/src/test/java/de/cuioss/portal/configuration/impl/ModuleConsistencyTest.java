@@ -25,7 +25,8 @@ class ModuleConsistencyTest {
 
             /*
              * final Set<Bean<?>> fileConfigSourceInstances = CDI.current().getBeanManager()
-             * .getBeans(FileConfigurationSource.class, PortalConfigurationSource.Literal.INSTANCE);
+             * .getBeans(FileConfigurationSource.class,
+             * PortalConfigurationSource.Literal.INSTANCE);
              * assertFalse(fileConfigSourceInstances.isEmpty(),
              * "FileConfigurationSource instances not registered in CDI");
              */

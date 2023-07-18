@@ -60,43 +60,34 @@ class PortalTracingTest {
 
         configuration.fireEvent(PORTAL_TRACING_REPORTER_URL, "http://localhost");
         assertNull(reporter.get(),
-            "Reporter<Span> must not be produced in this module (but portal-tracing-xyz-reporter)");
+                "Reporter<Span> must not be produced in this module (but portal-tracing-xyz-reporter)");
     }
 
     @Test
     void extractsUriPath() {
-        assertEquals("my-id", PortalTracing.getServiceName(
-            ConnectionMetadata.builder()
-                .connectionId("my-id")
-                .serviceUrl("foo://sub.domain.name/path/test/1")
-                .build()),
-            "should use the connection id");
+        assertEquals("my-id", PortalTracing.getServiceName(ConnectionMetadata.builder().connectionId("my-id")
+                .serviceUrl("foo://sub.domain.name/path/test/1").build()), "should use the connection id");
 
-        assertEquals("path", PortalTracing.getServiceName(
-            ConnectionMetadata.builder()
+        assertEquals("path", PortalTracing.getServiceName(ConnectionMetadata.builder()
                 // no connection id
-                .serviceUrl("foo://sub.domain.name/path/test/2")
-                .build()),
-            "should use the first path part");
+                .serviceUrl("foo://sub.domain.name/path/test/2").build()), "should use the first path part");
 
-        assertEquals("path", PortalTracing.getServiceName(
-            ConnectionMetadata.builder()
+        assertEquals("path", PortalTracing.getServiceName(ConnectionMetadata.builder()
                 // no connection id
-                .serviceUrl("foo://sub.domain.name:1234/path")
-                .build()),
-            "should use the first path part");
+                .serviceUrl("foo://sub.domain.name:1234/path").build()), "should use the first path part");
 
-        assertEquals("sub.domain.name", PortalTracing.getServiceName(
-            ConnectionMetadata.builder()
-                .serviceUrl("foo://sub.domain.name:1234") // no trailing slash
-                .build()),
-            "should use the uri host name");
+        assertEquals("sub.domain.name",
+                PortalTracing.getServiceName(ConnectionMetadata.builder().serviceUrl("foo://sub.domain.name:1234") // no
+                                                                                                                   // trailing
+                                                                                                                   // slash
+                        .build()),
+                "should use the uri host name");
 
-        assertEquals("sub.domain.name", PortalTracing.getServiceName(
-            ConnectionMetadata.builder()
-                .serviceUrl("foo://sub.domain.name:1234/") // trailing slash
-                .build()),
-            "should use the uri host name");
+        assertEquals("sub.domain.name",
+                PortalTracing.getServiceName(ConnectionMetadata.builder().serviceUrl("foo://sub.domain.name:1234/") // trailing
+                                                                                                                    // slash
+                        .build()),
+                "should use the uri host name");
     }
 
     @Test

@@ -26,13 +26,13 @@ public class MetricsUtils {
 
     private static final CuiLogger LOGGER = new CuiLogger(MetricsUtils.class);
 
-    private static final Function<Throwable, Tag> CLASSNAME_EXCEPTION_TAG_MAPPER =
-        cause -> null != cause ? new Tag("cause", cause.getClass().getName()) : null;
+    private static final Function<Throwable, Tag> CLASSNAME_EXCEPTION_TAG_MAPPER = cause -> null != cause
+            ? new Tag("cause", cause.getClass().getName())
+            : null;
 
-    private static final Function<Throwable, Tag> WEB_APPLICATION_EXCEPTION_TAG_MAPPER =
-        cause -> cause instanceof WebApplicationException
-                ? createHttpStatusCodeTag(((WebApplicationException) cause).getResponse())
-                : null;
+    private static final Function<Throwable, Tag> WEB_APPLICATION_EXCEPTION_TAG_MAPPER = cause -> cause instanceof WebApplicationException
+            ? createHttpStatusCodeTag(((WebApplicationException) cause).getResponse())
+            : null;
 
     private static String metricsAppName;
     private static Tag metricsAppTag;
@@ -67,45 +67,32 @@ public class MetricsUtils {
      * @param tags to be added
      * @return MetricID with {@code _app}-Tag and tags given in {@code tags}.
      */
-    public static MetricID createMetricId(final String name,
-            final Tag... tags) {
+    public static MetricID createMetricId(final String name, final Tag... tags) {
         return createMetricId(name, null, tags);
     }
 
     /**
-     * @param name of the metric
+     * @param name      of the metric
      * @param exception to be converted into Tag
-     * @param tags additional Tags
-     * @return MetricID with {@code _app}-Tag and tags given in {@code tags}, plus a Tag for the
-     *         exception class.
+     * @param tags      additional Tags
+     * @return MetricID with {@code _app}-Tag and tags given in {@code tags}, plus a
+     *         Tag for the exception class.
      */
-    public static MetricID createMetricId(final String name,
-            final Throwable exception,
-            final Tag... tags) {
-        return createMetricIdBuilder(
-                name,
-                exception,
-                immutableList(tags),
-                null)
-                        .build();
+    public static MetricID createMetricId(final String name, final Throwable exception, final Tag... tags) {
+        return createMetricIdBuilder(name, exception, immutableList(tags), null).build();
     }
 
     /**
-     * @param name of the metric
-     * @param exception to be processed into Tags
-     * @param tags additional Tags
+     * @param name                of the metric
+     * @param exception           to be processed into Tags
+     * @param tags                additional Tags
      * @param exceptionTagMappers additional exception-to-Tag mapper functions
      * @return MetricID with additional Tags depending on the given exception.
      */
-    public static MetricIdBuilder createMetricIdBuilder(final String name,
-            final Throwable exception,
-            final Collection<Tag> tags,
-            final Collection<Function<Throwable, Tag>> exceptionTagMappers) {
+    public static MetricIdBuilder createMetricIdBuilder(final String name, final Throwable exception,
+            final Collection<Tag> tags, final Collection<Function<Throwable, Tag>> exceptionTagMappers) {
 
-        final var idBuilder = new MetricIdBuilder()
-                .name(name)
-                .tag(getAppTag())
-                .exception(exception)
+        final var idBuilder = new MetricIdBuilder().name(name).tag(getAppTag()).exception(exception)
                 .exceptionTagMapper(CLASSNAME_EXCEPTION_TAG_MAPPER)
                 .exceptionTagMapper(WEB_APPLICATION_EXCEPTION_TAG_MAPPER);
 

@@ -20,7 +20,8 @@ import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Helper class that translates custom properties to system properties, see documentation of
+ * Helper class that translates custom properties to system properties, see
+ * documentation of
  * {@link PortalConfigurationKeys#PORTAL_SYSTEM_PROPERTY_PREFIX}
  *
  * {@link #getOrder()} is not overridden because the default,
@@ -68,14 +69,15 @@ public class PortalSystemPropertiesConfigurator implements ApplicationInitialize
     }
 
     /**
-     * Listener for {@link PortalConfigurationChangeEvent}s. Reconfigures the locale-configuration
+     * Listener for {@link PortalConfigurationChangeEvent}s. Reconfigures the
+     * locale-configuration
      *
      * @param deltaMap
      */
     void configurationChangeEventListener(
             @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
-        final var filteredMap = ConfigurationHelper.getFilteredPropertyMap(deltaMap,
-                PORTAL_SYSTEM_PROPERTY_PREFIX, true);
+        final var filteredMap = ConfigurationHelper.getFilteredPropertyMap(deltaMap, PORTAL_SYSTEM_PROPERTY_PREFIX,
+                true);
         if (!filteredMap.isEmpty()) {
             log.debug("Update system properties");
             setSystemProperties(filteredMap);

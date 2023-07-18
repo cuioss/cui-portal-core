@@ -46,8 +46,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
 
     @Test
     void shouldAuthenticateAsDefault() {
-        final var userInfo = underTest
-                .retrieveCurrentAuthenticationContext(servletRequest);
+        final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertNotNull(userInfo);
         assertTrue(userInfo.isAuthenticated());
     }
@@ -55,16 +54,14 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
     @Test
     void shouldLogoutAuthenticatedAsDefault() {
         underTest.logout(servletRequest);
-        final var userInfo = underTest
-                .retrieveCurrentAuthenticationContext(servletRequest);
+        final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertFalse(userInfo.isAuthenticated());
     }
 
     @Test
     void shouldNotAuthenticateAsDefaultAsConfigured() {
         configuration.fireEvent(MockAuthenticationFacade.CONFIGURATION_KEY_AUTHENTICATED, "false");
-        final var userInfo = underTest
-                .retrieveCurrentAuthenticationContext(servletRequest);
+        final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertNotNull(userInfo);
         assertFalse(userInfo.isAuthenticated());
     }
@@ -72,15 +69,13 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
     @Test
     void shouldProvideConfiguredRoles() {
         configuration.fireEvent(MockAuthenticationFacade.CONFIGURATION_KEY_ROLES, "role, role2");
-        final var userInfo = underTest
-                .retrieveCurrentAuthenticationContext(servletRequest);
+        final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertEquals(2, userInfo.getRoles().size());
     }
 
     @Test
     void shouldHandleNonConfiguredRoles() {
-        final var userInfo = underTest
-                .retrieveCurrentAuthenticationContext(servletRequest);
+        final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertEquals(0, userInfo.getRoles().size());
     }
 
@@ -94,15 +89,13 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
     void shouldLoginWithUsernameAndPassword() {
         var name = letterStrings(3, 8).next();
         var password = letterStrings(3, 8).next();
-        var result =
-            underTest.login(servletRequest, LoginCredentials.builder().username(name).password(password).build());
+        var result = underTest.login(servletRequest,
+                LoginCredentials.builder().username(name).password(password).build());
         assertEquals(ResultState.ERROR, result.getState());
         // Incomplete Credentials
-        result =
-            underTest.login(servletRequest, LoginCredentials.builder().username(name).build());
+        result = underTest.login(servletRequest, LoginCredentials.builder().username(name).build());
         assertEquals(ResultState.ERROR, result.getState());
-        result =
-            underTest.login(servletRequest, LoginCredentials.builder().username(name).password(name).build());
+        result = underTest.login(servletRequest, LoginCredentials.builder().username(name).password(name).build());
         assertEquals(ResultState.VALID, result.getState());
     }
 }

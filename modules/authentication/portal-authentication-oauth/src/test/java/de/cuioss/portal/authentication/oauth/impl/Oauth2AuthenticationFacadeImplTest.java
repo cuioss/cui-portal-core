@@ -30,7 +30,6 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.LoginPagePath;
@@ -114,10 +113,10 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testTestLoginWithErrorFails() {
         underTest.sendRedirect("scope");
-        UrlParameter stateParameter = getStateParameter();
-        UrlParameter urlParameter = new UrlParameter("error", "server_error");
+        var stateParameter = getStateParameter();
+        var urlParameter = new UrlParameter("error", "server_error");
         List<UrlParameter> parameterList = mutableList(stateParameter, urlParameter);
-        OauthAuthenticationException exception = assertThrows(OauthAuthenticationException.class,
+        var exception = assertThrows(OauthAuthenticationException.class,
                 () -> underTest.testLogin(parameterList, "scope"));
         assertEquals("system.exception.oauth.login", exception.getMessage());
 
@@ -258,7 +257,7 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveOauth2RenewUrl() {
         underTest.sendRedirect("scope");
-        AuthenticatedUserInfo userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
+        var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
         assertNotNull(underTest.retrieveOauth2RenewUrl());
         assertTrue(underTest.retrieveOauth2RenewUrl().contains("prompt=none"), underTest.retrieveOauth2RenewUrl());

@@ -13,9 +13,9 @@ import java.nio.file.Path;
 import javax.inject.Qualifier;
 
 /**
- * Defines events that will be fired from implementations of {@link FileWatcherService} in case a
- * {@link Path} was modified. The payload is the actual {@link Path} representing the file being
- * changed
+ * Defines events that will be fired from implementations of
+ * {@link FileWatcherService} in case a {@link Path} was modified. The payload
+ * is the actual {@link Path} representing the file being changed
  *
  * @author Oliver Wolff
  */

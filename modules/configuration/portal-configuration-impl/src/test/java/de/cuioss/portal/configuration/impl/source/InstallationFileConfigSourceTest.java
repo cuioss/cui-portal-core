@@ -36,8 +36,7 @@ class InstallationFileConfigSourceTest {
         assertDoesNotThrow(() -> underTest.getPath());
         assertNotNull(underTest.getPath());
         assertTrue(underTest.getPath().endsWith(
-            Joiner.on(File.separatorChar)
-                .join("portal-configuration-impl", "config", "application.yml")));
+                Joiner.on(File.separatorChar).join("portal-configuration-impl", "config", "application.yml")));
         assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Portal-121");
         assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Portal-158");
     }
@@ -64,6 +63,6 @@ class InstallationFileConfigSourceTest {
         final var underTest = new InstallationFileConfigSource();
         underTest.reload();
         assertEquals(Paths.get(PORTAL_CONFIG_DIR_DEFAULT, "application.yml").toAbsolutePath().toString(),
-            underTest.getPath());
+                underTest.getPath());
     }
 }

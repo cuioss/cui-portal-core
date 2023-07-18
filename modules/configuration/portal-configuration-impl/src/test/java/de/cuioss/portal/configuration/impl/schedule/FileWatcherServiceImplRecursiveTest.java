@@ -81,8 +81,7 @@ class FileWatcherServiceImplRecursiveTest {
         TestFileHandler.touchTargetFile(testFileHandler.getFile1());
 
         // wait for FileChangedEvent
-        await().atMost(3, TimeUnit.SECONDS)
-                .until(() -> null != pathFromEvent);
+        await().atMost(3, TimeUnit.SECONDS).until(() -> null != pathFromEvent);
         assertNotNull(pathFromEvent, "did not receive file change event");
 
         LOGGER.info("Comparing two files: {} vs {}", testFileHandler.getFile1(), pathFromEvent);
@@ -90,13 +89,11 @@ class FileWatcherServiceImplRecursiveTest {
 
         TestFileHandler.touchTargetFile(testFileHandler.getFile2());
 
-        assertDoesNotThrow(() -> Awaitility.await()
-                .atMost(3, TimeUnit.SECONDS)
-                .alias("files-equal")
-                .until(() -> isSameFile(testFileHandler.getFile2(), pathFromEvent)),
-                "Files should be the same: " +
-                        "file_a=" + testFileHandler.getFile2().toAbsolutePath()
-                        + ", file_b=" + pathFromEvent.toAbsolutePath());
+        assertDoesNotThrow(
+                () -> Awaitility.await().atMost(3, TimeUnit.SECONDS).alias("files-equal")
+                        .until(() -> isSameFile(testFileHandler.getFile2(), pathFromEvent)),
+                "Files should be the same: " + "file_a=" + testFileHandler.getFile2().toAbsolutePath() + ", file_b="
+                        + pathFromEvent.toAbsolutePath());
     }
 
     private static boolean isSameFile(Path path1, Path path2) {

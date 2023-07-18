@@ -32,7 +32,8 @@ import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 
 /**
- * Produces {@link Oauth2Configuration} using the new config params ({@see OAuthConfigKeys}).
+ * Produces {@link Oauth2Configuration} using the new config params
+ * ({@see OAuthConfigKeys}).
  *
  * @author Matthias Walliczek
  */
@@ -116,17 +117,14 @@ public class Oauth2DiscoveryConfigurationProducer {
             final var discoveryURI = addTrailingSlashToUrl(settingServerBaseUrl) + settingOauth2discoveryUri;
             LOGGER.debug("Using discoveryURI {}", discoveryURI);
             try {
-                final var discovery = builder
-                        .url(discoveryURI)
-                        .build(RequestDiscovery.class)
-                        .getDiscovery();
+                final var discovery = builder.url(discoveryURI).build(RequestDiscovery.class).getDiscovery();
                 configuration = createConfiguration(discovery);
             } catch (final Exception e) {
                 LOGGER.error(e, "Auto discovery of oauth config failed, using URI: {}", discoveryURI);
             }
         } else {
-            LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback",
-                    OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH);
+            LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback", OPEN_ID_SERVER_BASE_URL,
+                    OPEN_ID_DISCOVER_PATH);
         }
 
         LOGGER.debug("oauth config: {}", configuration);
@@ -147,35 +145,34 @@ public class Oauth2DiscoveryConfigurationProducer {
         logoutWithIdTokenHintProvider.get().ifPresent(newConfiguration::setLogoutWithIdTokenHintEnabled);
 
         // fill dto with data from discovery endpoint.
-        // endpoints are usually pointing to cluster-external URLs, i.e. reachable by web-browser.
+        // endpoints are usually pointing to cluster-external URLs, i.e. reachable by
+        // web-browser.
         for (final Map.Entry<String, Object> entry : discovery.entrySet()) {
             switch (entry.getKey()) {
-                case "authorization_endpoint":
-                    newConfiguration.setAuthorizeUri((String) entry.getValue());
-                    break;
-                case "userinfo_endpoint":
-                    newConfiguration.setUserInfoUri((String) entry.getValue());
-                    break;
-                case "token_endpoint":
-                    newConfiguration.setTokenUri((String) entry.getValue());
-                    break;
-                case "end_session_endpoint":
-                    newConfiguration.setLogoutUri((String) entry.getValue());
-                    break;
-                default:
+            case "authorization_endpoint":
+                newConfiguration.setAuthorizeUri((String) entry.getValue());
+                break;
+            case "userinfo_endpoint":
+                newConfiguration.setUserInfoUri((String) entry.getValue());
+                break;
+            case "token_endpoint":
+                newConfiguration.setTokenUri((String) entry.getValue());
+                break;
+            case "end_session_endpoint":
+                newConfiguration.setLogoutUri((String) entry.getValue());
+                break;
+            default:
             }
         }
 
         // overwrite well-known config, if present
 
         internalTokenUrl.get().ifPresent(url -> {
-            LOGGER.debug("overwrite well-known token-url '{}' with: {}",
-                    newConfiguration.getTokenUri(), url);
+            LOGGER.debug("overwrite well-known token-url '{}' with: {}", newConfiguration.getTokenUri(), url);
             newConfiguration.setTokenUri(url);
         });
         internalUserInfoUrl.get().ifPresent(url -> {
-            LOGGER.debug("overwrite well-known userinfo-url '{}' with: {}",
-                    newConfiguration.getUserInfoUri(), url);
+            LOGGER.debug("overwrite well-known userinfo-url '{}' with: {}", newConfiguration.getUserInfoUri(), url);
             newConfiguration.setUserInfoUri(url);
         });
 

@@ -25,7 +25,7 @@ import zipkin2.reporter.Reporter;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
-@AddBeanClasses({PortalTracing.class})
+@AddBeanClasses({ PortalTracing.class })
 @EnableAlternatives(PortalTracingWithReporterTest.class)
 class PortalTracingWithReporterTest {
 

@@ -5,7 +5,8 @@ import de.cuioss.uimodel.service.ServiceState;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Wraps a concrete rest client implementation of T and provides some convenience methods.
+ * Wraps a concrete rest client implementation of T and provides some
+ * convenience methods.
  *
  * @author Matthias Walliczek
  */

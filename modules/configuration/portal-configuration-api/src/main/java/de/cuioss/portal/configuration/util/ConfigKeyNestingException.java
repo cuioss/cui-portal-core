@@ -1,7 +1,8 @@
 package de.cuioss.portal.configuration.util;
 
 /**
- * Exception for a configuration key whose default value contains a placeholder again for too many times.
+ * Exception for a configuration key whose default value contains a placeholder
+ * again for too many times.
  */
 public final class ConfigKeyNestingException extends IllegalStateException {
 

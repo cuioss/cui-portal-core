@@ -18,7 +18,7 @@ public interface AuthenticatedUserInfo extends Serializable {
 
     /**
      * Bean name for looking up instances.
-     * 
+     *
      * @deprecated owolff: Should solely be used with types
      */
     @Deprecated(forRemoval = true)
@@ -59,26 +59,26 @@ public interface AuthenticatedUserInfo extends Serializable {
     String getDisplayName();
 
     /**
-     * @return the (technical) identifier for the currently authenticated user to be used with
-     *         {@link #getSystem()}.
+     * @return the (technical) identifier for the currently authenticated user to be
+     *         used with {@link #getSystem()}.
      */
     String getIdentifier();
 
     /**
-     * @return the (technical) qualified identifier for the currently authenticated user to be used
-     *         without {@link #getSystem()}.
+     * @return the (technical) qualified identifier for the currently authenticated
+     *         user to be used without {@link #getSystem()}.
      */
     String getQualifiedIdentifier();
 
     /**
-     * @return the (technical) assigning authority for the {@link #getIdentifier()} of the currently
-     *         authenticated user
+     * @return the (technical) assigning authority for the {@link #getIdentifier()}
+     *         of the currently authenticated user
      */
     String getSystem();
 
     /**
-     * @return the context map containing additional runtime information
-     *         belonging to the {@link AuthenticatedUserInfo}
+     * @return the context map containing additional runtime information belonging
+     *         to the {@link AuthenticatedUserInfo}
      */
     Map<Serializable, Serializable> getContextMap();
 

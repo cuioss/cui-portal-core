@@ -46,8 +46,7 @@ public enum ConnectionType {
         } catch (IllegalArgumentException e) {
             new CuiLogger(ConnectionType.class).warn(
                     "Portal-131: Invalid configuration found for .type, actual '{}', expected one of '{}', defaulting to 'ConnectionType.UNDEFINED'",
-                    name,
-                    values(), e);
+                    name, values(), e);
             return ConnectionType.UNDEFINED;
         }
     }

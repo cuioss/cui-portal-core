@@ -1,5 +1,6 @@
 /**
- * Provides classes / structures representing runtime information for a currently logged in user.
+ * Provides classes / structures representing runtime information for a
+ * currently logged in user.
  *
  * @author Oliver Wolff
  */

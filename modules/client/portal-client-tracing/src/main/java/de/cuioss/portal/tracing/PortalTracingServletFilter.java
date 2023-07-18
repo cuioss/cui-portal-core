@@ -27,28 +27,21 @@ import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * A servlet tracing filter for URL pattern {@code "/*"}.
- * This ensures that every (UI) request is enriched with tracing information. Subsequent tracing
- * spans, e.g. from a http
- * client request, are using this trace info as their parent.
+ * A servlet tracing filter for URL pattern {@code "/*"}. This ensures that
+ * every (UI) request is enriched with tracing information. Subsequent tracing
+ * spans, e.g. from a http client request, are using this trace info as their
+ * parent.
  * <p>
- * The filter may not be the first in the servlet filter chain, but that should be no problem as we
- * have no need to
- * provide tracing information to servlet filters. If that should be a requirement in the future
- * please use a servlet
+ * The filter may not be the first in the servlet filter chain, but that should
+ * be no problem as we have no need to provide tracing information to servlet
+ * filters. If that should be a requirement in the future please use a servlet
  * listener which registers a filter using
  * {@link javax.servlet.FilterRegistration#addMappingForUrlPatterns(EnumSet, boolean, String...)}.
  *
  * @author Sven Haag
  */
-@WebFilter(filterName = "BraveTracingFilter",
-        urlPatterns = "/*",
-        dispatcherTypes = {
-            DispatcherType.REQUEST,
-            DispatcherType.ERROR,
-            DispatcherType.ASYNC,
-            DispatcherType.FORWARD,
-            DispatcherType.INCLUDE })
+@WebFilter(filterName = "BraveTracingFilter", urlPatterns = "/*", dispatcherTypes = { DispatcherType.REQUEST,
+        DispatcherType.ERROR, DispatcherType.ASYNC, DispatcherType.FORWARD, DispatcherType.INCLUDE })
 @ApplicationScoped
 public class PortalTracingServletFilter implements Filter {
 
@@ -75,10 +68,8 @@ public class PortalTracingServletFilter implements Filter {
     }
 
     @Override
-    public void doFilter(final ServletRequest request,
-            final ServletResponse response,
-            final FilterChain chain)
-        throws IOException, ServletException {
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+            throws IOException, ServletException {
         if (null != filter) {
             filter.doFilter(request, response, chain);
             tracing.get().close(); // disables Tracing.current()

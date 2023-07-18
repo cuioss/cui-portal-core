@@ -29,7 +29,6 @@ public class ConnectionException extends Exception {
      * @param errorReason
      */
     public ConnectionException(final ErrorReason errorReason) {
-        super();
         this.errorReason = errorReason;
     }
 

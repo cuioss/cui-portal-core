@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Defines instances of {@link ApplicationInitializer}. See package-info for details.
+ * Defines instances of {@link ApplicationInitializer}. See package-info for
+ * details.
  *
  * @author Oliver Wolff
  */

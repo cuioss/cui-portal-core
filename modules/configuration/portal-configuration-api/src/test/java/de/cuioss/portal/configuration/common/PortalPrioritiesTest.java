@@ -18,8 +18,8 @@ class PortalPrioritiesTest {
 
     @Test
     void testSortByPriority() {
-        final List<SomeInterface> elements = Arrays.asList(new HighPriorityClass(),
-                new LowPriorityClass(), new MediumPriorityClass(), new NoPriorityClass());
+        final List<SomeInterface> elements = Arrays.asList(new HighPriorityClass(), new LowPriorityClass(),
+                new MediumPriorityClass(), new NoPriorityClass());
 
         Collections.shuffle(elements);
 

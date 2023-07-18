@@ -56,11 +56,14 @@ public final class ConfigurationHelper {
     public static final String PROPERTY_SEPARATOR = ".";
 
     /**
-     * Helper method that filters a given map of properties according to the given parameter
+     * Helper method that filters a given map of properties according to the given
+     * parameter
      *
-     * @param properties to be filtered, must no be null
-     * @param prefix The name to be filtered using {@link String#startsWith(String)}
-     * @param stripPrefix boolean indicating whether to strip the prefix from the keys.
+     * @param properties  to be filtered, must no be null
+     * @param prefix      The name to be filtered using
+     *                    {@link String#startsWith(String)}
+     * @param stripPrefix boolean indicating whether to strip the prefix from the
+     *                    keys.
      * @return the filtered map
      */
     public static Map<String, String> getFilteredPropertyMap(final Map<String, String> properties, final String prefix,
@@ -68,9 +71,7 @@ public final class ConfigurationHelper {
         final var startsWith = nullToEmpty(prefix);
         final var builder = new MapBuilder<String, String>();
 
-        properties.entrySet().stream()
-                .filter(e -> e.getKey().startsWith(startsWith))
-                .forEach(builder::put);
+        properties.entrySet().stream().filter(e -> e.getKey().startsWith(startsWith)).forEach(builder::put);
 
         if (stripPrefix) {
             return stripPrefix(builder.toImmutableMap(), prefix);
@@ -84,9 +85,10 @@ public final class ConfigurationHelper {
      * Ignores properties that don't start with that prefix.
      *
      * @param properties to be sanitized
-     * @param prefix to be stripped from the properties keys
+     * @param prefix     to be stripped from the properties keys
      *
-     * @return the given properties map but with keys not containing the given prefix.
+     * @return the given properties map but with keys not containing the given
+     *         prefix.
      */
     private Map<String, String> stripPrefix(final Map<String, String> properties, final String prefix) {
         final var prefixSanitized = nullToEmpty(prefix);
@@ -104,9 +106,9 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * @return a map representation of all currently active configuration-properties.
-     *         <b>Configuration properties with an empty string value will NOT be contained in the
-     *         returned map!</b>
+     * @return a map representation of all currently active
+     *         configuration-properties. <b>Configuration properties with an empty
+     *         string value will NOT be contained in the returned map!</b>
      */
     public static Map<String, String> resolveConfigProperties() {
         final var config = ConfigProvider.getConfig();
@@ -134,13 +136,14 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * Helper method that filters a given map of properties according to the given parameter
+     * Helper method that filters a given map of properties according to the given
+     * parameter
      *
-     * @param prefix The name to be filtered using
-     *            String.startsWith(String), see
-     *            {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
+     * @param prefix      The name to be filtered using String.startsWith(String),
+     *                    see
+     *                    {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
      * @param stripPrefix boolean indicating whether to strip the prefix from the
-     *            keys.
+     *                    keys.
      * @return filtered map
      */
     public static Map<String, String> resolveFilteredConfigProperties(final String prefix, final boolean stripPrefix) {
@@ -148,8 +151,7 @@ public final class ConfigurationHelper {
 
         // first, get all property names with the prefix.
         // this should be faster than resolving all properties with their values.
-        final Set<String> keys = resolveConfigPropertyNames().stream()
-                .filter(key -> key.startsWith(prefix))
+        final Set<String> keys = resolveConfigPropertyNames().stream().filter(key -> key.startsWith(prefix))
                 .collect(Collectors.toSet());
 
         // now that we have all relevant keys, also resolve their values
@@ -165,12 +167,12 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * Shorthand for accessing {@link #resolveFilteredConfigProperties(String, boolean)} with
-     * stripPrefix being set to {@code false}
+     * Shorthand for accessing
+     * {@link #resolveFilteredConfigProperties(String, boolean)} with stripPrefix
+     * being set to {@code false}
      *
-     * @param prefix The name to be filtered using
-     *            String.startsWith(String), see
-     *            {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
+     * @param prefix The name to be filtered using String.startsWith(String), see
+     *               {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
      *
      * @return filtered map
      */
@@ -191,7 +193,7 @@ public final class ConfigurationHelper {
     /**
      * Resolves a property from the underlying system.
      *
-     * @param <T> The property type
+     * @param <T>  The property type
      * @param name of the property to be resolved
      * @param type of the property to be resolved
      * @return the resolved property if available
@@ -210,10 +212,10 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * Resolves a property from the underlying system. This call is useful if you are confident that
-     * the property actually exists.
+     * Resolves a property from the underlying system. This call is useful if you
+     * are confident that the property actually exists.
      *
-     * @param <T> The property type
+     * @param <T>  The property type
      * @param name of the property to be resolved
      * @param type of the property to be resolved
      * @return the resolved property if available, otherwise it will throw an
@@ -225,8 +227,8 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * Resolves a property from the underlying system. This call is useful if you are confident that
-     * the property actually exists.
+     * Resolves a property from the underlying system. This call is useful if you
+     * are confident that the property actually exists.
      *
      * @param name of the property to be resolved
      * @return the resolved property if available, otherwise it will throw an
@@ -237,20 +239,21 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * @param injectionPoint identifying the current injection point must not be null and be at
-     *            least an instance of {@link AnnotatedElement}
+     * @param injectionPoint identifying the current injection point must not be
+     *                       null and be at least an instance of
+     *                       {@link AnnotatedElement}
      * @param annotationType must not be null
-     * @param <T> type to be looked up
+     * @param <T>            type to be looked up
      * @return annotation instance extracted from the given injection point
      */
     public static <T extends Annotation> Optional<T> resolveAnnotation(final InjectionPoint injectionPoint,
             final Class<T> annotationType) {
         requireNonNull(annotationType, "annotationType must not be null");
         requireNonNull(injectionPoint, "injectionPoint must not be null");
-        final var annotatedElement = requireNonNull(injectionPoint.getAnnotated(),
-                "injectionPoint must be annotated");
+        final var annotatedElement = requireNonNull(injectionPoint.getAnnotated(), "injectionPoint must be annotated");
         // initially taken from
-        // org.apache.deltaspike.core.util.BeanUtils.extractAnnotation(Annotated, Class<T>)
+        // org.apache.deltaspike.core.util.BeanUtils.extractAnnotation(Annotated,
+        // Class<T>)
         var result = annotatedElement.getAnnotation(annotationType);
 
         if (null == result) {
@@ -265,37 +268,37 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * @param injectionPoint identifying the current injection point must not be null and be at
-     *            least an instance
-     *            of {@link AnnotatedElement}
+     * @param injectionPoint identifying the current injection point must not be
+     *                       null and be at least an instance of
+     *                       {@link AnnotatedElement}
      * @param annotationType to be resolved. must not be null.
-     * @param <T> annotation type to be looked up
+     * @param <T>            annotation type to be looked up
      *
      * @return annotation instance extracted from the given injection point
-     * @throws IllegalStateException if the given injection point does not contain the
-     *             annotationType. Its message
-     *             can be given via {@code errorMessage}. errorMessage defaults to
-     *             {@code Could not resolve annotation for type: annotationType#getName()}
+     * @throws IllegalStateException if the given injection point does not contain
+     *                               the annotationType. Its message can be given
+     *                               via {@code errorMessage}. errorMessage defaults
+     *                               to
+     *                               {@code Could not resolve annotation for type: annotationType#getName()}
      */
-    public static <T extends Annotation> T resolveAnnotationOrThrow(
-            final InjectionPoint injectionPoint,
+    public static <T extends Annotation> T resolveAnnotationOrThrow(final InjectionPoint injectionPoint,
             final Class<T> annotationType) {
 
-        return resolveAnnotation(injectionPoint, annotationType)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Portal-530: Could not resolve annotation for type: " + annotationType.getName()));
+        return resolveAnnotation(injectionPoint, annotationType).orElseThrow(() -> new IllegalStateException(
+                "Portal-530: Could not resolve annotation for type: " + annotationType.getName()));
     }
 
     /**
      * First it tries to get the config value from system properties. If that fails,
-     * it tries against the environment properties. If that fails,
-     * it sanitizes the config key by replacing all non-alphanumeric characters with underscore and
-     * tries against environment properties. If that fails too, it tries the sanitized upper-case
-     * key against environment properties.
+     * it tries against the environment properties. If that fails, it sanitizes the
+     * config key by replacing all non-alphanumeric characters with underscore and
+     * tries against environment properties. If that fails too, it tries the
+     * sanitized upper-case key against environment properties.
      *
      * @param name config key
      *
-     * @return the raw config value, if any. <em>May contain unresolved variables!</em>
+     * @return the raw config value, if any. <em>May contain unresolved
+     *         variables!</em>
      */
     public static Optional<String> resolveConfigPropertyFromSysOrEnv(final String name) {
         final var systemValue = SecuritySupport.accessSystemProperty(name);
@@ -330,10 +333,10 @@ public final class ConfigurationHelper {
      * Convert inputValue to enum of type <code>enumClass</code>.
      *
      * @param inputValue to be converted. Can be <code>null</code>.
-     * @param enumClass target enum type. Must not be <code>null</code>.
+     * @param enumClass  target enum type. Must not be <code>null</code>.
      * @return corresponding enum value of type <code>enumClass</code> or
-     *         {@link IllegalArgumentException} if the
-     *         <code>inputValue</code> cannot be converted.
+     *         {@link IllegalArgumentException} if the <code>inputValue</code>
+     *         cannot be converted.
      */
     <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass) {
         return convertToEnum(inputValue, enumClass, true, null);
@@ -342,30 +345,32 @@ public final class ConfigurationHelper {
     /**
      * Convert inputValue to enum of type <code>enumClass</code>.
      *
-     * @param inputValue to be converted. Can be <code>null</code>.
-     * @param enumClass target enum type. Must not be <code>null</code>.
-     * @param defaultValue default enum value to be used, if the <code>inputValue</code> cannot be
-     *            converted.
-     * @return corresponding enum value of type <code>enumClass</code> or <code>defaultValue</code>
-     *         if the
-     *         <code>inputValue</code> cannot be converted.
+     * @param inputValue   to be converted. Can be <code>null</code>.
+     * @param enumClass    target enum type. Must not be <code>null</code>.
+     * @param defaultValue default enum value to be used, if the
+     *                     <code>inputValue</code> cannot be converted.
+     * @return corresponding enum value of type <code>enumClass</code> or
+     *         <code>defaultValue</code> if the <code>inputValue</code> cannot be
+     *         converted.
      */
     <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass, final T defaultValue) {
         return convertToEnum(inputValue, enumClass, false, defaultValue);
     }
 
     /**
-     * Convert inputValue to enum of type <code>enumClass</code>.
-     * Using default value on failure, if <code>explode</code> is set to <code>false</code>.
+     * Convert inputValue to enum of type <code>enumClass</code>. Using default
+     * value on failure, if <code>explode</code> is set to <code>false</code>.
      *
-     * @param inputValue to be converted. Can be <code>null</code>.
-     * @param enumClass target enum type. Must not be <code>null</code>.
-     * @param explodeOnInvalidInput indicating if an {@link IllegalArgumentException} should be
-     *            thrown if the
-     *            <code>inputValue</code> cannot be converted.
-     * @param defaultValue default enum value to be used, if the <code>inputValue</code> cannot be
-     *            converted.
-     *            Only necessary if <code>explode</code> is set to <code>false</code>.
+     * @param inputValue            to be converted. Can be <code>null</code>.
+     * @param enumClass             target enum type. Must not be <code>null</code>.
+     * @param explodeOnInvalidInput indicating if an
+     *                              {@link IllegalArgumentException} should be
+     *                              thrown if the <code>inputValue</code> cannot be
+     *                              converted.
+     * @param defaultValue          default enum value to be used, if the
+     *                              <code>inputValue</code> cannot be converted.
+     *                              Only necessary if <code>explode</code> is set to
+     *                              <code>false</code>.
      * @return corresponding enum value of type <code>enumClass</code>.
      */
     <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass,
@@ -387,8 +392,7 @@ public final class ConfigurationHelper {
             }
             result = Enum.valueOf(enumClass, value);
         } catch (final IllegalArgumentException ex) {
-            log.error(
-                    "Portal-512: Could not convert input value '{}' to enum of type: {}. Reason: {}", inputValue,
+            log.error("Portal-512: Could not convert input value '{}' to enum of type: {}. Reason: {}", inputValue,
                     enumClass, ex.getMessage());
             if (explodeOnInvalidInput) {
                 throw ex;
@@ -416,26 +420,24 @@ public final class ConfigurationHelper {
     /**
      * split values via {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}.
      *
-     * @param name config key
+     * @param name         config key
      * @param defaultValue string representing default config value. can be null.
      * @return the list of configProperties
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name,
-            final String defaultValue) {
+    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue) {
         return resolveConfigPropertyAsList(name, defaultValue, CONTEXT_PARAM_SEPARATOR);
     }
 
     /**
      * /**
      *
-     * @param name config key
+     * @param name         config key
      * @param defaultValue string representing default config value. can be null.
-     * @param separator separator between list values
+     * @param separator    separator between list values
      * @return list with configured values, separated via
      *         {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name,
-            final String defaultValue,
+    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue,
             final char separator) {
         final var configuredValue = resolveConfigProperty(name).orElse(emptyToNull(defaultValue));
         return immutableList(resolveListFromString(configuredValue, separator));
@@ -444,16 +446,12 @@ public final class ConfigurationHelper {
     /**
      * split and trim values. omit empty strings.
      */
-    private static List<String> resolveListFromString(final String configuredValue,
-            final char separator) {
+    private static List<String> resolveListFromString(final String configuredValue, final char separator) {
 
         if (MoreStrings.isEmpty(configuredValue)) {
             return Collections.emptyList();
         }
-        return Splitter.on(separator)
-                .trimResults()
-                .omitEmptyStrings()
-                .splitToList(configuredValue);
+        return Splitter.on(separator).trimResults().omitEmptyStrings().splitToList(configuredValue);
     }
 
     /**
@@ -468,28 +466,28 @@ public final class ConfigurationHelper {
     }
 
     /**
-     * Replace all placeholders will their resolved value, if possible.
-     * All config properties from the configuration system are used, not only SYS or ENV properties.
-     * If a key does not exist, the placeholders default value is used
-     * ({@code ${key:default-value}}).
-     * If the default value is left empty ({@code ${missing.key:}}), an empty string is used.
-     * If there is no default value, either, the placeholder is not replaced at all
-     * ({@code exceptionOnMissingKey=false})
-     * or a {@link NoSuchElementException} is thrown ({@code exceptionOnMissingKey=true}).
+     * Replace all placeholders will their resolved value, if possible. All config
+     * properties from the configuration system are used, not only SYS or ENV
+     * properties. If a key does not exist, the placeholders default value is used
+     * ({@code ${key:default-value}}). If the default value is left empty
+     * ({@code ${missing.key:}}), an empty string is used. If there is no default
+     * value, either, the placeholder is not replaced at all
+     * ({@code exceptionOnMissingKey=false}) or a {@link NoSuchElementException} is
+     * thrown ({@code exceptionOnMissingKey=true}).
      *
-     * @param source config map to process, containing placeholder/s
-     * @param exceptionOnMissingKey if {@code true} an exception is throws, if the given source map
-     *            contains a
-     *            placeholder with no corresponding key in the ENV or SYS properties.
+     * @param source                config map to process, containing placeholder/s
+     * @param exceptionOnMissingKey if {@code true} an exception is throws, if the
+     *                              given source map contains a placeholder with no
+     *                              corresponding key in the ENV or SYS properties.
      * @return the resulting String
-     * @throws NoSuchElementException if {@code exceptionOnMissingKey} is {@code true} and the
-     *             source map contains a
-     *             placeholder with no corresponding key in the ENV or SYS properties.
-     * @throws ConfigKeyNestingException if a placeholder contains a placeholder as its default
-     *             value for more than 5 times.
+     * @throws NoSuchElementException    if {@code exceptionOnMissingKey} is
+     *                                   {@code true} and the source map contains a
+     *                                   placeholder with no corresponding key in
+     *                                   the ENV or SYS properties.
+     * @throws ConfigKeyNestingException if a placeholder contains a placeholder as
+     *                                   its default value for more than 5 times.
      */
-    public static String replacePlaceholders(final String source,
-            boolean exceptionOnMissingKey) {
+    public static String replacePlaceholders(final String source, boolean exceptionOnMissingKey) {
         return ConfigurationPlaceholderHelper.replacePlaceholders(source, exceptionOnMissingKey);
     }
 }

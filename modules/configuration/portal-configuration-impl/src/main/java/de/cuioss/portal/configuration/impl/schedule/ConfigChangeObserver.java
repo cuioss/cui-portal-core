@@ -40,26 +40,31 @@ import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * <p>
- * Watch all actual file paths of {@link FileConfigurationSource} implementations.
- * This cannot be done easily in the config sources themselves, because they are not CDI based.
- * Therefore we are utilizing {@link FileConfigurationSource#reload()}.
+ * Watch all actual file paths of {@link FileConfigurationSource}
+ * implementations. This cannot be done easily in the config sources themselves,
+ * because they are not CDI based. Therefore we are utilizing
+ * {@link FileConfigurationSource#reload()}.
  * </p>
  *
  * <p>
- * If, after reload, a config change was detected, All other {@link Reloadable} config sources are checked whether they
- * contain one of the changed keys as a placeholder. If so, the corresponding key is added to the delta/diff map of the
- * {@link PortalConfigurationChangeEvent}, which gets fired at the end of this process.
+ * If, after reload, a config change was detected, All other {@link Reloadable}
+ * config sources are checked whether they contain one of the changed keys as a
+ * placeholder. If so, the corresponding key is added to the delta/diff map of
+ * the {@link PortalConfigurationChangeEvent}, which gets fired at the end of
+ * this process.
  * </p>
  *
- * <h3>Caveat!</h3>
- * Placeholder indirections are not tracked!
- * For instance given this config:
+ * <h3>Caveat!</h3> Placeholder indirections are not tracked! For instance given
+ * this config:
+ *
  * <pre>
  * parent.key=parent.value
  * child.key=${parent.key}
  * child.child.key=${child.key}
  * </pre>
- * The key <code>child.child.key</code> would not be part of the delta map, despite its value might change!
+ *
+ * The key <code>child.child.key</code> would not be part of the delta map,
+ * despite its value might change!
  *
  * @author Sven Haag
  */
@@ -69,10 +74,8 @@ public class ConfigChangeObserver implements ApplicationInitializer {
 
     private static final CuiLogger LOGGER = new CuiLogger(ConfigChangeObserver.class);
 
-    private static final Predicate<String> FILE_PATHS_TO_SKIP = (var path) ->
-        isEmpty(path)
-            || FileTypePrefix.CLASSPATH.is(path)
-            || FileTypePrefix.URL.is(path);
+    private static final Predicate<String> FILE_PATHS_TO_SKIP = (var path) -> isEmpty(path)
+            || FileTypePrefix.CLASSPATH.is(path) || FileTypePrefix.URL.is(path);
 
     @Inject
     @PortalFileWatcherService
@@ -94,8 +97,8 @@ public class ConfigChangeObserver implements ApplicationInitializer {
     @Override
     public void initialize() {
         // register all FileConfigurationSource paths
-        fileWatcherServices.forEach(fileWatcher ->
-            fileConfigurationSources.stream().filter(FileConfigurationSource::isReadable).forEach(configSource -> {
+        fileWatcherServices.forEach(fileWatcher -> fileConfigurationSources.stream()
+                .filter(FileConfigurationSource::isReadable).forEach(configSource -> {
                     final var path = configSource.getPath();
 
                     if (FILE_PATHS_TO_SKIP.test(path)) {
@@ -104,8 +107,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
                     }
 
                     fileWatcher.register(Paths.get(path));
-                }
-            ));
+                }));
     }
 
     @Override
@@ -115,8 +117,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
     }
 
     /**
-     * Listen for file changes.
-     * Fire source change event.
+     * Listen for file changes. Fire source change event.
      *
      * @param changedFilePath file path of the changed file
      */
@@ -157,8 +158,8 @@ public class ConfigChangeObserver implements ApplicationInitializer {
             deltaMap.putAll(affectedProperties);
 
             if (LOOP_LIMIT == i + 1) {
-                LOGGER.debug(
-                    "Reached loop limit of {} iterations for finding config placeholder indirections", LOOP_LIMIT);
+                LOGGER.debug("Reached loop limit of {} iterations for finding config placeholder indirections",
+                        LOOP_LIMIT);
             }
         }
 
@@ -183,11 +184,11 @@ public class ConfigChangeObserver implements ApplicationInitializer {
         for (final String changedKey : fileChangeDeltaMap.keySet()) {
             for (Map.Entry<String, String> entry : configSource.getProperties().entrySet()) {
                 if (containsPlaceholder(entry.getValue(), changedKey)) {
-                    LOGGER.debug("Found changed key={} in config source={}",
-                        entry.getKey(), configSource.getName());
+                    LOGGER.debug("Found changed key={} in config source={}", entry.getKey(), configSource.getName());
                     // The actual value for this key probably only changes if it gets resolved.
                     // Say, the value of this very config source has not changed,
-                    // but we need to fire a delta for this key as it might have changed after resolving.
+                    // but we need to fire a delta for this key as it might have changed after
+                    // resolving.
                     if (!fileChangeDeltaMap.containsKey(entry.getKey())) {
                         affectedProperties.put(entry.getKey(), entry.getValue());
                     }
@@ -202,8 +203,8 @@ public class ConfigChangeObserver implements ApplicationInitializer {
                 var deltaMap = handleFileConfigSourceChange(configSource, changedFilePath);
 
                 if (deltaMap.isPresent()) {
-                    LOGGER.debug("Config source {} reloaded, affected keys: {}",
-                        configSource.getName(), deltaMap.get().keySet());
+                    LOGGER.debug("Config source {} reloaded, affected keys: {}", configSource.getName(),
+                            deltaMap.get().keySet());
                     // we don't expect 2 config sources with the same path
                     return deltaMap.get();
                 }
@@ -215,8 +216,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
 
     private boolean containsPlaceholder(final String haystack, final String needle) {
         return null != haystack && null != needle
-            && (haystack.contains("${" + needle + "}")
-            || haystack.contains("${" + needle + ":"));
+                && (haystack.contains("${" + needle + "}") || haystack.contains("${" + needle + ":"));
     }
 
     /**
@@ -226,7 +226,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
      * @return true, if config source change was processed
      */
     private Optional<Map<String, String>> handleFileConfigSourceChange(final ConfigSource configSource,
-                                                                       final Path changedFilePath) {
+            final Path changedFilePath) {
 
         final var fileConfigSource = (FileConfigurationSource) configSource;
 
@@ -248,7 +248,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
 
             if (isSameFile(configSourcePath, changedFilePath)) {
                 LOGGER.info("Portal-003: Reloading installation specific configuration, found at: {}",
-                    changedFilePath.toAbsolutePath().toString());
+                        changedFilePath.toAbsolutePath().toString());
 
                 return Optional.of(getDiffAfterReload(configSource, fileConfigSource));
             }
@@ -260,7 +260,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
     }
 
     private Map<String, String> getDiffAfterReload(ConfigSource configSource,
-                                                   FileConfigurationSource fileConfigSource) {
+            FileConfigurationSource fileConfigSource) {
         final var before = MapBuilder.copyFrom(configSource.getProperties()).toImmutableMap();
         fileConfigSource.reload();
         final var after = MapBuilder.copyFrom(configSource.getProperties()).toImmutableMap();
@@ -295,8 +295,8 @@ public class ConfigChangeObserver implements ApplicationInitializer {
     }
 
     /**
-     * Listens to events of type {@link ConfigurationSourceChangeEvent} and fires {@link
-     * PortalConfigurationChangeEvent} with same map.
+     * Listens to events of type {@link ConfigurationSourceChangeEvent} and fires
+     * {@link PortalConfigurationChangeEvent} with same map.
      *
      * @param eventMap changed data
      */

@@ -23,8 +23,8 @@ public class HappyCaseFilterConfiguration {
     public static final String FILTER_VALUE_1 = "singleFilterHappyValue1";
     public static final String FILTER_VALUE_2 = "singleFilterHappyValue2";
 
-    public static final Map<String, String> HAPPY_CASE_MAP =
-        immutableMap(FIRST_KEY, FILTER_VALUE_1, SECOND_KEY, FILTER_VALUE_2);
+    public static final Map<String, String> HAPPY_CASE_MAP = immutableMap(FIRST_KEY, FILTER_VALUE_1, SECOND_KEY,
+            FILTER_VALUE_2);
 
     @Getter
     @Setter

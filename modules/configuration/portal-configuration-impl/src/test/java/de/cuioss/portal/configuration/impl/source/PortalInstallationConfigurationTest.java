@@ -38,10 +38,8 @@ import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 
 @EnablePortalConfiguration
-@AddBeanClasses({
-    FileWatcherServiceImpl.class,
-    InstallationConfigSourcePathInitializer.class,
-    ConfigChangeObserver.class})
+@AddBeanClasses({ FileWatcherServiceImpl.class, InstallationConfigSourcePathInitializer.class,
+        ConfigChangeObserver.class })
 @EnableAutoWeld
 @EnableTestLogger(rootLevel = TestLogLevel.TRACE)
 class PortalInstallationConfigurationTest {
@@ -126,8 +124,7 @@ class PortalInstallationConfigurationTest {
         }
     }
 
-    void providerChangeEventListener(
-        @Observes @ConfigurationSourceChangeEvent final Map<String, String> eventMap) {
+    void providerChangeEventListener(@Observes @ConfigurationSourceChangeEvent final Map<String, String> eventMap) {
         payload = eventMap;
     }
 }

@@ -11,7 +11,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CuiConstants {
 
-    /** The currently active prefix for mapping jsf-views to the servlet: "/faces/" */
+    /**
+     * The currently active prefix for mapping jsf-views to the servlet: "/faces/"
+     */
     public static final String FACES_VIEW_PREFIX = "/faces/";
 
     /**

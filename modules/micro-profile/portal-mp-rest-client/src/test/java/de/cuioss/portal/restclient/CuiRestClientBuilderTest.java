@@ -150,27 +150,24 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
             @Override
             public MockResponse dispatch(final RecordedRequest request) {
                 switch (request.getPath()) {
-                    case "/success/test":
-                        if (doNotModifiedTest) {
-                            return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_MODIFIED);
-                        }
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                                .addHeader("Content-Type", MEDIA_TYPE_FHIR_XML)
-                                .addHeader("ETag", "W/123")
-                                .addHeader("Expires", "Fri, 02 Dec 2050 16:00:00 GMT")
-                                .setBody(TEXT);
-                    case "/error/test":
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    case "/post":
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED);
-                    case "/unauthorized/test":
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    case "/collection":
-                        return new MockResponse()
-                                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                                .setBody("[\"a\", \"b\"]");
-                    default:
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                case "/success/test":
+                    if (doNotModifiedTest) {
+                        return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_MODIFIED);
+                    }
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                            .addHeader("Content-Type", MEDIA_TYPE_FHIR_XML).addHeader("ETag", "W/123")
+                            .addHeader("Expires", "Fri, 02 Dec 2050 16:00:00 GMT").setBody(TEXT);
+                case "/error/test":
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                case "/post":
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED);
+                case "/unauthorized/test":
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_UNAUTHORIZED);
+                case "/collection":
+                    return new MockResponse().addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                            .setBody("[\"a\", \"b\"]");
+                default:
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
                 }
             }
         };
@@ -179,14 +176,11 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     @BeforeAll
     static void beforeAll() {
         assertDoesNotThrow(() -> {
-            var client = new CuiRestClientBuilder(LOG)
-                    .url("http://localhost")
+            var client = new CuiRestClientBuilder(LOG).url("http://localhost")
                     // CDI not started yet. Resolving tracing not possible!
-                    .tracingEnabled(false)
-                    .build(TestResource.class);
+                    .tracingEnabled(false).build(TestResource.class);
             client.close();
-        },
-                "Building CUI REST client before CDI is available should be possible.");
+        }, "Building CUI REST client before CDI is available should be possible.");
     }
 
     @BeforeEach
@@ -210,10 +204,8 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void testError() {
-        final var underTest =
-            new CuiRestClientBuilder(LOG)
-                    .url(mockWebServer.url("error").toString())
-                    .basicAuth("user", "pass");
+        final var underTest = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString()).basicAuth("user",
+                "pass");
         service = underTest.build(TestResource.class);
 
         assertThrows(WebApplicationException.class, service::test);
@@ -229,24 +221,19 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void testResponseError() {
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("error").toString())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString()).build(TestResource.class);
         assertDoesNotThrow(service::getResponse);
     }
 
     @Test
     void requestWithBody() {
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("").toString())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("").toString()).build(TestResource.class);
         assertDoesNotThrow(() -> service.postString(STRING));
 
         assertTraceHeaders(takeRequest().getHeaders());
 
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO,
-                "Request URI: " + mockWebServer.url("/post"));
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: " + mockWebServer.url("/post"));
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: POST");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/json]");
@@ -259,9 +246,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void shouldLogHappyCase() {
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("").toString())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("").toString()).build(TestResource.class);
         var response = service.getResponse();
         assertNotNull(response);
         CuiRestClientBuilder.debugResponse(response, LOG);
@@ -270,9 +255,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void shouldDeactivateLogTracing() {
-        service = new CuiRestClientBuilder(LOG)
-                .traceLogEnabled(false)
-                .url(mockWebServer.url("success").toString())
+        service = new CuiRestClientBuilder(LOG).traceLogEnabled(false).url(mockWebServer.url("success").toString())
                 .build(TestResource.class);
 
         final var result = service.test();
@@ -288,10 +271,8 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var handshakeCertificates = localhost();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory(), false);
 
-        service = new CuiRestClientBuilder(LOG)
-                .sslContext(handshakeCertificates.sslContext())
-                .url(mockWebServer.url("success").toString())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).sslContext(handshakeCertificates.sslContext())
+                .url(mockWebServer.url("success").toString()).build(TestResource.class);
 
         final var result = service.test();
 
@@ -304,9 +285,8 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var hostname = InetAddress.getLocalHost().getCanonicalHostName();
 
         final var heldCertificate = new HeldCertificate.Builder().commonName(hostname).build();
-        final var handshakeCertificates =
-            new HandshakeCertificates.Builder().heldCertificate(heldCertificate)
-                    .addTrustedCertificate(heldCertificate.certificate()).build();
+        final var handshakeCertificates = new HandshakeCertificates.Builder().heldCertificate(heldCertificate)
+                .addTrustedCertificate(heldCertificate.certificate()).build();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory(), false);
         mockWebServer.start(InetAddress.getByName(hostname), 0);
 
@@ -315,8 +295,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var port = mockWebServer.getPort();
         mockWebServer.setDispatcher(getDispatcher());
 
-        service = new CuiRestClientBuilder(LOG)
-                .sslContext(handshakeCertificates.sslContext())
+        service = new CuiRestClientBuilder(LOG).sslContext(handshakeCertificates.sslContext())
                 .url(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
                 .build(TestResource.class);
         final var result = service.test();
@@ -335,38 +314,29 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var port = mockWebServer.getPort();
         mockWebServer.setDispatcher(getDispatcher());
 
-        service = new CuiRestClientBuilder(LOG)
-                .connectionMetadata(ConnectionMetadata.builder()
-                        .serviceUrl(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
-                        .tracingEnabled(false).authenticationType(AuthenticationType.BASIC)
-                        .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
-                        .sslContext(handshakeCertificates.sslContext())
-                        .build())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).connectionMetadata(ConnectionMetadata.builder()
+                .serviceUrl(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
+                .tracingEnabled(false).authenticationType(AuthenticationType.BASIC)
+                .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
+                .sslContext(handshakeCertificates.sslContext()).build()).build(TestResource.class);
 
         assertThrows(ProcessingException.class, () -> service.test());
     }
 
     @Test
     void registersExceptionMapper() {
-        final var serviceBoom = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("b00m").toString())
-                .registerExceptionMapper(response -> new ExceptionMapperTestException())
-                .build(TestResource.class);
+        final var serviceBoom = new CuiRestClientBuilder(LOG).url(mockWebServer.url("b00m").toString())
+                .registerExceptionMapper(response -> new ExceptionMapperTestException()).build(TestResource.class);
         assertThrows(ExceptionMapperTestException.class, () -> serviceBoom.test());
 
-        final var serviceError = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("error").toString())
-                .registerExceptionMapper(response -> new ExceptionMapperTestException())
-                .build(TestResource.class);
+        final var serviceError = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString())
+                .registerExceptionMapper(response -> new ExceptionMapperTestException()).build(TestResource.class);
         assertThrows(ExceptionMapperTestException.class, () -> serviceError.test());
     }
 
     @Test
     void shouldDisableTracing() {
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("success").toString())
-                .tracingEnabled(false)
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("success").toString()).tracingEnabled(false)
                 .build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
@@ -381,8 +351,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         service = new CuiRestClientBuilder(LOG)
                 .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
                         .tracingEnabled(false).authenticationType(AuthenticationType.BASIC)
-                        .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
-                        .build())
+                        .loginCredentials(LoginCredentials.builder().username("user").password("pass").build()).build())
                 .build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
@@ -395,8 +364,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         service = new CuiRestClientBuilder(LOG)
                 .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
                         .tracingEnabled(false).authenticationType(AuthenticationType.TOKEN_APPLICATION)
-                        .tokenResolver(new StaticTokenResolver("Authentication", "BEARER abc"))
-                        .build())
+                        .tokenResolver(new StaticTokenResolver("Authentication", "BEARER abc")).build())
                 .build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
@@ -408,11 +376,9 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     void shouldHandleAllAttributes() {
         var builder = new CuiRestClientBuilder(LOG)
                 .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
-                        .authenticationType(AuthenticationType.NONE).connectionTimeout(4)
-                        .proxyHost("host").proxyPort(8080).disableHostNameVerification(true)
-                        .contextMap(immutableMap("key", "value"))
-                        .connectionTimeoutUnit(TimeUnit.MICROSECONDS).readTimeout(7)
-                        .build());
+                        .authenticationType(AuthenticationType.NONE).connectionTimeout(4).proxyHost("host")
+                        .proxyPort(8080).disableHostNameVerification(true).contextMap(immutableMap("key", "value"))
+                        .connectionTimeoutUnit(TimeUnit.MICROSECONDS).readTimeout(7).build());
         assertDoesNotThrow(() -> builder.build(TestResource.class));
 
     }
@@ -422,8 +388,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         service = new CuiRestClientBuilder(LOG)
                 .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
                         .tracingEnabled(false).authenticationType(AuthenticationType.TOKEN_APPLICATION)
-                        .tokenResolver(new StaticTokenResolver("Key", "Value"))
-                        .build())
+                        .tokenResolver(new StaticTokenResolver("Key", "Value")).build())
                 .build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
@@ -435,9 +400,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     void sendsTracingSpansToReporter() {
         configureTracingReporter();
 
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("success").toString())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("success").toString()).build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
         assertEquals(1, spans.size());
@@ -445,15 +408,11 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void canEnableDefaultExceptionHandler() {
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("error").toString())
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString()).build(TestResource.class);
         assertThrows(InternalServerErrorException.class, () -> service.test());
 
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("error").toString())
-                .enableDefaultExceptionHandler()
-                .build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString())
+                .enableDefaultExceptionHandler().build(TestResource.class);
 
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, "Portal-541");
 
@@ -472,22 +431,21 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
      */
     @Test
     void handlesCollections() {
-        service = new CuiRestClientBuilder(LOG)
-                .url(mockWebServer.url("").toString())
-                .tracingEnabled(false)
+        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("").toString()).tracingEnabled(false)
                 .build(TestResource.class);
-        // RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json
+        // RESTEASY003145: Unable to find a MessageBodyReader of content-type
+        // application/json
         // and type interface java.util.List
         assertThrows(ProcessingException.class, () -> service.collection());
     }
 
     @Test
     void builderShouldHandleAdditionalAttributes() throws URISyntaxException {
-        CuiRestClientBuilder builder = new CuiRestClientBuilder(LOG);
+        var builder = new CuiRestClientBuilder(LOG);
         TypedGenerator<URL> urls = new URLGenerator();
         builder.url(urls.next());
         builder.uri(urls.next().toURI());
-        String name = letterStrings().next();
+        var name = letterStrings().next();
         assertThrows(IllegalArgumentException.class, () -> builder.url(name));
         builder.bearerAuthToken(name);
         builder.queryParamStyle(enumValues(QueryParamStyle.class).next());
@@ -503,25 +461,18 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var tracer = tracerProvider.get();
 
         final var metaSpan = tracer
-                // The span is in "scope" meaning downstream code such as loggers can see trace IDs
-                .startScopedSpan("meta-operations")
-                .tag("user-id", "masterAdmin");
+                // The span is in "scope" meaning downstream code such as loggers can see trace
+                // IDs
+                .startScopedSpan("meta-operations").tag("user-id", "masterAdmin");
 
         try {
-            new CuiRestClientBuilder(LOG)
-                    .url(mockWebServer.url("success").toString())
-                    .build(TestResource.class)
-                    .test();
+            new CuiRestClientBuilder(LOG).url(mockWebServer.url("success").toString()).build(TestResource.class).test();
 
-            new CuiRestClientBuilder(LOG)
-                    .url(mockWebServer.url("").toString())
-                    .build(TestResource.class)
+            new CuiRestClientBuilder(LOG).url(mockWebServer.url("").toString()).build(TestResource.class)
                     .postString("post-string");
 
             // this one is not traced due to https://github.com/openzipkin/brave/issues/1141
-            new CuiRestClientBuilder(LOG)
-                    .url(mockWebServer.url("unauthorized").toString())
-                    .build(TestResource.class)
+            new CuiRestClientBuilder(LOG).url(mockWebServer.url("unauthorized").toString()).build(TestResource.class)
                     .test();
         } catch (final WebApplicationException e) { // unauthorized
             metaSpan.error(e);
@@ -533,13 +484,10 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
             metaSpan.finish(); // always finish the span
         }
 
-        assertEquals(4, spans.size(),
-                "Unexpected number of spans. Expected is 1 meta span + 2 request spans. Spans:"
-                        + System.lineSeparator()
-                        + Joiner.on(System.lineSeparator()).join(spans));
+        assertEquals(4, spans.size(), "Unexpected number of spans. Expected is 1 meta span + 2 request spans. Spans:"
+                + System.lineSeparator() + Joiner.on(System.lineSeparator()).join(spans));
 
-        assertTrue(spanEqualsMdc, "MDC does not match reported span. MDC entries are: "
-                + System.lineSeparator()
+        assertTrue(spanEqualsMdc, "MDC does not match reported span. MDC entries are: " + System.lineSeparator()
                 + Joiner.on(System.lineSeparator()).join(mdcMap));
     }
 
@@ -551,8 +499,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
             @Override
             public boolean end(TraceContext context, MutableSpan span, Cause cause) {
                 // ensure the MDC has the same data as the current TraceContext
-                try (final var scope =
-                    Tracing.current().currentTraceContext().maybeScope(context)) {
+                try (final var scope = Tracing.current().currentTraceContext().maybeScope(context)) {
                     LOG.info(span.toString()); // like brave.Tracing.LoggingReporter#report
                     spans.add(span);
 
@@ -593,7 +540,6 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         private static final long serialVersionUID = 1L;
 
         ExceptionMapperTestException() {
-            super();
         }
     }
 }

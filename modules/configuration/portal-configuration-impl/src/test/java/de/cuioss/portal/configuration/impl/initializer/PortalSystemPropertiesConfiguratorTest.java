@@ -49,7 +49,7 @@ class PortalSystemPropertiesConfiguratorTest {
     }
 
     @AfterEach
-    void afterTest(){
+    void afterTest() {
         System.clearProperty(PROPERTY_KEY);
     }
 

@@ -50,8 +50,7 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
     void shouldFailWithMissingCredentials() throws Exception {
         final var builder = ConnectionMetadata.builder();
         builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL);
+                .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
         assertThrows(ConnectionConfigurationException.class, () -> {
             builder.build().validate();
         });
@@ -61,8 +60,7 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
     void shouldFailWithInvalidCredentials() throws Exception {
         final var builder = ConnectionMetadata.builder();
         builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL);
+                .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
         builder.loginCredentials(new LoginCredentials());
         assertThrows(ConnectionConfigurationException.class, () -> {
             builder.build().validate();
@@ -144,23 +142,20 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
     void shouldReturnDefaultSSLContext() {
         // Neither key nor truststore
         var meta = ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
-                .connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL).build();
+                .connectionId(stringGenerator.next()).connectionType(ConnectionType.REST)
+                .description(stringGenerator.next()).serviceUrl(URL).build();
         assertNotNull(meta.resolveSSLContext());
 
         // Truststore only
         meta = ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
                 .connectionId(stringGenerator.next()).trustStoreInfo(truststoreInfos.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL).build();
+                .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL).build();
         assertNotNull(meta.resolveSSLContext());
 
         // keystore only
         meta = ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
                 .connectionId(stringGenerator.next()).keyStoreInfo(keystoreInfos.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL).build();
+                .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL).build();
         assertNotNull(meta.resolveSSLContext());
 
         // not existing keystore-file
@@ -168,20 +163,17 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
                 .connectionId(stringGenerator.next())
                 .keyStoreInfo(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
                         .location(new File("not/there")).build())
-                .trustStoreInfo(truststoreInfos.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL).build();
+                .trustStoreInfo(truststoreInfos.next()).connectionType(ConnectionType.REST)
+                .description(stringGenerator.next()).serviceUrl(URL).build();
         assertThrows(IllegalStateException.class, () -> metaInvalidFile.resolveSSLContext());
 
         // Invalid keystore-pasword
-        var metaInvalidPassword =
-            ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
-                    .connectionId(stringGenerator.next())
-                    .keyStoreInfo(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
-                            .location(keystoreInfos.next().getLocation()).storePassword("wronpassword").build())
-                    .trustStoreInfo(truststoreInfos.next())
-                    .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                    .serviceUrl(URL).build();
+        var metaInvalidPassword = ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
+                .connectionId(stringGenerator.next())
+                .keyStoreInfo(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
+                        .location(keystoreInfos.next().getLocation()).storePassword("wronpassword").build())
+                .trustStoreInfo(truststoreInfos.next()).connectionType(ConnectionType.REST)
+                .description(stringGenerator.next()).serviceUrl(URL).build();
         assertThrows(IllegalStateException.class, () -> metaInvalidPassword.resolveSSLContext());
     }
 
@@ -189,9 +181,8 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
     void shouldReturnCustomSSLContext() {
         final var meta = ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
                 .connectionId(stringGenerator.next()).keyStoreInfo(keystoreInfos.next())
-                .trustStoreInfo(truststoreInfos.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL).build();
+                .trustStoreInfo(truststoreInfos.next()).connectionType(ConnectionType.REST)
+                .description(stringGenerator.next()).serviceUrl(URL).build();
         assertNotNull(meta.resolveSSLContext());
         // Should be reentrant
         assertNotNull(meta.resolveSSLContext());
@@ -199,11 +190,9 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
 
     @Test
     void shouldHandleContextData() {
-        final var minimum =
-            ConnectionMetadata.builder().authenticationType(AuthenticationType.NONE)
-                    .connectionId(stringGenerator.next())
-                    .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                    .serviceUrl(URL);
+        final var minimum = ConnectionMetadata.builder().authenticationType(AuthenticationType.NONE)
+                .connectionId(stringGenerator.next()).connectionType(ConnectionType.REST)
+                .description(stringGenerator.next()).serviceUrl(URL);
         final var key = stringGenerator.next();
         final var value = stringGenerator.next();
         final var build = minimum.build();
@@ -222,9 +211,8 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
 
     private ConnectionMetadata getAnyValid() {
         return ConnectionMetadata.builder().authenticationType(AuthenticationType.NONE)
-                .connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next())
-                .serviceUrl(URL).build();
+                .connectionId(stringGenerator.next()).connectionType(ConnectionType.REST)
+                .description(stringGenerator.next()).serviceUrl(URL).build();
     }
 
 }

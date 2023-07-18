@@ -21,9 +21,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Defines the vendor specific bundle to be defined within a portal application, that is
- * "com.icw.ehf.cui.portal.i18n.vendor-messages" with the
- * Priority {@link PortalPriorities#PORTAL_ASSEMBLY_LEVEL + 10}
+ * Defines the vendor specific bundle to be defined within a portal application,
+ * that is "com.icw.ehf.cui.portal.i18n.vendor-messages" with the Priority
+ * {@link PortalPriorities#PORTAL_ASSEMBLY_LEVEL + 10}
  *
  * @author Matthias Walliczek
  */
@@ -41,8 +41,7 @@ public class PortalVendorResourceBundleLocator implements ResourceBundleLocator 
     private static final long serialVersionUID = -8478481710191113463L;
 
     @Getter
-    private List<String> configuredResourceBundles =
-        immutableList(VENDOR_MESSAGES);
+    private List<String> configuredResourceBundles = immutableList(VENDOR_MESSAGES);
 
     /**
      * Initializes the bean beand by loading the {@link ResourceBundle}

@@ -26,9 +26,10 @@ import de.cuioss.tools.string.Joiner;
 
 /**
  * Base test for testing the mapping of a set of configurationKeys to a specific
- * {@link FileConfigurationSource}. In essence it is about ensuring that the key mapping to a
- * default configuration is complete and detecting name changes. You can adjust the test-behavior by
- * filtering the corresponding keys that are checked, see therefore {@link #getKeysIgnoreList()} and
+ * {@link FileConfigurationSource}. In essence it is about ensuring that the key
+ * mapping to a default configuration is complete and detecting name changes.
+ * You can adjust the test-behavior by filtering the corresponding keys that are
+ * checked, see therefore {@link #getKeysIgnoreList()} and
  * {@link #getConfigurationKeysIgnoreList()}
  *
  * @author Oliver Wolff
@@ -39,22 +40,24 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     private static final CuiLogger log = new CuiLogger(AbstractConfigurationKeyVerifierTest.class);
 
     /**
-     * @return the class providing the keys as public static final variables. This is the base for
-     *         the checks. Must not be null;
+     * @return the class providing the keys as public static final variables. This
+     *         is the base for the checks. Must not be null;
      */
     public abstract Class<?> getKeyHolder();
 
     /**
-     * @return a {@link FileConfigurationSource} that will be checked against the derived keys.
+     * @return a {@link FileConfigurationSource} that will be checked against the
+     *         derived keys.
      */
     public abstract FileConfigurationSource getUnderTest();
 
     /**
-     * Defines the keys from the {@link #getKeyHolder()} that are not to be checked against
-     * {@link #getUnderTest()}. The filtering is done within {@link #resolveKeyNames()}
+     * Defines the keys from the {@link #getKeyHolder()} that are not to be checked
+     * against {@link #getUnderTest()}. The filtering is done within
+     * {@link #resolveKeyNames()}
      *
-     * @return a list of key names to be ignored. The default implementation returns an empty
-     *         {@link List}. Must not return {@code null}
+     * @return a list of key names to be ignored. The default implementation returns
+     *         an empty {@link List}. Must not return {@code null}
      */
     public List<String> getKeysIgnoreList() {
         return Collections.emptyList();
@@ -63,18 +66,19 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     /**
      * Defines the keys from the configuration that are not to be checked against
      * {@link #resolveKeyNames()}. The individual entries are checked using
-     * {@link String#startsWith(String)}, saying they are implicitly used as wildcards
+     * {@link String#startsWith(String)}, saying they are implicitly used as
+     * wildcards
      *
-     * @return a list of key names to be ignored. The default implementation returns an empty
-     *         {@link List}. Must not return {@code null}
+     * @return a list of key names to be ignored. The default implementation returns
+     *         an empty {@link List}. Must not return {@code null}
      */
     public List<String> getConfigurationKeysIgnoreList() {
         return Collections.emptyList();
     }
 
     /**
-     * Tests whether each checked key, provided by {@link #resolveKeyNames()} is backed by the given
-     * configuration {@link #getUnderTest()}
+     * Tests whether each checked key, provided by {@link #resolveKeyNames()} is
+     * backed by the given configuration {@link #getUnderTest()}
      */
     @Test
     void keyNamesShouldBeProvidedByConfiguration() {
@@ -82,32 +86,30 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var resolvedKeyNames = resolveKeyNames();
 
         log.info("Checking resolvedKeyNames:{}against configurationKeys:{}",
-            System.lineSeparator() + "\t"
-                + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
-                + System.lineSeparator(),
-            System.lineSeparator() + "\t"
-                + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
+                System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
+                        + System.lineSeparator(),
+                System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
 
-        final List<String> notFoundKeys = resolvedKeyNames.stream()
-            .filter(key -> !configurationKeys.contains(key))
-            .collect(Collectors.toList());
+        final List<String> notFoundKeys = resolvedKeyNames.stream().filter(key -> !configurationKeys.contains(key))
+                .collect(Collectors.toList());
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
-                + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
+                    + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
         }
     }
 
     /**
-     * Tests whether each checked key, provided by {@link #resolveConfigurationKeyNames()} is backed
-     * by the given keyName {@link #resolveKeyNames()}
+     * Tests whether each checked key, provided by
+     * {@link #resolveConfigurationKeyNames()} is backed by the given keyName
+     * {@link #resolveKeyNames()}
      */
     @Test
     void configurationKeysShouldReverseMapToKeyNames() {
         var configurationKeys = resolveConfigurationKeyNames();
         var resolvedKeyNames = resolveKeyNames();
         log.info("Checking configurationKeys='{}' against resolvedKeyNames='{}'", resolvedKeyNames, configurationKeys);
-        List<String> notFoundKeys =
-            configurationKeys.stream().filter(key -> !resolvedKeyNames.contains(key)).collect(Collectors.toList());
+        List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeyNames.contains(key))
+                .collect(Collectors.toList());
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
                     + ", you can use #getConfigurationKeysIgnoreList() to filter the keys to be checked");
@@ -115,10 +117,11 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     }
 
     /**
-     * @return the keys derived by reading all public static final fields from type {@link String}
-     *         from the class read from {@link #getKeyHolder()} that are not contained within
-     *         {@link #getKeysIgnoreList()} and do not end with a '.' (Reason: This keys are
-     *         interpreted to be a prefix for other keys)
+     * @return the keys derived by reading all public static final fields from type
+     *         {@link String} from the class read from {@link #getKeyHolder()} that
+     *         are not contained within {@link #getKeysIgnoreList()} and do not end
+     *         with a '.' (Reason: This keys are interpreted to be a prefix for
+     *         other keys)
      */
     public SortedSet<String> resolveKeyNames() {
         Class<?> keyHolder = requireNonNull(getKeyHolder(), "getKeyHolder() must not return null");
@@ -147,8 +150,8 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     }
 
     /**
-     * @return the Keys derived by reading the from {@link #getUnderTest()} and removing the
-     *         keys from {@link #getConfigurationKeysIgnoreList()}
+     * @return the Keys derived by reading the from {@link #getUnderTest()} and
+     *         removing the keys from {@link #getConfigurationKeysIgnoreList()}
      */
     public SortedSet<String> resolveConfigurationKeyNames() {
         var configurationKeys = extractConfigurationKeys();
@@ -170,10 +173,11 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     }
 
     /**
-     * Extracts non empty keys, as empty keys are handled as non-existing in MicroProfile config.
+     * Extracts non empty keys, as empty keys are handled as non-existing in
+     * MicroProfile config.
      *
-     * @return the {@link SortedSet} of non-empty configuration keys from the provided
-     *         {@link FileConfigurationSource} using
+     * @return the {@link SortedSet} of non-empty configuration keys from the
+     *         provided {@link FileConfigurationSource} using
      *         {@link AbstractConfigurationKeyVerifierTest#getUnderTest()}
      */
     protected SortedSet<String> extractConfigurationKeys() {
@@ -184,14 +188,11 @@ public abstract class AbstractConfigurationKeyVerifierTest {
             properties = LoaderUtils.loadConfigurationFromSource(getUnderTest());
         }
 
-        return properties.entrySet().stream()
-            .filter(Objects::nonNull)
-            .filter(entry -> !isEmptyValue(entry))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toCollection(TreeSet::new));
+        return properties.entrySet().stream().filter(Objects::nonNull).filter(entry -> !isEmptyValue(entry))
+                .map(Map.Entry::getKey).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private static boolean isEmptyValue(final Map.Entry<String, String> entry){
+    private static boolean isEmptyValue(final Map.Entry<String, String> entry) {
         if (isEmpty(entry.getValue())) {
             log.warn("Found empty value for property: {}. It is advised to remove it.", entry.getKey());
             return true;

@@ -41,9 +41,8 @@ public enum ErrorReason {
     INVALID_PROXY("The proxy is invalid"),
 
     /**
-     * before actually trying to
-     * establish a connection. If this fails without {@link ConnectionException}
-     * this {@link ErrorReason} will be chosen.
+     * before actually trying to establish a connection. If this fails without
+     * {@link ConnectionException} this {@link ErrorReason} will be chosen.
      */
     CHECK_CONNECTION_FAILED("Establish a connection failed"),
 

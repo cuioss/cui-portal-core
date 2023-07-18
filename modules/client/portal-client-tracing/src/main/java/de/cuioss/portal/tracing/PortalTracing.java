@@ -43,25 +43,28 @@ import zipkin2.reporter.brave.ZipkinSpanHandler;
 /**
  * Provides producers for tracing aspects.
  * <p>
- * Spans are reported to {@link PortalLogSpanHandler} and all other span handlers discovered via {@link Instance}.
- * Furthermore, {@link B3Propagation} is used.
- * All tracing features are also provided to log4j2 by using {@link ThreadContextScopeDecorator}.
+ * Spans are reported to {@link PortalLogSpanHandler} and all other span
+ * handlers discovered via {@link Instance}. Furthermore, {@link B3Propagation}
+ * is used. All tracing features are also provided to log4j2 by using
+ * {@link ThreadContextScopeDecorator}.
  *
  * <h2>Wrapping multiple spans</h2>
+ *
  * <pre>
- * &#x40;Inject Tracing tracing;
+ * &#x40;Inject
+ * Tracing tracing;
  *
  * void method() {
- *   ScopedSpan span = tracing.tracer().startScopedSpan("do-magic");
- *   try {
- *     call1();
- *     call2();
- *     call3();
- *   } catch(Exception e) {
- *       span.error(e);
- *   } finally {
- *     span.finish();
- *   }
+ *     ScopedSpan span = tracing.tracer().startScopedSpan("do-magic");
+ *     try {
+ *         call1();
+ *         call2();
+ *         call3();
+ *     } catch (Exception e) {
+ *         span.error(e);
+ *     } finally {
+ *         span.finish();
+ *     }
  * }
  * </pre>
  *
@@ -76,7 +79,8 @@ public class PortalTracing {
     private Instance<SpanHandler> spanHandlers;
 
     /**
-     * @return true, if distributed tracing is enabled. defaults to <code>true</code>.
+     * @return true, if distributed tracing is enabled. defaults to
+     *         <code>true</code>.
      * @see de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED
      */
     public static boolean isEnabled() {
@@ -94,7 +98,8 @@ public class PortalTracing {
 
     /**
      * @param spanReporter produces span reporter. Can be {@code null}.
-     * @param sampler produced sampler or e.g. {@link Sampler#ALWAYS_SAMPLE}. Must not be {@code null}!
+     * @param sampler      produced sampler or e.g. {@link Sampler#ALWAYS_SAMPLE}.
+     *                     Must not be {@code null}!
      *
      * @return newly build brave tracing instance
      */
@@ -124,23 +129,17 @@ public class PortalTracing {
             builder.addSpanHandler(ZipkinSpanHandler.create(spanReporter));
         }
 
-        final CurrentTraceContext ctx = ThreadLocalCurrentTraceContext.newBuilder()
-            .addScopeDecorator(
-                // the scope baggage items "spanId" and "traceId" are already added by ThreadContextScopeDecorator per
+        final CurrentTraceContext ctx = ThreadLocalCurrentTraceContext.newBuilder().addScopeDecorator(
+                // the scope baggage items "spanId" and "traceId" are already added by
+                // ThreadContextScopeDecorator per
                 // default, but we also need "parentId" and "sampled"
-                ThreadContextScopeDecorator.newBuilder()  // puts tracing data into MDC aka ThreadContext
-                    .add(SingleCorrelationField.create(BaggageFields.PARENT_ID))
-                    .add(SingleCorrelationField.create(BaggageFields.SAMPLED))
-                    .build())
-            .build();
+                ThreadContextScopeDecorator.newBuilder() // puts tracing data into MDC aka ThreadContext
+                        .add(SingleCorrelationField.create(BaggageFields.PARENT_ID))
+                        .add(SingleCorrelationField.create(BaggageFields.SAMPLED)).build())
+                .build();
 
-        return builder
-            .sampler(sampler)
-            .trackOrphans()
-            .propagationFactory(B3Propagation.FACTORY)
-            .currentTraceContext(ctx)
-            .addSpanHandler(new PortalLogSpanHandler(ctx))
-            .build();
+        return builder.sampler(sampler).trackOrphans().propagationFactory(B3Propagation.FACTORY)
+                .currentTraceContext(ctx).addSpanHandler(new PortalLogSpanHandler(ctx)).build();
     }
 
     @Produces

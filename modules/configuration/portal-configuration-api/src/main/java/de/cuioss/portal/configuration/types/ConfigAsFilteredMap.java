@@ -14,8 +14,8 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
- * Injects a number of config-properties as an immutable {@link Map} of properties. It filters the
- * property-keys using {@link #startsWith()}
+ * Injects a number of config-properties as an immutable {@link Map} of
+ * properties. It filters the property-keys using {@link #startsWith()}
  *
  * @author Oliver Wolff
  */
@@ -31,8 +31,9 @@ public @interface ConfigAsFilteredMap {
     String startsWith();
 
     /**
-     * @return boolean indicating whether the keys in the resulting map should be stripped of the
-     *         prefix defined at {@link #startsWith()}. Defaults to {@code false}
+     * @return boolean indicating whether the keys in the resulting map should be
+     *         stripped of the prefix defined at {@link #startsWith()}. Defaults to
+     *         {@code false}
      */
     @Nonbinding
     boolean stripPrefix() default false;

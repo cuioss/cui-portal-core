@@ -13,22 +13,21 @@ import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 
 // FIXME rootLevel should not be necessary
-@EnableTestLogger(rootLevel = TestLogLevel.TRACE,
-    trace = AbstractPortalConfigSource.class)
+@EnableTestLogger(rootLevel = TestLogLevel.TRACE, trace = AbstractPortalConfigSource.class)
 class AbstractPortalConfigSourceTest {
 
     @Test
     void invalidOrdinal() {
         assertEquals(110, createWithOrdinal("b00m").getOrdinal());
         LogAsserts.assertSingleLogMessagePresent(TestLogLevel.TRACE,
-            "config_ordinal is not a number. source=AbstractPortalConfigSourceTestSource");
+                "config_ordinal is not a number. source=AbstractPortalConfigSourceTestSource");
     }
 
     @Test
     void validOrdinal() {
         assertEquals(42, createWithOrdinal("42").getOrdinal());
         LogAsserts.assertSingleLogMessagePresent(TestLogLevel.TRACE,
-            "config_ordinal of AbstractPortalConfigSourceTestSource=42");
+                "config_ordinal of AbstractPortalConfigSourceTestSource=42");
     }
 
     private AbstractPortalConfigSource createWithOrdinal(final String value) {

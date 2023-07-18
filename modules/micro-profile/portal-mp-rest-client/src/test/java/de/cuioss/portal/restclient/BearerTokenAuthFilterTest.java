@@ -52,8 +52,8 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
             @Override
             public MockResponse dispatch(final RecordedRequest request) {
                 switch (request.getPath()) {
-                    case "/success/test":
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_OK);
+                case "/success/test":
+                    return new MockResponse().setResponseCode(HttpServletResponse.SC_OK);
                 }
                 return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -62,10 +62,8 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
     @Test
     void shouldProviderAuthorizationHeader() throws InterruptedException {
-        final var underTest =
-            new CuiRestClientBuilder(log)
-                    .url(mockWebServer.url("success").toString())
-                    .bearerAuthToken("abcToken");
+        final var underTest = new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString())
+                .bearerAuthToken("abcToken");
         underTest.build(CuiRestClientBuilderTest.TestResource.class).test();
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
@@ -75,15 +73,13 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
     @Test
     void shouldProviderAuthorizationHeaderWithInvalidValues() throws InterruptedException {
-        new CuiRestClientBuilder(log)
-                .url(mockWebServer.url("success").toString())
-                .bearerAuthToken(null).build(CuiRestClientBuilderTest.TestResource.class).test();
+        new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken(null)
+                .build(CuiRestClientBuilderTest.TestResource.class).test();
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
         assertTrue(authHeader.isEmpty());
-        new CuiRestClientBuilder(log)
-                .url(mockWebServer.url("success").toString())
-                .bearerAuthToken("123\ntest: test2").build(CuiRestClientBuilderTest.TestResource.class).test();
+        new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken("123\ntest: test2")
+                .build(CuiRestClientBuilderTest.TestResource.class).test();
         request = mockWebServer.takeRequest();
         authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty());

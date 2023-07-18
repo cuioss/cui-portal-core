@@ -30,9 +30,10 @@ import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.uimodel.application.LoginCredentials;
 
 /**
- * {@linkplain ConnectionMetadata} producer that defaults to the <code>javax.net.ssl</code>
- * properties if the connection type is {@linkplain AuthenticationType#CERTIFICATE} and no custom
- * properties for trust-store or key-store are defined.
+ * {@linkplain ConnectionMetadata} producer that defaults to the
+ * <code>javax.net.ssl</code> properties if the connection type is
+ * {@linkplain AuthenticationType#CERTIFICATE} and no custom properties for
+ * trust-store or key-store are defined.
  *
  * @author Oliver Wolff
  * @author Sven Haag
@@ -49,36 +50,34 @@ public class ConnectionMetadataProducer {
     /** "Portal-117: Configuration setting for baseName is missing." */
     public static final String MISSING_BASENAME_MSG = "Portal-117: Configuration setting for baseName is missing.";
     private static final String MISSING_CONFIG_MSG = "Portal-119: Missing configuration for {} detected.";
-    private static final String MISSING_BASICAUTH_CONFIG_MSG =
-        "Portal-120: Configuration for basic authentication is incomplete. Missing: ";
-    private static final String MISSING_TOKEN_CONFIG_MSG =
-        "Portal-120: Configuration for token based authentication is incomplete. Missing: ";
-    private static final String INVALID_NUMBER_VALUE =
-        "Portal-526: Invalid content for '%s', expected a number but was '%s'";
+    private static final String MISSING_BASICAUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: ";
+    private static final String MISSING_TOKEN_CONFIG_MSG = "Portal-120: Configuration for token based authentication is incomplete. Missing: ";
+    private static final String INVALID_NUMBER_VALUE = "Portal-526: Invalid content for '%s', expected a number but was '%s'";
 
     /**
      * Try to create {@linkplain ConnectionMetadata}<br>
-     * <h2>Attention</h2>
-     * If configuration is invalid and validation should be done the injection will failed with
+     * <h2>Attention</h2> If configuration is invalid and validation should be done
+     * the injection will failed with
      * {@linkplain javax.enterprise.inject.CreationException} caused by
      * {@linkplain IllegalArgumentException}
      *
      * @param injectionPoint {@linkplain InjectionPoint} must not be {@code null}
      *
-     * @return {@linkplain ConnectionMetadata} if configuration is valid or validation is disabled
-     *         by {@linkplain ConfigAsConnectionMetadata#failOnInvalidConfiguration()}
+     * @return {@linkplain ConnectionMetadata} if configuration is valid or
+     *         validation is disabled by
+     *         {@linkplain ConfigAsConnectionMetadata#failOnInvalidConfiguration()}
      * @throws IllegalArgumentException if
-     *             {@linkplain ConfigAsConnectionMetadata#failOnInvalidConfiguration()} is active
-     *             and any configuration is invalid. This is checked by calling
-     *             {@link ConnectionMetadata#validate()}
+     *                                  {@linkplain ConfigAsConnectionMetadata#failOnInvalidConfiguration()}
+     *                                  is active and any configuration is invalid.
+     *                                  This is checked by calling
+     *                                  {@link ConnectionMetadata#validate()}
      */
     @Produces
     @Dependent
     @ConfigAsConnectionMetadata(baseName = "unused")
     ConnectionMetadata produceConnectionMetadata(final InjectionPoint injectionPoint) {
-        final var metaData =
-            ConfigurationHelper.resolveAnnotation(injectionPoint, ConfigAsConnectionMetadata.class)
-                    .orElseThrow(() -> new IllegalStateException("Invalid usage"));
+        final var metaData = ConfigurationHelper.resolveAnnotation(injectionPoint, ConfigAsConnectionMetadata.class)
+                .orElseThrow(() -> new IllegalStateException("Invalid usage"));
         log.trace("Producing configuration for '{}'", metaData.baseName());
         final var failOnInvalidConfiguration = metaData.failOnInvalidConfiguration();
         return createConnectionMetadata(metaData.baseName(), failOnInvalidConfiguration);
@@ -87,10 +86,13 @@ public class ConnectionMetadataProducer {
     /**
      * Creates an {@link ConnectionMetadata} instance from the given properties.
      *
-     * @param baseName to be used, must not be null nor empty
+     * @param baseName                   to be used, must not be null nor empty
      * @param failOnInvalidConfiguration boolean indicating whether the method
-     *            should throw an {@link IllegalArgumentException} in case the configuration
-     *            contains errors. This is checked by calling {@link ConnectionMetadata#validate()}
+     *                                   should throw an
+     *                                   {@link IllegalArgumentException} in case
+     *                                   the configuration contains errors. This is
+     *                                   checked by calling
+     *                                   {@link ConnectionMetadata#validate()}
      * @return the created {@link ConnectionMetadata}
      */
     public static ConnectionMetadata createConnectionMetadata(final String baseName,
@@ -98,8 +100,7 @@ public class ConnectionMetadataProducer {
         log.trace("Creating ConnectionMetadata for '{}'", baseName);
         final var builder = ConnectionMetadata.builder();
         // Basename must be present
-        final var name =
-            suffixNameWithDot(requireNonNull(emptyToNull(baseName), MISSING_BASENAME_MSG));
+        final var name = suffixNameWithDot(requireNonNull(emptyToNull(baseName), MISSING_BASENAME_MSG));
 
         var properties = ConfigurationHelper.resolveFilteredConfigProperties(name, true);
 
@@ -107,14 +108,14 @@ public class ConnectionMetadataProducer {
         builder.description(properties.get(ConnectionMetadataKeys.DESCRIPTION_KEY));
         builder.serviceUrl(properties.get(ConnectionMetadataKeys.URL_KEY));
 
-        builder.disableHostNameVerification(parseBoolean(properties.getOrDefault(
-                ConnectionMetadataKeys.TRANSPORT_DISABLE_HOSTNAME_VALIDATION, "false")));
+        builder.disableHostNameVerification(parseBoolean(
+                properties.getOrDefault(ConnectionMetadataKeys.TRANSPORT_DISABLE_HOSTNAME_VALIDATION, "false")));
 
         Optional.ofNullable(properties.get(ConnectionMetadataKeys.TRACING))
                 .ifPresent(value -> builder.tracingEnabled(parseBoolean(value)));
 
-        builder.connectionType(ConnectionType.resolveFrom(properties.getOrDefault(
-                ConnectionMetadataKeys.TYPE_KEY, ConnectionType.UNDEFINED.name())));
+        builder.connectionType(ConnectionType.resolveFrom(
+                properties.getOrDefault(ConnectionMetadataKeys.TYPE_KEY, ConnectionType.UNDEFINED.name())));
 
         handleAuthentication(name, failOnInvalidConfiguration, builder, properties);
 
@@ -123,21 +124,18 @@ public class ConnectionMetadataProducer {
 
         getPositiveLong(name + ConnectionMetadataKeys.CONNECTION_TIMEOUT,
                 properties.get(ConnectionMetadataKeys.CONNECTION_TIMEOUT), failOnInvalidConfiguration)
-                        .ifPresent(builder::connectionTimeout);
+                .ifPresent(builder::connectionTimeout);
 
-        getPositiveLong(name + ConnectionMetadataKeys.READ_TIMEOUT,
-                properties.get(ConnectionMetadataKeys.READ_TIMEOUT), failOnInvalidConfiguration)
-                        .ifPresent(builder::readTimeout);
+        getPositiveLong(name + ConnectionMetadataKeys.READ_TIMEOUT, properties.get(ConnectionMetadataKeys.READ_TIMEOUT),
+                failOnInvalidConfiguration).ifPresent(builder::readTimeout);
 
         builder.proxyHost(properties.get(ConnectionMetadataKeys.PROXY_HOST));
-        getPositiveInt(name + ConnectionMetadataKeys.PROXY_PORT,
-                properties.get(ConnectionMetadataKeys.PROXY_PORT), failOnInvalidConfiguration)
-                .ifPresent(builder::proxyPort);
+        getPositiveInt(name + ConnectionMetadataKeys.PROXY_PORT, properties.get(ConnectionMetadataKeys.PROXY_PORT),
+                failOnInvalidConfiguration).ifPresent(builder::proxyPort);
 
         final var meta = builder.build();
-        meta.getContextMap()
-                .putAll(ConfigurationHelper.getFilteredPropertyMap(properties,
-                        suffixNameWithDot(ConnectionMetadataKeys.CONFIG_KEY), true));
+        meta.getContextMap().putAll(ConfigurationHelper.getFilteredPropertyMap(properties,
+                suffixNameWithDot(ConnectionMetadataKeys.CONFIG_KEY), true));
         log.debug("Created Connection Metadata '{}'", meta);
         if (!failOnInvalidConfiguration) {
             return meta;
@@ -169,40 +167,34 @@ public class ConnectionMetadataProducer {
         builder.authenticationType(authenticationType);
         log.debug("Detected AuthenticationType '{}' for baseName '{}'", authenticationType, baseName);
         switch (authenticationType) {
-            case BASIC:
-                final var userName = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
-                if (MoreStrings.isEmpty(userName)) {
-                    handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME,
-                            MISSING_BASICAUTH_CONFIG_MSG + "Username",
-                            failOnInvalidConfiguration);
-                }
-                final var password = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD);
-                if (MoreStrings.isEmpty(password)) {
-                    handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD,
-                            MISSING_BASICAUTH_CONFIG_MSG + "Password",
-                            failOnInvalidConfiguration);
-                }
-                builder.loginCredentials(LoginCredentials.builder().username(userName).password(password).build());
-                break;
-            case TOKEN_APPLICATION:
-                final var key = filteredProperties.get(ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY);
-                if (MoreStrings.isEmpty(key)) {
-                    handleMissingProperty(
-                            suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY,
-                            MISSING_TOKEN_CONFIG_MSG + "Key",
-                            failOnInvalidConfiguration);
-                }
-                final var token = filteredProperties.get(ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN);
-                if (MoreStrings.isEmpty(token)) {
-                    handleMissingProperty(
-                            suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN,
-                            MISSING_TOKEN_CONFIG_MSG + "Token",
-                            failOnInvalidConfiguration);
-                }
-                builder.tokenResolver(new StaticTokenResolver(key, token));
-                break;
-            default:
-                break;
+        case BASIC:
+            final var userName = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
+            if (MoreStrings.isEmpty(userName)) {
+                handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME,
+                        MISSING_BASICAUTH_CONFIG_MSG + "Username", failOnInvalidConfiguration);
+            }
+            final var password = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD);
+            if (MoreStrings.isEmpty(password)) {
+                handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD,
+                        MISSING_BASICAUTH_CONFIG_MSG + "Password", failOnInvalidConfiguration);
+            }
+            builder.loginCredentials(LoginCredentials.builder().username(userName).password(password).build());
+            break;
+        case TOKEN_APPLICATION:
+            final var key = filteredProperties.get(ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY);
+            if (MoreStrings.isEmpty(key)) {
+                handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY,
+                        MISSING_TOKEN_CONFIG_MSG + "Key", failOnInvalidConfiguration);
+            }
+            final var token = filteredProperties.get(ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN);
+            if (MoreStrings.isEmpty(token)) {
+                handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN,
+                        MISSING_TOKEN_CONFIG_MSG + "Token", failOnInvalidConfiguration);
+            }
+            builder.tokenResolver(new StaticTokenResolver(key, token));
+            break;
+        default:
+            break;
         }
     }
 
@@ -214,8 +206,8 @@ public class ConnectionMetadataProducer {
         return name.endsWith(".") ? name : name + ".";
     }
 
-    private static void handleMissingProperty(final String propertyName,
-            final String exceptionMessage, final boolean failOnInvalidConfiguration) {
+    private static void handleMissingProperty(final String propertyName, final String exceptionMessage,
+            final boolean failOnInvalidConfiguration) {
         log.warn(MISSING_CONFIG_MSG, propertyName);
         if (failOnInvalidConfiguration) {
             throw new IllegalArgumentException(exceptionMessage);
@@ -225,8 +217,8 @@ public class ConnectionMetadataProducer {
     private static Optional<KeyStoreProvider> getTruststoreInformation(final Map<String, String> filteredProperties) {
         log.trace("Resolving TruststoreInformation");
         final var truststoreLocation = filteredProperties.get(ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION);
-        final var truststorePassword =
-            extractFirstKeyValue(filteredProperties, ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD);
+        final var truststorePassword = extractFirstKeyValue(filteredProperties,
+                ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD);
 
         if (null == truststoreLocation || !truststorePassword.isPresent()) {
             if (log.isDebugEnabled()) {
@@ -244,18 +236,16 @@ public class ConnectionMetadataProducer {
             return Optional.empty();
         }
 
-        return Optional
-                .of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.TRUST_STORE)
-                        .location(new File(truststoreLocation))
-                        .storePassword(truststorePassword.get()).build());
+        return Optional.of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.TRUST_STORE)
+                .location(new File(truststoreLocation)).storePassword(truststorePassword.get()).build());
     }
 
     private static Optional<KeyStoreProvider> getKeystoreInformation(final Map<String, String> filteredProperties) {
         log.trace("Resolving KeystoreInformation");
         final var keystoreLocation = extractKeystoreLocation(filteredProperties);
-        final var keystorePassword =
-            extractFirstKeyValue(filteredProperties, ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
-                    ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD);
+        final var keystorePassword = extractFirstKeyValue(filteredProperties,
+                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD);
 
         if (!keystoreLocation.isPresent() || !keystorePassword.isPresent()) {
             if (log.isDebugEnabled()) {
@@ -269,18 +259,17 @@ public class ConnectionMetadataProducer {
             return Optional.empty();
         }
 
-        final var keyPassword =
-            extractFirstKeyValue(filteredProperties, ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
-                    ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD).orElse(keystorePassword.get());
+        final var keyPassword = extractFirstKeyValue(filteredProperties,
+                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD).orElse(keystorePassword.get());
 
         return Optional.of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
-                .location(new File(keystoreLocation.get()))
-                .storePassword(keystorePassword.get()).keyPassword(keyPassword).build());
+                .location(new File(keystoreLocation.get())).storePassword(keystorePassword.get())
+                .keyPassword(keyPassword).build());
     }
 
     private static Optional<String> extractKeystoreLocation(final Map<String, String> filteredProperties) {
-        final var keystoreLocation =
-            filteredProperties.get(ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION);
+        final var keystoreLocation = filteredProperties.get(ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION);
         if (null != keystoreLocation) {
             return Optional.of(keystoreLocation);
         }
@@ -300,10 +289,11 @@ public class ConnectionMetadataProducer {
     }
 
     /**
-     * @param key entire configuration key
-     * @param value to be parsed
-     * @param failOnInvalidConfiguration boolean indicating if an {@link IllegalArgumentException}
-     *            should be thrown, if the value cannot be parsed
+     * @param key                        entire configuration key
+     * @param value                      to be parsed
+     * @param failOnInvalidConfiguration boolean indicating if an
+     *                                   {@link IllegalArgumentException} should be
+     *                                   thrown, if the value cannot be parsed
      *
      * @return optional long
      * @throws IllegalArgumentException if the value cannot be parsed
@@ -315,8 +305,7 @@ public class ConnectionMetadataProducer {
                 return Optional.of(Long.parseUnsignedLong(value.trim()));
             } catch (final NumberFormatException e) {
                 if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(
-                            MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
+                    throw new IllegalArgumentException(MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
                 }
                 log.error(e, INVALID_NUMBER_VALUE, key, value);
             }
@@ -331,8 +320,7 @@ public class ConnectionMetadataProducer {
                 return Optional.of(Integer.parseUnsignedInt(value.trim()));
             } catch (final NumberFormatException e) {
                 if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(
-                            MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
+                    throw new IllegalArgumentException(MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
                 }
                 log.error(e, INVALID_NUMBER_VALUE, key, value);
             }

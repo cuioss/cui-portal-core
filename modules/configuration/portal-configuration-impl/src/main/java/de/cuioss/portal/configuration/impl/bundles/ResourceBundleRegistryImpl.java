@@ -27,8 +27,8 @@ import lombok.ToString;
 
 /**
  * Registry for the ResourceBundleNames. The injected
- * {@link ResourceBundleLocator} must have unique paths and define an
- * existing {@link ResourceBundle}
+ * {@link ResourceBundleLocator} must have unique paths and define an existing
+ * {@link ResourceBundle}
  *
  * @author Oliver Wolff
  */
@@ -68,8 +68,7 @@ public class ResourceBundleRegistryImpl implements ResourceBundleRegistry {
         var defaultLocale = Locale.getDefault();
         final List<String> finalPaths = new ArrayList<>();
         // Sort according to ResourceBundleDescripor#order
-        final List<ResourceBundleLocator> sortedLocators = PortalPriorities
-                .sortByPriority(mutableList(locatorList));
+        final List<ResourceBundleLocator> sortedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
         for (final ResourceBundleLocator descriptor : sortedLocators) {
             for (final String path : descriptor.getConfiguredResourceBundles()) {
                 // Check whether the path defines an existing ResourceBundle

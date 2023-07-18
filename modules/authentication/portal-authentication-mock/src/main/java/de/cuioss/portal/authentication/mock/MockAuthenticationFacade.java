@@ -60,8 +60,8 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private static final String USER = "user";
 
-    private static final AuthenticatedUserInfo NOT_LOGGED_IN =
-        new BaseAuthenticatedUserInfo(false, null, null, null, null);
+    private static final AuthenticatedUserInfo NOT_LOGGED_IN = new BaseAuthenticatedUserInfo(false, null, null, null,
+            null);
 
     private static final String BASE_KEY = "portal.MockAuthenticationFacade.";
 
@@ -130,8 +130,8 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     private AuthenticationSource authenticationSource = AuthenticationSource.MOCK;
 
     /**
-     * The dummy implementation provides a successful login in case the
-     * identifier and password are equal.
+     * The dummy implementation provides a successful login in case the identifier
+     * and password are equal.
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
@@ -139,17 +139,14 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()
-                && loginCredentials.getUsername()
-                        .equalsIgnoreCase(loginCredentials.getPassword())) {
+                && loginCredentials.getUsername().equalsIgnoreCase(loginCredentials.getPassword())) {
             var oldSession = servletRequest.getSession();
             if (null != oldSession) {
                 oldSession.invalidate();
             }
             AuthenticatedUserInfo currentAuthenticationUserInfo = createDefaultUserInfoBuilder()
-                    .identifier(loginCredentials.getUsername())
-                    .qualifiedIdentifier(loginCredentials.getUsername())
-                    .displayName(loginCredentials.getUsername())
-                    .build();
+                    .identifier(loginCredentials.getUsername()).qualifiedIdentifier(loginCredentials.getUsername())
+                    .displayName(loginCredentials.getUsername()).build();
             servletRequest.getSession(true).setAttribute(USER_INFO_KEY, currentAuthenticationUserInfo);
             return AuthenticationResults.validResult(currentAuthenticationUserInfo);
         }
@@ -182,18 +179,13 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     }
 
     @Override
-    public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(
-            final HttpServletRequest servletRequest) {
-        var userInfo = (AuthenticatedUserInfo) servletRequest.getSession()
-                .getAttribute(USER_INFO_KEY);
+    public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(final HttpServletRequest servletRequest) {
+        var userInfo = (AuthenticatedUserInfo) servletRequest.getSession().getAttribute(USER_INFO_KEY);
         if (null == userInfo) {
             if (defaultLoggedIn.get().booleanValue()) {
                 var userName = defaultUserName.get();
-                userInfo = createDefaultUserInfoBuilder()
-                        .identifier(userName)
-                        .qualifiedIdentifier(userName)
-                        .displayName(userName)
-                        .build();
+                userInfo = createDefaultUserInfoBuilder().identifier(userName).qualifiedIdentifier(userName)
+                        .displayName(userName).build();
             } else {
                 userInfo = NOT_LOGGED_IN;
             }

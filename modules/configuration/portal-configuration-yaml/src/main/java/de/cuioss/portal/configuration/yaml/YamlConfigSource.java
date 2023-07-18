@@ -33,7 +33,8 @@ public class YamlConfigSource extends AbstractPortalConfigSource implements File
     private final boolean readable;
 
     /**
-     * Instantly loads the given file. The path might be prefixed with one of the {@link FileTypePrefix}s.
+     * Instantly loads the given file. The path might be prefixed with one of the
+     * {@link FileTypePrefix}s.
      *
      * @param path to be loaded
      *
@@ -44,10 +45,12 @@ public class YamlConfigSource extends AbstractPortalConfigSource implements File
     }
 
     /**
-     * Instantly loads the given file. The path might be prefixed with one of the {@link FileTypePrefix}s.
+     * Instantly loads the given file. The path might be prefixed with one of the
+     * {@link FileTypePrefix}s.
      *
-     * @param path to be loaded
-     * @param optional if true, doesn't throw an exception if the file isn't available.
+     * @param path     to be loaded
+     * @param optional if true, doesn't throw an exception if the file isn't
+     *                 available.
      *
      * @throws IllegalArgumentException if {@code path} is {@code null} or empty.
      */

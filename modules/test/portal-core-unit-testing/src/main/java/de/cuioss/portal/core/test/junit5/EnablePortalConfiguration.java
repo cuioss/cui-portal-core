@@ -16,8 +16,8 @@ import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import io.smallrye.config.inject.ConfigProducer;
 
 /**
- * Using this annotations at type-level of a junit 5 test provides the basic types for handling
- * configuration in unit-tests. It includes the types:
+ * Using this annotations at type-level of a junit 5 test provides the basic
+ * types for handling configuration in unit-tests. It includes the types:
  *
  * <ul>
  * <li>{@link ConfigProducer}</li>
@@ -34,19 +34,15 @@ import io.smallrye.config.inject.ConfigProducer;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-@AddBeanClasses({
-    ConfigProducer.class,
-    PortalTestConfiguration.class,
-    PortalConfigProducer.class,
-    InstallationConfigSourcePathInitializer.class,
-    ConfigChangeObserver.class})
+@AddBeanClasses({ ConfigProducer.class, PortalTestConfiguration.class, PortalConfigProducer.class,
+        InstallationConfigSourcePathInitializer.class, ConfigChangeObserver.class })
 @ExtendWith(PortalTestConfigurationExtension.class)
 public @interface EnablePortalConfiguration {
 
     /**
-     * @return an array of Strings representing additional configuration elements to be applied for
-     *         each test. The individual Strings are expected in the form "key:value", e.g.
-     *         "portal.locale.default:de"
+     * @return an array of Strings representing additional configuration elements to
+     *         be applied for each test. The individual Strings are expected in the
+     *         form "key:value", e.g. "portal.locale.default:de"
      */
     String[] configuration() default {};
 }

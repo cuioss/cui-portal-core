@@ -34,8 +34,7 @@ import de.cuioss.tools.io.UrlLoader;
 /**
  * Tests for {@link YamlConfigurationProvider}.
  * <p>
- * COPIED FROM:
- * https://github.com/spring-projects/spring-framework/blob/v5.1.8
+ * COPIED FROM: https://github.com/spring-projects/spring-framework/blob/v5.1.8
  * .RELEASE/spring-beans/src/test/java/org/springframework/beans/factory/config/YamlPropertiesFactoryBeanTests.java
  * https://github.com/spring-projects/spring-framework/blob/v5.1.8
  * .RELEASE/spring-beans/src/test/java/org/springframework/beans/factory/config/YamlProcessorTests.java
@@ -123,8 +122,7 @@ class YamlConfigurationProviderTests {
 
     @Test
     void loadArrayOfObject() {
-        final var properties =
-            getPropertiesFrom("foo:\n- bar:\n    spam: crap\n- baz\n- one: two\n  three: four");
+        final var properties = getPropertiesFrom("foo:\n- bar:\n    spam: crap\n- baz\n- one: two\n  three: four");
         assertEquals("crap", properties.getProperty("foo[0].bar.spam"));
         assertEquals("baz", properties.getProperty("foo[1]"));
         assertEquals("two", properties.getProperty("foo[2].one"));
@@ -163,24 +161,20 @@ class YamlConfigurationProviderTests {
 
     @Test
     void badDocumentStart() {
-        var provider = new YamlConfigurationProvider(
-                new StringResource("foo # a document\nbar: baz"));
+        var provider = new YamlConfigurationProvider(new StringResource("foo # a document\nbar: baz"));
         assertThrows(ParserException.class, () -> provider.createProperties());
     }
 
     @Test
     void badResource() {
-        var provider = new YamlConfigurationProvider(
-                new StringResource("foo: bar\ncd\nspam:\n  foo: baz"));
+        var provider = new YamlConfigurationProvider(new StringResource("foo: bar\ncd\nspam:\n  foo: baz"));
         assertThrows(ScannerException.class, () -> provider.createProperties());
     }
 
     @Test
     void badResource2() {
-        var provider = new YamlConfigurationProvider(
-                new StringResource("foo: bar\ncd\nspam:\n  foo: baz"));
-        assertThrows(ScannerException.class, () -> provider
-                .createProperties());
+        var provider = new YamlConfigurationProvider(new StringResource("foo: bar\ncd\nspam:\n  foo: baz"));
+        assertThrows(ScannerException.class, () -> provider.createProperties());
     }
 
     @Test
@@ -206,9 +200,7 @@ class YamlConfigurationProviderTests {
 
     @Test
     void returnAsConfigMap() {
-        var result = new YamlConfigurationProvider(
-                new StringResource("foo: bar"))
-                        .getConfigurationMap();
+        var result = new YamlConfigurationProvider(new StringResource("foo: bar")).getConfigurationMap();
         Map<String, String> expected = new HashMap<>();
         expected.put("foo", "bar");
         assertEquals(expected, result);
@@ -216,8 +208,7 @@ class YamlConfigurationProviderTests {
 
     @Test
     void loadFromPath() {
-        var result = new YamlConfigurationProvider("classpath:/test.yml")
-                .getConfigurationMap();
+        var result = new YamlConfigurationProvider("classpath:/test.yml").getConfigurationMap();
         assertEquals(6, result.size());
     }
 

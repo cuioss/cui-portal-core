@@ -29,7 +29,9 @@ abstract class AbstractFileDescriptor {
 
     private static final CuiLogger log = new CuiLogger(AbstractFileDescriptor.class);
 
-    /** The factory-method create() will always return a real-path for this field. */
+    /**
+     * The factory-method create() will always return a real-path for this field.
+     */
     @Getter
     private final Path path;
 
@@ -68,13 +70,11 @@ abstract class AbstractFileDescriptor {
             return;
         }
         try {
-            watchedPaths.put(
-                    absolute.register(watcherService, ENTRY_MODIFY, ENTRY_DELETE, ENTRY_DELETE),
-                    absolute);
+            watchedPaths.put(absolute.register(watcherService, ENTRY_MODIFY, ENTRY_DELETE, ENTRY_DELETE), absolute);
             log.info("Portal-010: Watching for file changes at path: {}", absolute);
         } catch (IOException e) {
-            log.error("Portal-517: Unable to schedule given Path for tracking for changes, due to '{}'",
-                    e.getMessage(), e);
+            log.error("Portal-517: Unable to schedule given Path for tracking for changes, due to '{}'", e.getMessage(),
+                    e);
         }
     }
 

@@ -29,10 +29,8 @@ public class PortalTestUserProducer {
     public static final String BEAN_NAME = "portalUser";
 
     @Delegate
-    private final BaseAuthenticatedUserInfoBuilder userInfoBuilder =
-        BaseAuthenticatedUserInfo.builder().displayName(USER)
-                .identifier(USER)
-                .qualifiedIdentifier(USER);
+    private final BaseAuthenticatedUserInfoBuilder userInfoBuilder = BaseAuthenticatedUserInfo.builder()
+            .displayName(USER).identifier(USER).qualifiedIdentifier(USER);
 
     /**
      * Sets an authenticated default user.

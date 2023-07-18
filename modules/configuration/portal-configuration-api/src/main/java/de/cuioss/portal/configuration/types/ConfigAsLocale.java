@@ -30,9 +30,10 @@ public @interface ConfigAsLocale {
     String name();
 
     /**
-     * @return boolean indicating whether the producer should return the system-locale
-     *         in case the given locale can not be parsed '{@code true}' or throw an
-     *         {@link IllegalArgumentException} {@code false}. Defaults to {@code true}
+     * @return boolean indicating whether the producer should return the
+     *         system-locale in case the given locale can not be parsed
+     *         '{@code true}' or throw an {@link IllegalArgumentException}
+     *         {@code false}. Defaults to {@code true}
      */
     @Nonbinding
     boolean defaultToSystem() default true;

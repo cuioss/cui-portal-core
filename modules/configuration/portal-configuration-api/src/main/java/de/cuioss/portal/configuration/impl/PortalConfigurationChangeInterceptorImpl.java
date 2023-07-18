@@ -15,8 +15,8 @@ import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
- * Interceptor implementation for {@link PortalConfigurationChangeInterceptor}. See annotation for
- * details.
+ * Interceptor implementation for {@link PortalConfigurationChangeInterceptor}.
+ * See annotation for details.
  *
  * @author Oliver Wolff
  *
@@ -36,14 +36,12 @@ public class PortalConfigurationChangeInterceptorImpl {
     public Object around(final InvocationContext invocationContext) throws Exception {
         var method = invocationContext.getMethod();
         LOGGER.trace("around {}", method);
-        var filterConfig =
-            requireNonNull(method.getAnnotation(PortalConfigurationChangeInterceptor.class));
+        var filterConfig = requireNonNull(method.getAnnotation(PortalConfigurationChangeInterceptor.class));
         List<String> filterKeys = Arrays.asList(filterConfig.key());
         List<String> startsWithKeys = Arrays.asList(filterConfig.keyPrefix());
         if (filterKeys.isEmpty() && startsWithKeys.isEmpty()) {
             throw new IllegalStateException(
-                    "No filterKey found, offending type is: " +
-                            invocationContext.getTarget().getClass());
+                    "No filterKey found, offending type is: " + invocationContext.getTarget().getClass());
         }
         var deltaMap = accessMap(invocationContext);
         for (String key : filterKeys) {

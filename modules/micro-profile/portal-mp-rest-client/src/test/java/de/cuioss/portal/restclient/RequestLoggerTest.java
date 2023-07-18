@@ -51,8 +51,7 @@ class RequestLoggerTest {
     void requestLoggingTest() throws IOException {
         final var testPojo = new TestPojo(STRING, INT);
 
-        log.info("Testing with string={}, int={}, method={}, pojo={}",
-                STRING, INT, METHOD, testPojo);
+        log.info("Testing with string={}, int={}, method={}, pojo={}", STRING, INT, METHOD, testPojo);
 
         new LogClientRequestFilter(log).filter(new ClientRequestContext() {
 

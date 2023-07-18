@@ -103,7 +103,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
         }
         if ("equals".equals(method.getName())) {
             if (Proxy.isProxyClass(args[0].getClass())
-                    && (Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider)) {
+                    && Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider) {
                 return equals(Proxy.getInvocationHandler(args[0]));
 
             }
@@ -155,7 +155,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             }
             sb.append(memberValue);
 
-            if (i < (length - 1)) {
+            if (i < length - 1) {
                 sb.append(",");
             }
         }
@@ -176,7 +176,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
                     try {
                         var oValue = annotationClass.getMethod(entry.getKey(), EMPTY_CLASS_ARRAY).invoke(o,
                                 EMPTY_OBJECT_ARRAY);
-                        if ((oValue == null) || (entry.getValue() == null) || !oValue.equals(entry.getValue())) {
+                        if (oValue == null || entry.getValue() == null || !oValue.equals(entry.getValue())) {
                             return false;
                         }
                     } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

@@ -33,8 +33,9 @@ public final class TestFileHandler {
     private Path nonExistingFile;
 
     /**
-     * Combines the calls {@link #setupTestFileDirectory()}, creates two new files and
-     * copies the content of {@link #SOURCE_FILE} into it and marks it for deletion on exit.
+     * Combines the calls {@link #setupTestFileDirectory()}, creates two new files
+     * and copies the content of {@link #SOURCE_FILE} into it and marks it for
+     * deletion on exit.
      *
      * @return list of created files
      * @throws IOException
@@ -49,7 +50,8 @@ public final class TestFileHandler {
     }
 
     /**
-     * Combines the calls {@link #setupTestFileDirectory()} and {@link #setupTestFile(Path)}
+     * Combines the calls {@link #setupTestFileDirectory()} and
+     * {@link #setupTestFile(Path)}
      *
      * @throws IOException
      */
@@ -75,8 +77,8 @@ public final class TestFileHandler {
     }
 
     /**
-     * Create a new random directory under {@link #SOURCE_FILE} and marks it for deletion on exit.
-     * It can be accessed via {@link #getBaseDir()}.
+     * Create a new random directory under {@link #SOURCE_FILE} and marks it for
+     * deletion on exit. It can be accessed via {@link #getBaseDir()}.
      *
      * @return the path referencing the created file.
      * @throws IOException
@@ -104,10 +106,9 @@ public final class TestFileHandler {
         }
 
         LOGGER.info("copying over {} to {}", SOURCE_FILE, newFile.toAbsolutePath());
-        Files.copy(new BufferedInputStream(
-                Files.newInputStream(SOURCE_FILE)), newFile, StandardCopyOption.REPLACE_EXISTING);
-        new BufferedInputStream(
-                Files.newInputStream(SOURCE_FILE)).close();
+        Files.copy(new BufferedInputStream(Files.newInputStream(SOURCE_FILE)), newFile,
+                StandardCopyOption.REPLACE_EXISTING);
+        new BufferedInputStream(Files.newInputStream(SOURCE_FILE)).close();
 
         return newFile;
     }

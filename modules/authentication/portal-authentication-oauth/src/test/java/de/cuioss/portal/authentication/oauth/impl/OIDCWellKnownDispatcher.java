@@ -36,17 +36,16 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     public static final String CLIENT_ID = "my-secret-client-id";
     public static final String CLIENT_SECRET = "my-secret-client-secret";
 
-    public static final FileLoader CONFIGURATION =
-        FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/openid-configuration.json");
+    public static final FileLoader CONFIGURATION = FileLoaderUtility
+            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/openid-configuration.json");
 
-    public static final FileLoader TOKEN =
-        FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/token.json");
+    public static final FileLoader TOKEN = FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/token.json");
 
-    public static final FileLoader CLIENT_TOKEN =
-        FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/clientToken.json");
+    public static final FileLoader CLIENT_TOKEN = FileLoaderUtility
+            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/clientToken.json");
 
-    public static final FileLoader USER_INFO =
-        FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/userInfo.json");
+    public static final FileLoader USER_INFO = FileLoaderUtility
+            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/userInfo.json");
 
     public static final String OIDC_DISCOVERY_PATH = ".well-known/openid-configuration";
 
@@ -62,18 +61,16 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     private String currentPort;
 
     public void reset() {
-        tokenResult =
-            new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                    .setBody(FileLoaderUtility.toStringUnchecked(TOKEN));
-        userInfoResult =
-            new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                    .setBody(FileLoaderUtility.toStringUnchecked(USER_INFO));
+        tokenResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setBody(FileLoaderUtility.toStringUnchecked(TOKEN));
+        userInfoResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setBody(FileLoaderUtility.toStringUnchecked(USER_INFO));
     }
 
     public void assertAuthorizeURL(String actualUrl, String... parts) {
-        String expected = AUTHORIZE_URL.replaceAll("5602", currentPort);
+        var expected = AUTHORIZE_URL.replaceAll("5602", currentPort);
         assertTrue(actualUrl.startsWith(expected), actualUrl);
         for (String string : parts) {
             assertTrue(actualUrl.contains(string), string);
@@ -81,7 +78,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     }
 
     public void assertLogoutURL(String actualUrl, String... parts) {
-        String expected = LOGOUT_URL.replaceAll("5602", currentPort);
+        var expected = LOGOUT_URL.replaceAll("5602", currentPort);
         assertTrue(actualUrl.startsWith(expected), actualUrl);
         for (String string : parts) {
             assertTrue(actualUrl.contains(string), string);
@@ -90,8 +87,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     public void configure(PortalTestConfiguration configuration, MockWebServer mockWebServer) {
         currentPort = String.valueOf(mockWebServer.getPort());
-        configuration.put(OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL,
-                "http://localhost:" + mockWebServer.getPort());
+        configuration.put(OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL, "http://localhost:" + mockWebServer.getPort());
         configuration.put(OAuthConfigKeys.OPEN_ID_DISCOVER_PATH, OIDC_DISCOVERY_PATH);
         configuration.put(OAuthConfigKeys.OPEN_ID_CLIENT_ID, CLIENT_ID);
         configuration.put(OAuthConfigKeys.OPEN_ID_CLIENT_SECRET, CLIENT_SECRET);
@@ -102,7 +98,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     public List<RecordedRequest> nonWellKnownRequests(MockWebServer mockWebServer) throws InterruptedException {
         var builder = new CollectionBuilder<RecordedRequest>();
 
-        RecordedRequest request = mockWebServer.takeRequest();
+        var request = mockWebServer.takeRequest();
         while (null != request) {
             if (!request.getPath().contains(OIDC_DISCOVERY_PATH)) {
                 builder.add(request);
@@ -117,17 +113,17 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
         LOGGER.info(() -> "Serve request " + request.getPath());
         switch (request.getPath()) {
-            case "/" + OIDC_DISCOVERY_PATH:
-                return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                        .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                        .setBody(FileLoaderUtility.toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
-            case "/auth/realms/master/protocol/openid-connect/userinfo":
-                return userInfoResult;
-            case "/auth/realms/master/protocol/openid-connect/token":
-                return tokenResult;
-            default:
-                LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-                return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+        case "/" + OIDC_DISCOVERY_PATH:
+            return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .setBody(FileLoaderUtility.toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
+        case "/auth/realms/master/protocol/openid-connect/userinfo":
+            return userInfoResult;
+        case "/auth/realms/master/protocol/openid-connect/token":
+            return tokenResult;
+        default:
+            LOGGER.warn(() -> "Unable to serve request " + request.getPath());
+            return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 

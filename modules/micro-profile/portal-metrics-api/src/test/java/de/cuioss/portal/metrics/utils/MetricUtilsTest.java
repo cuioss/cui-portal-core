@@ -41,13 +41,10 @@ class MetricUtilsTest {
 
     @Test
     void buildMetricIdWithAdditionalTagsAndExceptionMapperTags() {
-        var metricId = MetricsUtils.createMetricIdBuilder("name", new MetricUtilsTestException(),
-                immutableList(
-                        new Tag("tag1", "a-value"),
-                        new Tag("tag2", "b-value")),
-                immutableList(
-                        throwable -> new Tag("mapper1", "value"),
-                        throwable -> new Tag("mapper2", "value")))
+        var metricId = MetricsUtils
+                .createMetricIdBuilder("name", new MetricUtilsTestException(),
+                        immutableList(new Tag("tag1", "a-value"), new Tag("tag2", "b-value")), immutableList(
+                                throwable -> new Tag("mapper1", "value"), throwable -> new Tag("mapper2", "value")))
                 .build();
         assertTrue(metricId.getTags().containsKey("tag1"));
         assertTrue(metricId.getTags().containsKey("tag2"));
