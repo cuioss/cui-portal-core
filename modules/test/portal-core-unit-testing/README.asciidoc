@@ -2,7 +2,8 @@
 
 == What is it?
 
-It is about mock-classes, base-classes, test-infrastructure and extensions (Junit 5). This is the starting point for all unit-test in the context of the cui-portal. 
+It is about mock-classes, base-classes, test-infrastructure and extensions (Junit 5). 
+This is the starting point for all unit-test in the context of the cui-portal. 
 
 == Maven Coordinates
 
@@ -36,7 +37,7 @@ Additional configuration can be added either by the annotation, for all tests:
 class ConfigurationEnabledTest {
 ----
 
-or by injecting the PortalTestConfiguration for applying in the context of certain tests
+or by injecting the `PortalTestConfiguration` for applying in the context of certain tests
 
 [source,java]
 ----
@@ -143,7 +144,7 @@ class ViewBeanTest extends AbstractPageBeanTest<ViewBean> {
 
 `verifyObjectContracts()`: Verifies the contract of `Object.equals(Object)`, `Object.hashCode()`, `Object.toString()` and `Serializable` by serializing / deserializing the object. 
 
-_Caution_: it will check less detailed compared to previous variants. If you want a full blown test use ValueObjectTest directly. If you want to adapt the test you must override it. Previous annotation will not work.
+_Caution_: it will check less detailed compared to previous variants. If you want a full blown test use `ValueObjectTest` directly. If you want to adapt the test you must override it. Previous annotation will not work.
 
 === Testing a ResourceBundle-Locator
 
