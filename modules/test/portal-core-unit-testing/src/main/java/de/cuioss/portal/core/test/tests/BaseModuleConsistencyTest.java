@@ -23,7 +23,7 @@ public class BaseModuleConsistencyTest {
 
     @Test
     protected void shouldStartUpContainer() {
-        try (var weld = new Weld().initialize()) {
+        try (var weld = modifyWeldContainer(new Weld()).initialize()) {
             assertNotNull(weld.select(BeanManager.class),
                     "Unable to acquire an instance of javax.enterprise.inject.spi.BeanManager");
         }
@@ -33,6 +33,17 @@ public class BaseModuleConsistencyTest {
     protected void moduleShouldProvideBeansXml() {
         assertTrue(Paths.get("src", "main", "resources", "META-INF", "beans.xml").toFile().exists(),
                 "It is best-practice that each module provides a beans.xml");
+    }
+
+    /**
+     * Use the callback to modify the Weld-testcontainer, like setting dev-mode or
+     * adding beans.
+     * 
+     * @param weld to be modified
+     * @return the modified weld
+     */
+    protected Weld modifyWeldContainer(Weld weld) {
+        return weld;
     }
 
 }
