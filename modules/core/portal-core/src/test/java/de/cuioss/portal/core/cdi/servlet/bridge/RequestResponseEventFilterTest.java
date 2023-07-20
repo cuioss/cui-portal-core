@@ -17,7 +17,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.core.cdi.servlet.literal.Initialized;
+import de.cuioss.portal.core.cdi.servlet.literal.ServletInitialized;
 
 @EnableAutoWeld
 class RequestResponseEventFilterTest {
@@ -48,19 +48,19 @@ class RequestResponseEventFilterTest {
         assertTrue(initResponse);
     }
 
-    void initRequest(@Observes @Initialized HttpServletRequest request) {
+    void initRequest(@Observes @ServletInitialized HttpServletRequest request) {
         initRequest = true;
     }
 
-    void destroyRequest(@Observes @Initialized HttpServletRequest request) {
+    void destroyRequest(@Observes @ServletInitialized HttpServletRequest request) {
         destroyRequest = true;
     }
 
-    void initResponse(@Observes @Initialized HttpServletResponse request) {
+    void initResponse(@Observes @ServletInitialized HttpServletResponse request) {
         initResponse = true;
     }
 
-    void destroyResponse(@Observes @Initialized HttpServletResponse request) {
+    void destroyResponse(@Observes @ServletInitialized HttpServletResponse request) {
         destroyResponse = true;
     }
 

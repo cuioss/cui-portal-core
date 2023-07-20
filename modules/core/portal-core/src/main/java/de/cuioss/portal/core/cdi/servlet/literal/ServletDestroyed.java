@@ -13,14 +13,14 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Qualifier for events which are fired when servlet objects are created.
+ * Qualifier for events which are fired when servlet objects are deleted.
  * 
- * @author https://github.com/apache/deltaspike/blob/deltaspike-1.9.6/deltaspike/core/api/src/main/java/org/apache/deltaspike/core/api/lifecycle/Initialized.java
+ * @author https://github.com/apache/deltaspike/blob/deltaspike-1.9.6/deltaspike/core/api/src/main/java/org/apache/deltaspike/core/api/lifecycle/Destroyed.java
  */
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
 @Documented
-public @interface Initialized {
+public @interface ServletDestroyed {
 
 }
