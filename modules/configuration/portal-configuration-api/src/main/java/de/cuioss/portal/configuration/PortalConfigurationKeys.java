@@ -66,6 +66,14 @@ public class PortalConfigurationKeys implements Serializable {
 
     /**
      * Context parameter prefix within configuration-subsystem with the name
+     * portal.httpHeader.enabled
+     * <p>
+     * Defines optional header parameters to be configured.
+     */
+    public static final String HTTP_HEADER_ENABLED = HTTP_HEADER_BASE + ENABLED;
+
+    /**
+     * Context parameter prefix within configuration-subsystem with the name
      * 'integration.'.
      * <p>
      * Base name for integration-related configuration
