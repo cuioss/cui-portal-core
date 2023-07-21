@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.cdi.servlet.literal;
+package org.apache.deltaspike.core.api.lifecycle;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -21,6 +21,6 @@ import javax.inject.Qualifier;
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
 @Documented
-public @interface ServletInitialized {
+public @interface Initialized {
 
 }

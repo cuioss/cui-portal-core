@@ -1,4 +1,4 @@
-package de.cuioss.portal.core.cdi.servlet.bridge;
+package org.apache.deltaspike.servlet.impl.event;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,14 +10,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.easymock.EasyMock;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.core.cdi.servlet.literal.ServletInitialized;
 
 @EnableAutoWeld
 class RequestResponseEventFilterTest {
@@ -48,19 +47,19 @@ class RequestResponseEventFilterTest {
         assertTrue(initResponse);
     }
 
-    void initRequest(@Observes @ServletInitialized HttpServletRequest request) {
+    void initRequest(@Observes @Initialized HttpServletRequest request) {
         initRequest = true;
     }
 
-    void destroyRequest(@Observes @ServletInitialized HttpServletRequest request) {
+    void destroyRequest(@Observes @Initialized HttpServletRequest request) {
         destroyRequest = true;
     }
 
-    void initResponse(@Observes @ServletInitialized HttpServletResponse request) {
+    void initResponse(@Observes @Initialized HttpServletResponse request) {
         initResponse = true;
     }
 
-    void destroyResponse(@Observes @ServletInitialized HttpServletResponse request) {
+    void destroyResponse(@Observes @Initialized HttpServletResponse request) {
         destroyResponse = true;
     }
 

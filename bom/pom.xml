@@ -99,6 +99,13 @@
                 <version>${project.version}</version>
                 <scope>runtime</scope>
             </dependency>
+            <!-- Deltaspike modules-->
+            <dependency>
+                <groupId>de.cuioss.portal.core</groupId>
+                <artifactId>portal-deltaspike</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>
             <!-- Test-->
             <dependency>
                 <groupId>de.cuioss.portal.test</groupId>
