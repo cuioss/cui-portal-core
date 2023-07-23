@@ -29,7 +29,7 @@ import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
 import de.cuioss.portal.configuration.impl.schedule.FileWatcherServiceImpl;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
 import de.cuioss.test.generator.Generators;
@@ -37,7 +37,7 @@ import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @AddBeanClasses({ FileWatcherServiceImpl.class, InstallationConfigSourcePathInitializer.class,
         ConfigChangeObserver.class })
 @EnableAutoWeld

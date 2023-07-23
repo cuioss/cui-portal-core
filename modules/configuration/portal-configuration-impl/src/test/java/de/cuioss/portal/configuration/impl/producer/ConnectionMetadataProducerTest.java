@@ -26,7 +26,7 @@ import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadataKeys;
 import de.cuioss.portal.configuration.connections.impl.ConnectionType;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.test.juli.LogAsserts;
@@ -34,7 +34,7 @@ import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @AddBeanClasses({ ConnectionMetadataProducer.class, ConnectionMetadata.class })
 @EnableTestLogger
 class ConnectionMetadataProducerTest {

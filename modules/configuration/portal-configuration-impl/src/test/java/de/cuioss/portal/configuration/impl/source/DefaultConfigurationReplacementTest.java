@@ -10,10 +10,10 @@ import javax.inject.Inject;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import lombok.Getter;
 
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @EnableAutoWeld
 class DefaultConfigurationReplacementTest {
 

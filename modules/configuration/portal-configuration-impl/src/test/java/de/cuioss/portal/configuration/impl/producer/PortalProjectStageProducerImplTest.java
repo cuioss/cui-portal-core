@@ -13,14 +13,14 @@ import org.junit.jupiter.api.Test;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.application.PortalProjectStageProducer;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import lombok.Getter;
 
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @AddBeanClasses({ PortalProjectStageImpl.class })
 class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<PortalProjectStageImpl> {
 

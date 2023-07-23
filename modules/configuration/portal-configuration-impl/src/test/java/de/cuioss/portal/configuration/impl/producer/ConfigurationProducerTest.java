@@ -24,7 +24,7 @@ import de.cuioss.portal.configuration.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
 import de.cuioss.portal.configuration.types.ConfigAsFileLoader;
@@ -36,7 +36,7 @@ import de.cuioss.tools.io.FileLoader;
 import lombok.Getter;
 
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 class ConfigurationProducerTest {
 
     private static final String CONFIGURATION_KEY = "configurationKey";

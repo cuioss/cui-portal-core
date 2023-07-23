@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 
 @SuppressWarnings("el-syntax")
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 class ConfigPropertyNullableTest {
 
     private static final String KEY = "a.config.key";

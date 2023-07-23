@@ -11,7 +11,7 @@ This is the starting point for all unit-test in the context of the cui-portal.
 ----
 <dependency>
      <groupId>de.cuioss.portal.core.test</groupId>
-     <artifactId>portal-unit-testing-junit5</artifactId>
+     <artifactId>portal-core-unit-testing</artifactId>
 </dependency>
 ----
 
@@ -55,96 +55,6 @@ class ConfigurationEnabledTest {
     }
 ----
 
-=== Testing in a CDI / Portal / JSF Context
-
-The quickest variant is using `@EnablePortalUiEnvironment`. This is the typical one-stop annotation for testing UI-related modules in the portal-context.
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-class EnablePortalUiEnvironmentTest {
-
-    @Inject
-    private Provider<FacesContext> facesContext;
-
-    @Inject
-    @PortalConfigurationSource
-    private PortalTestConfiguration configuration;
-
-    @​Test
-    void shouldEnableEnvironment() {
-        assertNotNull(facesContext.get());
-        assertNotNull(configuration);
-        assertEquals(BasicApplicationConfiguration.FIREFOX,
-                facesContext.get().getExternalContext().getRequestHeaderMap()
-                        .get(BasicApplicationConfiguration.USER_AGENT));
-    }
-----
-
-If you want to access views / navigation with the standard portal views like login, preferences and so on you can add:
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-@JsfTestConfiguration(PortalTestNavigationConfiguration.class)
-class EnablePortalUiEnvironmentTest {
-----
-
-=== Testing a page / Backing bean
-
-There is a base class for testing Backing beans in a convenient manner:
-`de.cuioss.portal.core.test.tests.AbstractPageBeanTest<T>`
-Minimal sample, testing the wiring and the object-contracts:
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-class ViewBeanTest extends AbstractPageBeanTest<ViewBean> {
-
-    @Inject
-    @Getter
-    private ViewBean underTest;
-
-}
-----
-
-in case your bean needs an `initViewAction` to be called prior testing this can be done within `#getUnderTest()`:
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-class ViewBeanTest extends AbstractPageBeanTest<ViewBean> {
-
-    @Inject
-    private ViewBean underTest;
-    
-    @Override
-    public ViewBean getUnderTest() {
-        underTest.initBean();
-        return underTest;
-    }
-
-}
-----
-
-Automatic bean-testing can be introduced by annotating with `@VerifyBeanProperty`. The further configuration is defined within ValueObjectTest
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-@VerifyBeanProperty
-class ViewBeanTest extends AbstractPageBeanTest<ViewBean> {
-
-    @Inject
-    @Getter
-    private ViewBean underTest;
-
-}
-----
-
-`verifyObjectContracts()`: Verifies the contract of `Object.equals(Object)`, `Object.hashCode()`, `Object.toString()` and `Serializable` by serializing / deserializing the object. 
-
-_Caution_: it will check less detailed compared to previous variants. If you want a full blown test use `ValueObjectTest` directly. If you want to adapt the test you must override it. Previous annotation will not work.
 
 === Testing a ResourceBundle-Locator
 
@@ -172,27 +82,6 @@ class RuntimeBundleNamesTest implements ShouldBeNotNull<RuntimeBundleNames> {
         assertEquals("Runtime Configuration", bundle.getString("portal.runtime.configuration.default.title"));
     }
 
-}
-----
-
-=== Testing with PortalMessageProducer
-
-If you experience: `Could not load bean of type MessageProducer and name #{messageProducer}`
-setup your test class as following:
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-class MyTestClass extends AbstractPageBeanTest|AbstractValidatorTest|... { 
-
-    @Inject
-    @PortalMessageProducer
-    private PortalMessageProducerMock messageProducer;
-
-    @BeforeEach
-    void beforeTest() {
-        getBeanConfigDecorator().register(messageProducer, MessageProducerMock.BEAN_NAME);
-    }
 }
 ----
 
@@ -273,28 +162,6 @@ class PortalTestUserProducerTest {
 
 Extend `de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest`.
 The actual documentation can be found at class level
-
-=== Testing NavigationMenuItems
-
-The base class is `de.cuioss.portal.core.test.tests.navigation.PortalNavigationMenuItemsTest`
-
-[source,java]
-----
-@EnablePortalUiEnvironment
-@AddBeanClasses({ AboutMenuItem.class, AccountMenuItem.class})
-class PortalNavigationMenuItemsTestTest extends PortalNavigationMenuItemsTest implements BeanConfigurator {
-
-    @​Test
-    void shouldFilterNoType() {
-        assertEquals(2, getFilteredInstances().size());
-    }
-
-    @Override
-    public void configureBeans(BeanConfigDecorator decorator) {
-        decorator.register(new PortalMirrorResourceBundle());
-
-    }
-----
 
 === Using EasyMock
 

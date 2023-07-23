@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
 import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
@@ -31,7 +31,7 @@ import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @EnableAutoWeld
 @EnableTestLogger(rootLevel = TestLogLevel.TRACE)
 class FileWatcherServiceImplRecursiveTest {

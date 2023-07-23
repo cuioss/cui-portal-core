@@ -31,7 +31,7 @@ import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.impl.support.TestEnvConfigSource;
 import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
@@ -39,7 +39,7 @@ import de.cuioss.portal.configuration.types.ConfigAsFilteredMap;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.string.MoreStrings;
 
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @EnableAutoWeld
 @SuppressWarnings("el-syntax")
 class PortalConfigSourceTest {

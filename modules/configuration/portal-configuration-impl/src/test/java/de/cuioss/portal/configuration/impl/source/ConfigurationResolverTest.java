@@ -10,11 +10,11 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import lombok.Getter;
 
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @EnableAutoWeld
 class ConfigurationResolverTest {
 

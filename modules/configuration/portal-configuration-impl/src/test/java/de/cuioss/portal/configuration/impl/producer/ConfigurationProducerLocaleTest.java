@@ -15,14 +15,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfiguration;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.types.ConfigAsLocale;
 import de.cuioss.portal.configuration.types.ConfigAsLocaleList;
 import de.cuioss.tools.string.Joiner;
 import lombok.Getter;
 
-@EnablePortalConfiguration
+@EnablePortalConfigurationLocal
 @EnableAutoWeld
 class ConfigurationProducerLocaleTest {
 
