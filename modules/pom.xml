@@ -65,6 +65,5 @@
         <module>core</module>
         <module>micro-profile</module>
         <module>test</module>
-        <module>portal-deltaspike</module>
     </modules>
 </project>

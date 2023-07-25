@@ -37,7 +37,7 @@ import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
 import de.cuioss.portal.authentication.oauth.Oauth2Service;
 import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
 import de.cuioss.portal.authentication.oauth.OidcRpInitiatedLogoutParams;
-import de.cuioss.portal.authentication.oauth.Redirector;
+import de.cuioss.portal.authentication.oauth.OauthRedirector;
 import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
@@ -93,7 +93,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private Provider<String> loginUrl;
 
     @Inject
-    private Provider<Redirector> redirector;
+    private Provider<OauthRedirector> oauthRedirector;
 
     @Inject
     private Provider<HttpServletRequest> servletRequestProvider;
@@ -143,7 +143,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             var retrieveUrl = retrieveOauth2RedirectUrl(scopes, idToken);
             LOGGER.debug("Calling redirect to %s", retrieveUrl);
-            redirector.get().sendRedirect(retrieveUrl);
+            oauthRedirector.get().sendRedirect(retrieveUrl);
         } catch (final IllegalStateException e) {
             LOGGER.warn("Portal-146: Oauth2 sendRedirect failed", e);
         }

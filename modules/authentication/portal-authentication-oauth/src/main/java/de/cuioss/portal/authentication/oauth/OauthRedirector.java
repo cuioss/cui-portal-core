@@ -5,7 +5,7 @@ package de.cuioss.portal.authentication.oauth;
  * modules.
  *
  */
-public interface Redirector {
+public interface OauthRedirector {
 
     /**
      * Redirect to another url. The url is expected to be complete and independent
