@@ -15,7 +15,19 @@ import org.junit.jupiter.api.Test;
  * Base class for testing the consistency / structure of a certain module by
  * starting up a {@link WeldContainer} and checking whether the module provides
  * a beans.xml-file
+ * <h3>Extending</h3>
+ * <p>
+ * in case you want to add beans or modify the dev-mode you just need to
+ * implement the callback method:
+ * </p>
+ * 
+ * <pre>
+ * protected Weld modifyWeldContainer(Weld weld) {
+ *     return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducers.class);
+ * }
+ * </pre>
  *
+ * 
  * @author Oliver Wolff
  *
  */

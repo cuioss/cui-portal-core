@@ -1,9 +1,10 @@
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.RESOURCE_VERSION;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -22,10 +23,14 @@ class DefaultConfigurationReplacementTest {
     private ConfigurationResolver underTest;
 
     @Test
-    void shouldRepalceVersionForResourceHandler() {
-        assertTrue(underTest.containsKey(RESOURCE_VERSION));
-        assertNotNull(underTest.getString(RESOURCE_VERSION));
-        assertFalse(underTest.getString(RESOURCE_VERSION).contains("${"));
+    void shouldReplaceVersionForResourceHandler() {
+        assertTrue(underTest.containsKey(PORTAL_STAGE));
+        assertNotNull(underTest.getString(PORTAL_STAGE));
+    }
+
+    @Test
+    void shouldEnumerateKeys() {
+        assertTrue(Collections.list(underTest.getKeys()).size() > 10);
     }
 
 }

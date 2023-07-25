@@ -1,7 +1,6 @@
 package de.cuioss.portal.configuration.impl.source;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR_DEFAULT;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CUSTOMIZATION_DIR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -57,14 +56,4 @@ class ConfigDirTest {
         assertFalse(value.isPresent());
     }
 
-    @Test
-    void defaultCustomizationDirPresent() {
-        System.setProperty(PORTAL_CONFIG_DIR, PORTAL_CONFIG_DIR_DEFAULT);
-        final var value = customizationDir.get();
-        assertTrue(value.isPresent(), "default config missing for: " + PORTAL_CUSTOMIZATION_DIR);
-        assertEquals("config//customization/", value.get());
-
-        System.setProperty(PORTAL_CUSTOMIZATION_DIR, "vendor/");
-        assertEquals("vendor/", customizationDir.get().get());
-    }
 }

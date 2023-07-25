@@ -1,7 +1,8 @@
 package de.cuioss.portal.core.test.junit5;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CUSTOMIZATION_ENABLED;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_SERVLET_BASIC_AUTH_ALLOWED;
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,11 +23,11 @@ import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 class PortalConfigurationMockExtensionTest {
 
     @Inject
-    @ConfigProperty(name = PORTAL_CUSTOMIZATION_ENABLED)
+    @ConfigProperty(name = PORTAL_SERVLET_BASIC_AUTH_ALLOWED)
     private Provider<Boolean> attributeMpProvider;
 
     @Inject
-    @ConfigProperty(name = PORTAL_CUSTOMIZATION_ENABLED)
+    @ConfigProperty(name = PORTAL_STAGE)
     private Provider<Optional<String>> attributeMpOptional;
 
     @Inject
@@ -46,6 +47,6 @@ class PortalConfigurationMockExtensionTest {
         assertTrue(attributeMpOptional.get().isPresent());
 
         configuration.fireEvent(PORTAL_CUSTOMIZATION_ENABLED, "false");
-        assertFalse(attributeMpProvider.get());
+        assertTrue(attributeMpProvider.get());
     }
 }

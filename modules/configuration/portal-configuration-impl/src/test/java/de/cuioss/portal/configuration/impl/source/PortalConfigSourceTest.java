@@ -1,6 +1,5 @@
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PAGES_LOGIN_ENTER_STRATEGY;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.THEME_DEFAULT;
 import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
 import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyOrThrow;
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
+import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
@@ -57,10 +57,6 @@ class PortalConfigSourceTest {
     private PortalConfigurationMock configuration;
 
     private Map<String, String> payload;
-
-    @Inject
-    @ConfigProperty(name = PAGES_LOGIN_ENTER_STRATEGY)
-    private Provider<String> loginStrategyAsConfigProperty;
 
     @Inject
     @ConfigAsFilteredMap(startsWith = SOME_PREFIX)
@@ -110,8 +106,7 @@ class PortalConfigSourceTest {
         final var map = ConfigurationHelper.resolveConfigProperties();
         assertNotNull(map);
         assertTrue(map.size() > 10);
-        assertNotNull(MoreStrings.emptyToNull(map.get(PAGES_LOGIN_ENTER_STRATEGY)));
-        assertNotNull(loginStrategyAsConfigProperty.get());
+        assertNotNull(MoreStrings.emptyToNull(map.get(PortalConfigurationKeys.PORTAL_STAGE)));
     }
 
     @Test
