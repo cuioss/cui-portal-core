@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
@@ -29,7 +28,6 @@ import lombok.ToString;
  * @author Oliver Wolff
  */
 @ApplicationScoped
-@Named
 @PortalAuthenticationFacade
 @ToString
 public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFacade {
