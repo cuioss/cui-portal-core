@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -29,9 +28,7 @@ import lombok.experimental.UtilityClass;
 public final class PortalBeanManager {
 
     /**
-     * Looks up a normal scoped CDI-bean programmatically. In case of
-     * {@link Dependent} scoped beans with life-cycle you should use
-     * {@link #getDependentProvider(BeanManager, Class, Class)}.
+     * Looks up a normal scoped CDI-bean programmatically.
      *
      * @param beanManager     an instance of the beanManager for doing the lookup.
      * @param beanClass       identifying the type to be loaded, must not be null
