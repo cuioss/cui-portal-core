@@ -81,13 +81,24 @@ public class CuiRestClientBuilder {
      * @param log      must not be null
      */
     public static void debugResponse(final Response response, final CuiLogger log) {
-        log.debug(
-                "-- Client response filter --\n" + "Status: {}\n" + "StatusInfo: {}\n" + "Allowed Methods: {}\n"
-                        + "EntityTag: {}\n" + "Cookies: {}\n" + "Date: {}\n" + "Headers: {}\n" + "Language: {}\n"
-                        + "LastModified: {}\n" + "Links: {}\n" + "Location: {}\n" + "MediaType: {}\n",
-                response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(), response.getEntityTag(),
-                response.getCookies(), response.getDate(), response.getHeaders(), response.getLanguage(),
-                response.getLastModified(), response.getLinks(), response.getLocation(), response.getMediaType());
+        log.debug("""
+                -- Client response filter --
+                Status: {}
+                StatusInfo: {}
+                Allowed Methods: {}
+                EntityTag: {}
+                Cookies: {}
+                Date: {}
+                Headers: {}
+                Language: {}
+                LastModified: {}
+                Links: {}
+                Location: {}
+                MediaType: {}
+                """, response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
+                response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
+                response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
+                response.getMediaType());
     }
 
     /**

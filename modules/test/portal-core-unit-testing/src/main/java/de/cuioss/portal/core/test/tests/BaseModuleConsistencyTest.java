@@ -20,14 +20,14 @@ import org.junit.jupiter.api.Test;
  * in case you want to add beans or modify the dev-mode you just need to
  * implement the callback method:
  * </p>
- * 
+ *
  * <pre>
  * protected Weld modifyWeldContainer(Weld weld) {
  *     return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducers.class);
  * }
  * </pre>
  *
- * 
+ *
  * @author Oliver Wolff
  *
  */
@@ -50,7 +50,7 @@ public class BaseModuleConsistencyTest {
     /**
      * Use the callback to modify the Weld-testcontainer, like setting dev-mode or
      * adding beans.
-     * 
+     *
      * @param weld to be modified
      * @return the modified weld
      */

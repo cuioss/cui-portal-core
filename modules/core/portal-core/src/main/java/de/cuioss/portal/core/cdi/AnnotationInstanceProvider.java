@@ -102,7 +102,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
         }
         if ("equals".equals(method.getName())) {
             if (Proxy.isProxyClass(args[0].getClass())
-                    && (Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider)) {
+                    && Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider) {
                 return equals(Proxy.getInvocationHandler(args[0]));
 
             }
@@ -154,7 +154,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             }
             sb.append(memberValue);
 
-            if (i < (length - 1)) {
+            if (i < length - 1) {
                 sb.append(",");
             }
         }
@@ -169,13 +169,13 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AnnotationInstanceProvider)) {
+        if (!(o instanceof AnnotationInstanceProvider that)) {
             if (annotationClass.isInstance(o)) {
                 for (Map.Entry<String, ?> entry : memberValues.entrySet()) {
                     try {
                         var oValue = annotationClass.getMethod(entry.getKey(), EMPTY_CLASS_ARRAY).invoke(o,
                                 EMPTY_OBJECT_ARRAY);
-                        if ((oValue == null) || (entry.getValue() == null) || !oValue.equals(entry.getValue())) {
+                        if (oValue == null || entry.getValue() == null || !oValue.equals(entry.getValue())) {
                             return false;
                         }
                     } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -186,8 +186,6 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             }
             return false;
         }
-
-        var that = (AnnotationInstanceProvider) o;
 
         if (!annotationClass.equals(that.annotationClass)) {
             return false;

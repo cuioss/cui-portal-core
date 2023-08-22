@@ -54,16 +54,13 @@ class RestClientProducerTest implements MockWebServerHolder {
 
             @Override
             public MockResponse dispatch(RecordedRequest request) {
-                switch (request.getPath()) {
-                case "/success/test":
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                            .addHeader("Content-Type", "application/fhir+xml").addHeader("ETag", "W/123")
-                            .setBody("test");
-                case "/error/test":
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                default:
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
-                }
+                return switch (request.getPath()) {
+                case "/success/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                                            .addHeader("Content-Type", "application/fhir+xml").addHeader("ETag", "W/123")
+                                            .setBody("test");
+                case "/error/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                default -> new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                };
             }
         };
     }

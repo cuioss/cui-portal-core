@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import de.cuioss.tools.collect.MapBuilder;
-import de.cuioss.tools.lang.SecuritySupport;
 import io.smallrye.config.common.AbstractConfigSource;
 import lombok.Getter;
 
@@ -38,7 +37,7 @@ public class TestEnvConfigSource extends AbstractConfigSource {
 
     @Override
     public Map<String, String> getProperties() {
-        return MapBuilder.copyFrom(SecuritySupport.accessSystemEnv()).putAll(additionalProperties).toImmutableMap();
+        return MapBuilder.copyFrom(System.getenv()).putAll(additionalProperties).toImmutableMap();
     }
 
     @Override

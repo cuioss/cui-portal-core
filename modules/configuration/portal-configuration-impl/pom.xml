@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.cuioss.portal.configuration</groupId>
@@ -7,9 +9,12 @@
     </parent>
     <artifactId>portal-configuration-impl</artifactId>
     <name>Portal Configuration Runtime</name>
-    <description>Provides the implementation-classes for the portal-configuration extensions</description>
+    <description>Provides the implementation-classes for the
+        portal-configuration extensions</description>
     <properties>
         <awaitility.version>4.2.0</awaitility.version>
+        <maven.jar.plugin.automatic.module.name>
+            de.cuioss.portal.configuration.impl</maven.jar.plugin.automatic.module.name>
     </properties>
     <dependencyManagement>
         <dependencies>

@@ -22,9 +22,21 @@ import de.cuioss.tools.logging.CuiLogger;
 @Priority(Integer.MIN_VALUE)
 abstract class LogClientResponseFilter implements ClientResponseFilter {
 
-    private static final String PATTERN = "-- Client response filter {}--\n" + "Status: {}\n" + "StatusInfo: {}\n"
-            + "Allowed Methods: {}\n" + "EntityTag: {}\n" + "Cookies: {}\n" + "Date: {}\n" + "Headers: {}\n"
-            + "Language: {}\n" + "LastModified: {}\n" + "Links: {}\n" + "Location: {}\n" + "MediaType: {}\n";
+    private static final String PATTERN = """
+            -- Client response filter {}--
+            Status: {}
+            StatusInfo: {}
+            Allowed Methods: {}
+            EntityTag: {}
+            Cookies: {}
+            Date: {}
+            Headers: {}
+            Language: {}
+            LastModified: {}
+            Links: {}
+            Location: {}
+            MediaType: {}
+            """;
 
     private final CuiLogger log;
 

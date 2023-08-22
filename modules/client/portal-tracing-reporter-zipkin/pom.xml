@@ -4,8 +4,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>portal-tracing-reporter-zipkin</artifactId>
-    <description>This module provides the necessary bits for reporting spans to a Zipkin server</description>
-
+    <description>This module provides the necessary bits for reporting spans to
+        a Zipkin server</description>
+    <properties>
+        <maven.jar.plugin.automatic.module.name>
+            de.cuioss.portal.zipkin</maven.jar.plugin.automatic.module.name>
+    </properties>
     <parent>
         <groupId>de.cuioss.portal.client</groupId>
         <artifactId>client</artifactId>

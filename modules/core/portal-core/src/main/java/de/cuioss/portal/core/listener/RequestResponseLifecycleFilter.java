@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import de.cuioss.portal.core.listener.literal.ServletDestroyed;
 import de.cuioss.portal.core.listener.literal.ServletDestroyedLiteral;
 import de.cuioss.portal.core.listener.literal.ServletInitialized;
 import de.cuioss.portal.core.listener.literal.ServletInitializedLiteral;

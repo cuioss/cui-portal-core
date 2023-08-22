@@ -29,7 +29,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.collect.MapBuilder;
-import de.cuioss.tools.lang.SecuritySupport;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
@@ -301,13 +300,13 @@ public final class ConfigurationHelper {
      *         variables!</em>
      */
     public static Optional<String> resolveConfigPropertyFromSysOrEnv(final String name) {
-        final var systemValue = SecuritySupport.accessSystemProperty(name);
+        final var systemValue = Optional.ofNullable(System.getProperty(name));
         if (systemValue.isPresent()) {
             log.trace("resolved system property {}={}", name, systemValue.get());
             return systemValue;
         }
 
-        final var envProperties = SecuritySupport.accessSystemEnv();
+        final var envProperties = System.getenv();
 
         if (envProperties.containsKey(name)) {
             final var envValue = envProperties.get(name);
@@ -376,13 +375,13 @@ public final class ConfigurationHelper {
     <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass,
             final boolean explodeOnInvalidInput, final T defaultValue) {
         requireNonNull(enumClass);
-        checkArgument(explodeOnInvalidInput || null != defaultValue,
+        checkArgument(explodeOnInvalidInput || (null != defaultValue),
                 "defaultValue must be present if explodeOnInvalidInput is set to false!");
 
         T result = null;
 
         try {
-            if (explodeOnInvalidInput && null == inputValue) {
+            if (explodeOnInvalidInput && (null == inputValue)) {
                 throw new IllegalArgumentException("null value");
             }
 

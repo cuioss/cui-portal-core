@@ -11,6 +11,10 @@
     <artifactId>portal-core-unit-testing</artifactId>
     <description>Provides a number of structures to enable junit 5 and
         weld-junit testing</description>
+    <properties>
+        <maven.jar.plugin.automatic.module.name>
+            de.cuioss.portal.core.test</maven.jar.plugin.automatic.module.name>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -24,8 +24,13 @@ import de.cuioss.tools.logging.CuiLogger;
 @Priority(Integer.MAX_VALUE)
 class LogClientRequestFilter implements ClientRequestFilter {
 
-    private static final String PATTERN = "-- Client request info --\n" + "Request URI: {}\n" + "Method: {}\n"
-            + "Headers: {}\n" + "Body: {}\n";
+    private static final String PATTERN = """
+            -- Client request info --
+            Request URI: {}
+            Method: {}
+            Headers: {}
+            Body: {}
+            """;
 
     private final CuiLogger log;
 

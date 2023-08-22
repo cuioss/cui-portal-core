@@ -11,17 +11,8 @@
     <packaging>pom</packaging>
     <name>portal core bom</name>
     <description>BOM for the portal-core-modules</description>
-    <properties>
-        <version.cui.test.jsf.basic>2.0.0</version.cui.test.jsf.basic>
-    </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>de.cuioss.test</groupId>
-                <artifactId>cui-jsf-test-basic</artifactId>
-                <version>${version.cui.test.jsf.basic}</version>
-                <scope>test</scope>
-            </dependency>
             <!-- Configuration-->
             <dependency>
                 <groupId>de.cuioss.portal.configuration</groupId>
