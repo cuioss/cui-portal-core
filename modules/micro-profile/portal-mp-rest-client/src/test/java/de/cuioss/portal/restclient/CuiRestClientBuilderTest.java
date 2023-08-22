@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.restclient;
 
 import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
@@ -78,11 +93,11 @@ import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
 import de.cuioss.uimodel.application.LoginCredentials;
 import lombok.Setter;
+import mockwebserver3.Dispatcher;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+import mockwebserver3.RecordedRequest;
 import okhttp3.Headers;
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 import okhttp3.tls.HandshakeCertificates;
 import okhttp3.tls.HeldCertificate;
 
@@ -269,7 +284,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     @Test
     void testCorrectHostname() {
         final var handshakeCertificates = localhost();
-        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory(), false);
+        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
 
         service = new CuiRestClientBuilder(LOG).sslContext(handshakeCertificates.sslContext())
                 .url(mockWebServer.url("success").toString()).build(TestResource.class);
@@ -287,7 +302,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var heldCertificate = new HeldCertificate.Builder().commonName(hostname).build();
         final var handshakeCertificates = new HandshakeCertificates.Builder().heldCertificate(heldCertificate)
                 .addTrustedCertificate(heldCertificate.certificate()).build();
-        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory(), false);
+        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
         mockWebServer.start(InetAddress.getByName(hostname), 0);
 
         assertNotEquals("localhost", hostname);
@@ -308,7 +323,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         final var hostname = InetAddress.getLocalHost().getHostAddress();
 
         final var handshakeCertificates = localhost();
-        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory(), false);
+        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
         mockWebServer.start(InetAddress.getLocalHost(), 0);
 
         final var port = mockWebServer.getPort();

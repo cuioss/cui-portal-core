@@ -26,17 +26,21 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-api</artifactId>
-        </dependency>
-        <!-- FIXME owolff: Remove this-->
-        <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-yaml</artifactId>
-            <scope>compile</scope>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>de.cuioss.portal.configuration</groupId>
+      <artifactId>portal-configuration-api</artifactId>
+    </dependency>
+    <!-- FIXME owolff: Remove this-->
+    <dependency>
+      <groupId>de.cuioss.portal.configuration</groupId>
+      <artifactId>portal-configuration-yaml</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+    </dependency>
         <!-- Test -->
         <dependency>
             <groupId>org.awaitility</groupId>

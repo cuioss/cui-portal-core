@@ -12,35 +12,39 @@
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.restclient</maven.jar.plugin.automatic.module.name>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.eclipse.microprofile.rest.client</groupId>
-            <artifactId>microprofile-rest-client-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-impl</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <!-- RestEasy depends on jcl. This is a way to satisfy this. -->
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jcl</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.cuioss.portal.client</groupId>
-            <artifactId>portal-client-tracing</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-instrumentation-jaxrs2</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.microprofile.rest.client</groupId>
+      <artifactId>microprofile-rest-client-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.cuioss.portal.configuration</groupId>
+      <artifactId>portal-configuration-impl</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <!-- RestEasy depends on jcl. This is a way to satisfy this. -->
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jcl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.cuioss.portal.client</groupId>
+      <artifactId>portal-client-tracing</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-jaxrs2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+    </dependency>
         <!-- TEST -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>mockwebserver</artifactId>
+            <artifactId>mockwebserver3-junit5</artifactId>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

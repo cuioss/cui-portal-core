@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.authentication.oauth.impl;
 
 import static de.cuioss.test.generator.Generators.letterStrings;
@@ -47,7 +62,7 @@ import de.cuioss.tools.net.UrlParameter;
 import de.cuioss.tools.string.MoreStrings;
 import lombok.Getter;
 import lombok.Setter;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockWebServer;
 
 @EnableMockWebServer
 @EnableAutoWeld
@@ -220,10 +235,14 @@ class Oauth2AuthenticationFacadeImplTest
         dispatcher.assertAuthorizeURL(url,
                 "response_type=code&scope=scope&client_id=" + OIDCWellKnownDispatcher.CLIENT_ID + "&state=");
         assertNotNull(servletRequest.getSession().getAttribute("PKCE_CODE"));
-        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() >= 43,
-                "PKCE Code is too" + " short (minimum 43 characters");
-        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() <= 128,
-                "PKCE Code is too" + " long (maximum 128 characters");
+        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() >= 43, """
+                PKCE Code is too\
+                 short (minimum 43 characters\
+                """);
+        assertTrue(((String) servletRequest.getSession().getAttribute("PKCE_CODE")).length() <= 128, """
+                PKCE Code is too\
+                 long (maximum 128 characters\
+                """);
         MessageDigest digest;
         digest = MessageDigest.getInstance("SHA-256");
         final var code_challenge = Base64.getUrlEncoder().withoutPadding().encodeToString(digest.digest(
@@ -272,8 +291,11 @@ class Oauth2AuthenticationFacadeImplTest
     @Test
     void testRetrieveIdToken() {
         var token = new Token();
-        token.setId_token("eyJraWQiOiJXMGZvIiwiYWxnIjoiUlMyNTYifQ"
-                + ".eyJzdWIiOiIwMjNlYmU3NC1mMzI4LTQ0NjUtYjJkMi1hOTNjOGMwMzU0MzAiLCJhdWQiOiI1eGtnZnBob2pxbTY1NWJqbnc2czJqcGFycSIsImFjciI6Imh0dHA6XC9cL2lkbWFuYWdlbWVudC5nb3ZcL25zXC9hc3N1cmFuY2VcL2xvYVwvMiIsImlzcyI6Imh0dHBzOlwvXC9yaS11eC1pbmJvdW5kLTAxLmNpLmRldi5pY3cuaW50XC9jMmlkLWZhY2FkZVwvYzJpZCIsImV4cCI6MTUwODMzMzIyOCwiaWF0IjoxNTA4MzMyMzI4LCJub25jZSI6InVuYXA0ZGtsMzl0MmdzNWJrbGMxMTdhM3FoIn0.kFcTjbTLcAbUmWWK1uo6vvl_vSC09UBa2IOF8HuQBqKUnIbLRf1vbe-WnDN1r2Eh_-NgNnPDr07eRRUjmq3wh6e-wU2IcIILry_tH6GFjAeTajuO4JKfIvEyrHI7NbUu3Wvn_iieT0dOIb0Ugoh7nMR1DdpEGsKP5nfcl9P6R8d9ewwlDLyxeGLqrQUmKlBAe2xTHr3t6FFsRcHh0gBbfEg3D0KCKjPMfDJfMf1qAYqUagFJ4fp40XXpqvlRYOkv_8gZVYxxQsAJphoDHiZl_iQLRHl-boM4ePBIMyLSAaO0ye2wN6WBaduFVhPpLpxmpBV_izujji5oaIhiNY3m7w");
+        token.setId_token(
+                """
+                        eyJraWQiOiJXMGZvIiwiYWxnIjoiUlMyNTYifQ\
+                        .eyJzdWIiOiIwMjNlYmU3NC1mMzI4LTQ0NjUtYjJkMi1hOTNjOGMwMzU0MzAiLCJhdWQiOiI1eGtnZnBob2pxbTY1NWJqbnc2czJqcGFycSIsImFjciI6Imh0dHA6XC9cL2lkbWFuYWdlbWVudC5nb3ZcL25zXC9hc3N1cmFuY2VcL2xvYVwvMiIsImlzcyI6Imh0dHBzOlwvXC9yaS11eC1pbmJvdW5kLTAxLmNpLmRldi5pY3cuaW50XC9jMmlkLWZhY2FkZVwvYzJpZCIsImV4cCI6MTUwODMzMzIyOCwiaWF0IjoxNTA4MzMyMzI4LCJub25jZSI6InVuYXA0ZGtsMzl0MmdzNWJrbGMxMTdhM3FoIn0.kFcTjbTLcAbUmWWK1uo6vvl_vSC09UBa2IOF8HuQBqKUnIbLRf1vbe-WnDN1r2Eh_-NgNnPDr07eRRUjmq3wh6e-wU2IcIILry_tH6GFjAeTajuO4JKfIvEyrHI7NbUu3Wvn_iieT0dOIb0Ugoh7nMR1DdpEGsKP5nfcl9P6R8d9ewwlDLyxeGLqrQUmKlBAe2xTHr3t6FFsRcHh0gBbfEg3D0KCKjPMfDJfMf1qAYqUagFJ4fp40XXpqvlRYOkv_8gZVYxxQsAJphoDHiZl_iQLRHl-boM4ePBIMyLSAaO0ye2wN6WBaduFVhPpLpxmpBV_izujji5oaIhiNY3m7w\
+                        """);
         var testUser = BaseAuthenticatedUserInfo.builder()
                 .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token).build();
         var result = underTest.retrieveIdToken(testUser);

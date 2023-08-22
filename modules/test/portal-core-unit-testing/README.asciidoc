@@ -192,7 +192,7 @@ This module supports an extension for using link:https://github.com/square/okhtt
 ----
 <dependency>
     <groupId>com.squareup.okhttp3</groupId>
-    <artifactId>mockwebserver</artifactId>
+    <artifactId>mockwebserver3-junit5</artifactId>
 </dependency>
 ----
 
