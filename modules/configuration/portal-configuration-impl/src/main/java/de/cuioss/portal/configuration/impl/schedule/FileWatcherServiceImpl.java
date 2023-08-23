@@ -201,7 +201,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     @Override
     public List<Path> getRegisteredPaths() {
         List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath)
-                .collect(Collectors.toList());
+                .toList();
         log.trace("getRegisteredPaths callled, returning {}", paths);
         return paths;
     }
@@ -254,10 +254,10 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
         }
         if (log.isTraceEnabled()) {
             log.trace("Handling WatchKey-Events {}",
-                    events.stream().map(w -> w.context() + "-" + w.kind()).collect(Collectors.toList()));
+                    events.stream().map(w -> w.context() + "-" + w.kind()).toList());
         }
         List<AbstractFileDescriptor> changed = registeredPaths.values().stream()
-                .filter(AbstractFileDescriptor::isUpdated).collect(Collectors.toList());
+                .filter(AbstractFileDescriptor::isUpdated).toList();
 
         if (changed.isEmpty()) {
             log.debug("No actual changes found for path-change WatchKey-Events {}", events);

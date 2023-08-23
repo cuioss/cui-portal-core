@@ -172,8 +172,8 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private BaseAuthenticatedUserInfoBuilder createDefaultUserInfoBuilder() {
         var builder = BaseAuthenticatedUserInfo.builder().authenticated(true)
-                .groups(defaultUserGroups.get().stream().map(String::trim).collect(Collectors.toList()))
-                .roles(defaultUserRoles.get().stream().map(String::trim).collect(Collectors.toList()))
+                .groups(defaultUserGroups.get().stream().map(String::trim).toList())
+                .roles(defaultUserRoles.get().stream().map(String::trim).toList())
                 .system(defaultSystem);
         for (String entry : defaultContextMapEntries.get()) {
             builder.contextMapElement(entry.split(":")[0].trim(), entry.split(":")[1].trim());

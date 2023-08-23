@@ -106,7 +106,7 @@ public abstract class AbstractConfigurationKeyVerifierTest {
                 System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
 
         final List<String> notFoundKeys = resolvedKeyNames.stream().filter(key -> !configurationKeys.contains(key))
-                .collect(Collectors.toList());
+                .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
                     + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
@@ -124,7 +124,7 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var resolvedKeyNames = resolveKeyNames();
         log.info("Checking configurationKeys='{}' against resolvedKeyNames='{}'", resolvedKeyNames, configurationKeys);
         List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeyNames.contains(key))
-                .collect(Collectors.toList());
+                .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
                     + ", you can use #getConfigurationKeysIgnoreList() to filter the keys to be checked");
