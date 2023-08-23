@@ -16,6 +16,7 @@
 package de.cuioss.portal.core.cdi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -25,16 +26,14 @@ import de.cuioss.tools.collect.CollectionLiterals;
 
 class AnnotationInstanceProviderTest {
 
-    @SuppressWarnings({ "unlikely-arg-type", "java:S5785", "java:S5863" })
     @Test
     void shouldHandleHappyCase() {
         var literal = AnnotationInstanceProvider.of(SuppressWarnings.class);
         assertNotNull(literal.toString());
         assertEquals(AnnotationInstanceProvider.of(SuppressWarnings.class), literal);
         assertEquals(0, literal.hashCode());
-        assertEquals(literal, literal);
-        assertNotEquals(literal, AnnotationInstanceProvider.of(Deprecated.class));
-        assertNotEquals(SuppressWarnings.class, literal);
+        assertInstanceOf(Deprecated.class, AnnotationInstanceProvider.of(Deprecated.class));
+        assertInstanceOf(SuppressWarnings.class, AnnotationInstanceProvider.of(SuppressWarnings.class));
         assertEquals(SuppressWarnings.class, literal.annotationType());
     }
 
