@@ -153,7 +153,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
      *         "yaml", empty Optional otherwise.
      */
     public static Optional<YamlConfigurationProvider> createFromFile(FileLoader source) {
-        if (null == source || isEmpty(source.getFileName().getOriginalName())) {
+        if ((null == source) || isEmpty(source.getFileName().getOriginalName())) {
             log.debug("Nothing to load found");
             return Optional.empty();
         }
@@ -179,7 +179,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
      *         "yaml", empty Optional otherwise.
      */
     public static Optional<YamlConfigurationProvider> createFromFile(FileConfigurationSource source) {
-        if (null == source || isEmpty(source.getPath())) {
+        if ((null == source) || isEmpty(source.getPath())) {
             log.debug("Nothing to load found");
             return Optional.empty();
         }
@@ -269,7 +269,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
                 @SuppressWarnings("unchecked")
                 final var map = (Map<String, Object>) value;
                 buildFlattenedMap(result, map, key);
-            } else if (value instanceof Collection collection) {
+            } else if (value instanceof Collection<?> collection) {
                 var count = 0;
                 for (final Object object : collection) {
                     buildFlattenedMap(result, Collections.singletonMap("[" + count + "]", object), key);

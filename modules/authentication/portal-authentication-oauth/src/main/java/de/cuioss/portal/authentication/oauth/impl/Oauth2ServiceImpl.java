@@ -202,7 +202,7 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
             return Collections.emptyList();
         }
         List<String> result = new ArrayList<>();
-        if (value instanceof Iterable iterable) {
+        if (value instanceof Iterable<?> iterable) {
             iterable.forEach(item -> result.addAll(asStringList(item)));
         } else {
             result.add(value.toString());

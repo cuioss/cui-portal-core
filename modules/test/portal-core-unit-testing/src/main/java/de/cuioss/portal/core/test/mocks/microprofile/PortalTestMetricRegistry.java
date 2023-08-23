@@ -468,8 +468,8 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     public SortedMap<MetricID, Gauge> getGauges() {
         final SortedMap<MetricID, Gauge> result = new TreeMap<>();
         for (final Map.Entry<MetricID, Metric> entry : metricMap.entrySet()) {
-            if (entry.getValue() instanceof Gauge) {
-                result.put(entry.getKey(), (Gauge) entry.getValue());
+            if (entry.getValue() instanceof Gauge gauge) {
+                result.put(entry.getKey(), gauge);
             }
         }
         return result;
@@ -525,8 +525,8 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     public SortedMap<MetricID, Timer> getTimers() {
         final SortedMap<MetricID, Timer> out = new TreeMap<>();
         for (final Map.Entry<MetricID, Metric> entry : metricMap.entrySet()) {
-            if (entry.getValue() instanceof Timer) {
-                out.put(entry.getKey(), (Timer) entry.getValue());
+            if (entry.getValue() instanceof Timer timer) {
+                out.put(entry.getKey(), timer);
             }
         }
         return out;

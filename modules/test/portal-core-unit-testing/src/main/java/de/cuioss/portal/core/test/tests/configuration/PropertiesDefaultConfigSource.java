@@ -42,9 +42,10 @@ import de.cuioss.tools.io.FileTypePrefix;
  *
  * @author Sven Haag
  */
-final public class PropertiesDefaultConfigSource extends PropertiesConfigSource {
+public final class PropertiesDefaultConfigSource extends PropertiesConfigSource {
 
     public static final String META_INF_LOCATION = "META-INF/microprofile-config.properties";
+    @SuppressWarnings("java:S1075") // owolff: the delimiter is correct for classpath-resources
     public static final String CLASSPATH_LOCATION = FileTypePrefix.CLASSPATH.getPrefix() + "/" + META_INF_LOCATION;
 
     /**

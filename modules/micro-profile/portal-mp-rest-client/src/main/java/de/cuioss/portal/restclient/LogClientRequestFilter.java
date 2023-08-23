@@ -62,8 +62,8 @@ class LogClientRequestFilter implements ClientRequestFilter {
 
             var body = "";
             if (reqContext.hasEntity()) {
-                if (reqContext.getEntity() instanceof Form) {
-                    body = ((Form) reqContext.getEntity()).asMap().toString();
+                if (reqContext.getEntity() instanceof Form form) {
+                    body = form.asMap().toString();
                 } else {
                     body = reqContext.getEntity().toString();
                 }
