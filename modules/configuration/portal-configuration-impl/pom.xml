@@ -31,11 +31,10 @@
       <groupId>de.cuioss.portal.configuration</groupId>
       <artifactId>portal-configuration-api</artifactId>
     </dependency>
-    <!-- FIXME owolff: Remove this-->
     <dependency>
       <groupId>de.cuioss.portal.configuration</groupId>
       <artifactId>portal-configuration-yaml</artifactId>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>

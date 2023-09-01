@@ -22,9 +22,11 @@ import org.junit.jupiter.api.Test;
 
 class YamlConfigSourceTest {
 
+    static final String CLASSPATH_TEST_YML = "classpath:/test.yml";
+
     @Test
     void loadData() {
-        final var underTest = new YamlConfigSource("classpath:/test.yml");
+        final var underTest = new YamlConfigSource(CLASSPATH_TEST_YML);
         assertEquals(6, underTest.getProperties().size());
     }
 

@@ -21,7 +21,6 @@ import static de.cuioss.portal.configuration.yaml.TestResourcesRepository.EXISTI
 import static de.cuioss.portal.configuration.yaml.TestResourcesRepository.NOT_EXISTING_PROPERTIES;
 import static de.cuioss.portal.configuration.yaml.TestResourcesRepository.NOT_EXISTING_YML;
 import static de.cuioss.portal.configuration.yaml.YamlConfigurationProvider.createFromFile;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

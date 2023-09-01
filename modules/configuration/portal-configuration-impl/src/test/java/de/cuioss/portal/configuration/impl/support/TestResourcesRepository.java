@@ -19,7 +19,6 @@ import de.cuioss.portal.configuration.FileConfigurationSource;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@SuppressWarnings("javadoc")
 @RequiredArgsConstructor
 public class TestResourcesRepository implements FileConfigurationSource {
 

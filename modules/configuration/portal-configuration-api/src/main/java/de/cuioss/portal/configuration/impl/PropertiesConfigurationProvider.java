@@ -19,7 +19,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -45,13 +44,11 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-public class PropertiesConfigurationProvider implements ConfigurationSource, Serializable {
+public class PropertiesConfigurationProvider implements ConfigurationSource {
 
     private static final CuiLogger log = new CuiLogger(PropertiesConfigurationProvider.class);
 
     private static final String PORTAL_503 = "Portal-503: Unable to load from properties file described by '{}', due to: '{}'";
-
-    private static final long serialVersionUID = -3827851969415677777L;
 
     private static final String MSG_READ_ERROR = "The referenced file can not be loaded";
 
@@ -97,7 +94,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource, Ser
      *         errors it will return an empty {@link Properties}
      */
     public Optional<Properties> getAsProperties() {
-        if (null == fileLoader || !fileLoader.isReadable()) {
+        if ((null == fileLoader) || !fileLoader.isReadable()) {
             log.error(PORTAL_503, fileLoader, MSG_READ_ERROR);
             return Optional.empty();
         }

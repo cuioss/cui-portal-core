@@ -24,6 +24,8 @@ import de.cuioss.portal.configuration.impl.support.ExplodingFileLoader;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyConstructor;
+import de.cuioss.test.valueobjects.api.object.ObjectTestContracts;
+import de.cuioss.test.valueobjects.api.object.VetoObjectTestContract;
 import de.cuioss.test.valueobjects.api.property.PropertyConfig;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
 import de.cuioss.tools.io.FileLoader;
@@ -33,6 +35,7 @@ import de.cuioss.tools.property.PropertyReadWrite;
 @PropertyConfig(name = "fileLoader", propertyClass = FileLoader.class, propertyReadWrite = PropertyReadWrite.WRITE_ONLY)
 @VerifyConstructor(of = "fileLoader", required = "fileLoader")
 @PropertyReflectionConfig(skip = true)
+@VetoObjectTestContract(ObjectTestContracts.SERIALIZABLE)
 class PropertiesConfigurationProviderTest extends ValueObjectTest<PropertiesConfigurationProvider>
         implements TypedGenerator<FileLoader> {
 

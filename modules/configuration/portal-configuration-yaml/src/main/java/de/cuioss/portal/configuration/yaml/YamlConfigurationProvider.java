@@ -131,7 +131,6 @@ public class YamlConfigurationProvider implements ConfigurationSource {
      *
      * @return a new {@code Properties} instance
      */
-    @SuppressWarnings("serial")
     private static Properties createStringAdaptingProperties() {
         return new Properties() {
 
@@ -152,7 +151,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
      *         the given sources references a readable files ending with "yml" or
      *         "yaml", empty Optional otherwise.
      */
-    public static Optional<YamlConfigurationProvider> createFromFile(FileLoader source) {
+    public static Optional<ConfigurationSource> createFromFile(FileLoader source) {
         if ((null == source) || isEmpty(source.getFileName().getOriginalName())) {
             log.debug("Nothing to load found");
             return Optional.empty();
@@ -178,7 +177,7 @@ public class YamlConfigurationProvider implements ConfigurationSource {
      *         the given sources references a readable files ending with "yml" or
      *         "yaml", empty Optional otherwise.
      */
-    public static Optional<YamlConfigurationProvider> createFromFile(FileConfigurationSource source) {
+    public static Optional<ConfigurationSource> createFromFile(FileConfigurationSource source) {
         if ((null == source) || isEmpty(source.getPath())) {
             log.debug("Nothing to load found");
             return Optional.empty();

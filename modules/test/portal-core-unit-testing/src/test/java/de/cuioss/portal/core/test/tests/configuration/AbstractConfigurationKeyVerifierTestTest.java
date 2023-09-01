@@ -28,9 +28,9 @@ import lombok.Getter;
 
 class AbstractConfigurationKeyVerifierTestTest extends AbstractConfigurationKeyVerifierTest {
 
-    static final String PATH1 = "classpath:/META-INF/mock-configuration.yml";
-    static final String PATH2 = "classpath:/META-INF/mock-configuration2.yml";
-    static final String PATH3 = "classpath:/META-INF/mock-configuration3.yml";
+    static final String PATH1 = "classpath:/META-INF/mock-configuration.properties";
+    static final String PATH2 = "classpath:/META-INF/mock-configuration2.properties";
+    static final String PATH3 = "classpath:/META-INF/mock-configuration3.properties";
 
     @Getter
     private MockConfigurationSource underTest;
