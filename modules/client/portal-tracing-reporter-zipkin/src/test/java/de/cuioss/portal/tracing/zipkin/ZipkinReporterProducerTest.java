@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.tracing;
+package de.cuioss.portal.tracing.zipkin;
 
 import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_REPORTER_URL;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

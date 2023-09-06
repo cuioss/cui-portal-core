@@ -8,7 +8,7 @@
         a Zipkin server</description>
     <properties>
         <maven.jar.plugin.automatic.module.name>
-            de.cuioss.portal.zipkin</maven.jar.plugin.automatic.module.name>
+            de.cuioss.portal.tracing.zipkin</maven.jar.plugin.automatic.module.name>
     </properties>
     <parent>
         <groupId>de.cuioss.portal.client</groupId>
