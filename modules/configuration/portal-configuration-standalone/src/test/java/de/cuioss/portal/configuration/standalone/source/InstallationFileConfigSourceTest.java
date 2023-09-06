@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.configuration.impl.source;
+package de.cuioss.portal.configuration.standalone.source;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR_DEFAULT;
@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import de.cuioss.portal.configuration.standalone.source.InstallationFileConfigSource;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.string.Joiner;
@@ -51,7 +52,7 @@ class InstallationFileConfigSourceTest {
         assertDoesNotThrow(() -> underTest.getPath());
         assertNotNull(underTest.getPath());
         assertTrue(underTest.getPath().endsWith(
-                Joiner.on(File.separatorChar).join("portal-configuration-impl", "config", "application.yml")));
+                Joiner.on(File.separatorChar).join("portal-configuration-standalone", "config", "application.yml")));
         assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Portal-121");
         assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Portal-158");
     }

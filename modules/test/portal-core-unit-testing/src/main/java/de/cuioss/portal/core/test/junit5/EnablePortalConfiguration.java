@@ -50,7 +50,7 @@ import io.smallrye.config.inject.ConfigProducer;
 @Retention(RUNTIME)
 @Target(TYPE)
 @AddBeanClasses({ ConfigProducer.class, PortalTestConfiguration.class, PortalConfigProducer.class,
-        InstallationConfigSourcePathInitializer.class, ConfigChangeObserver.class })
+        ConfigChangeObserver.class })
 @ExtendWith(PortalTestConfigurationExtension.class)
 public @interface EnablePortalConfiguration {
 

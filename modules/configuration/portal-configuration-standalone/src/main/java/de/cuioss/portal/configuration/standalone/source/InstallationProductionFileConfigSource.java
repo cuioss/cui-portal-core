@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.configuration.impl.source;
+package de.cuioss.portal.configuration.standalone.source;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_PRODUCTION_FILENAME_DEFAULT;
 
 /**
  * Configuration source for the application-production.yml file.
  *
- * @author Sven Haag, Sven Haag
+ * @author Sven Haag
  */
 public class InstallationProductionFileConfigSource extends AbstractInstallationConfigSource {
 

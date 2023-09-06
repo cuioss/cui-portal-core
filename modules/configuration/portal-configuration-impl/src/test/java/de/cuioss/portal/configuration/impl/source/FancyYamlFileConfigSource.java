@@ -21,7 +21,7 @@ import de.cuioss.portal.configuration.yaml.YamlConfigSource;
 public final class FancyYamlFileConfigSource extends YamlConfigSource {
 
     public FancyYamlFileConfigSource() {
-        super("classpath:/config/yml/application.yml");
+        super("classpath:/config/yml/application-user.yml");
     }
 
     @Override

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.configuration.impl.source;
+package de.cuioss.portal.configuration.standalone.source;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR_DEFAULT;
@@ -24,6 +24,7 @@ import java.util.Map;
 
 import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.configuration.impl.source.LoaderUtils;
 import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
 import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.io.FileSystemLoader;

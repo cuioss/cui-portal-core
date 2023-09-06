@@ -7,25 +7,14 @@
         <artifactId>configuration</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>portal-configuration-impl</artifactId>
-    <name>Portal Configuration Runtime</name>
-    <description>Provides the implementation-classes for the
-        portal-configuration extensions</description>
+    <artifactId>portal-configuration-standalone</artifactId>
+    <name>Portal Standalone Configuration</name>
+    <description>Provides structure for configuration that can be used in a non
+        quarkus context. It handle application.yml an so on</description>
     <properties>
-        <awaitility.version>4.2.0</awaitility.version>
         <maven.jar.plugin.automatic.module.name>
-            de.cuioss.portal.configuration.impl</maven.jar.plugin.automatic.module.name>
+            de.cuioss.portal.configuration.standalone</maven.jar.plugin.automatic.module.name>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.awaitility</groupId>
-                <artifactId>awaitility</artifactId>
-                <version>${awaitility.version}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>de.cuioss.portal.configuration</groupId>
@@ -33,17 +22,16 @@
         </dependency>
         <dependency>
             <groupId>de.cuioss.portal.configuration</groupId>
+            <artifactId>portal-configuration-impl</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.portal.configuration</groupId>
             <artifactId>portal-configuration-yaml</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.inject</groupId>
             <artifactId>jakarta.inject-api</artifactId>
-        </dependency>
-        <!-- Test -->
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
         </dependency>
     </dependencies>
 </project>

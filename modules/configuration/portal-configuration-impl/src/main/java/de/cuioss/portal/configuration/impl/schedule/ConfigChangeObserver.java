@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -97,7 +96,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
     private Instance<FileWatcherService> fileWatcherServices;
 
     @Inject
-    private List<FileConfigurationSource> fileConfigurationSources;
+    private Instance<FileConfigurationSource> fileConfigurationSources;
 
     /** Fired, if the configuration of the changed file has changed */
     @Inject
@@ -172,7 +171,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
             LOGGER.debug("Adding affected properties to delta map: {}", affectedProperties);
             deltaMap.putAll(affectedProperties);
 
-            if (LOOP_LIMIT == i + 1) {
+            if (LOOP_LIMIT == (i + 1)) {
                 LOGGER.debug("Reached loop limit of {} iterations for finding config placeholder indirections",
                         LOOP_LIMIT);
             }
@@ -230,7 +229,7 @@ public class ConfigChangeObserver implements ApplicationInitializer {
     }
 
     private boolean containsPlaceholder(final String haystack, final String needle) {
-        return null != haystack && null != needle
+        return (null != haystack) && (null != needle)
                 && (haystack.contains("${" + needle + "}") || haystack.contains("${" + needle + ":"));
     }
 

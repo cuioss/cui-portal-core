@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.configuration.impl.source;
+package de.cuioss.portal.configuration.standalone.source;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -41,21 +41,23 @@ import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
 import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
 import de.cuioss.portal.configuration.impl.schedule.FileWatcherServiceImpl;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
+import de.cuioss.portal.configuration.standalone.source.AbstractInstallationConfigSource;
+import de.cuioss.portal.configuration.standalone.source.InstallationFileConfigSource;
+import de.cuioss.portal.configuration.standalone.source.InstallationProductionFileConfigSource;
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.TypedGenerator;
-import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import io.smallrye.config.inject.ConfigProducer;
 
-@EnablePortalConfigurationLocal
-@AddBeanClasses({ FileWatcherServiceImpl.class, InstallationConfigSourcePathInitializer.class,
-        ConfigChangeObserver.class })
+@AddBeanClasses({ ConfigProducer.class, PortalConfigProducer.class, FileWatcherServiceImpl.class,
+        PortalConfigurationMock.class, InstallationConfigSourcePathInitializer.class, ConfigChangeObserver.class,
+        InstallationFileConfigSource.class, InstallationProductionFileConfigSource.class })
 @EnableAutoWeld
-@EnableTestLogger(rootLevel = TestLogLevel.TRACE)
+@EnableTestLogger(debug = { AbstractInstallationConfigSource.class })
 class PortalInstallationConfigurationTest {
 
     private static final Path CONFIG_DIR = Paths.get("target/test-classes/META-INF/installation-configuration-test");

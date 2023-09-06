@@ -56,5 +56,6 @@
         <module>portal-configuration-api</module>
         <module>portal-configuration-impl</module>
         <module>portal-configuration-yaml</module>
+        <module>portal-configuration-standalone</module>
     </modules>
 </project>

@@ -26,9 +26,6 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 
 import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
 import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
-import de.cuioss.portal.configuration.impl.source.InstallationConfigSourcePathInitializer;
-import de.cuioss.portal.configuration.impl.source.InstallationFileConfigSource;
-import de.cuioss.portal.configuration.impl.source.InstallationProductionFileConfigSource;
 import io.smallrye.config.inject.ConfigProducer;
 
 /**
@@ -39,8 +36,6 @@ import io.smallrye.config.inject.ConfigProducer;
  * <li>{@link ConfigProducer}</li>
  * <li>{@link PortalConfigProducer}</li>
  * <li>{@link PortalConfigurationMock}</li>
- * <li>{@link InstallationFileConfigSource}</li>
- * <li>{@link InstallationProductionFileConfigSource}</li>
  * </ul>
  *
  * @author Sven Haag
@@ -49,6 +44,6 @@ import io.smallrye.config.inject.ConfigProducer;
 @Retention(RUNTIME)
 @Target(TYPE)
 @AddBeanClasses({ ConfigProducer.class, PortalConfigProducer.class, PortalConfigurationMock.class,
-        InstallationConfigSourcePathInitializer.class, ConfigChangeObserver.class })
+        ConfigChangeObserver.class })
 public @interface EnablePortalConfigurationLocal {
 }

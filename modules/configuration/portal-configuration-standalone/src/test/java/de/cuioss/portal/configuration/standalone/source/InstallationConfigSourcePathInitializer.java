@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.configuration.impl.source;
+package de.cuioss.portal.configuration.standalone.source;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 
@@ -26,6 +26,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
+import de.cuioss.portal.configuration.standalone.source.AbstractInstallationConfigSource;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**
