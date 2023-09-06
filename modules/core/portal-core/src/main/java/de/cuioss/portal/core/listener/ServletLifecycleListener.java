@@ -83,7 +83,7 @@ public class ServletLifecycleListener implements ServletContextListener {
         LOGGER.debug("ServletLifecycleListener called for '{}', initializing with order: {}", contextPath,
                 initializers);
         for (final ApplicationInitializer applicationInitializer : initializers) {
-            LOGGER.trace("Initializing '{}' for '{}'", applicationInitializer, context);
+            LOGGER.debug("Initializing '{}' for '{}'", applicationInitializer, context);
             applicationInitializer.initialize();
         }
         LOGGER.debug("Initialize successfully called for all elements for '{}'", contextPath);
@@ -101,7 +101,7 @@ public class ServletLifecycleListener implements ServletContextListener {
         Collections.sort(finalizer, Collections.reverseOrder());
         LOGGER.debug("ServletLifecycleListener called for '{}', finalizing with order: {}", contextPath, finalizer);
         for (final ApplicationInitializer applicationInitializer : finalizer) {
-            LOGGER.trace("Destroying '{}' for '{}'", applicationInitializer, contextPath);
+            LOGGER.debug("Destroying '{}' for '{}'", applicationInitializer, contextPath);
             try {
                 applicationInitializer.destroy();
             } catch (RuntimeException e) {
