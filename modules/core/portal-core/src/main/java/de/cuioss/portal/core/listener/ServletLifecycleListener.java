@@ -56,13 +56,13 @@ public class ServletLifecycleListener implements ServletContextListener {
 
     @Inject
     @PortalInitializer
-    private Instance<ApplicationInitializer> applicationInitializers;
+    Instance<ApplicationInitializer> applicationInitializers;
 
     @Produces
     @Dependent
     @Named
     @CuiContextPath
-    private String contextPath = "portal";
+    String contextPath = "portal";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

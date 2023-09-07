@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -75,7 +74,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     @Inject
     @ConfigProperty(name = SCHEDULER_FILE_SCAN_ENABLED)
-    private Provider<Boolean> enabledProvider;
+    Provider<Boolean> enabledProvider;
 
     private WatchService watcherService;
 
@@ -95,7 +94,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     @Inject
     @FileChangedEvent
-    private Event<Path> fileChangeEvent;
+    Event<Path> fileChangeEvent;
 
     /**
      * Initializes the watcher depending on the configuration of
@@ -200,8 +199,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     @Override
     public List<Path> getRegisteredPaths() {
-        List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath)
-                .toList();
+        List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath).toList();
         log.trace("getRegisteredPaths callled, returning {}", paths);
         return paths;
     }
@@ -253,8 +251,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             return;
         }
         if (log.isTraceEnabled()) {
-            log.trace("Handling WatchKey-Events {}",
-                    events.stream().map(w -> w.context() + "-" + w.kind()).toList());
+            log.trace("Handling WatchKey-Events {}", events.stream().map(w -> w.context() + "-" + w.kind()).toList());
         }
         List<AbstractFileDescriptor> changed = registeredPaths.values().stream()
                 .filter(AbstractFileDescriptor::isUpdated).toList();

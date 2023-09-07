@@ -63,11 +63,11 @@ public class PortalTracingServletFilter implements Filter {
     private static final CuiLogger log = new CuiLogger(PortalTracingServletFilter.class);
 
     @Inject
-    private Provider<Tracing> tracing;
+    Provider<Tracing> tracing;
 
     @Inject
     @ConfigProperty(name = PORTAL_TRACING_SERVLET_ENABLED)
-    private Provider<Boolean> servletTracingEnabled;
+    Provider<Boolean> servletTracingEnabled;
 
     private Filter filter;
 

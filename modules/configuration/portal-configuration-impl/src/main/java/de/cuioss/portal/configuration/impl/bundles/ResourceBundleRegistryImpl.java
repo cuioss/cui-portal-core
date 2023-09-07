@@ -66,7 +66,7 @@ public class ResourceBundleRegistryImpl implements ResourceBundleRegistry {
 
     @Inject
     @PortalResourceBundleLocator
-    private Instance<ResourceBundleLocator> locatorList;
+    Instance<ResourceBundleLocator> locatorList;
 
     /**
      * The computed / resolved names in the correct order

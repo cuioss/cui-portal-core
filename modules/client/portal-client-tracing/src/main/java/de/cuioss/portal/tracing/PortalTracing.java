@@ -91,7 +91,7 @@ public class PortalTracing {
     private static final CuiLogger log = new CuiLogger(PortalTracing.class);
 
     @Inject
-    private Instance<SpanHandler> spanHandlers;
+    Instance<SpanHandler> spanHandlers;
 
     /**
      * @return true, if distributed tracing is enabled. defaults to
@@ -247,7 +247,7 @@ public class PortalTracing {
             serviceName = uri.getHost();
 
             final var path = uri.getPath();
-            if (path.length() > 0 && '/' == path.charAt(0)) {
+            if ((path.length() > 0) && ('/' == path.charAt(0))) {
                 // the path contains a leading slash, but maybe that's it?!
                 final var endpointCandidate = path.substring(1).split("/")[0];
                 if (!isEmpty(endpointCandidate)) {

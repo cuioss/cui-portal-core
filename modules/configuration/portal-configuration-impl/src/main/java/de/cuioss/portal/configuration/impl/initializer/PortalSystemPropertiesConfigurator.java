@@ -53,7 +53,7 @@ public class PortalSystemPropertiesConfigurator implements ApplicationInitialize
 
     @Inject
     @ConfigAsFilteredMap(startsWith = PORTAL_SYSTEM_PROPERTY_PREFIX, stripPrefix = true)
-    private Provider<Map<String, String>> systemProperties;
+    Provider<Map<String, String>> systemProperties;
 
     @Override
     public void initialize() {

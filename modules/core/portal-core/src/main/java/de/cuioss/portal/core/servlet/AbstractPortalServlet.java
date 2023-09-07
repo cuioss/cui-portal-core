@@ -64,7 +64,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
 
     @Inject
     @PortalUser
-    private Provider<AuthenticatedUserInfo> userInfoProvider;
+    Provider<AuthenticatedUserInfo> userInfoProvider;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

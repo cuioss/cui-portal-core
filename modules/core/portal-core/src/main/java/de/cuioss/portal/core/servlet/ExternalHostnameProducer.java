@@ -34,7 +34,7 @@ public class ExternalHostnameProducer {
     private static final CuiLogger log = new CuiLogger(ExternalHostnameProducer.class);
 
     @Inject
-    private Provider<HttpServletRequest> httpServletRequest;
+    Provider<HttpServletRequest> httpServletRequest;
 
     @Produces
     @Dependent

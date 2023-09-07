@@ -93,20 +93,20 @@ public class ConfigChangeObserver implements ApplicationInitializer {
 
     @Inject
     @PortalFileWatcherService
-    private Instance<FileWatcherService> fileWatcherServices;
+    Instance<FileWatcherService> fileWatcherServices;
 
     @Inject
-    private Instance<FileConfigurationSource> fileConfigurationSources;
+    Instance<FileConfigurationSource> fileConfigurationSources;
 
     /** Fired, if the configuration of the changed file has changed */
     @Inject
     @ConfigurationSourceChangeEvent
-    private Event<Map<String, String>> sourceChangeEvent;
+    Event<Map<String, String>> sourceChangeEvent;
 
     /** To be fired if any of the registered files has changed */
     @Inject
     @PortalConfigurationChangeEvent
-    private Event<Map<String, String>> configChangeEvent;
+    Event<Map<String, String>> configChangeEvent;
 
     @Override
     public void initialize() {

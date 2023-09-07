@@ -93,7 +93,7 @@ public class PortalConfigProducer {
 
     @Inject
     @ConfigProperty(name = PORTAL_METRICS_ENABLED, defaultValue = "false")
-    private Provider<Boolean> portalMetricsEnabled;
+    Provider<Boolean> portalMetricsEnabled;
 
     /**
      * @param injectionPoint

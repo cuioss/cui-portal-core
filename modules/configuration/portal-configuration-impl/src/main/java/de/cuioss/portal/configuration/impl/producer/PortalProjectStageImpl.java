@@ -90,7 +90,7 @@ public class PortalProjectStageImpl implements PortalProjectStage, Serializable 
 
     @Inject
     @ConfigProperty(name = PortalConfigurationKeys.PORTAL_STAGE)
-    private Provider<String> portalStageConfigurationProvider;
+    Provider<String> portalStageConfigurationProvider;
 
     /**
      * Initializes the bean. See class documentation for expected result.
