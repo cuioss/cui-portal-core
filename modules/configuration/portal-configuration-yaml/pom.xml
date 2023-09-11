@@ -13,7 +13,7 @@
     <properties>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.yaml</maven.jar.plugin.automatic.module.name>
-        <version.snakeyaml>2.1</version.snakeyaml>
+        <version.snakeyaml>2.2</version.snakeyaml>
     </properties>
     <dependencyManagement>
         <dependencies>
