@@ -34,7 +34,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import brave.Tracing;
 import brave.servlet.TracingFilter;
@@ -65,15 +65,11 @@ public class PortalTracingServletFilter implements Filter {
     @Inject
     Provider<Tracing> tracing;
 
-    @Inject
-    @ConfigProperty(name = PORTAL_TRACING_SERVLET_ENABLED)
-    Provider<Boolean> servletTracingEnabled;
-
     private Filter filter;
 
     @Override
     public void init(final FilterConfig filterConfig) {
-        if (Boolean.TRUE.equals(servletTracingEnabled.get())) {
+        if (Boolean.TRUE.equals(ConfigProvider.getConfig().getValue(PORTAL_TRACING_SERVLET_ENABLED, Boolean.class))) {
             log.info("Servlet tracing filter ENABLED");
             filter = TracingFilter.create(tracing.get());
         } else {
