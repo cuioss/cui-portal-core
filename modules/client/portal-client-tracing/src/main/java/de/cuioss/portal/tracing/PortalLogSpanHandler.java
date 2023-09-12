@@ -78,7 +78,7 @@ final class PortalLogSpanHandler extends SpanHandler {
 
             @Override
             public boolean doLogHandled(MutableSpan span) {
-                if (requestPathContains(span, "/faces/")) {
+                if (requestPathContains(span, "/")) {
                     // report each page request
                     log.debug(span.toString());
                     return true;
