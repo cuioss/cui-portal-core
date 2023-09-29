@@ -31,8 +31,7 @@ import lombok.ToString;
 
 /**
  * Defines the base bundles to be defined within a portal application, that are
- * "de.cuioss.portal.ui.i18n.portal-messages", "de.icw.cui.core.l18n.messages",
- * "de.cuioss.jsf.api.core.l18n.messages" with the Priority
+ * "de.cuioss.portal.ui.i18n.portal-messages", "de.cuioss.jsf.api.core.l18n.messages" with the Priority
  * {@link PortalPriorities#PORTAL_CORE_LEVEL}
  *
  * @author Matthias Walliczek
