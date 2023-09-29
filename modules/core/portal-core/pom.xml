@@ -14,77 +14,69 @@
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.core</maven.jar.plugin.automatic.module.name>
     </properties>
-  <dependencies>
-    <!-- Provided -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.platform</groupId>
-      <artifactId>jakarta.jakartaee-web-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.config</groupId>
-      <artifactId>microprofile-config-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.metrics</groupId>
-      <artifactId>microprofile-metrics-api</artifactId>
-    </dependency>
-    <!-- Standard libraries -->
-    <dependency>
-      <groupId>de.cuioss</groupId>
-      <artifactId>cui-core-ui-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.cuioss</groupId>
-      <artifactId>cui-java-tools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.github.ben-manes.caffeine</groupId>
-      <artifactId>caffeine</artifactId>
-    </dependency>
-    <!-- Portal Services -->
-    <dependency>
-      <groupId>de.cuioss.portal.authentication</groupId>
-      <artifactId>portal-authentication-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.cuioss.portal.configuration</groupId>
-      <artifactId>portal-configuration-api</artifactId>
-    </dependency>
-    <!-- Test Related -->
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.cuioss.portal.configuration</groupId>
-      <artifactId>portal-configuration-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>de.cuioss.test</groupId>
-      <artifactId>cui-test-juli-logger</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-junit5</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.cuioss.test</groupId>
-      <artifactId>cui-test-value-objects</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.inject</groupId>
-      <artifactId>jakarta.inject-api</artifactId>
-    </dependency>
+    <dependencies>
+        <!-- Provided -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+        </dependency>
+        <!-- Standard libraries -->
+        <dependency>
+            <groupId>de.cuioss</groupId>
+            <artifactId>cui-core-ui-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss</groupId>
+            <artifactId>cui-java-tools</artifactId>
+        </dependency>
+        <!-- Portal Services -->
+        <dependency>
+            <groupId>de.cuioss.portal.authentication</groupId>
+            <artifactId>portal-authentication-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.portal.configuration</groupId>
+            <artifactId>portal-configuration-api</artifactId>
+        </dependency>
+        <!-- Test Related -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.portal.configuration</groupId>
+            <artifactId>portal-configuration-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.test</groupId>
+            <artifactId>cui-test-juli-logger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.cuioss.test</groupId>
+            <artifactId>cui-test-value-objects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>de.cuioss.test</groupId>
             <artifactId>cui-jsf-test-basic</artifactId>
