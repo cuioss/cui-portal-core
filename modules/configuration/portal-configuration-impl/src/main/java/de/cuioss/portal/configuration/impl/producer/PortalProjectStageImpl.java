@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -84,7 +83,7 @@ public class PortalProjectStageImpl implements PortalProjectStage, Serializable 
     @Produces
     @PortalProjectStageProducer
     @Named(BEAN_NAME)
-    @Dependent
+    @ApplicationScoped
     @Getter
     private CuiProjectStage projectStage = ProjectStage.PRODUCTION;
 

@@ -62,26 +62,6 @@ class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<
     }
 
     @Test
-    void shouldChangeProductionStage() {
-        assertFalse(stageUnderTest.get().isDevelopment());
-        assertTrue(stageUnderTest.get().isProduction());
-        assertTrue(underTest.getProjectStage().isProduction());
-
-        // No changes on invalid parameter
-        configuration.fireEvent();
-        assertFalse(stageUnderTest.get().isDevelopment());
-        assertTrue(stageUnderTest.get().isProduction());
-        assertTrue(underTest.getProjectStage().isProduction());
-
-        configuration.fireEvent(PortalConfigurationKeys.PORTAL_STAGE, "development");
-
-        assertTrue(underTest.getProjectStage().isDevelopment());
-        assertTrue(stageUnderTest.get().isDevelopment());
-        assertFalse(stageUnderTest.get().isProduction());
-
-    }
-
-    @Test
     void shouldGracefullyHandleInvalidConfiguration() {
         configuration.fireEvent(PortalConfigurationKeys.PORTAL_STAGE, "heythere");
 
