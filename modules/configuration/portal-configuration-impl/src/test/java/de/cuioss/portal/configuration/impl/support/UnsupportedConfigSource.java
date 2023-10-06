@@ -29,7 +29,6 @@ import de.cuioss.portal.configuration.source.PropertiesConfigSource;
  */
 final public class UnsupportedConfigSource extends PropertiesConfigSource {
 
-    @SuppressWarnings("javadoc")
     public UnsupportedConfigSource() {
         super("file:target/test-classes/config/supported.not");
     }

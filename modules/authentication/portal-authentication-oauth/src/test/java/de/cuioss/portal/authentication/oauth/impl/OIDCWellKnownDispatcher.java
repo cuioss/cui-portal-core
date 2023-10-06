@@ -39,7 +39,6 @@ import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
 
-@SuppressWarnings("javadoc")
 public class OIDCWellKnownDispatcher extends Dispatcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OIDCWellKnownDispatcher.class);

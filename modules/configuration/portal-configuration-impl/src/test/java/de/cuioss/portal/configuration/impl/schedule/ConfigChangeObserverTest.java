@@ -47,6 +47,7 @@ import lombok.Getter;
 
 @EnableAutoWeld
 @AddBeanClasses({ PortalConfigProducer.class })
+@SuppressWarnings("el-syntax")
 class ConfigChangeObserverTest implements ShouldBeNotNull<ConfigChangeObserver> {
 
     private static final String CHILD_KEY = "child.key";

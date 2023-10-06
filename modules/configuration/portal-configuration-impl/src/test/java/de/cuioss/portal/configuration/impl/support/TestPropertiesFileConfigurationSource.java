@@ -23,7 +23,6 @@ import de.cuioss.portal.configuration.source.PropertiesConfigSource;
  */
 final public class TestPropertiesFileConfigurationSource extends PropertiesConfigSource {
 
-    @SuppressWarnings("javadoc")
     public TestPropertiesFileConfigurationSource() {
         super("target/test-classes/config/module.properties");
     }

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import de.cuioss.test.generator.TypedGenerator;
 
-@SuppressWarnings({ "rawtypes", "javadoc" })
+@SuppressWarnings({ "rawtypes" })
 public class ContextMapGenerator implements TypedGenerator<Map> {
 
     private final TypedGenerator<String> stringGenerator = nonEmptyStrings();

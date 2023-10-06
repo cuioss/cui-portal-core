@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 
-@SuppressWarnings("javadoc")
 @ApplicationScoped
 public class MockPortalServlet extends AbstractPortalServlet {
 

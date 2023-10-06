@@ -31,7 +31,6 @@ import lombok.ToString;
 @Priority(PortalPriorities.PORTAL_MODULE_LEVEL)
 @EqualsAndHashCode
 @ToString
-@SuppressWarnings("javadoc")
 public class MediumPrioBundles implements ResourceBundleLocator {
 
     private static final long serialVersionUID = 7756501560722570148L;

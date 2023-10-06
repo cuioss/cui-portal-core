@@ -18,7 +18,6 @@ package de.cuioss.portal.configuration.impl.support;
 import de.cuioss.portal.configuration.common.PortalPriorities;
 import de.cuioss.portal.configuration.yaml.YamlConfigSource;
 
-@SuppressWarnings("javadoc")
 public class TestYamlFileConfigurationSource extends YamlConfigSource {
 
     public TestYamlFileConfigurationSource() {

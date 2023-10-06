@@ -45,7 +45,7 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
      */
     public static final Namespace NAMESPACE = Namespace.create("test", "portal", "MockWebServer");
 
-    @SuppressWarnings({ "resource", "squid:S2095" }) // owolff: Will be closed after all tests
+    @SuppressWarnings({ "squid:S2095" }) // owolff: Will be closed after all tests
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
 
@@ -66,7 +66,6 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
         put(mockWebServer, context);
     }
 
-    @SuppressWarnings("resource") // mock-system, should therefore not a problem
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
         var server = get(context);

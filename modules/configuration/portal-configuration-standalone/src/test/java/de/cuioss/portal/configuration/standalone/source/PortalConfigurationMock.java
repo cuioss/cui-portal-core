@@ -120,7 +120,6 @@ import lombok.ToString;
 @ToString
 public class PortalConfigurationMock implements ConfigurationStorage, ConfigSource {
 
-    @SuppressWarnings("javadoc")
     public static final int PRIORITY = PortalPriorities.PORTAL_ASSEMBLY_LEVEL + 10;
 
     /**

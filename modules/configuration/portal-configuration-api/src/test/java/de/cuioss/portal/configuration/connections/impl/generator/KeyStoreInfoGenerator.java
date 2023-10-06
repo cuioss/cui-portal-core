@@ -25,7 +25,6 @@ import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.tools.net.ssl.KeyStoreProvider;
 import de.cuioss.tools.net.ssl.KeyStoreType;
 
-@SuppressWarnings("javadoc")
 public class KeyStoreInfoGenerator implements TypedGenerator<KeyStoreProvider> {
 
     static final String PASSWORD = "initinit";

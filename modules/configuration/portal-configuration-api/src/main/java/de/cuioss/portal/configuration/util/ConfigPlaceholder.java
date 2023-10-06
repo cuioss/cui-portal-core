@@ -30,7 +30,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 class ConfigPlaceholder {
-
+    @SuppressWarnings("el-syntax")
     private static final String PLACEHOLDER_PREFIX = "${";
     private static final String PLACEHOLDER_SUFFIX = "}";
     private static final String PLACEHOLDER_DEFAULT_VALUE_SPLITTER = ":";

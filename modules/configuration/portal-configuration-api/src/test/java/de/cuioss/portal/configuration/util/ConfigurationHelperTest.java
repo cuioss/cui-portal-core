@@ -213,6 +213,7 @@ class ConfigurationHelperTest {
     }
 
     @Test
+    @SuppressWarnings("el-syntax")
     void ignoresOtherUnresolvableKeys() {
         setProperty("a.config.key", "value");
         setProperty("unresolvable.key", "${not.there}");

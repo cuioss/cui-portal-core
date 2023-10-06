@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@SuppressWarnings("el-syntax")
 class ConfigPlaceholderTest {
 
     @Test
@@ -54,6 +55,7 @@ class ConfigPlaceholderTest {
         assertTrue(nullDefault.isPresent());
         assertEquals("default", nullDefault.get());
     }
+
 
     @Test
     void verifyInvalidPlaceholders() {

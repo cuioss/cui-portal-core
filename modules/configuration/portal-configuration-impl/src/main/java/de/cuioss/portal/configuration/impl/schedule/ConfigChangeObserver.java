@@ -227,7 +227,8 @@ public class ConfigChangeObserver implements ApplicationInitializer {
         }
         return Collections.emptyMap();
     }
-
+    
+    @SuppressWarnings("el-syntax")
     private boolean containsPlaceholder(final String haystack, final String needle) {
         return (null != haystack) && (null != needle)
                 && (haystack.contains("${" + needle + "}") || haystack.contains("${" + needle + ":"));

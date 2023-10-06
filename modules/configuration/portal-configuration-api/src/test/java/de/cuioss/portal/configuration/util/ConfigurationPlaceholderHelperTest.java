@@ -36,6 +36,7 @@ import de.cuioss.test.juli.junit5.EnableTestLogger;
 
 @EnableTestLogger(debug = ConfigurationPlaceholderHelper.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@SuppressWarnings("el-syntax")
 class ConfigurationPlaceholderHelperTest {
 
     private Set<String> addedSysProperties = new HashSet<>();

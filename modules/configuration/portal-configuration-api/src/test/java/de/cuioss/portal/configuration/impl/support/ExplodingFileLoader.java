@@ -22,7 +22,6 @@ import java.net.URL;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.StructuredFilename;
 
-@SuppressWarnings("javadoc")
 public class ExplodingFileLoader implements FileLoader {
 
     private static final long serialVersionUID = -2232945095983152163L;

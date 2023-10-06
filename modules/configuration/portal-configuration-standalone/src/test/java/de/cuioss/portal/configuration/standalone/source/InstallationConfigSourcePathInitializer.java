@@ -26,7 +26,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
-import de.cuioss.portal.configuration.standalone.source.AbstractInstallationConfigSource;
 import de.cuioss.tools.logging.CuiLogger;
 
 /**

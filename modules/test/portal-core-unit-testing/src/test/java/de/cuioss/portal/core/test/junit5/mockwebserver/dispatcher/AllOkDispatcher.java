@@ -23,7 +23,6 @@ import lombok.NonNull;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
 
-@SuppressWarnings("javadoc")
 public class AllOkDispatcher implements ModuleDispatcherElement {
 
     public static final String BASE = "/allOk";

@@ -27,7 +27,6 @@ import de.cuioss.tools.net.UrlParameter;
 import lombok.Getter;
 import lombok.Setter;
 
-@SuppressWarnings("javadoc")
 public class Oauth2ServiceMock implements Oauth2Service, Serializable {
 
     private static final long serialVersionUID = -2635417375165112609L;

@@ -25,7 +25,6 @@ import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.tools.net.ssl.KeyStoreProvider;
 import de.cuioss.tools.net.ssl.KeyStoreType;
 
-@SuppressWarnings("javadoc")
 public class TrustStoreInfoGenerator implements TypedGenerator<KeyStoreProvider> {
 
     private final TypedGenerator<File> trustores = fixedValues(BASE_PATH.resolve("truststore1.keystore").toFile(),

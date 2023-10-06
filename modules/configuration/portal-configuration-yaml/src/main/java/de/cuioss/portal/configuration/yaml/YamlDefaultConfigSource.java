@@ -35,7 +35,6 @@ import de.cuioss.tools.io.FileTypePrefix;
  */
 public final class YamlDefaultConfigSource extends YamlConfigSource {
 
-    @SuppressWarnings("javadoc")
     public YamlDefaultConfigSource() {
         super(FileTypePrefix.CLASSPATH.getPrefix() + "/" + YamlDefaultConfigSourceProvider.META_INF_LOCATION);
     }

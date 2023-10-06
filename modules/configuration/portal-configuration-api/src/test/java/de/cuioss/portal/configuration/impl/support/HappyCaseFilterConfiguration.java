@@ -28,7 +28,6 @@ import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
 import lombok.Getter;
 import lombok.Setter;
 
-@SuppressWarnings("javadoc")
 @ApplicationScoped
 public class HappyCaseFilterConfiguration {
 

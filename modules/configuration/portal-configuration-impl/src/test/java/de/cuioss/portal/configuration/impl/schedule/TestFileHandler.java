@@ -28,7 +28,6 @@ import de.cuioss.tools.io.MorePaths;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 
-@SuppressWarnings("javadoc")
 public final class TestFileHandler {
 
     private static final CuiLogger LOGGER = new CuiLogger(TestFileHandler.class);
@@ -110,7 +109,6 @@ public final class TestFileHandler {
         return dir;
     }
 
-    @SuppressWarnings("resource")
     private Path setupTestFile(Path newFile) throws IOException {
         if (!newFile.toFile().exists()) {
             LOGGER.info("creating: {}", newFile.toAbsolutePath());

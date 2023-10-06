@@ -17,7 +17,6 @@ package de.cuioss.portal.core.test.tests.configuration;
 
 import lombok.experimental.UtilityClass;
 
-@SuppressWarnings("javadoc")
 @UtilityClass
 public class ConfigurationKeys {
 
