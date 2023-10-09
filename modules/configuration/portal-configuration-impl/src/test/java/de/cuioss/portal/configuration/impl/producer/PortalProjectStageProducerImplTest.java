@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.application.PortalProjectStageProducer;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
@@ -48,7 +47,6 @@ class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<
     private PortalConfigurationMock configuration;
 
     @Inject
-    @PortalProjectStageProducer
     private Provider<CuiProjectStage> stageUnderTest;
 
     @Test

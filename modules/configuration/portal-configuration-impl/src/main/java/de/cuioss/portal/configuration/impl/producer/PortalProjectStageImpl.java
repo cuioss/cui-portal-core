@@ -23,15 +23,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.application.PortalProjectStage;
-import de.cuioss.portal.configuration.application.PortalProjectStageProducer;
 import de.cuioss.portal.configuration.application.ProjectStage;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
@@ -57,7 +54,7 @@ import lombok.ToString;
 @ApplicationScoped
 @EqualsAndHashCode(of = "projectStage", doNotUseGetters = true)
 @ToString(of = "projectStage", doNotUseGetters = true)
-public class PortalProjectStageImpl implements PortalProjectStage, Serializable {
+public class PortalProjectStageImpl implements Serializable {
 
     private static final long serialVersionUID = 178765109802042493L;
 
@@ -81,8 +78,6 @@ public class PortalProjectStageImpl implements PortalProjectStage, Serializable 
     public static final String BEAN_NAME = "cuiProjectStage";
 
     @Produces
-    @PortalProjectStageProducer
-    @Named(BEAN_NAME)
     @ApplicationScoped
     @Getter
     private CuiProjectStage projectStage = ProjectStage.PRODUCTION;
