@@ -71,9 +71,8 @@ public final class PortalBeanManager {
     }
 
     private static List<Bean<?>> sortByPriority(final List<Bean<?>> toBeSorted) {
-        if (toBeSorted.size() < 2) {
+        if (toBeSorted.size() < 2)
             return toBeSorted;
-        }
         final List<PriorityComparator> wrapperList = new ArrayList<>();
         for (final Bean<?> element : toBeSorted) {
             wrapperList.add(new PriorityComparator(element));
@@ -121,6 +120,20 @@ public final class PortalBeanManager {
     }
 
     /**
+     * Shorthand for calling
+     * {@link #resolveBeanOrThrowIllegalStateException(Class, Class)} with
+     * {@code null} for the parameter annotation.
+     *
+     * @param beanClass identifying the type to be loaded, must not be null
+     * @param <T>
+     *
+     * @return the found bean, or {@link Optional#empty()} if none could be found
+     */
+    public static <T> T resolveRequiredBean(final Class<T> beanClass) {
+        return resolveBeanOrThrowIllegalStateException(beanClass, null);
+    }
+
+    /**
      * Helper method for resolving the beanTypes according to the given identifier.
      *
      * @param beanManager     an instance of the beanManager for doing the lookup.
@@ -155,9 +168,8 @@ public final class PortalBeanManager {
      */
     private static <T, V extends Annotation> void checkBeanTypesFound(final Class<T> beanClass,
             final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
-        if (beanTypes.isEmpty()) {
+        if (beanTypes.isEmpty())
             throw new IllegalArgumentException(createErrorMessage(beanClass, annotationClass));
-        }
     }
 
     /**

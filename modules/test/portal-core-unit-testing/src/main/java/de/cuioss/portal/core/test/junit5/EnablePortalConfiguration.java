@@ -43,6 +43,9 @@ import io.smallrye.config.inject.ConfigProducer;
  * <p>
  * Additional configuration can be added by using {@link #configuration()}
  * </p>
+ * <p>
+ * For details on usage, see {@link PortalTestConfiguration}
+ * </p>
  *
  * @author Oliver Wolff
  */

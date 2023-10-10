@@ -17,6 +17,7 @@ package de.cuioss.portal.core.cdi;
 
 import static de.cuioss.portal.core.cdi.PortalBeanManager.resolveBean;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -76,6 +77,13 @@ class PortalBeanManagerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class);
         });
+    }
+
+    @Test
+    void shouldReturnSimpleRequiredWithoutQualifier() {
+        final var check = PortalBeanManager.resolveRequiredBean(TestBeanWithoutQualifier.class);
+        assertNotNull(check);
+        assertEquals(TestBeanWithQualifier.MESSAGE, check.getInitMessage());
     }
 
 }
