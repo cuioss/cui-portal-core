@@ -27,6 +27,10 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.cuioss.portal.core</groupId>
+            <artifactId>portal-common-cdi</artifactId>
+        </dependency>
         <!-- Test-->
         <dependency>
             <groupId>org.easymock</groupId>

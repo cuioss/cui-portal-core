@@ -27,9 +27,9 @@ import javax.inject.Provider;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.application.ProjectStage;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import lombok.EqualsAndHashCode;

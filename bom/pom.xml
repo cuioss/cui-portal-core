@@ -63,6 +63,13 @@
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- Portal-Common-->
+            <dependency>
+                <groupId>de.cuioss.portal.core</groupId>
+                <artifactId>portal-common-cdi</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>
             <!-- Portal-Core-Servlet-->
             <dependency>
                 <groupId>de.cuioss.portal.core</groupId>

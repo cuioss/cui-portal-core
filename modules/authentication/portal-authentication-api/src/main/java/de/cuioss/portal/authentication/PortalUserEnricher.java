@@ -20,7 +20,7 @@ import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
 
 import de.cuioss.portal.authentication.facade.AuthenticationFacade;
-import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.common.priority.PortalPriorities;
 
 /**
  * To enrich an {@link AuthenticatedUserInfo} created by the

@@ -35,9 +35,9 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.application.ProjectStage;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import lombok.Getter;

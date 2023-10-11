@@ -22,8 +22,8 @@ import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveCon
 import java.nio.file.Paths;
 import java.util.Map;
 
+import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.configuration.FileConfigurationSource;
-import de.cuioss.portal.configuration.common.PortalPriorities;
 import de.cuioss.portal.configuration.impl.source.LoaderUtils;
 import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
 import de.cuioss.tools.collect.CollectionLiterals;

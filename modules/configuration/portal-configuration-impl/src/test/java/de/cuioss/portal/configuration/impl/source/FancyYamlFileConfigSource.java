@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.configuration.yaml.YamlConfigSource;
 
 public final class FancyYamlFileConfigSource extends YamlConfigSource {

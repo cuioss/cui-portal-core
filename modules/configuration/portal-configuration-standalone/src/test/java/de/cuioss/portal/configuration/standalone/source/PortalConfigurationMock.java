@@ -33,6 +33,8 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.ConfigurationStorage;
 import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
@@ -40,8 +42,6 @@ import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.PortalConfigurationStorage;
-import de.cuioss.portal.configuration.application.ProjectStage;
-import de.cuioss.portal.configuration.common.PortalPriorities;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.types.ConfigAsList;

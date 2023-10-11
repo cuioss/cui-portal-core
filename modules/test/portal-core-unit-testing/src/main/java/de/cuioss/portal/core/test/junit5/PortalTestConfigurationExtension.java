@@ -28,8 +28,8 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import de.cuioss.portal.common.cdi.AnnotationInstanceProvider;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.cdi.AnnotationInstanceProvider;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.string.Splitter;
 

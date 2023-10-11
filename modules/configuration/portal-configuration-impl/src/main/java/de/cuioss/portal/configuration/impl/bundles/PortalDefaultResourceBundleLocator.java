@@ -22,9 +22,9 @@ import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 
-import de.cuioss.portal.configuration.bundles.PortalResourceBundleLocator;
-import de.cuioss.portal.configuration.bundles.ResourceBundleLocator;
-import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.common.bundle.PortalResourceBundleLocator;
+import de.cuioss.portal.common.bundle.ResourceBundleLocator;
+import de.cuioss.portal.common.priority.PortalPriorities;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

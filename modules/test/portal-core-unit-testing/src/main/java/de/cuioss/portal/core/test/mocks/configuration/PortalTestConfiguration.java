@@ -29,11 +29,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.application.ProjectStage;
-import de.cuioss.portal.configuration.common.PortalPriorities;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
@@ -213,7 +213,7 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     /**
      * @param projectStage
      */
-    public void setPortalProjectStage(final de.cuioss.portal.configuration.application.ProjectStage projectStage) {
+    public void setPortalProjectStage(final de.cuioss.portal.common.stage.ProjectStage projectStage) {
         fireEvent(PortalConfigurationKeys.PORTAL_STAGE, projectStage.name().toLowerCase());
     }
 

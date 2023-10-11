@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;
-import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.common.priority.PortalPriorities;
 
 /**
  * Abstract implementation to handle {@link PortalUserEnricher}s.

@@ -27,9 +27,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 
-import de.cuioss.portal.configuration.bundles.PortalResourceBundleLocator;
-import de.cuioss.portal.configuration.bundles.ResourceBundleLocator;
-import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.common.bundle.PortalResourceBundleLocator;
+import de.cuioss.portal.common.bundle.ResourceBundleLocator;
+import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,7 +37,7 @@ import lombok.ToString;
 
 /**
  * Defines the vendor specific bundle to be defined within a portal application,
- * that is "com.icw.ehf.cui.portal.i18n.vendor-messages" with the Priority
+ * that is "de.cuioss.portal.i18n.vendor-messages" with the Priority
  * {@link PortalPriorities#PORTAL_ASSEMBLY_LEVEL + 10}
  *
  * @author Matthias Walliczek
@@ -51,7 +51,7 @@ public class PortalVendorResourceBundleLocator implements ResourceBundleLocator 
 
     private static final CuiLogger log = new CuiLogger(PortalVendorResourceBundleLocator.class);
 
-    private static final String VENDOR_MESSAGES = "com.icw.ehf.cui.portal.i18n.vendor-messages";
+    private static final String VENDOR_MESSAGES = "de.cuioss.portal.i18n.vendor-messages";
 
     private static final long serialVersionUID = -8478481710191113463L;
 
@@ -59,7 +59,7 @@ public class PortalVendorResourceBundleLocator implements ResourceBundleLocator 
     private List<String> configuredResourceBundles = immutableList(VENDOR_MESSAGES);
 
     /**
-     * Initializes the bean beand by loading the {@link ResourceBundle}
+     * Initializes the bean by loading the {@link ResourceBundle}
      */
     @PostConstruct
     public void initBean() {

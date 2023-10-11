@@ -14,5 +14,6 @@
     <name>Portal Core Modules</name>
     <modules>
         <module>portal-core</module>
+        <module>portal-common-cdi</module>
     </modules>
 </project>

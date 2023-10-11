@@ -17,7 +17,7 @@ package de.cuioss.portal.configuration.yaml;
 
 import java.net.URL;
 
-import de.cuioss.portal.configuration.common.PortalPriorities;
+import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.io.FileTypePrefix;
 
 /**

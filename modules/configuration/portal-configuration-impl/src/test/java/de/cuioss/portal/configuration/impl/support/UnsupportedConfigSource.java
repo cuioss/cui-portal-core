@@ -17,8 +17,8 @@ package de.cuioss.portal.configuration.impl.support;
 
 import java.util.Map;
 
+import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.configuration.FileConfigurationSource;
-import de.cuioss.portal.configuration.common.PortalPriorities;
 import de.cuioss.portal.configuration.source.PropertiesConfigSource;
 
 /**

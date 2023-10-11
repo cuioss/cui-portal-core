@@ -17,8 +17,8 @@ package de.cuioss.portal.core.test.tests.configuration;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.configuration.FileConfigurationSource;
-import de.cuioss.portal.configuration.common.PortalPriorities;
 import de.cuioss.portal.configuration.source.PropertiesConfigSource;
 import de.cuioss.tools.io.FileTypePrefix;
 

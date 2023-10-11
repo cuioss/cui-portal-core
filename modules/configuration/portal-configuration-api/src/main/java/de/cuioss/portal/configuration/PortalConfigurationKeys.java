@@ -17,7 +17,7 @@ package de.cuioss.portal.configuration;
 
 import java.io.Serializable;
 
-import de.cuioss.portal.configuration.application.ProjectStage;
+import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import lombok.experimental.UtilityClass;
 
