@@ -1,18 +1,35 @@
 /**
- * <h2>Summary</h2>
  * <p>
- * Provides classes and structures to configure resource bundles.
+ * Provides the handling of the unified {@link java.util.ResourceBundle}
  * </p>
- * <h2>Module configuration</h2>
+ * <h2>Usage</h2>
  * <p>
- * Each module can provide additional resource bundles by implementing
- * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator}
- * annotated with
- * {@link de.cuioss.portal.common.bundle.PortalResourceBundleLocator}.
- * The priority should be
- * com.icw.ehf.cui.portal.cdi.api.common.PortalPriorities.PORTAL_MODULE_LEVEL
+ * The central element is
+ * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} I and unifies
+ * all configured {@link java.util.ResourceBundle}s for the portal. In order to
+ * use it within a bean use:
  * </p>
  *
- * @author Matthias Walliczek
+ * <pre>
+ *
+ * &#064;Inject
+ * private ResourceBundleWrapper resourceBundleWrapper;
+ * </pre>
+ *
+ * It is exposed as well as named bean "msgs" and can therefore used within
+ * xhtml as standard {@link java.util.ResourceBundle}:
+ *
+ * <pre>
+ * {@code #(msgs['page.dashboard.title'])}
+ * </pre>
+ *
+ * <h2>Configuration</h2>
+ * <p>
+ * Extending the {@link java.util.ResourceBundle}s is quite easy on a module
+ * level. You need to provide instance of
+ * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator} The actual
+ * configuration will be done with
+ * {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry}
+ * </p>
  */
 package de.cuioss.portal.common.bundle;

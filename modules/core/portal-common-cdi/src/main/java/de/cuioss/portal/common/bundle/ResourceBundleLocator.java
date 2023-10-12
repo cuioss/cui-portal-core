@@ -21,7 +21,7 @@ import java.util.List;
 import javax.annotation.Priority;
 
 /**
- * Utilized for configuring ResourceBundles. implementations should provide a
+ * Used for configuring ResourceBundles. Implementations should provide a
  * {@link Priority}. Because of the overwriting mechanics a higher
  * {@link Priority} of one of the concrete bundles results in a higher priority
  * of said bundles, resulting in the key to be chosen of the ones with the

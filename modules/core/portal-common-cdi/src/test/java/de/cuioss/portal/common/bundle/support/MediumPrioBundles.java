@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.common.bundle;
+package de.cuioss.portal.common.bundle.support;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
@@ -21,24 +21,25 @@ import java.util.List;
 
 import javax.annotation.Priority;
 
+import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@PortalResourceBundleLocator
-@Priority(PortalPriorities.PORTAL_ASSEMBLY_LEVEL)
+@Priority(PortalPriorities.PORTAL_MODULE_LEVEL)
 @EqualsAndHashCode
 @ToString
-public class HighPrioBundles implements ResourceBundleLocator {
+public class MediumPrioBundles implements ResourceBundleLocator {
 
     private static final long serialVersionUID = 7756501560722570148L;
 
-    public static final String HIGH_1 = "de.cuioss.portal.l18n.messages.high1";
+    public static final String MEDIUM_1 = "de.cuioss.portal.l18n.messages.medium1";
 
-    public static final String HIGH_2 = "de.cuioss.portal.l18n.messages.high2";
+    public static final String MEDIUM_2 = "de.cuioss.portal.l18n.messages.medium2";
 
     @Override
     public List<String> getConfiguredResourceBundles() {
-        return immutableList(HIGH_1, HIGH_2);
+        return immutableList(MEDIUM_1, MEDIUM_2);
     }
+
 }

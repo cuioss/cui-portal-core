@@ -24,15 +24,19 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
+import de.cuioss.portal.common.bundle.support.DefectBundle;
+import de.cuioss.portal.common.bundle.support.HighPrioBundles;
+import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import lombok.Getter;
 
 @EnableAutoWeld
 @AddBeanClasses({ MediumPrioBundles.class, HighPrioBundles.class, DefectBundle.class })
-class ResourceBundleRegistryTest {
+class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<ResourceBundleRegistry> {
 
     @Inject
     @Getter
-    private ResourceBundleRegistryImpl underTest;
+    private ResourceBundleRegistry underTest;
 
     @Test
     void shouldInitPortalResourceBundles() {

@@ -27,7 +27,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 
-import de.cuioss.portal.common.bundle.PortalResourceBundleLocator;
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.logging.CuiLogger;
@@ -42,7 +41,6 @@ import lombok.ToString;
  *
  * @author Matthias Walliczek
  */
-@PortalResourceBundleLocator
 @Priority(PortalPriorities.PORTAL_ASSEMBLY_LEVEL + 10)
 @ApplicationScoped
 @EqualsAndHashCode

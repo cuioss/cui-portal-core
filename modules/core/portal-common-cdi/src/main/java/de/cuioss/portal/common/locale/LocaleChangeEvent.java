@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.common.bundle;
+package de.cuioss.portal.common.locale;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -26,15 +26,16 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+
 /**
- * Marker identifying instances of {@link ResourceBundleLocator}s that define
- * the location of ResourceBundles
+ * Defines events that will be fired on LocaleChange, its payload is
+ * Locale newLocale
  *
- * @author Matthias Walliczek
+ * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
 @Retention(RUNTIME)
-public @interface PortalResourceBundleLocator {
+@Target({ TYPE, METHOD, FIELD, PARAMETER })
+public @interface LocaleChangeEvent {
 
 }

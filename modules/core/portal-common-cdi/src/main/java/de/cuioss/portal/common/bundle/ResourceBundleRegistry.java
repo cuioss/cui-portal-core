@@ -15,20 +15,86 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.tools.collect.CollectionLiterals;
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
- * Registry for the ResourceBundleNames. Provides the resulting list of
- * configured resource bundles ordered by priority.
+ * Registry for the ResourceBundleNames. The injected
+ * {@link ResourceBundleLocator}s must have unique paths and define an existing
+ * {@link ResourceBundle}. In addition they should be annotated with the
+ * corresponding {@link Priority}
  *
- * @author Matthias Walliczek
+ * @author Oliver Wolff
  */
-public interface ResourceBundleRegistry extends Serializable {
+@ApplicationScoped
+@EqualsAndHashCode(of = "resolvedPaths", doNotUseGetters = true)
+@ToString(of = "resolvedPaths", doNotUseGetters = true)
+public class ResourceBundleRegistry implements Serializable {
+
+    private static final long serialVersionUID = 2611987921899581695L;
+
+    private static final CuiLogger log = new CuiLogger(ResourceBundleRegistry.class);
+
+    /** "Portal-506: Duplicate ResourceBundlePath found for '{}'" */
+    public static final String ERR_DUPLICATE_RESOURCE_PATH = "Portal-506: Duplicate ResourceBundlePath found for '{}'";
+
+    /** "Portal-507: No ResourceBundle found with path " */
+    public static final String ERR_NO_RESOURCE_FOUND = "Portal-507: No ResourceBundle found with path ";
+
+    @Inject
+    Instance<ResourceBundleLocator> locatorList;
 
     /**
-     * @return The computed / resolved names in the correct order
+     * The computed / resolved names in the correct order
      */
-    List<String> getResolvedPaths();
+    @Getter
+    private List<String> resolvedPaths;
+
+    /**
+     * Initializes the bean. See class documentation for expected result.
+     */
+    @PostConstruct
+    void initBean() {
+
+        var defaultLocale = Locale.getDefault();
+        final List<String> finalPaths = new ArrayList<>();
+        // Sort according to ResourceBundleDescripor#order
+        final List<ResourceBundleLocator> sortedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
+        for (final ResourceBundleLocator descriptor : sortedLocators) {
+            for (final String path : descriptor.getConfiguredResourceBundles()) {
+                // Check whether the path defines an existing ResourceBundle
+                try {
+                    ResourceBundle.getBundle(path, defaultLocale);
+                    // Check whether path is unique
+                    if (finalPaths.contains(path)) {
+                        log.error(ERR_DUPLICATE_RESOURCE_PATH, path);
+                    }
+                    finalPaths.add(path);
+                } catch (MissingResourceException e) {
+                    log.error(ERR_NO_RESOURCE_FOUND + path, e);
+                }
+            }
+        }
+        resolvedPaths = CollectionLiterals.immutableList(finalPaths);
+    }
 
 }
