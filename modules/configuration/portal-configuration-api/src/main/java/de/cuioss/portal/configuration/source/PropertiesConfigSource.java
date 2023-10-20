@@ -23,6 +23,7 @@ import java.util.Map;
 import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.configuration.impl.PropertiesConfigurationProvider;
 import de.cuioss.tools.collect.CollectionLiterals;
+import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
@@ -70,15 +71,30 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
      *                                  extension.
      */
     public PropertiesConfigSource(final String path, final boolean optional) {
-        this.path = path;
+        this(FileLoaderUtility.getLoaderForPath(path), optional);
+    }
+
+    /**
+     * Instantly loads the given file. The path might be prefixed with one of the
+     * {@link de.cuioss.tools.io.FileTypePrefix}s.
+     *
+     * @param path     to the properties file
+     * @param optional if true, doesn't throw an exception if the file isn't
+     *                 available.
+     *
+     * @throws IllegalArgumentException if {@code path} is empty or {@code null} or
+     *                                  does not have a {@code properties} file
+     *                                  extension.
+     */
+    public PropertiesConfigSource(final FileLoader fileLoader, final boolean optional) {
+        path = fileLoader.getURL().toString();
         validateFileType();
-        final var fileLoader = FileLoaderUtility.getLoaderForPath(getPath());
         if (!optional || fileLoader.isReadable()) {
-            this.properties = new PropertiesConfigurationProvider(fileLoader).getConfigurationMap();
-            this.readable = true;
+            properties = new PropertiesConfigurationProvider(fileLoader).getConfigurationMap();
+            readable = true;
         } else {
-            this.properties = CollectionLiterals.immutableMap();
-            this.readable = false;
+            properties = CollectionLiterals.immutableMap();
+            readable = false;
         }
         log.trace("Loaded data for {}: {}", getPath(), getProperties());
     }

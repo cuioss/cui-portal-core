@@ -207,6 +207,12 @@ public class PortalConfigurationKeys implements Serializable {
     public static final String PORTAL_CONFIG_DIR = CONFIGURATION_BASE + "dir";
 
     /**
+     * Defines the path, where the module default configs can be found:
+     * 'META-INF/microprofile-config.properties'
+     */
+    public static final String MODULE_DEFAULT_CONFIG_PROPERTY_PATH = "META-INF/microprofile-config.properties";
+
+    /**
      * Default portal configuration directory. Must be kept in sync with
      * {@code portal-configuration-impl/src/main/resources/META-INF/microprofile-config.yaml}
      */
@@ -382,8 +388,8 @@ public class PortalConfigurationKeys implements Serializable {
      * views / partial trees that do not need any authentication in order to be
      * displayed, as comma separated list. Caution: The views are relative to the
      * root, usually starting with /faces. The distinct values are to be checked
-     * using String#startsWith(). The default for the portal is '/guest/'. In
-     * order to match all views you can use '/'.
+     * using String#startsWith(). The default for the portal is '/guest/'. In order
+     * to match all views you can use '/'.
      * </p>
      */
     public static final String NON_SECURED_VIEWS = VIEW_BASE + "non_secured";
@@ -398,13 +404,13 @@ public class PortalConfigurationKeys implements Serializable {
      * templates that can be overridden by our template mechanisms. But what about
      * overriding pages that are delivered from the portal, e.g.
      * faces/guest/login.jsf? If a concrete application has its own pages like in
-     * pep using /pep-ui/guest/login.jsf for login. Due to the deployment
-     * mechanics of the portal faces/guest/login.jsf will still be accessible. In
-     * order to deal with this issue the portal view suppression mechanics may be
-     * used. Caution: The views are relative to the root, usually starting with
-     * /faces. The distinct values are to be checked using String#startsWith(). The
-     * default for the portal is '', saying no view is to be suppressed. Multiple
-     * view supressions can be configured by using the
+     * pep using /pep-ui/guest/login.jsf for login. Due to the deployment mechanics
+     * of the portal faces/guest/login.jsf will still be accessible. In order to
+     * deal with this issue the portal view suppression mechanics may be used.
+     * Caution: The views are relative to the root, usually starting with /faces.
+     * The distinct values are to be checked using String#startsWith(). The default
+     * for the portal is '', saying no view is to be suppressed. Multiple view
+     * supressions can be configured by using the
      * {@linkplain #CONTEXT_PARAM_SEPARATOR} character.
      * </p>
      */
@@ -422,17 +428,15 @@ public class PortalConfigurationKeys implements Serializable {
     /**
      * Prefix for identifying context-parameter defining the restrictions for
      * certain roles: "portal.view.restrict.role.". The portal defines a view-level
-     * access rights-managements. All Views can be found under '/'. The
-     * matching of certain views is checked using String#startsWith(). Therefore you
-     * can omit any suffixes and define partial trees quite easily. The individual
-     * views and/or subtrees can be separated by colons. If subtree is defined it
-     * always has to finished by '/', in case of single page without '/'. A concrete
-     * view restriction is always prepended by the string
-     * 'portal.view.restrict.role.' Sample:
-     * portal.view.restrict.role.admin=/admin/,/content/verify will
-     * result in all views under '/admin/' and the single view
-     * '/content/verify.jsf' be only accessible if the user has the role
-     * 'admin'
+     * access rights-managements. All Views can be found under '/'. The matching of
+     * certain views is checked using String#startsWith(). Therefore you can omit
+     * any suffixes and define partial trees quite easily. The individual views
+     * and/or subtrees can be separated by colons. If subtree is defined it always
+     * has to finished by '/', in case of single page without '/'. A concrete view
+     * restriction is always prepended by the string 'portal.view.restrict.role.'
+     * Sample: portal.view.restrict.role.admin=/admin/,/content/verify will result
+     * in all views under '/admin/' and the single view '/content/verify.jsf' be
+     * only accessible if the user has the role 'admin'
      */
     public static final String VIEW_ROLE_RESTRICTION_PREFIX = VIEW_BASE + "restrict.role.";
 
@@ -443,8 +447,7 @@ public class PortalConfigurationKeys implements Serializable {
      * Defines the view that are transient, therefore not part of the state saving.
      * Caution: The views are relative to the root, usually starting with /faces.
      * The distinct values are to be checked using String#startsWith(). The default
-     * for the portal is '/guest/'. In order to match all views you can use
-     * '/'.
+     * for the portal is '/guest/'. In order to match all views you can use '/'.
      * </p>
      */
     public static final String TRANSIENT_VIEWS = VIEW_BASE + "transient";
@@ -467,8 +470,8 @@ public class PortalConfigurationKeys implements Serializable {
      * <p>
      * Defines the views that are to be excluded from the server-side history, as
      * comma separated list. The distinct values are to be checked using
-     * String#startsWith(). The default for the portal is '/guest/'. In order
-     * to match all views you can use '/'.
+     * String#startsWith(). The default for the portal is '/guest/'. In order to
+     * match all views you can use '/'.
      * </p>
      */
     public static final String HISTORY_VIEW_EXCLUDE_PARAMETER = HISTORY_BASE + "view_excludes";

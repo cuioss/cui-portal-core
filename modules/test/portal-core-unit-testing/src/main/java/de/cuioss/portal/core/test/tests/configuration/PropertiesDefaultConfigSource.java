@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.core.test.tests.configuration;
 
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.MODULE_DEFAULT_CONFIG_PROPERTY_PATH;
+
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
@@ -44,9 +46,9 @@ import de.cuioss.tools.io.FileTypePrefix;
  */
 public final class PropertiesDefaultConfigSource extends PropertiesConfigSource {
 
-    public static final String META_INF_LOCATION = "META-INF/microprofile-config.properties";
     @SuppressWarnings("java:S1075") // owolff: the delimiter is correct for classpath-resources
-    public static final String CLASSPATH_LOCATION = FileTypePrefix.CLASSPATH.getPrefix() + "/" + META_INF_LOCATION;
+    public static final String CLASSPATH_LOCATION = FileTypePrefix.CLASSPATH.getPrefix() + "/"
+            + MODULE_DEFAULT_CONFIG_PROPERTY_PATH;
 
     /**
      * Loading properties from {@link #CLASSPATH_LOCATION}. This basically is a

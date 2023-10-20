@@ -34,9 +34,6 @@ import org.junit.jupiter.api.Test;
 
 import io.smallrye.config.inject.ConfigProducer;
 
-/**
- * @author Sven Haag
- */
 @EnableAutoWeld
 @AddBeanClasses(ConfigProducer.class)
 class ConfigDirTest {
