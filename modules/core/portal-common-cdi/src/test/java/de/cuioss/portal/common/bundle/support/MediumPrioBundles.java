@@ -15,9 +15,7 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
-import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 
@@ -35,11 +33,9 @@ public class MediumPrioBundles implements ResourceBundleLocator {
 
     public static final String MEDIUM_1 = "de.cuioss.portal.l18n.messages.medium1";
 
-    public static final String MEDIUM_2 = "de.cuioss.portal.l18n.messages.medium2";
-
     @Override
-    public List<String> getConfiguredResourceBundles() {
-        return immutableList(MEDIUM_1, MEDIUM_2);
+    public Optional<String> getBundlePath() {
+        return Optional.of(MEDIUM_1);
     }
 
 }

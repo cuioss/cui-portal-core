@@ -12,7 +12,7 @@
     <description>Provides the implementation-classes for the
         portal-configuration extensions</description>
     <properties>
-        <awaitility.version>4.2.0</awaitility.version>
+        <version.waitility>4.2.0</version.waitility>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.impl</maven.jar.plugin.automatic.module.name>
     </properties>
@@ -21,7 +21,7 @@
             <dependency>
                 <groupId>org.awaitility</groupId>
                 <artifactId>awaitility</artifactId>
-                <version>${awaitility.version}</version>
+                <version>${version.waitility}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

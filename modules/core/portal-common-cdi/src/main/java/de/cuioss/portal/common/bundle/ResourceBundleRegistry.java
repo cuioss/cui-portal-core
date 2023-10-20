@@ -20,8 +20,6 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
@@ -57,9 +55,6 @@ public class ResourceBundleRegistry implements Serializable {
     /** "Portal-506: Duplicate ResourceBundlePath found for '{}'" */
     public static final String ERR_DUPLICATE_RESOURCE_PATH = "Portal-506: Duplicate ResourceBundlePath found for '{}'";
 
-    /** "Portal-507: No ResourceBundle found with path " */
-    public static final String ERR_NO_RESOURCE_FOUND = "Portal-507: No ResourceBundle found with path ";
-
     @Inject
     Instance<ResourceBundleLocator> locatorList;
 
@@ -74,27 +69,25 @@ public class ResourceBundleRegistry implements Serializable {
      */
     @PostConstruct
     void initBean() {
-
-        var defaultLocale = Locale.getDefault();
         final List<String> finalPaths = new ArrayList<>();
         // Sort according to ResourceBundleDescripor#order
         final List<ResourceBundleLocator> sortedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
         for (final ResourceBundleLocator descriptor : sortedLocators) {
-            for (final String path : descriptor.getConfiguredResourceBundles()) {
+            var path = descriptor.getBundlePath();
+            if (path.isPresent()) {
                 // Check whether the path defines an existing ResourceBundle
-                try {
-                    ResourceBundle.getBundle(path, defaultLocale);
-                    // Check whether path is unique
-                    if (finalPaths.contains(path)) {
-                        log.error(ERR_DUPLICATE_RESOURCE_PATH, path);
-                    }
-                    finalPaths.add(path);
-                } catch (MissingResourceException e) {
-                    log.error(ERR_NO_RESOURCE_FOUND + path, e);
+                // Check whether path is unique
+                if (finalPaths.contains(path.get())) {
+                    log.error(ERR_DUPLICATE_RESOURCE_PATH, path);
                 }
+                finalPaths.add(path.get());
+            } else {
+                log.debug("No valid path given, ignoring");
             }
         }
+        log.debug("Determined ResourceBundle-Oath: '%s'", finalPaths);
         resolvedPaths = CollectionLiterals.immutableList(finalPaths);
+
     }
 
 }

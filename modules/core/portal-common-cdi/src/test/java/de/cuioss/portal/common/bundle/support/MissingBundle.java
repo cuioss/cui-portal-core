@@ -15,9 +15,7 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
-import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 
@@ -29,14 +27,12 @@ import lombok.ToString;
 @Priority(PortalPriorities.PORTAL_ASSEMBLY_LEVEL)
 @EqualsAndHashCode
 @ToString
-public class DefectBundle implements ResourceBundleLocator {
+public class MissingBundle implements ResourceBundleLocator {
 
     private static final long serialVersionUID = 7756501560722570148L;
 
-    public static final String HIGH_1 = "de.cuioss.portal.l18n.messages.missing";
-
     @Override
-    public List<String> getConfiguredResourceBundles() {
-        return immutableList(HIGH_1);
+    public Optional<String> getBundlePath() {
+        return Optional.empty();
     }
 }

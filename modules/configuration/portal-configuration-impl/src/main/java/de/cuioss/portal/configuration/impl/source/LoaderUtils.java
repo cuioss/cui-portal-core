@@ -42,7 +42,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class LoaderUtils {
 
-    private static final CuiLogger LOG = new CuiLogger(LoaderUtils.class);
+    private static final CuiLogger LOGGER = new CuiLogger(LoaderUtils.class);
 
     private static final String FILETYPE_NOT_PROVIDED_MSG = "Portal-151: Unsupported configuration file type: {}. Supported is: {}. If you want to support yaml files do not forget to add 'portal-configuration-yaml' to the deployment";
 
@@ -55,7 +55,7 @@ public class LoaderUtils {
      */
     public static Map<String, String> loadConfigurationFromSource(final FileConfigurationSource source) {
         if (null == source || isEmpty(source.getPath())) {
-            LOG.debug("Nothing to load found");
+            LOGGER.debug("Nothing to load found");
             return Collections.emptyMap();
         }
         for (var resolver : loadResolver()) {
@@ -65,7 +65,7 @@ public class LoaderUtils {
             }
         }
 
-        LOG.warn(FILETYPE_NOT_PROVIDED_MSG, source, retrieveSupportedSuffixes());
+        LOGGER.warn(FILETYPE_NOT_PROVIDED_MSG, source, retrieveSupportedSuffixes());
         return Collections.emptyMap();
     }
 
@@ -78,7 +78,7 @@ public class LoaderUtils {
      */
     public static Map<String, String> loadConfigurationFromSource(final FileLoader source) {
         if (null == source || isEmpty(source.getFileName().getOriginalName())) {
-            LOG.debug("Nothing to load found");
+            LOGGER.debug("Nothing to load found");
             return Collections.emptyMap();
         }
         for (var resolver : loadResolver()) {
@@ -88,7 +88,7 @@ public class LoaderUtils {
             }
         }
 
-        LOG.warn(FILETYPE_NOT_PROVIDED_MSG, source, retrieveSupportedSuffixes());
+        LOGGER.warn(FILETYPE_NOT_PROVIDED_MSG, source, retrieveSupportedSuffixes());
         return Collections.emptyMap();
     }
 

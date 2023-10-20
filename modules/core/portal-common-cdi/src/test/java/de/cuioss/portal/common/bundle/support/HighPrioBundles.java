@@ -15,9 +15,7 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
-import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 
@@ -35,10 +33,8 @@ public class HighPrioBundles implements ResourceBundleLocator {
 
     public static final String HIGH_1 = "de.cuioss.portal.l18n.messages.high1";
 
-    public static final String HIGH_2 = "de.cuioss.portal.l18n.messages.high2";
-
     @Override
-    public List<String> getConfiguredResourceBundles() {
-        return immutableList(HIGH_1, HIGH_2);
+    public Optional<String> getBundlePath() {
+        return Optional.of(HIGH_1);
     }
 }

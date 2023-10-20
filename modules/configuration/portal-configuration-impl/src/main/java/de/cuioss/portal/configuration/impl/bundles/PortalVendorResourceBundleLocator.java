@@ -15,12 +15,11 @@
  */
 package de.cuioss.portal.configuration.impl.bundles;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.portal.configuration.PortalConfigurationDefaults.CUSTOM_BUNDLE_PATH;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +30,6 @@ import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -49,12 +47,9 @@ public class PortalVendorResourceBundleLocator implements ResourceBundleLocator 
 
     private static final CuiLogger log = new CuiLogger(PortalVendorResourceBundleLocator.class);
 
-    private static final String VENDOR_MESSAGES = "de.cuioss.portal.i18n.vendor-messages";
-
     private static final long serialVersionUID = -8478481710191113463L;
 
-    @Getter
-    private List<String> configuredResourceBundles = immutableList(VENDOR_MESSAGES);
+    private String bundle;
 
     /**
      * Initializes the bean by loading the {@link ResourceBundle}
@@ -62,11 +57,18 @@ public class PortalVendorResourceBundleLocator implements ResourceBundleLocator 
     @PostConstruct
     public void initBean() {
         try {
-            ResourceBundle.getBundle(VENDOR_MESSAGES, Locale.getDefault());
+            ResourceBundle.getBundle(CUSTOM_BUNDLE_PATH, Locale.getDefault());
+            bundle = CUSTOM_BUNDLE_PATH;
+            log.info("Custom messages found at '{}', ignoring.", CUSTOM_BUNDLE_PATH);
         } catch (MissingResourceException e) {
-            log.info("vendor messages not found at '{}', ignored.", VENDOR_MESSAGES);
-            configuredResourceBundles = Collections.emptyList();
+            log.info("Custom messages not found at '{}', ignoring.", CUSTOM_BUNDLE_PATH);
+            bundle = null;
         }
+    }
+
+    @Override
+    public Optional<String> getBundlePath() {
+        return Optional.ofNullable(bundle);
     }
 
 }

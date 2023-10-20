@@ -46,7 +46,7 @@ import lombok.ToString;
 @ToString
 public class PropertiesConfigurationProvider implements ConfigurationSource {
 
-    private static final CuiLogger log = new CuiLogger(PropertiesConfigurationProvider.class);
+    private static final CuiLogger LOGGER = new CuiLogger(PropertiesConfigurationProvider.class);
 
     private static final String PORTAL_503 = "Portal-503: Unable to load from properties file described by '{}', due to: '{}'";
 
@@ -62,7 +62,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource {
     public PropertiesConfigurationProvider(final FileLoader fileLoader) {
         requireNonNull(fileLoader, "fileLoader");
         this.fileLoader = fileLoader;
-        log.info("Loading properties from: {}", fileLoader.getURL());
+        LOGGER.debug("Loading properties from: {}", fileLoader.getURL());
     }
 
     /**
@@ -94,8 +94,8 @@ public class PropertiesConfigurationProvider implements ConfigurationSource {
      *         errors it will return an empty {@link Properties}
      */
     public Optional<Properties> getAsProperties() {
-        if ((null == fileLoader) || !fileLoader.isReadable()) {
-            log.error(PORTAL_503, fileLoader, MSG_READ_ERROR);
+        if (null == fileLoader || !fileLoader.isReadable()) {
+            LOGGER.error(PORTAL_503, fileLoader, MSG_READ_ERROR);
             return Optional.empty();
         }
         final var properties = new Properties();
@@ -103,7 +103,7 @@ public class PropertiesConfigurationProvider implements ConfigurationSource {
             properties.load(inputStream);
             return Optional.of(properties);
         } catch (final IOException e) {
-            log.error(PORTAL_503, fileLoader, e.getMessage(), e);
+            LOGGER.error(PORTAL_503, fileLoader, e.getMessage(), e);
             return Optional.empty();
         }
     }

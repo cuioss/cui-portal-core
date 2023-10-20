@@ -24,14 +24,14 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.common.bundle.support.DefectBundle;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
+import de.cuioss.portal.common.bundle.support.MissingBundle;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import lombok.Getter;
 
 @EnableAutoWeld
-@AddBeanClasses({ MediumPrioBundles.class, HighPrioBundles.class, DefectBundle.class })
+@AddBeanClasses({ MediumPrioBundles.class, HighPrioBundles.class, MissingBundle.class })
 class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<ResourceBundleRegistry> {
 
     @Inject
@@ -42,11 +42,9 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
     void shouldInitPortalResourceBundles() {
         assertNotNull(underTest);
         assertNotNull(underTest.getResolvedPaths());
-        assertEquals(4, underTest.getResolvedPaths().size());
+        assertEquals(2, underTest.getResolvedPaths().size());
         assertEquals(HighPrioBundles.HIGH_1, underTest.getResolvedPaths().get(0));
-        assertEquals(HighPrioBundles.HIGH_2, underTest.getResolvedPaths().get(1));
-        assertEquals(MediumPrioBundles.MEDIUM_1, underTest.getResolvedPaths().get(2));
-        assertEquals(MediumPrioBundles.MEDIUM_2, underTest.getResolvedPaths().get(3));
+        assertEquals(MediumPrioBundles.MEDIUM_1, underTest.getResolvedPaths().get(1));
     }
 
     // TODO : verify log error msgs

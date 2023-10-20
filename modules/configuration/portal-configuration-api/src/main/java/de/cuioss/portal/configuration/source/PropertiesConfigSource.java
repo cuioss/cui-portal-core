@@ -33,7 +33,7 @@ import lombok.Getter;
  */
 public class PropertiesConfigSource extends AbstractPortalConfigSource implements FileConfigurationSource {
 
-    private static final CuiLogger log = new CuiLogger(PropertiesConfigSource.class);
+    private static final CuiLogger LOGGER = new CuiLogger(PropertiesConfigSource.class);
 
     @Getter
     protected String path;
@@ -96,7 +96,7 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
             properties = CollectionLiterals.immutableMap();
             readable = false;
         }
-        log.trace("Loaded data for {}: {}", getPath(), getProperties());
+        LOGGER.debug("Loaded data for {}: {}", getPath(), getProperties());
     }
 
     private void validateFileType() {

@@ -16,7 +16,7 @@
 package de.cuioss.portal.common.bundle;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 
@@ -33,8 +33,10 @@ import javax.annotation.Priority;
 public interface ResourceBundleLocator extends Serializable {
 
     /**
-     * @return paths of the resource bundles
+     * @return paths of the resource bundles if it can be loaded. <em>Caution: </em>
+     *         {@link ResourceBundleRegistry} assumes that only loadable paths are
+     *         to be returned. Therefore each implementation must take care.
      */
-    List<String> getConfiguredResourceBundles();
+    Optional<String> getBundlePath();
 
 }
