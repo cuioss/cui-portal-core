@@ -59,7 +59,7 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
             cdi = CDI.current();
         } catch (IllegalStateException e) {
             throw new IllegalStateException("""
-                    CDI not present, maybe change the order of annotation and put @EnableAutoWeld above \
+                    CDI not present, change the order of annotation and put @EnableAutoWeld above \
                     @EnablePortalConfiguration\
                     """, e);
         }

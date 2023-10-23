@@ -21,6 +21,7 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.faces.application.Application;
 import javax.inject.Inject;
 
@@ -45,6 +46,7 @@ import lombok.ToString;
  *
  * @author Oliver Wolff
  */
+@Dependent
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class PortalResourceBundleBean extends ResourceBundle implements Serializable {
@@ -52,7 +54,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
     private static final long serialVersionUID = 3953649686127640297L;
 
     /** Lookup name for el-expression within views: "msgs" */
-    public static final String BUBDLE_NAME = "msgs";
+    public static final String BUNDLE_NAME = "msgs";
 
     @Inject
     private ResourceBundleWrapper resourceBundleWrapper;

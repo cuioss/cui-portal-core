@@ -41,7 +41,6 @@ import lombok.ToString;
  *
  * @author Oliver Wolff
  */
-@Named
 @RequestScoped
 @EqualsAndHashCode(exclude = { "authenticationFacade", "servletRequestProvider" })
 @ToString(exclude = { "authenticationFacade", "servletRequestProvider" })
