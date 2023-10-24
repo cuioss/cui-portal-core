@@ -66,14 +66,4 @@ public class HealthCheckConfigKeys {
      */
     public static final String PORTAL_HEALTHCHECK_HTTPCODEDOWN = PORTAL_HEALTHCHECK_BASE + "httpCodeDown";
 
-    /**
-     * Context parameter within configuration-subsystem with the name
-     * 'portal.healthcheck.customOutput'
-     * <p>
-     * Used to define the responded JSON format. If <code>true</code>, the output
-     * conforms to the ICW style, which is based on Dropwizard. If
-     * <code>false</code>, the JAVA MicroProfile style is used.
-     * </p>
-     */
-    public static final String PORTAL_HEALTHCHECK_CUSTOMOUTPUT = PORTAL_HEALTHCHECK_BASE + "customOutput";
 }

@@ -65,19 +65,19 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private static final long serialVersionUID = 9136037316650210138L;
 
-    private static final CuiLogger log = new CuiLogger(ResourceBundleWrapper.class);
+    private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleWrapper.class);
 
     @Inject
-    private ResourceBundleRegistry resourceBundleRegistry;
+    ResourceBundleRegistry resourceBundleRegistry;
 
     private transient List<ResourceBundle> resolvedBundles;
 
     @Inject
-    private Provider<CuiProjectStage> projectStage;
+    Provider<CuiProjectStage> projectStage;
 
     @Inject
     @PortalLocale
-    private Provider<Locale> localeProvider;
+    Provider<Locale> localeProvider;
 
     private final List<String> keyList = new CopyOnWriteArrayList<>();
 
@@ -97,7 +97,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
             throw new MissingResourceException(errMsg, "ResourceBundleWrapperImpl", key);
         }
 
-        log.warn(errMsg);
+        LOGGER.warn(errMsg);
         return "??" + key + "??";
 
     }
@@ -117,7 +117,12 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
         if (null == resolvedBundles) {
             var builder = new CollectionBuilder<ResourceBundle>();
             for (final String path : resourceBundleRegistry.getResolvedPaths()) {
-                builder.add(ResourceBundle.getBundle(path, localeProvider.get()));
+                try {
+                    builder.add(ResourceBundle.getBundle(path, localeProvider.get()));
+                    LOGGER.debug("Successfully loaded Resource-Bundle '%s'");
+                } catch (MissingResourceException e) {
+                    LOGGER.warn("Unable to load Resource-Bundle '%s'".formatted(path), e);
+                }
             }
             resolvedBundles = builder.toImmutableList();
         }
