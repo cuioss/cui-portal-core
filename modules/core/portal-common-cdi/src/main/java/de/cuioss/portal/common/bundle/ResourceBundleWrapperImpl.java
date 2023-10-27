@@ -65,7 +65,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private static final long serialVersionUID = 9136037316650210138L;
 
-    private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleWrapper.class);
+    private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleWrapperImpl.class);
 
     @Inject
     ResourceBundleRegistry resourceBundleRegistry;
