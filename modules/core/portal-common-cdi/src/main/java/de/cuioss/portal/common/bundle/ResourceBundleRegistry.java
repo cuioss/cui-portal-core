@@ -82,12 +82,12 @@ public class ResourceBundleRegistry implements Serializable {
                 if (foundPaths.contains(descriptor.getBundlePath().get())) {
                     log.warn(ERR_DUPLICATE_RESOURCE_PATH, descriptor);
                 } else {
-                    log.debug("Adding Bundle '%s'", descriptor);
+                    log.debug("Adding '%s'", descriptor);
                     finalPaths.add(descriptor);
                     foundPaths.add(descriptor.getBundlePath().get());
                 }
             } else {
-                log.warn("Ignoring Bundle '%s'", descriptor);
+                log.warn("Ignoring '%s'", descriptor);
             }
         }
         resolvedPaths = finalPaths.toImmutableList();

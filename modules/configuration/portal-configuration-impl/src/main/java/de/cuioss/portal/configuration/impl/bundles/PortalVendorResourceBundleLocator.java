@@ -71,4 +71,9 @@ public class PortalVendorResourceBundleLocator implements ResourceBundleLocator 
         return Optional.ofNullable(bundle);
     }
 
+    @Override
+    public String toString() {
+        return "%s: Path='%s'".formatted(getClass().getName(), CUSTOM_BUNDLE_PATH);
+    }
+
 }
