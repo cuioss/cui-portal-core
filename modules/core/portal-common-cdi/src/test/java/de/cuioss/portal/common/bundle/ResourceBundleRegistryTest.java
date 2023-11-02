@@ -43,8 +43,8 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
         assertNotNull(underTest);
         assertNotNull(underTest.getResolvedPaths());
         assertEquals(2, underTest.getResolvedPaths().size());
-        assertEquals(HighPrioBundles.HIGH_1, underTest.getResolvedPaths().get(0));
-        assertEquals(MediumPrioBundles.MEDIUM_1, underTest.getResolvedPaths().get(1));
+        assertEquals(HighPrioBundles.HIGH_1, underTest.getResolvedPaths().get(0).getBundlePath().get());
+        assertEquals(MediumPrioBundles.MEDIUM_1, underTest.getResolvedPaths().get(1).getBundlePath().get());
     }
 
     // TODO : verify log error msgs

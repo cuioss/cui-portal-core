@@ -16,9 +16,14 @@
 package de.cuioss.portal.common.bundle;
 
 import java.io.Serializable;
+import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import javax.annotation.Priority;
+
+import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * Used for configuring ResourceBundles. Implementations should provide a
@@ -32,11 +37,33 @@ import javax.annotation.Priority;
  */
 public interface ResourceBundleLocator extends Serializable {
 
+    CuiLogger LOGGER = new CuiLogger(ResourceBundleLocator.class);
+
     /**
      * @return paths of the resource bundles if it can be loaded. <em>Caution: </em>
      *         {@link ResourceBundleRegistry} assumes that only loadable paths are
      *         to be returned. Therefore each implementation must take care.
      */
     Optional<String> getBundlePath();
+
+    /**
+     * @return an {@link Optional} {@link ResourceBundle} derived by the path of
+     *         {@link #getBundlePath()}
+     */
+    default Optional<ResourceBundle> getBundle(Locale locale) {
+        var bundlePath = getBundlePath();
+        if (bundlePath.isEmpty()) {
+            LOGGER.debug("No ResourceBundle to be loaded is present");
+            return Optional.empty();
+        }
+        try {
+            Optional<ResourceBundle> loadedBundle = Optional.of(ResourceBundle.getBundle(bundlePath.get(), locale));
+            LOGGER.debug("Successfully loaded ResourceBundle '%s'", bundlePath.get());
+            return loadedBundle;
+        } catch (MissingResourceException e) {
+            LOGGER.warn("Unable to load ResourceBundle '%s'".formatted(bundlePath.get()), e);
+            return Optional.empty();
+        }
+    }
 
 }

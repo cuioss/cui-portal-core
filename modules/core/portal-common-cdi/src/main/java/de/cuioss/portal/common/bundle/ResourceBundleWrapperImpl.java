@@ -116,13 +116,9 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
     private List<ResourceBundle> getResolvedBundles() {
         if (null == resolvedBundles) {
             var builder = new CollectionBuilder<ResourceBundle>();
-            for (final String path : resourceBundleRegistry.getResolvedPaths()) {
-                try {
-                    builder.add(ResourceBundle.getBundle(path, localeProvider.get()));
-                    LOGGER.debug("Successfully loaded Resource-Bundle '%s'");
-                } catch (MissingResourceException e) {
-                    LOGGER.warn("Unable to load Resource-Bundle '%s'".formatted(path), e);
-                }
+
+            for (final ResourceBundleLocator path : resourceBundleRegistry.getResolvedPaths()) {
+                path.getBundle(localeProvider.get()).ifPresent(builder::add);
             }
             resolvedBundles = builder.toImmutableList();
         }

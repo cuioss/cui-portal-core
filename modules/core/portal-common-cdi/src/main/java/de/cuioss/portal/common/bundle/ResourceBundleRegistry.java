@@ -20,6 +20,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
@@ -29,7 +30,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
-import de.cuioss.tools.collect.CollectionLiterals;
+import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -62,31 +63,34 @@ public class ResourceBundleRegistry implements Serializable {
      * The computed / resolved names in the correct order
      */
     @Getter
-    private List<String> resolvedPaths;
+    private List<ResourceBundleLocator> resolvedPaths;
 
     /**
      * Initializes the bean. See class documentation for expected result.
      */
     @PostConstruct
+    @SuppressWarnings("java:S3655") // owolff: false positive isPresent is checked
     void initBean() {
-        final List<String> finalPaths = new ArrayList<>();
+        final var finalPaths = new CollectionBuilder<ResourceBundleLocator>();
         // Sort according to ResourceBundleDescripor#order
         final List<ResourceBundleLocator> sortedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
+        final var foundPaths = new ArrayList<String>();
         for (final ResourceBundleLocator descriptor : sortedLocators) {
-            var path = descriptor.getBundlePath();
-            if (path.isPresent()) {
-                // Check whether the path defines an existing ResourceBundle
+            var resolvedBundle = descriptor.getBundle(Locale.getDefault());
+            if (resolvedBundle.isPresent() && descriptor.getBundlePath().isPresent()) {
                 // Check whether path is unique
-                if (finalPaths.contains(path.get())) {
-                    log.error(ERR_DUPLICATE_RESOURCE_PATH, path);
+                if (foundPaths.contains(descriptor.getBundlePath().get())) {
+                    log.warn(ERR_DUPLICATE_RESOURCE_PATH, descriptor);
+                } else {
+                    log.debug("Adding Bundle '%s'", descriptor);
+                    finalPaths.add(descriptor);
+                    foundPaths.add(descriptor.getBundlePath().get());
                 }
-                finalPaths.add(path.get());
             } else {
-                log.debug("No valid path given, ignoring");
+                log.warn("Ignoring Bundle '%s'", descriptor);
             }
         }
-        log.debug("Determined ResourceBundle-Oath: '%s'", finalPaths);
-        resolvedPaths = CollectionLiterals.immutableList(finalPaths);
+        resolvedPaths = finalPaths.toImmutableList();
 
     }
 
