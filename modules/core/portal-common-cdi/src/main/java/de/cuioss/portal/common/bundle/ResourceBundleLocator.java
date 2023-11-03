@@ -58,10 +58,10 @@ public interface ResourceBundleLocator extends Serializable {
         }
         try {
             Optional<ResourceBundle> loadedBundle = Optional.of(ResourceBundle.getBundle(bundlePath.get(), locale));
-            LOGGER.debug("Successfully loaded ResourceBundle '%s'", bundlePath.get());
+            LOGGER.debug("Successfully loaded %s '%s' for '%s'", getClass().getName(), bundlePath.get(), locale);
             return loadedBundle;
         } catch (MissingResourceException e) {
-            LOGGER.warn("Unable to load ResourceBundle '%s'".formatted(bundlePath.get()), e);
+            LOGGER.warn("Unable to load %s '%s' for '%s'".formatted(getClass().getName(), bundlePath.get(), locale), e);
             return Optional.empty();
         }
     }

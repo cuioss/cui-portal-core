@@ -91,6 +91,7 @@ public class ResourceBundleRegistry implements Serializable {
             }
         }
         resolvedPaths = finalPaths.toImmutableList();
+        log.debug("Resulting in %s", resolvedPaths);
 
     }
 
