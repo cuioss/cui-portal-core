@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -78,8 +80,8 @@ public class PortalProjectStageImpl implements Serializable {
     public static final String BEAN_NAME = "cuiProjectStage";
 
     @Produces
-    @ApplicationScoped
-    @Getter
+    @Dependent
+    @Getter(value = AccessLevel.PACKAGE)
     private CuiProjectStage projectStage = ProjectStage.PRODUCTION;
 
     @Inject
@@ -91,14 +93,11 @@ public class PortalProjectStageImpl implements Serializable {
      */
     @PostConstruct
     void initialize() {
-        initBean();
-    }
+        final var configuredProjectStage = ProjectStage.fromString(portalStageConfigurationProvider.get());
+        LOGGER.debug("Read from configuration-system '%s'", configuredProjectStage);
+        projectStage = configuredProjectStage;
 
-    private void initBean() {
-        final var portalProjectStage = ProjectStage.fromString(portalStageConfigurationProvider.get());
-        projectStage = portalProjectStage;
-
-        switch (portalProjectStage) {
+        switch (configuredProjectStage) {
         case DEVELOPMENT:
             LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "development");
             break;
@@ -125,7 +124,7 @@ public class PortalProjectStageImpl implements Serializable {
             @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
         if (deltaMap.containsKey(PortalConfigurationKeys.PORTAL_STAGE)) {
             LOGGER.debug("Change in portal stage configuration found, reconfigure");
-            initBean();
+            initialize();
         }
     }
 }
