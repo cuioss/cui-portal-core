@@ -29,7 +29,7 @@
         <system>GitHub Issues</system>
     </issueManagement>
     <properties>
-        <version.cui.parent>0.4.3</version.cui.parent>
+        <version.cui.parent>0.4.4</version.cui.parent>
         <version.zipkin.brave>5.16.0</version.zipkin.brave>
         <version.zipkin.reporter>2.16.4</version.zipkin.reporter>
     </properties>
