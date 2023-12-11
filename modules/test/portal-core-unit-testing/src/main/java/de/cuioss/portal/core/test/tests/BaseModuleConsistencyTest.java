@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  *
  * <pre>
  * protected Weld modifyWeldContainer(Weld weld) {
- *     return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducers.class);
+ *     return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducer.class);
  * }
  * </pre>
  *
