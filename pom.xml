@@ -31,7 +31,7 @@
     <properties>
         <version.cui.parent>0.4.6</version.cui.parent>
         <version.zipkin.brave>5.16.0</version.zipkin.brave>
-        <version.zipkin.reporter>2.16.4</version.zipkin.reporter>
+        <version.zipkin.reporter>2.16.5</version.zipkin.reporter>
     </properties>
     <modules>
         <module>bom</module>
