@@ -43,17 +43,14 @@ import de.cuioss.portal.common.locale.PortalLocale;
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.uimodel.application.CuiProjectStage;
-import lombok.Getter;
 
 @EnableAutoWeld
-@AddBeanClasses({ PortalMessages.class, ResourceBundleRegistry.class, ResourceBundleWrapperImpl.class,
-        PortalResourceBundleBean.class })
+@AddBeanClasses({ PortalMessages.class, ResourceBundleRegistry.class, ResourceBundleWrapperImpl.class })
 @ActivateScopes({ RequestScoped.class, SessionScoped.class })
 class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<PortalResourceBundleBean> {
 
     @Inject
-    @Getter
-    private PortalResourceBundleBean underTest;
+    private ResourceBundleWrapper wrapper;
 
     @Produces
     private CuiProjectStage projectStage;
@@ -74,6 +71,7 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
 
     @Test
     void testGetMessage() {
+        var underTest = getUnderTest();
         assertEquals("Internal server error", underTest.getString("page.error.title"));
         assertEquals("Internal server error", underTest.getString("page.error.srHeader"));
         assertEquals(PortalResourceBundleWrapperImplTest.PORTAL_TITLE, underTest.getString("portal.title"));
@@ -81,6 +79,7 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
 
     @Test
     void shouldSwitchMessageBundleOnLocaleChange() {
+        var underTest = getUnderTest();
         assertEquals("Internal server error", underTest.getString("page.error.title"));
         locale = Locale.GERMAN;
         localeChangeEvent.fire(Locale.GERMAN);
@@ -90,6 +89,7 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
 
     @Test
     void shouldFailOnInvalidKey() {
+        var underTest = getUnderTest();
         projectStage = ProjectStage.DEVELOPMENT;
         assertThrows(MissingResourceException.class, () -> {
             underTest.getString("not.there");
@@ -98,8 +98,13 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
 
     @Test
     void shouldReturnKeys() {
-        final List<String> keys = Collections.list(underTest.getKeys());
+        final List<String> keys = Collections.list(getUnderTest().getKeys());
         assertNotNull(keys);
         assertTrue(keys.size() > 60, "Found: " + keys.size());
+    }
+
+    @Override
+    public PortalResourceBundleBean getUnderTest() {
+        return new PortalResourceBundleBean(wrapper);
     }
 }
