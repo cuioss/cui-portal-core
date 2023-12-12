@@ -103,6 +103,13 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
         assertTrue(keys.size() > 60, "Found: " + keys.size());
     }
 
+    @Test
+    void shouldLoadFromFactoryMethod() {
+        var underTest = PortalResourceBundleBean.resolveFromCDIContext();
+        assertEquals("Internal server error", underTest.getString("page.error.title"));
+        assertEquals(PortalResourceBundleWrapperImplTest.PORTAL_TITLE, underTest.getString("portal.title"));
+    }
+
     @Override
     public PortalResourceBundleBean getUnderTest() {
         return new PortalResourceBundleBean(wrapper);

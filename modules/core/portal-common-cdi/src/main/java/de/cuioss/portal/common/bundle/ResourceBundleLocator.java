@@ -57,7 +57,8 @@ public interface ResourceBundleLocator extends Serializable {
             return Optional.empty();
         }
         try {
-            Optional<ResourceBundle> loadedBundle = Optional.of(ResourceBundle.getBundle(bundlePath.get(), locale));
+            Optional<ResourceBundle> loadedBundle = Optional.of(
+                    ResourceBundle.getBundle(bundlePath.get(), locale, Thread.currentThread().getContextClassLoader()));
             LOGGER.debug("Successfully loaded %s '%s' for '%s'", getClass().getName(), bundlePath.get(), locale);
             return loadedBundle;
         } catch (MissingResourceException e) {

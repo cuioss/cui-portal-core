@@ -21,8 +21,11 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.Application;
 
+import de.cuioss.portal.common.cdi.PortalBeanManager;
+import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -52,6 +55,8 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     private static final long serialVersionUID = 3953649686127640297L;
 
+    private static final CuiLogger LOGGER = new CuiLogger(PortalResourceBundleBean.class);
+
     /** Lookup name for el-expression within views: "msgs" */
     public static final String BUNDLE_NAME = "msgs";
 
@@ -72,6 +77,16 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
     @Override
     public Set<String> keySet() {
         return resourceBundleWrapper.keySet();
+    }
+
+    /**
+     * Factory Method creating a new instance with loading the contained
+     * {@link ResourceBundleWrapper}, {@link SessionScoped} from the CDR-COntext
+     */
+    public static PortalResourceBundleBean resolveFromCDIContext() {
+        LOGGER.debug("Resolving PortalResourceBundleBean from CDI-Context");
+        var resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
+        return new PortalResourceBundleBean(resourceBundleWrapper);
     }
 
 }
