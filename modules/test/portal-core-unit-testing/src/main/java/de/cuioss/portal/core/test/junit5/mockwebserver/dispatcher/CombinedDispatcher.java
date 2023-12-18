@@ -96,7 +96,7 @@ public class CombinedDispatcher extends Dispatcher {
         if (!endWithTeapot) {
             code = HTTP_CODE_NOT_FOUND;
         }
-        return new MockResponse().setResponseCode(code);
+        return new MockResponse(code);
     }
 
     /**

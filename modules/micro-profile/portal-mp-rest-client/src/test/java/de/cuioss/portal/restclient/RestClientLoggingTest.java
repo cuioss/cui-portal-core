@@ -48,6 +48,7 @@ import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import okhttp3.Headers;
 
 @EnableAutoWeld
 @EnableMockWebServer
@@ -85,15 +86,15 @@ class RestClientLoggingTest implements MockWebServerHolder {
                 switch (request.getPath()) {
                 case "/something":
                     if (HttpMethod.GET.equals(request.getMethod())) {
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                                .addHeader("x-header-key", "x-header-value").setBody(TEXT);
+                        return new MockResponse(HttpServletResponse.SC_OK, Headers.of("x-header-key", "x-header-value"),
+                                TEXT);
                     }
                     if (HttpMethod.POST.equals(request.getMethod())) {
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED)
-                                .addHeader("x-header-key", "x-header-value");
+                        return new MockResponse(HttpServletResponse.SC_CREATED,
+                                Headers.of("x-header-key", "x-header-value"));
                     }
                 default:
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                    return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
                 }
             }
         };

@@ -167,22 +167,21 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
                 switch (request.getPath()) {
                 case "/success/test":
                     if (doNotModifiedTest) {
-                        return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_MODIFIED);
+                        return new MockResponse(HttpServletResponse.SC_NOT_MODIFIED);
                     }
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                            .addHeader("Content-Type", MEDIA_TYPE_FHIR_XML).addHeader("ETag", "W/123")
-                            .addHeader("Expires", "Fri, 02 Dec 2050 16:00:00 GMT").setBody(TEXT);
+                    return new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MEDIA_TYPE_FHIR_XML,
+                            "ETag", "W/123", "Expires", "Fri, 02 Dec 2050 16:00:00 GMT"), TEXT);
                 case "/error/test":
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    return new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 case "/post":
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED);
+                    return new MockResponse(HttpServletResponse.SC_CREATED);
                 case "/unauthorized/test":
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_UNAUTHORIZED);
+                    return new MockResponse(HttpServletResponse.SC_UNAUTHORIZED);
                 case "/collection":
-                    return new MockResponse().addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                            .setBody("[\"a\", \"b\"]");
+                    return new MockResponse(HttpServletResponse.SC_OK,
+                            Headers.of("Content-Type", MediaType.APPLICATION_JSON), "[\"a\", \"b\"]");
                 default:
-                    return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                    return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
                 }
             }
         };
