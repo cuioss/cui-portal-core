@@ -28,8 +28,6 @@ The core modules of the cui-portal incorporating portal-configuration and portal
 ----
 
 
-
-
 === Credentials
 
 A sonar token can be derived from https://sonarcloud.io/account/security
