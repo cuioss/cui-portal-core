@@ -42,7 +42,7 @@ public interface ResourceBundleLocator extends Serializable {
     /**
      * @return paths of the resource bundles if it can be loaded. <em>Caution: </em>
      *         {@link ResourceBundleRegistry} assumes that only loadable paths are
-     *         to be returned. Therefore each implementation must take care.
+     *         to be returned. Therefore, each implementation must take care.
      */
     Optional<String> getBundlePath();
 

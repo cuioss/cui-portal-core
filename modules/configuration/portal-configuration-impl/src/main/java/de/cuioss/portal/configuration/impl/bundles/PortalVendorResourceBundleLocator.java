@@ -15,22 +15,21 @@
  */
 package de.cuioss.portal.configuration.impl.bundles;
 
-import static de.cuioss.portal.configuration.PortalConfigurationDefaults.CUSTOM_BUNDLE_PATH;
+import de.cuioss.portal.common.bundle.ResourceBundleLocator;
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.EqualsAndHashCode;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import java.io.Serial;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-
-import de.cuioss.portal.common.bundle.ResourceBundleLocator;
-import de.cuioss.portal.common.priority.PortalPriorities;
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import static de.cuioss.portal.configuration.PortalConfigurationDefaults.CUSTOM_BUNDLE_PATH;
 
 /**
  * Defines the vendor specific bundle to be defined within a portal application,
@@ -42,11 +41,11 @@ import lombok.ToString;
 @Priority(PortalPriorities.PORTAL_ASSEMBLY_LEVEL + 10)
 @ApplicationScoped
 @EqualsAndHashCode
-@ToString
 public class PortalVendorResourceBundleLocator implements ResourceBundleLocator {
 
     private static final CuiLogger log = new CuiLogger(PortalVendorResourceBundleLocator.class);
 
+    @Serial
     private static final long serialVersionUID = -8478481710191113463L;
 
     private String bundle;

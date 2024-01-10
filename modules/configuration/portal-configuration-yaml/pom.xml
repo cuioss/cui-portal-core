@@ -9,7 +9,7 @@
     </parent>
     <artifactId>portal-configuration-yaml</artifactId>
     <name>Portal Configuration yaml</name>
-    <description>Provides support for mircroprofile-config.yml</description>
+    <description>Provides support for microprofile-config.yml</description>
     <properties>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.yaml</maven.jar.plugin.automatic.module.name>
