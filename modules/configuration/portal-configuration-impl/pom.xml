@@ -12,7 +12,7 @@
     <description>Provides the implementation-classes for the
         portal-configuration extensions</description>
     <properties>
-        <version.waitility>4.2.0</version.waitility>
+        <version.waitility>4.2.1</version.waitility>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.impl</maven.jar.plugin.automatic.module.name>
     </properties>
