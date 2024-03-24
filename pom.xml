@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
-        <version>0.4.6</version>
+        <version>0.4.8</version>
         <relativePath />
     </parent>
     <groupId>de.cuioss.portal</groupId>
@@ -29,7 +29,7 @@
         <system>GitHub Issues</system>
     </issueManagement>
     <properties>
-        <version.cui.parent>0.4.6</version.cui.parent>
+        <version.cui.parent>0.4.8</version.cui.parent>
         <version.zipkin.brave>5.17.0</version.zipkin.brave>
         <version.zipkin.reporter>2.17.1</version.zipkin.reporter>
     </properties>
