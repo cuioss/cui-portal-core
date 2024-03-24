@@ -22,13 +22,14 @@ import java.util.Optional;
 import lombok.NonNull;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
+import okhttp3.Headers;
 
 public class AllOkDispatcher implements ModuleDispatcherElement {
 
     public static final String BASE = "/allOk";
 
-    private static final MockResponse OK_RESPONSE = new MockResponse().addHeader("Content-Type", "application/json")
-            .setResponseCode(SC_OK);
+    private static final MockResponse OK_RESPONSE = new MockResponse(SC_OK,
+            Headers.of("Content-Type", "application/json"));
 
     @Override
     public String getBaseUrl() {
