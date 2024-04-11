@@ -28,6 +28,7 @@
             <!-- RestEasy depends on jcl. This is a way to satisfy this. -->
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jcl</artifactId>
+            <version>${version.log4j}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -80,6 +81,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
+            <version>${version.log4j}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
