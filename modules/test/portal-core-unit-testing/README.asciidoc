@@ -149,7 +149,7 @@ class PortalTestUserProducerTest {
     @PortalUser
     private Provider<AuthenticatedUserInfo> userProvider;
 
-    @​Test
+    @Test
     void shouldProduceUser() {
         assertNotNull(userProvider.get());
         assertTrue(userProvider.get().isAuthenticated());
@@ -206,7 +206,7 @@ class MockWebServerExtensionTest implements MockWebServerHolder {
     @Setter
     private MockWebServer mockWebServer;
 
-    @​Test
+    @Test
     void shouldHandleMockWebServer() {
         assertNotNull(mockWebServer);
     }

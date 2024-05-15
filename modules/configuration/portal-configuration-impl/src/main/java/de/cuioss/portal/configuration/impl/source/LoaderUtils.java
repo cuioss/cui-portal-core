@@ -15,23 +15,18 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.TreeSet;
-
 import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.configuration.source.ConfigurationSourceResolver;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
 import de.cuioss.tools.logging.CuiLogger;
-import lombok.val;
 import lombok.experimental.UtilityClass;
+import lombok.val;
+
+import java.util.*;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.isEmpty;
 
 /**
  * Provides utilities for loading / managing Resources that are used for
@@ -47,10 +42,9 @@ public class LoaderUtils {
     private static final String FILETYPE_NOT_PROVIDED_MSG = "Portal-151: Unsupported configuration file type: {}. Supported is: {}. If you want to support yaml files do not forget to add 'portal-configuration-yaml' to the deployment";
 
     /**
-     * Loads the the content of a given {@link FileConfigurationSource}
+     * Loads the content of a given {@link FileConfigurationSource}
      *
      * @param source to be loaded from, supported is: yml, yaml, properties
-     *
      * @return the {@link Map} of the contained configuration
      */
     public static Map<String, String> loadConfigurationFromSource(final FileConfigurationSource source) {
@@ -70,10 +64,9 @@ public class LoaderUtils {
     }
 
     /**
-     * Loads the the content of a given {@link FileLoader}
+     * Loads the content of a given {@link FileLoader}
      *
      * @param source to be loaded from, supported is: yml, yaml, properties
-     *
      * @return the {@link Map} of the contained configuration
      */
     public static Map<String, String> loadConfigurationFromSource(final FileLoader source) {

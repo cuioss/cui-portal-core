@@ -90,19 +90,6 @@
                 <version>${project.version}</version>
                 <scope>compile</scope>
             </dependency>
-            <!-- Client-->
-            <dependency>
-                <groupId>de.cuioss.portal.client</groupId>
-                <artifactId>portal-client-tracing</artifactId>
-                <version>${project.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.cuioss.portal.client</groupId>
-                <artifactId>portal-tracing-reporter-zipkin</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
             <!-- Test-->
             <dependency>
                 <groupId>de.cuioss.portal.test</groupId>

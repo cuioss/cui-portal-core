@@ -27,14 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.ws.rs.GET;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.GET;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -44,6 +43,7 @@ import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
 import de.cuioss.portal.restclient.CuiRestClientBuilder;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 
 /**

@@ -28,7 +28,7 @@
             </dependency>
             <dependency>
                 <groupId>de.cuioss</groupId>
-                <artifactId>java-ee-8-bom</artifactId>
+                <artifactId>java-ee-10-bom</artifactId>
                 <version>${version.cui.parent}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -40,32 +40,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- TRACING -->
-            <dependency>
-                <groupId>io.zipkin.brave</groupId>
-                <artifactId>brave-bom</artifactId>
-                <version>${version.zipkin.brave}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <!-- Reporting Spans to Zipkin
-                https://github.com/openzipkin/zipkin-reporter-java -->
-                <groupId>io.zipkin.reporter2</groupId>
-                <artifactId>zipkin-reporter</artifactId>
-                <version>${version.zipkin.reporter}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.zipkin.reporter2</groupId>
-                <artifactId>zipkin-sender-urlconnection</artifactId>
-                <version>${version.zipkin.reporter}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     <modules>
         <module>configuration</module>
         <module>authentication</module>
-        <module>client</module>
         <module>core</module>
         <module>micro-profile</module>
         <module>test</module>

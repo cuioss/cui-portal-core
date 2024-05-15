@@ -15,11 +15,11 @@
  */
 package de.cuioss.portal.configuration;
 
-import java.io.Serializable;
-
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import lombok.experimental.UtilityClass;
+
+import java.io.Serializable;
 
 /**
  * Provides the keys used for the web.xml based configuration of the portal.
@@ -31,7 +31,9 @@ public class PortalConfigurationKeys implements Serializable {
 
     private static final long serialVersionUID = 6880786388570386870L;
 
-    /** Prefix, unifying naming. */
+    /**
+     * Prefix, unifying naming.
+     */
     public static final String ENABLED = "enabled";
 
     /**
@@ -147,7 +149,6 @@ public class PortalConfigurationKeys implements Serializable {
      * This is used for setting the top-level menu as parent. In previous versions
      * {@code null} as parent was interpreted as indicator for displaying the
      * menu-item as top-level element
-     *
      */
     public static final String MENU_TOP_IDENTIFIER = "top";
 
@@ -176,24 +177,6 @@ public class PortalConfigurationKeys implements Serializable {
      * </p>
      */
     public static final String PORTAL_STAGE = CONFIGURATION_BASE + "stage";
-
-    /**
-     * Context parameter within configuration-subsystem with the name
-     * 'portal.system_property.'
-     * <p>
-     * Defines an interface for overwriting system-properties. The portal will pick
-     * up all corresponding properties and sets them accordingly:
-     * portal.system_property.javax.net.ssl.trustStore=/config/ca.keystore will
-     * result in the system-property 'javax.net.ssl.trustStore' being set to
-     * '/config/ca.keystore'
-     * </p>
-     * <p>
-     * <em>Caution:</em> The intend for this mechanism are corner-cases and tests.
-     * Therefore it should always be the exception and not the standard way to alter
-     * system-properties by the mechanism
-     * </p>
-     */
-    public static final String PORTAL_SYSTEM_PROPERTY_PREFIX = PORTAL_BASE + "system_property.";
 
     /**
      * Context parameter for the installation configuration directory with the name:
@@ -578,7 +561,7 @@ public class PortalConfigurationKeys implements Serializable {
      * timeout the request will be aborted.
      */
     public static final String PORTAL_LAZYLOADING_REQUEST_RETRIEVE_TIMEOUT = LAZYLOADING_BASE
-            + "request.retrieve.timeout";
+        + "request.retrieve.timeout";
 
     /**
      * Defines the timeout to handle a backend request in seconds. After this
@@ -666,5 +649,5 @@ public class PortalConfigurationKeys implements Serializable {
      * </p>
      */
     public static final String PORTAL_SERVLET_BASIC_AUTH_ALLOWED = PORTAL_BASE
-            + "authentication.servlet.allowBasicAuth";
+        + "authentication.servlet.allowBasicAuth";
 }

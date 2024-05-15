@@ -18,8 +18,8 @@ package de.cuioss.portal.configuration.impl;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.junit5.auto.AddEnabledInterceptors;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;

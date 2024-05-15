@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import de.cuioss.portal.core.storage.ClientStorage;
 import de.cuioss.portal.core.storage.PortalClientStorage;

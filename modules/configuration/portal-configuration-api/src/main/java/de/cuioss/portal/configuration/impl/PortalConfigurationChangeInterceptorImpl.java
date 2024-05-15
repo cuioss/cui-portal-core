@@ -15,26 +15,24 @@
  */
 package de.cuioss.portal.configuration.impl;
 
-import static java.util.Objects.requireNonNull;
+import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
-import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
-import de.cuioss.portal.configuration.util.ConfigurationHelper;
-import de.cuioss.tools.logging.CuiLogger;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Interceptor implementation for {@link PortalConfigurationChangeInterceptor}.
- * See annotation for details.
+ * See the annotation for details.
  *
  * @author Oliver Wolff
- *
  */
 @Interceptor
 @PortalConfigurationChangeInterceptor
@@ -56,7 +54,7 @@ public class PortalConfigurationChangeInterceptorImpl {
         List<String> startsWithKeys = Arrays.asList(filterConfig.keyPrefix());
         if (filterKeys.isEmpty() && startsWithKeys.isEmpty()) {
             throw new IllegalStateException(
-                    "No filterKey found, offending type is: " + invocationContext.getTarget().getClass());
+                "No filterKey found, offending type is: " + invocationContext.getTarget().getClass());
         }
         var deltaMap = accessMap(invocationContext);
         for (String key : filterKeys) {
@@ -82,7 +80,7 @@ public class PortalConfigurationChangeInterceptorImpl {
             }
         }
         throw new IllegalStateException(
-                "Invalid Method-parameter found, expected at least one of type Map<String, String>, but was "
-                        + invocationContext.getParameters());
+            "Invalid Method-parameter found, expected at least one of type Map<String, String>, but was "
+                + Arrays.toString(invocationContext.getParameters()));
     }
 }

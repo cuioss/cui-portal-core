@@ -15,27 +15,25 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Named;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Named;
-
-import de.cuioss.portal.configuration.util.ConfigurationHelper;
-
 /**
- * Expose the application configuration as resource bundle to allow EL
+ * Expose the application configuration as a resource bundle to allow EL
  * expressions like
  *
  * <pre>
  * #{configuration['xzy']}
  * </pre>
- *
+ * <p>
  * .
  *
  * @author Matthias Walliczek
- *
  */
 @Named("configuration")
 @Dependent

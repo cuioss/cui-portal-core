@@ -15,66 +15,43 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
-import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_KEY;
-import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_UNIT_KEY;
-import static de.cuioss.portal.configuration.cache.CacheConfig.SIZE_KEY;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.appendPropertySeparator;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveAnnotationOrThrow;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyAsList;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveFilteredConfigProperties;
-import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
-import static de.cuioss.tools.string.MoreStrings.requireNotEmptyTrimmed;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import de.cuioss.portal.configuration.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
-import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
-import de.cuioss.portal.configuration.types.ConfigAsFileLoader;
-import de.cuioss.portal.configuration.types.ConfigAsFileLoaderList;
-import de.cuioss.portal.configuration.types.ConfigAsFilteredMap;
-import de.cuioss.portal.configuration.types.ConfigAsList;
-import de.cuioss.portal.configuration.types.ConfigAsLocale;
-import de.cuioss.portal.configuration.types.ConfigAsLocaleList;
-import de.cuioss.portal.configuration.types.ConfigAsPath;
-import de.cuioss.portal.configuration.types.ConfigAsSet;
+import de.cuioss.portal.configuration.types.*;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
 import de.cuioss.tools.lang.LocaleUtils;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
+import static de.cuioss.portal.configuration.cache.CacheConfig.*;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
+import static de.cuioss.tools.string.MoreStrings.*;
 
 /**
  * Provides specific producer methods for elements not covered by the standard
- * deltaspike configuration converter.
+ * configuration converter.
  *
  * @author Oliver Wolff
  */
@@ -97,9 +74,8 @@ public class PortalConfigProducer {
 
     /**
      * @param injectionPoint
-     *
      * @return the resolved value or {@code null} if the key could not be found or
-     *         the resolved value is an empty {@link String}.
+     * the resolved value is an empty {@link String}.
      */
     @Produces
     @Dependent
@@ -117,7 +93,6 @@ public class PortalConfigProducer {
 
     /**
      * @param injectionPoint
-     *
      * @return list with trimmed strings and removed null values
      */
     @Produces
@@ -130,7 +105,6 @@ public class PortalConfigProducer {
 
     /**
      * @param injectionPoint
-     *
      * @return set with trimmed strings and removed null values
      */
     @Produces
@@ -139,7 +113,7 @@ public class PortalConfigProducer {
     Set<String> produceSplittedSet(final InjectionPoint injectionPoint) {
         final var metaData = resolveAnnotationOrThrow(injectionPoint, ConfigAsSet.class);
         return immutableSet(
-                resolveConfigPropertyAsList(metaData.name(), metaData.defaultValue(), metaData.separator()));
+            resolveConfigPropertyAsList(metaData.name(), metaData.defaultValue(), metaData.separator()));
     }
 
     @Produces
@@ -165,7 +139,7 @@ public class PortalConfigProducer {
         final var path = Paths.get(pathAsString).normalize();
         if (metaData.failOnNotAccessible()) {
             checkArgument(path.toFile().exists(),
-                    "Path " + pathAsString + " does not denote an existing file/directory");
+                "Path " + pathAsString + " does not denote an existing file/directory");
         }
         return path;
     }
@@ -226,9 +200,8 @@ public class PortalConfigProducer {
      * Producer for filtered Maps, see {@link ConfigAsFilteredMap}
      *
      * @param injectionPoint
-     *
      * @return a filtered map of properties filtered corresponding to
-     *         {@link ConfigAsFilteredMap#startsWith()}
+     * {@link ConfigAsFilteredMap#startsWith()}
      */
     @Produces
     @Dependent
@@ -252,12 +225,14 @@ public class PortalConfigProducer {
         var timeUnit = meta.defaultTimeUnit();
         var recordStats = meta.recordStatistics();
 
+        LOGGER.trace("configProperties (%s): %s", configKeyPrefix, configProperties);
+
         if (configProperties.containsKey(EXPIRATION_KEY)) {
             try {
                 expiration = Long.parseLong(configProperties.get(EXPIRATION_KEY).trim());
             } catch (final NumberFormatException e) {
                 LOGGER.error(e, INVALID_CONTENT_FOR_LONG, configKeyPrefix, EXPIRATION_KEY,
-                        configProperties.get(EXPIRATION_KEY));
+                    configProperties.get(EXPIRATION_KEY));
             }
         }
 
@@ -274,7 +249,7 @@ public class PortalConfigProducer {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
                 LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT, configKeyPrefix, SIZE_KEY, TimeUnit.values(),
-                        configProperties.get(SIZE_KEY));
+                    configProperties.get(SIZE_KEY));
             }
         }
 
@@ -282,7 +257,7 @@ public class PortalConfigProducer {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
                 LOGGER.error(INVALID_CONTENT_FOR_BOOLEAN, configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
-                        configValue);
+                    configValue);
                 recordStats = false;
             } else {
                 recordStats = Boolean.parseBoolean(configValue);
@@ -324,7 +299,7 @@ public class PortalConfigProducer {
     }
 
     private static FileLoader checkFileLoader(final String pathProperty, final boolean failOnNotAccessible,
-            final String propertyName) {
+                                              final String propertyName) {
 
         final var path = nullToEmpty(pathProperty).trim();
         if (MoreStrings.isEmpty(path)) {

@@ -15,40 +15,28 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
-import static java.util.Objects.requireNonNull;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.enterprise.inject.spi.InjectionPoint;
-
-import org.eclipse.microprofile.config.ConfigProvider;
-
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.collect.MapBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides some utilities for interacting with configuration elements
@@ -58,7 +46,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ConfigurationHelper {
 
-    private static final CuiLogger log = new CuiLogger(ConfigurationHelper.class);
+    private static final CuiLogger LOGGER = new CuiLogger(ConfigurationHelper.class);
 
     private static final Pattern NON_ALPHANUMERIC_PATTERN = Pattern.compile("[^0-9a-zA-Z]");
 
@@ -73,15 +61,14 @@ public final class ConfigurationHelper {
      * Helper method that filters a given map of properties according to the given
      * parameter
      *
-     * @param properties  to be filtered, must no be null
+     * @param properties  to be filtered must not be null
      * @param prefix      The name to be filtered using
      *                    {@link String#startsWith(String)}
      * @param stripPrefix boolean indicating whether to strip the prefix from the
      *                    keys.
      * @return the filtered map
      */
-    public static Map<String, String> getFilteredPropertyMap(final Map<String, String> properties, final String prefix,
-            final boolean stripPrefix) {
+    public static Map<String, String> getFilteredPropertyMap(final Map<String, String> properties, final String prefix, final boolean stripPrefix) {
         final var startsWith = nullToEmpty(prefix);
         final var builder = new MapBuilder<String, String>();
 
@@ -99,10 +86,9 @@ public final class ConfigurationHelper {
      * Ignores properties that don't start with that prefix.
      *
      * @param properties to be sanitized
-     * @param prefix     to be stripped from the properties keys
-     *
+     * @param prefix     to be stripped from the property keys
      * @return the given properties map but with keys not containing the given
-     *         prefix.
+     * prefix.
      */
     private Map<String, String> stripPrefix(final Map<String, String> properties, final String prefix) {
         final var prefixSanitized = nullToEmpty(prefix);
@@ -121,32 +107,43 @@ public final class ConfigurationHelper {
 
     /**
      * @return a map representation of all currently active
-     *         configuration-properties. <b>Configuration properties with an empty
-     *         string value will NOT be contained in the returned map!</b>
+     * configuration-properties. <b>Configuration properties with an empty
+     * string value will NOT be contained in the returned map!</b>
      */
     public static Map<String, String> resolveConfigProperties() {
         final var config = ConfigProvider.getConfig();
         final Map<String, String> resolved = new HashMap<>();
-        for (final String key : config.getPropertyNames()) {
+        for (final String key : getAllNames()) {
             try {
                 final Optional<String> value = config.getOptionalValue(key, String.class);
                 if (value.isPresent()) {
                     resolved.put(key, value.get());
                 } else {
-                    log.trace("No value found for key '{}'", key);
+                    LOGGER.trace("No value found for key '{}'", key);
                 }
             } catch (final NoSuchElementException e) {
-                log.trace(e, "Could not resolve config key: {}", key);
+                LOGGER.trace(e, "Could not resolve config key: {}", key);
             }
         }
         return resolved;
     }
 
     /**
+     * This workaround is needed, because {@link Config#getPropertyNames()} does not guarantee completeness.
+     */
+    static SortedSet<String> getAllNames() {
+        final SortedSet<String> allNames = new TreeSet<>();
+        for (var config : ConfigProvider.getConfig().getConfigSources()) {
+            allNames.addAll(config.getPropertyNames());
+        }
+        return allNames;
+    }
+
+    /**
      * @return an {@link Collection} of all contained names
      */
     public static Collection<String> resolveConfigPropertyNames() {
-        return CollectionLiterals.immutableList(ConfigProvider.getConfig().getPropertyNames());
+        return getAllNames();
     }
 
     /**
@@ -154,8 +151,7 @@ public final class ConfigurationHelper {
      * parameter
      *
      * @param prefix      The name to be filtered using String.startsWith(String),
-     *                    see
-     *                    {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
+     *                    see {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
      * @param stripPrefix boolean indicating whether to strip the prefix from the
      *                    keys.
      * @return filtered map
@@ -165,12 +161,12 @@ public final class ConfigurationHelper {
 
         // first, get all property names with the prefix.
         // this should be faster than resolving all properties with their values.
-        final Set<String> keys = resolveConfigPropertyNames().stream().filter(key -> key.startsWith(prefix))
-                .collect(Collectors.toSet());
-
+        var allProperties = resolveConfigProperties();
+        final Set<String> keys = allProperties.keySet().stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toSet());
+        LOGGER.trace("Resolved Keys: %s", keys);
         // now that we have all relevant keys, also resolve their values
         for (final String key : keys) {
-            resolveConfigProperty(key).ifPresent(value -> builder.put(key, value));
+            builder.put(key, resolveConfigPropertyOrThrow(key));
         }
 
         if (stripPrefix) {
@@ -187,7 +183,6 @@ public final class ConfigurationHelper {
      *
      * @param prefix The name to be filtered using String.startsWith(String), see
      *               {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}
-     *
      * @return filtered map
      */
     public static Map<String, String> resolveFilteredConfigProperties(final String prefix) {
@@ -220,7 +215,7 @@ public final class ConfigurationHelper {
         try {
             return ConfigProvider.getConfig().getOptionalValue(name, type);
         } catch (final NoSuchElementException e) {
-            log.trace(e, "Could not resolve config key: {}", name);
+            LOGGER.trace(e, "Could not resolve config key: {}", name);
         }
         return Optional.empty();
     }
@@ -233,11 +228,10 @@ public final class ConfigurationHelper {
      * @param name of the property to be resolved
      * @param type of the property to be resolved
      * @return the resolved property if available, otherwise it will throw an
-     *         {@link IllegalStateException}
+     * {@link IllegalStateException}
      */
     public static <T> T resolveConfigPropertyOrThrow(final String name, final Class<T> type) {
-        return resolveConfigProperty(name, type)
-                .orElseThrow(() -> new IllegalStateException("No property found for key:" + name));
+        return resolveConfigProperty(name, type).orElseThrow(() -> new IllegalStateException("No property found for key:" + name));
     }
 
     /**
@@ -246,7 +240,7 @@ public final class ConfigurationHelper {
      *
      * @param name of the property to be resolved
      * @return the resolved property if available, otherwise it will throw an
-     *         {@link IllegalStateException}
+     * {@link IllegalStateException}
      */
     public static String resolveConfigPropertyOrThrow(final String name) {
         return resolveConfigPropertyOrThrow(name, String.class);
@@ -260,8 +254,7 @@ public final class ConfigurationHelper {
      * @param <T>            type to be looked up
      * @return annotation instance extracted from the given injection point
      */
-    public static <T extends Annotation> Optional<T> resolveAnnotation(final InjectionPoint injectionPoint,
-            final Class<T> annotationType) {
+    public static <T extends Annotation> Optional<T> resolveAnnotation(final InjectionPoint injectionPoint, final Class<T> annotationType) {
         requireNonNull(annotationType, "annotationType must not be null");
         requireNonNull(injectionPoint, "injectionPoint must not be null");
         final var annotatedElement = requireNonNull(injectionPoint.getAnnotated(), "injectionPoint must be annotated");
@@ -287,37 +280,33 @@ public final class ConfigurationHelper {
      *                       {@link AnnotatedElement}
      * @param annotationType to be resolved. must not be null.
      * @param <T>            annotation type to be looked up
-     *
      * @return annotation instance extracted from the given injection point
      * @throws IllegalStateException if the given injection point does not contain
      *                               the annotationType. Its message can be given
-     *                               via {@code errorMessage}. errorMessage defaults
-     *                               to
+     *                               via {@code errorMessage}.
+     *                               errorMessage defaults to
      *                               {@code Could not resolve annotation for type: annotationType#getName()}
      */
-    public static <T extends Annotation> T resolveAnnotationOrThrow(final InjectionPoint injectionPoint,
-            final Class<T> annotationType) {
+    public static <T extends Annotation> T resolveAnnotationOrThrow(final InjectionPoint injectionPoint, final Class<T> annotationType) {
 
-        return resolveAnnotation(injectionPoint, annotationType).orElseThrow(() -> new IllegalStateException(
-                "Portal-530: Could not resolve annotation for type: " + annotationType.getName()));
+        return resolveAnnotation(injectionPoint, annotationType).orElseThrow(() -> new IllegalStateException("Portal-530: Could not resolve annotation for type: " + annotationType.getName()));
     }
 
     /**
-     * First it tries to get the config value from system properties. If that fails,
-     * it tries against the environment properties. If that fails, it sanitizes the
-     * config key by replacing all non-alphanumeric characters with underscore and
+     * First, it tries to get the config value from system properties.
+     * If that fails, it tries against the environment properties.
+     * If that fails, it sanitizes the config key by replacing all non-alphanumeric characters with underscore and
      * tries against environment properties. If that fails too, it tries the
      * sanitized upper-case key against environment properties.
      *
      * @param name config key
-     *
      * @return the raw config value, if any. <em>May contain unresolved
-     *         variables!</em>
+     * variables!</em>
      */
     public static Optional<String> resolveConfigPropertyFromSysOrEnv(final String name) {
         final var systemValue = Optional.ofNullable(System.getProperty(name));
         if (systemValue.isPresent()) {
-            log.trace("resolved system property {}={}", name, systemValue.get());
+            LOGGER.trace("resolved system property {}={}", name, systemValue.get());
             return systemValue;
         }
 
@@ -325,7 +314,7 @@ public final class ConfigurationHelper {
 
         if (envProperties.containsKey(name)) {
             final var envValue = envProperties.get(name);
-            log.trace(RESOLVED_ENV_VAR_MSG, name, envValue);
+            LOGGER.trace(RESOLVED_ENV_VAR_MSG, name, envValue);
             return Optional.of(envValue);
         }
 
@@ -333,13 +322,13 @@ public final class ConfigurationHelper {
 
         if (envProperties.containsKey(sanitizedName)) {
             final var envValue = envProperties.get(sanitizedName);
-            log.trace(RESOLVED_ENV_VAR_MSG, sanitizedName, envValue);
+            LOGGER.trace(RESOLVED_ENV_VAR_MSG, sanitizedName, envValue);
             return Optional.of(envValue);
         }
 
         final var sanitizedUppercaseName = sanitizedName.toUpperCase(Locale.ROOT);
         final var envValue = envProperties.get(sanitizedUppercaseName);
-        log.trace(RESOLVED_ENV_VAR_MSG, sanitizedUppercaseName, envValue);
+        LOGGER.trace(RESOLVED_ENV_VAR_MSG, sanitizedUppercaseName, envValue);
         return Optional.ofNullable(envValue);
     }
 
@@ -349,8 +338,8 @@ public final class ConfigurationHelper {
      * @param inputValue to be converted. Can be <code>null</code>.
      * @param enumClass  target enum type. Must not be <code>null</code>.
      * @return corresponding enum value of type <code>enumClass</code> or
-     *         {@link IllegalArgumentException} if the <code>inputValue</code>
-     *         cannot be converted.
+     * {@link IllegalArgumentException} if the <code>inputValue</code>
+     * cannot be converted.
      */
     <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass) {
         return convertToEnum(inputValue, enumClass, true, null);
@@ -364,8 +353,8 @@ public final class ConfigurationHelper {
      * @param defaultValue default enum value to be used, if the
      *                     <code>inputValue</code> cannot be converted.
      * @return corresponding enum value of type <code>enumClass</code> or
-     *         <code>defaultValue</code> if the <code>inputValue</code> cannot be
-     *         converted.
+     * <code>defaultValue</code> if the <code>inputValue</code> cannot be
+     * converted.
      */
     <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass, final T defaultValue) {
         return convertToEnum(inputValue, enumClass, false, defaultValue);
@@ -387,11 +376,9 @@ public final class ConfigurationHelper {
      *                              <code>false</code>.
      * @return corresponding enum value of type <code>enumClass</code>.
      */
-    <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass,
-            final boolean explodeOnInvalidInput, final T defaultValue) {
+    <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass, final boolean explodeOnInvalidInput, final T defaultValue) {
         requireNonNull(enumClass);
-        checkArgument(explodeOnInvalidInput || null != defaultValue,
-                "defaultValue must be present if explodeOnInvalidInput is set to false!");
+        checkArgument(explodeOnInvalidInput || null != defaultValue, "defaultValue must be present if explodeOnInvalidInput is set to false!");
 
         T result = null;
 
@@ -406,8 +393,7 @@ public final class ConfigurationHelper {
             }
             result = Enum.valueOf(enumClass, value);
         } catch (final IllegalArgumentException ex) {
-            log.error("Portal-512: Could not convert input value '{}' to enum of type: {}. Reason: {}", inputValue,
-                    enumClass, ex.getMessage());
+            LOGGER.error("Portal-512: Could not convert input value '{}' to enum of type: {}. Reason: {}", inputValue, enumClass, ex.getMessage());
             if (explodeOnInvalidInput) {
                 throw ex;
             }
@@ -422,7 +408,7 @@ public final class ConfigurationHelper {
 
     /**
      * split values via {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}.
-     * Does not throw an exception, if the config key is not present!
+     * Does not throw an exception if the config key is not present!
      *
      * @param name config key
      * @return the list of configProperties
@@ -449,10 +435,9 @@ public final class ConfigurationHelper {
      * @param defaultValue string representing default config value. can be null.
      * @param separator    separator between list values
      * @return list with configured values, separated via
-     *         {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
+     * {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue,
-            final char separator) {
+    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue, final char separator) {
         final var configuredValue = resolveConfigProperty(name).orElse(emptyToNull(defaultValue));
         return immutableList(resolveListFromString(configuredValue, separator));
     }
@@ -482,10 +467,10 @@ public final class ConfigurationHelper {
     /**
      * Replace all placeholders will their resolved value, if possible. All config
      * properties from the configuration system are used, not only SYS or ENV
-     * properties. If a key does not exist, the placeholders default value is used
+     * properties. If a key does not exist, the placeholder default value is used
      * ({@code ${key:default-value}}). If the default value is left empty
      * ({@code ${missing.key:}}), an empty string is used. If there is no default
-     * value, either, the placeholder is not replaced at all
+     * value, either, the placeholder will not be replaced at all
      * ({@code exceptionOnMissingKey=false}) or a {@link NoSuchElementException} is
      * thrown ({@code exceptionOnMissingKey=true}).
      *

@@ -15,23 +15,28 @@
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.standalone</maven.jar.plugin.automatic.module.name>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-impl</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-yaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>de.cuioss.portal.configuration</groupId>
+      <artifactId>portal-configuration-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.cuioss.portal.configuration</groupId>
+      <artifactId>portal-configuration-impl</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.cuioss.portal.configuration</groupId>
+      <artifactId>portal-configuration-yaml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <scope>test</scope>
+    </dependency>
     </dependencies>
 </project>

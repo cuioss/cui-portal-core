@@ -23,11 +23,10 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
@@ -39,6 +38,7 @@ import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.tools.collect.MapBuilder;
+import jakarta.annotation.Priority;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

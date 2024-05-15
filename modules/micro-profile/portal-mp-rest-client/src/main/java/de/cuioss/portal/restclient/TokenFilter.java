@@ -15,8 +15,8 @@
  */
 package de.cuioss.portal.restclient;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import lombok.RequiredArgsConstructor;

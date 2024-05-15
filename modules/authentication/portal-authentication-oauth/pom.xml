@@ -34,6 +34,14 @@
             <artifactId>jakarta.inject-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.cuioss.portal.mirco-profile</groupId>
             <artifactId>portal-mp-rest-client</artifactId>
             <scope>compile</scope>
@@ -47,8 +55,14 @@
             <artifactId>portal-core-unit-testing</artifactId>
         </dependency>
         <dependency>
+            <!-- RestEasy depends on jcl. This is a way to satisfy this. -->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client-microprofile</artifactId>
+            <artifactId>resteasy-cdi</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

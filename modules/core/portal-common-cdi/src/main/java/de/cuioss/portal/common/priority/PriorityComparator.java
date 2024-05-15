@@ -17,9 +17,9 @@ package de.cuioss.portal.common.priority;
 
 import static java.util.Objects.requireNonNull;
 
-import javax.annotation.Priority;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
+import jakarta.annotation.Priority;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

@@ -24,6 +24,10 @@
       <groupId>jakarta.platform</groupId>
       <artifactId>jakarta.jakartaee-web-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
     <!-- Portal modules -->
     <dependency>
       <groupId>de.cuioss.portal.authentication</groupId>

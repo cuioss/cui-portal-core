@@ -17,12 +17,12 @@ package de.cuioss.portal.restclient;
 
 import java.io.IOException;
 
-import javax.annotation.Priority;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.client.ClientResponseFilter;
 
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
 
 /**
  * A {@linkplain ClientResponseFilter} to log the response metadata received by

@@ -15,43 +15,35 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.configuration.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
-import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
-import de.cuioss.portal.configuration.types.ConfigAsFileLoader;
-import de.cuioss.portal.configuration.types.ConfigAsFileLoaderList;
-import de.cuioss.portal.configuration.types.ConfigAsList;
-import de.cuioss.portal.configuration.types.ConfigAsPath;
-import de.cuioss.portal.configuration.types.ConfigAsSet;
+import de.cuioss.portal.configuration.types.*;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.io.FileLoader;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.Getter;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.logging.LoggerFactory;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal
+@EnableTestLogger(trace = {PortalConfigProducer.class, ConfigurationHelper.class})
 class ConfigurationProducerTest {
 
     private static final String CONFIGURATION_KEY = "configurationKey";
@@ -270,6 +262,7 @@ class ConfigurationProducerTest {
         configuration.put(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
         configuration.put("my-cache." + CacheConfig.RECORD_STATISTICS_KEY, "false");
         configuration.fireEvent();
+        LOGGER.info("Event Fired: %s", ConfigurationHelper.resolveConfigProperty("my-cache." + CacheConfig.RECORD_STATISTICS_KEY).get());
         var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
         assertNotNull(cacheConfig);
         assertFalse(cacheConfig.isRecordStatistics());
@@ -283,11 +276,14 @@ class ConfigurationProducerTest {
         assertFalse(cacheConfig.isRecordStatistics());
     }
 
+    private static final CuiLogger LOGGER = new CuiLogger(ConfigurationProducerTest.class);
+
     @Test
     void cacheConfigRecordStatsDisabledViaAnnotationButEnabledViaConfig() {
         configuration.put(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
         configuration.put("my-cache2." + CacheConfig.RECORD_STATISTICS_KEY, "true");
         configuration.fireEvent();
+        assertEquals("true", ConfigurationHelper.resolveConfigPropertyOrThrow("my-cache2." + CacheConfig.RECORD_STATISTICS_KEY));
         var cacheConfig = assertDoesNotThrow(() -> myCacheConfigWithDisabledStats.get());
         assertNotNull(cacheConfig);
         assertTrue(cacheConfig.isRecordStatistics());

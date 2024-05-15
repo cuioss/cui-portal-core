@@ -15,12 +15,12 @@
  */
 package de.cuioss.portal.configuration.initializer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Defines an lifecycle methods and the (relative order) when this should
+ * Defines lifecycle methods and the (relative order) when this should
  * happen. To be used for {@link ApplicationScoped} beans only that need to be
  * initialized in a specific order.
  * <ul>
@@ -59,9 +59,9 @@ public interface ApplicationInitializer extends Comparable<ApplicationInitialize
 
     /**
      * @return an {@link Integer} defining the order the individual implementations
-     *         will be {@link #initialize()}. The higher the number, the earlier the
-     *         bean will be initialized. Always use the provided constants. The
-     *         default implementation returns {@link #ORDER_INTERMEDIATE}
+     * will be {@link #initialize()}. The higher the number, the earlier the
+     * bean will be initialized. Always use the provided constants. The
+     * default implementation returns {@link #ORDER_INTERMEDIATE}
      */
     default Integer getOrder() {
         return ORDER_INTERMEDIATE;

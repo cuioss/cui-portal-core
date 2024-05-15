@@ -20,8 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.inject.Qualifier;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Identifier for the Context Path. Provides the context path from the

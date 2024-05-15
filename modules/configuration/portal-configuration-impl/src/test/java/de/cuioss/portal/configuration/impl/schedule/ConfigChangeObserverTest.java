@@ -24,9 +24,9 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.awaitility.Awaitility;
 import org.eclipse.microprofile.config.ConfigProvider;

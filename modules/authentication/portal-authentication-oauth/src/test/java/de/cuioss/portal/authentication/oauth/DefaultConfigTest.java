@@ -15,22 +15,16 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.EXTERNAL_HOSTNAME;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_ID;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_SECRET;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
-import java.util.List;
-
 import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest;
 import de.cuioss.portal.core.test.tests.configuration.PropertiesDefaultConfigSource;
 import lombok.Getter;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
+import java.util.List;
+
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 
@@ -42,10 +36,19 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
         return OAuthConfigKeys.class;
     }
 
+    /**
+     * @return the name of {@link ConfigSource} that will be checked against the
+     * derived keys.
+     */
+    @Override
+    public String getConfigSourceName() {
+        return "portal-authentication-oauth";
+    }
+
     @Override
     public List<String> getKeysIgnoreList() {
         return immutableList(OPEN_ID_CLIENT_ID, OPEN_ID_CLIENT_SECRET, OPEN_ID_SERVER_BASE_URL, EXTERNAL_HOSTNAME,
-                OPEN_ID_SERVER_TOKEN_URL, OPEN_ID_SERVER_USER_INFO_URL, OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
+            OPEN_ID_SERVER_TOKEN_URL, OPEN_ID_SERVER_USER_INFO_URL, OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
     }
 
     @Override

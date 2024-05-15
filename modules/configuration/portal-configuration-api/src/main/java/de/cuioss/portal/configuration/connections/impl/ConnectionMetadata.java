@@ -15,6 +15,18 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
+import de.cuioss.portal.configuration.connections.TokenResolver;
+import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
+import de.cuioss.portal.configuration.connections.exception.ErrorReason;
+import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.net.ssl.KeyStoreProvider;
+import de.cuioss.tools.string.MoreStrings;
+import de.cuioss.uimodel.application.LoginCredentials;
+import lombok.*;
+import org.apache.http.ssl.SSLContexts;
+
+import javax.net.ssl.SSLContext;
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -25,30 +37,13 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.SSLContext;
-
-import org.apache.http.ssl.SSLContexts;
-
-import de.cuioss.portal.configuration.connections.TokenResolver;
-import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
-import de.cuioss.portal.configuration.connections.exception.ErrorReason;
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.net.ssl.KeyStoreProvider;
-import de.cuioss.tools.string.MoreStrings;
-import de.cuioss.uimodel.application.LoginCredentials;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * Helper class that provides metadata regarding a connection.
  *
  * @author Oliver Wolff
  */
-@EqualsAndHashCode(exclude = { "loginCredentials" })
-@ToString(exclude = { "loginCredentials" })
+@EqualsAndHashCode(exclude = {"loginCredentials"})
+@ToString(exclude = {"loginCredentials"})
 @Builder(toBuilder = true)
 public class ConnectionMetadata implements Serializable {
 
@@ -56,11 +51,11 @@ public class ConnectionMetadata implements Serializable {
 
     private static final String PORTAL_510 = "Portal-510: Unable to create SSLContext for connection '{}', due to '{}', defaulting to default ssl configuration";
 
+    @Serial
     private static final long serialVersionUID = -8168073688801716947L;
 
     /**
-     * context map containing additional runtime information belonging to the
-     * {@link ConnectionMetadata}
+     * context map containing additional runtime information belonging to the {@link ConnectionMetadata}
      */
     @Builder.Default
     @Getter
@@ -74,7 +69,9 @@ public class ConnectionMetadata implements Serializable {
     @Setter
     private LoginCredentials loginCredentials;
 
-    /** Resolver for tokens in case of {@link AuthenticationType#isTokenType()}. */
+    /**
+     * Resolver for tokens in case of {@link AuthenticationType#isTokenType()}.
+     */
     @Getter
     @Setter
     private TokenResolver tokenResolver;
@@ -101,17 +98,23 @@ public class ConnectionMetadata implements Serializable {
      */
     private transient SSLContext sslContext;
 
-    /** The serviceUrl to be used. */
+    /**
+     * The serviceUrl to be used.
+     */
     @Getter
     @Setter
     private String serviceUrl;
 
-    /** Defines how to authenticate the connection. */
+    /**
+     * Defines how to authenticate the connection.
+     */
     @Getter
     @Setter
     private AuthenticationType authenticationType;
 
-    /** Defines the technical layer of the connection. */
+    /**
+     * Defines the technical layer of the connection.
+     */
     @Getter
     @Setter
     private ConnectionType connectionType;
@@ -120,7 +123,9 @@ public class ConnectionMetadata implements Serializable {
     @Setter
     private String description;
 
-    /** The technical identifier for this connection. */
+    /**
+     * The technical identifier for this connection.
+     */
     @Getter
     @Setter
     private String connectionId;
@@ -130,37 +135,35 @@ public class ConnectionMetadata implements Serializable {
     @Builder.Default
     private boolean disableHostNameVerification = false;
 
-    /** Connection timeout value */
+    /**
+     * Connection timeout value
+     */
     @Getter
     @Setter
     private long connectionTimeout;
 
-    /** Connection timeout time unit, defaults to {@link TimeUnit#SECONDS} */
+    /**
+     * Connection timeout time unit, defaults to {@link TimeUnit#SECONDS}
+     */
     @Getter
     @Setter
     @Builder.Default
     private TimeUnit connectionTimeoutUnit = TimeUnit.SECONDS;
 
-    /** Response read timeout value */
+    /**
+     * Response read timeout value
+     */
     @Getter
     @Setter
     private long readTimeout;
 
-    /** Response read timeout time unit, defaults to {@link TimeUnit#SECONDS} */
-    @Getter
-    @Setter
-    @Builder.Default
-    private TimeUnit readTimeoutUnit = TimeUnit.SECONDS;
-
     /**
-     * Enable or disable distributed tracing for this connection. Only effective if
-     * {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED}
-     * is enabled. Defaults to <code>true</code>.
+     * Response read timeout time unit, defaults to {@link TimeUnit#SECONDS}
      */
     @Getter
     @Setter
     @Builder.Default
-    private boolean tracingEnabled = true;
+    private TimeUnit readTimeoutUnit = TimeUnit.SECONDS;
 
     @Getter
     @Setter
@@ -172,7 +175,7 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * @return boolean indicating whether credentials are necessary. It is true if
-     *         {@link #getAuthenticationType()} is {@link AuthenticationType#BASIC}
+     * {@link #getAuthenticationType()} is {@link AuthenticationType#BASIC}
      */
     public boolean isLoginCredentialsNecessary() {
         return AuthenticationType.BASIC.equals(getAuthenticationType());
@@ -181,8 +184,8 @@ public class ConnectionMetadata implements Serializable {
     /**
      * Adds an entry to the contained contextMap
      *
-     * @param key   to be added, must not be null
-     * @param value to be added, must not be null
+     * @param key   to be added must not be null
+     * @param value to be added must not be null
      * @return The {@link ConnectionMetadata} itself providing fluent-style-api
      */
     public ConnectionMetadata contextMapElement(final Serializable key, final Serializable value) {
@@ -192,8 +195,8 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Creates an {@link SSLContext} created from the information derived by
-     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}. If this fail it
-     * will default to the platform defaults.
+     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}.
+     * If this fails, it will default to the platform defaults.
      *
      * @return the created {@link SSLContext}
      */
@@ -210,8 +213,8 @@ public class ConnectionMetadata implements Serializable {
 
     /**
      * Creates an {@link SSLContext} created from the information derived by
-     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}. If this fail it
-     * will return {@link Optional#empty()}.
+     * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}.
+     * If this fails, it will return {@link Optional#empty()}.
      *
      * @return the created {@link SSLContext}
      */
@@ -240,7 +243,7 @@ public class ConnectionMetadata implements Serializable {
             }
             return Optional.of(contextBuilder.build());
         } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
-                | KeyManagementException e) {
+                       | KeyManagementException e) {
             log.error(e, PORTAL_510, connectionId, e.getMessage());
             return Optional.empty();
         }
@@ -273,7 +276,7 @@ public class ConnectionMetadata implements Serializable {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_TOKEN);
         }
         if (!MoreStrings.isBlank(proxyHost) && (null == proxyPort || proxyPort <= 0)
-                || null != proxyPort && proxyPort > 0 && MoreStrings.isBlank(proxyHost)) {
+            || null != proxyPort && proxyPort > 0 && MoreStrings.isBlank(proxyHost)) {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_PROXY);
         }
     }

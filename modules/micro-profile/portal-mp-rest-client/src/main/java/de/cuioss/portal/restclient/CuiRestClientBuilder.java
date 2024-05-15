@@ -15,9 +15,18 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.portal.tracing.PortalTracing.getServiceName;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
+import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.MoreStrings;
+import jakarta.ws.rs.core.Configurable;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
+import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import java.io.Closeable;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -25,22 +34,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.core.Configurable;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Response;
-
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
-import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
-
-import brave.http.HttpTracing;
-import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
-import de.cuioss.portal.tracing.PortalTracing;
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.string.MoreStrings;
 
 /**
  * Builder for a JAVA MicroProfile based REST client.
@@ -56,7 +49,6 @@ public class CuiRestClientBuilder {
 
     private final RestClientBuilder mpRestClientBuilder;
     private boolean traceLogEnabled;
-    private boolean tracingEnabled;
     private ConnectionMetadata connectionMetadata;
     private String url;
     private final CuiLogger logger;
@@ -76,7 +68,6 @@ public class CuiRestClientBuilder {
         mpRestClientBuilder = RestClientBuilder.newBuilder();
         this.logger = logger;
         traceLogEnabled = logger.isTraceEnabled() || log.isTraceEnabled();
-        tracingEnabled = true;
 
         // Advice RestEasy not to add its default exception handler.
         // It would serve the request before we can trace-log anything.
@@ -111,9 +102,9 @@ public class CuiRestClientBuilder {
                 Location: {}
                 MediaType: {}
                 """, response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
-                response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
-                response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
-                response.getMediaType());
+            response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
+            response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
+            response.getMediaType());
     }
 
     /**
@@ -130,38 +121,36 @@ public class CuiRestClientBuilder {
      * </ul>
      *
      * @param connectionMeta
-     *
      * @return this builder
      */
     @SuppressWarnings("squid:S3510") // owolff: False Positive, By design
     public CuiRestClientBuilder connectionMetadata(final ConnectionMetadata connectionMeta) {
         connectionMetadata = connectionMeta;
         url(connectionMeta.getServiceUrl());
-        tracingEnabled(connectionMeta.isTracingEnabled());
 
         sslContext(connectionMeta.resolveSSLContext());
         switch (connectionMeta.getAuthenticationType()) {
-        case BASIC:
-            basicAuth(connectionMeta.getLoginCredentials().getUsername(),
+            case BASIC:
+                basicAuth(connectionMeta.getLoginCredentials().getUsername(),
                     connectionMeta.getLoginCredentials().getPassword());
-            break;
-        case TOKEN_FROM_USER:
-        case TOKEN_APPLICATION:
-            mpRestClientBuilder.register(new TokenFilter(connectionMeta.getTokenResolver()));
-            break;
-        default:
-            break;
+                break;
+            case TOKEN_FROM_USER:
+            case TOKEN_APPLICATION:
+                mpRestClientBuilder.register(new TokenFilter(connectionMeta.getTokenResolver()));
+                break;
+            default:
+                break;
         }
         for (final Map.Entry<Serializable, Serializable> entry : connectionMeta.getContextMap().entrySet()) {
             mpRestClientBuilder.property(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
         }
         if (connectionMeta.isDisableHostNameVerification()) {
             hostnameVerifier((hostname, sslSession) -> true); // NOSONAR:
-                                                              // owolff: This is
-                                                              // documented to
-                                                              // be only used in
-                                                              // context of
-                                                              // testing
+            // owolff: This is
+            // documented to
+            // be only used in
+            // context of
+            // testing
         }
         if (connectionMeta.getConnectionTimeout() > 0) {
             connectTimeout(connectionMeta.getConnectionTimeout(), connectionMeta.getConnectionTimeoutUnit());
@@ -170,7 +159,7 @@ public class CuiRestClientBuilder {
             readTimeout(connectionMeta.getReadTimeout(), connectionMeta.getReadTimeoutUnit());
         }
         if (!MoreStrings.isBlank(connectionMeta.getProxyHost()) && null != connectionMeta.getProxyPort()
-                && connectionMeta.getProxyPort() > 0) {
+            && connectionMeta.getProxyPort() > 0) {
             proxyAddress(connectionMeta.getProxyHost(), connectionMeta.getProxyPort());
         }
         return this;
@@ -181,7 +170,6 @@ public class CuiRestClientBuilder {
      *              Defaults to {@link CuiLogger#isTraceEnabled()} for the given
      *              logger. This is unrelated to the distributed tracing
      *              capabilities.
-     *
      * @return this builder
      * @see LogClientRequestFilter
      * @see LogReaderInterceptor
@@ -192,22 +180,7 @@ public class CuiRestClientBuilder {
     }
 
     /**
-     * @param value Enable|Disable the distributed tracing for this client. Only
-     *              effective if
-     *              {@link de.cuioss.portal.configuration.TracingConfigKeys#PORTAL_TRACING_ENABLED}
-     *              is enabled. This could be overwritten by
-     *              {@link #connectionMetadata(ConnectionMetadata)}.
-     *
-     * @return this builder
-     */
-    public CuiRestClientBuilder tracingEnabled(final boolean value) {
-        tracingEnabled = value;
-        return this;
-    }
-
-    /**
      * @param component to be registered
-     *
      * @return this builder
      * @see Configurable#register(java.lang.Object)
      */
@@ -219,8 +192,7 @@ public class CuiRestClientBuilder {
     /**
      * @param component to be registered
      * @param priority  overwrite value for the components
-     *                  {@link javax.annotation.Priority}
-     *
+     *                  {@link jakarta.annotation.Priority}
      * @return this builder
      * @see Configurable#register(Object, int)
      */
@@ -232,7 +204,6 @@ public class CuiRestClientBuilder {
     /**
      * @param key   property key to be registered
      * @param value property value to be registered
-     *
      * @return this builder
      * @see Configurable#property(String, Object)
      */
@@ -248,21 +219,21 @@ public class CuiRestClientBuilder {
      * trace-logging of responses.
      * <p>
      * Effect: Every response code of >=400 throws a general
-     * {@link javax.ws.rs.WebApplicationException}.
+     * {@link jakarta.ws.rs.WebApplicationException}.
      *
      * @return this builder
      */
     public CuiRestClientBuilder enableDefaultExceptionHandler() {
         try {
             Class<?> defaultResponseExceptionMapper = Class.forName(
-                    "org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper", false,
-                    CuiRestClientBuilder.class.getClassLoader());
+                "org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper", false,
+                CuiRestClientBuilder.class.getClassLoader());
             register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();
         } catch (final Exception e) {
             log.error(
-                    "Portal-541: Could not load org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper",
-                    e);
+                "Portal-541: Could not load org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper",
+                e);
         }
         return this;
     }
@@ -271,8 +242,8 @@ public class CuiRestClientBuilder {
      * Disables the RestEasy default exception mapper for this MP REST client. Per
      * default, this exception mapper is disabled.
      * <p>
-     * Effect: Exceptions like {@link javax.ws.rs.BadRequestException} are thrown
-     * instead of a general {@link javax.ws.rs.WebApplicationException}.
+     * Effect: Exceptions like {@link jakarta.ws.rs.BadRequestException} are thrown
+     * instead of a general {@link jakarta.ws.rs.WebApplicationException}.
      *
      * @return this builder
      */
@@ -324,7 +295,6 @@ public class CuiRestClientBuilder {
      *
      * @param username to be passed to he contained builder
      * @param password to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder basicAuth(final String username, final String password) {
@@ -336,7 +306,6 @@ public class CuiRestClientBuilder {
      * Adds the the credentials for bearer-auth
      *
      * @param token to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder bearerAuthToken(final String token) {
@@ -348,7 +317,6 @@ public class CuiRestClientBuilder {
      * Adds the ResponseExceptionMapper
      *
      * @param mapper to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder registerExceptionMapper(final ResponseExceptionMapper<?> mapper) {
@@ -360,7 +328,6 @@ public class CuiRestClientBuilder {
      * Adds the sslContext
      *
      * @param sslContext to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder sslContext(final SSLContext sslContext) {
@@ -408,7 +375,6 @@ public class CuiRestClientBuilder {
      *
      * @param host to be passed to he contained builder
      * @param port to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder proxyAddress(String host, int port) {
@@ -420,7 +386,6 @@ public class CuiRestClientBuilder {
      * Adds the followRedirects
      *
      * @param followRedirects to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder followRedirects(boolean followRedirects) {
@@ -432,7 +397,6 @@ public class CuiRestClientBuilder {
      * Adds the hostnameVerifier
      *
      * @param hostnameVerifier to be passed to he contained builder
-     *
      * @return this builder
      */
     public CuiRestClientBuilder hostnameVerifier(HostnameVerifier hostnameVerifier) {
@@ -453,7 +417,6 @@ public class CuiRestClientBuilder {
      * @param clazz the service interface which also must extend
      *              {@link java.io.Closeable}
      * @param <T>   the services type
-     *
      * @return T the service class
      */
     public <T extends Closeable> T build(final Class<T> clazz) {
@@ -468,27 +431,9 @@ public class CuiRestClientBuilder {
             }, Integer.MIN_VALUE);
             register(new LogReaderInterceptor(logger));
         }
-        if (isTracingEnabled()) {
-            registerTracingFilter();
-        }
 
         return mpRestClientBuilder.build(clazz);
     }
 
-    private void registerTracingFilter() {
-        log.debug("Adding distributed tracing filter");
-        final var serviceName = nullToEmpty(
-                null != connectionMetadata ? getServiceName(connectionMetadata) : getServiceName(url));
-        log.debug("Using serviceName: {}", serviceName);
 
-        // HttpTracing is closed on response at: brave.jaxrs2.TracingClientFilter#filter
-        @SuppressWarnings("squid:S2095")
-        final var tracing = HttpTracing.create(PortalTracing.createTracing()).clientOf(serviceName);
-        register(new TracingRequestFilter(tracing));
-        register(new TracingResponseFilter(tracing));
-    }
-
-    private boolean isTracingEnabled() {
-        return tracingEnabled && PortalTracing.isEnabled();
-    }
 }

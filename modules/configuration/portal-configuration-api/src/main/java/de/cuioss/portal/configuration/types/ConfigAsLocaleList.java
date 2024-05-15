@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Locale;
 
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 

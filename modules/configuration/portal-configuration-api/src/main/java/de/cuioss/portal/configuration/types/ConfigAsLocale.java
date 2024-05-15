@@ -25,8 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Locale;
 
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 /**
  * Injects a config property as a {@link Locale}.

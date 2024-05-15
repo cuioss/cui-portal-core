@@ -19,8 +19,8 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 import java.util.List;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;

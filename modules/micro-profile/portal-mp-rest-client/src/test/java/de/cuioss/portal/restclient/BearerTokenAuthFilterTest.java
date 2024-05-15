@@ -15,31 +15,27 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.Closeable;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-import org.jboss.resteasy.cdi.ResteasyCdiExtension;
-import org.jboss.weld.junit5.auto.AddExtensions;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
+
+import java.io.Closeable;
+
+import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnableMockWebServer
@@ -53,7 +49,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
         @GET
         @Path("test")
-        @javax.ws.rs.Produces("application/json")
+        @jakarta.ws.rs.Produces("application/json")
         String test();
     }
 
@@ -66,8 +62,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
             @Override
             public MockResponse dispatch(final RecordedRequest request) {
-                switch (request.getPath()) {
-                case "/success/test":
+                if ("/success/test".equals(request.getPath())) {
                     return new MockResponse().setResponseCode(HttpServletResponse.SC_OK);
                 }
                 return new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
@@ -78,7 +73,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
     @Test
     void shouldProviderAuthorizationHeader() throws InterruptedException {
         final var underTest = new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString())
-                .bearerAuthToken("abcToken");
+            .bearerAuthToken("abcToken");
         underTest.build(CuiRestClientBuilderTest.TestResource.class).test();
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
@@ -89,12 +84,12 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
     @Test
     void shouldProviderAuthorizationHeaderWithInvalidValues() throws InterruptedException {
         new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken(null)
-                .build(CuiRestClientBuilderTest.TestResource.class).test();
+            .build(CuiRestClientBuilderTest.TestResource.class).test();
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
         assertTrue(authHeader.isEmpty());
         new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken("123\ntest: test2")
-                .build(CuiRestClientBuilderTest.TestResource.class).test();
+            .build(CuiRestClientBuilderTest.TestResource.class).test();
         request = mockWebServer.takeRequest();
         authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty());

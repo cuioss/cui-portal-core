@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
@@ -58,17 +58,13 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
     void shouldRegisterMetric() {
         var name = names.next();
         underTest.register(metadata.next(), metrics.next());
-        underTest.register(name, metrics.next());
-        underTest.register(metadata.next(), metrics.next(), tags.next());
         assertNotNull(underTest.getMetric(name));
         assertNotNull(underTest.getMetricID(name));
-        assertTrue(underTest.getTags(name).isPresent());
     }
 
     @Test
     void shouldHandleMissingEntries() {
         assertNull(underTest.getMetadata(names.next()));
-        assertNull(underTest.getType());
         assertTrue(underTest.getMetadata().isEmpty());
         assertFalse(underTest.getMetric(names.next()).isPresent());
         assertFalse(underTest.getMetricID(names.next()).isPresent());
@@ -91,18 +87,6 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
     }
 
     @Test
-    void shouldReturnNullOnMissingImplementationsConcurrentGauge() {
-        assertNull(underTest.concurrentGauge(ids.next()));
-        assertNull(underTest.getConcurrentGauge(ids.next()));
-        assertNull(underTest.concurrentGauge(names.next()));
-        assertNull(underTest.concurrentGauge(names.next(), tags.next()));
-        assertNull(underTest.concurrentGauge(metadata.next()));
-        assertNull(underTest.concurrentGauge(metadata.next(), tags.next()));
-        assertTrue(underTest.getConcurrentGauges().isEmpty());
-        assertTrue(underTest.getConcurrentGauges((metricID, metric) -> true).isEmpty());
-    }
-
-    @Test
     void shouldReturnNullOnMissingImplementationsHistogram() {
         assertNull(underTest.histogram(ids.next()));
         assertNull(underTest.histogram(names.next()));
@@ -114,15 +98,6 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         assertTrue(underTest.getHistograms((metricID, metric) -> true).isEmpty());
     }
 
-    @Test
-    void shouldReturnNullOnMissingImplementationsMeter() {
-        assertNull(underTest.meter(ids.next()));
-        assertNull(underTest.getMeter(ids.next()));
-        assertNull(underTest.meter(names.next()));
-        assertNull(underTest.meter(names.next(), tags.next()));
-        assertNull(underTest.meter(metadata.next()));
-        assertNull(underTest.meter(metadata.next(), tags.next()));
-    }
 
     @Test
     void shouldReturnNullOnMissingImplementationsTimer() {
@@ -138,10 +113,6 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         assertNotNull(timer);
         assertNotNull(timer.getElapsedTime());
         assertEquals(0, timer.getCount());
-        assertEquals(0, timer.getFifteenMinuteRate());
-        assertEquals(0, timer.getFiveMinuteRate());
-        assertEquals(0, timer.getMeanRate());
-        assertEquals(0, timer.getOneMinuteRate());
         assertNotNull(timer.time());
         assertDoesNotThrow(() -> timer.time().stop());
         assertThrows(RuntimeException.class, () -> timer.time((Callable<?>) null));
@@ -153,24 +124,12 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         assertTrue(underTest.getTimers((metricID, metric) -> true).isEmpty());
     }
 
-    @Test
-    void shouldReturnNullOnMissingImplementationsSimpleTimer() {
-        assertNull(underTest.simpleTimer(ids.next()));
-        assertNull(underTest.getSimpleTimer(ids.next()));
-        assertNull(underTest.simpleTimer(names.next()));
-        assertNull(underTest.simpleTimer(names.next(), tags.next()));
-        assertNull(underTest.simpleTimer(metadata.next()));
-        assertNull(underTest.simpleTimer(metadata.next(), tags.next()));
-        assertTrue(underTest.getSimpleTimers().isEmpty());
-        assertTrue(underTest.getSimpleTimers((metricID, metric) -> true).isEmpty());
-    }
+
 
     @Test
     void shouldReturnCounterAndMeter() {
         assertTrue(underTest.getCounters().isEmpty());
         assertTrue(underTest.getCounters((metricID, metric) -> true).isEmpty());
-        assertTrue(underTest.getMeters().isEmpty());
-        assertTrue(underTest.getMeters((metricID, metric) -> true).isEmpty());
 
     }
 }

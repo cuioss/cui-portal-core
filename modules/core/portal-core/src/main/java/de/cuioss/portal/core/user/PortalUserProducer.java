@@ -17,21 +17,21 @@ package de.cuioss.portal.core.user;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Provider;
+import jakarta.servlet.http.HttpServletRequest;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUser;
 import de.cuioss.portal.authentication.UserChangeEvent;
 import de.cuioss.portal.authentication.facade.AuthenticationFacade;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
+import jakarta.annotation.PostConstruct;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

@@ -15,11 +15,11 @@
  */
 package de.cuioss.portal.restclient;
 
-import javax.annotation.Priority;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
 
 /**
  * Runs before {@link LogReaderInterceptor} because it has a lower

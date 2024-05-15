@@ -15,43 +15,37 @@
  */
 package de.cuioss.portal.restclient;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.Closeable;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-import org.jboss.resteasy.cdi.ResteasyCdiExtension;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.AddExtensions;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
-import de.cuioss.portal.tracing.PortalTracing;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
+
+import java.io.Closeable;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableMockWebServer
 @EnableAutoWeld
 @EnablePortalConfiguration
-@AddBeanClasses({ ConnectionMetadataProducer.class, RestClientProducer.class, PortalTracing.class })
+@AddBeanClasses({ConnectionMetadataProducer.class, RestClientProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
 class RestClientProducerTest implements MockWebServerHolder {
 
@@ -69,11 +63,13 @@ class RestClientProducerTest implements MockWebServerHolder {
 
             @Override
             public MockResponse dispatch(RecordedRequest request) {
+                assert request.getPath() != null;
                 return switch (request.getPath()) {
-                case "/success/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+                    case "/success/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
                         .addHeader("Content-Type", "application/fhir+xml").addHeader("ETag", "W/123").setBody("test");
-                case "/error/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                default -> new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                    case "/error/test" ->
+                        new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    default -> new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
                 };
             }
         };

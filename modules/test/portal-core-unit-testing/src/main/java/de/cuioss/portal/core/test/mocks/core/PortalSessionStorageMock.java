@@ -17,7 +17,7 @@ package de.cuioss.portal.core.test.mocks.core;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import de.cuioss.portal.core.storage.PortalSessionStorage;
 import de.cuioss.portal.core.storage.SessionStorage;

@@ -15,9 +15,8 @@
  */
 package de.cuioss.portal.common.priority.support;
 
-import javax.annotation.Priority;
-
 import de.cuioss.portal.common.priority.PortalPriorities;
+import jakarta.annotation.Priority;
 
 /**
  * @author Oliver Wolff

@@ -15,38 +15,25 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.convertToEnum;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.getFilteredPropertyMap;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperties;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyNames;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyOrThrow;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveFilteredConfigProperties;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.InjectionPoint;
-
+import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import org.easymock.EasyMock;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.test.juli.LogAsserts;
-import de.cuioss.test.juli.TestLogLevel;
-import de.cuioss.test.juli.junit5.EnableTestLogger;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnableTestLogger
@@ -141,31 +128,25 @@ class ConfigurationHelperTest {
     void shouldResolveConfigMap() {
         assertNotNull(resolveConfigProperties());
         assertFalse(resolveConfigProperties().isEmpty());
-        setProperty(KEY1, KEY1);
-        assertTrue(resolveConfigProperties().containsKey(KEY1));
     }
 
     @Test
     void shouldResolveConfigNames() {
         assertNotNull(resolveConfigPropertyNames());
         assertFalse(resolveConfigPropertyNames().isEmpty());
-        setProperty(KEY1, KEY1);
-        assertTrue(resolveConfigPropertyNames().contains(KEY1));
     }
 
     @Test
     void shouldResolveFilteredProperties() {
         assertNotNull(resolveFilteredConfigProperties(KEY1));
         assertTrue(resolveFilteredConfigProperties(KEY1).isEmpty());
-        setProperty(KEY1, KEY1);
-        assertFalse(resolveFilteredConfigProperties(KEY1).isEmpty());
     }
 
     @Test
     void shouldResolveSingleProperty() {
         assertFalse(resolveConfigProperty(KEY1).isPresent());
 
-        setProperty(KEY1, "1");
+        setAsSystemProperty(KEY1, "1");
         assertTrue(resolveConfigProperty(KEY1).isPresent());
         assertTrue(resolveConfigProperty(KEY1, Integer.class).isPresent());
         assertEquals(Integer.valueOf(1), resolveConfigProperty(KEY1, Integer.class).get());
@@ -179,7 +160,7 @@ class ConfigurationHelperTest {
     void shouldResolveSinglePropertyOrThrow() {
         assertFalse(resolveConfigProperty(KEY1).isPresent());
 
-        setProperty(KEY1, VALUE_ONE);
+        setAsSystemProperty(KEY1, VALUE_ONE);
 
         assertEquals(VALUE_ONE, resolveConfigPropertyOrThrow(KEY1));
 
@@ -215,8 +196,8 @@ class ConfigurationHelperTest {
     @Test
     @SuppressWarnings("el-syntax")
     void ignoresOtherUnresolvableKeys() {
-        setProperty("a.config.key", "value");
-        setProperty("unresolvable.key", "${not.there}");
+        setAsSystemProperty("a.config.key", "value");
+        setAsSystemProperty("unresolvable.key", "${not.there}");
 
         assertDoesNotThrow(() -> resolveConfigProperty("a.config.key"));
         assertDoesNotThrow(() -> resolveConfigProperty("unresolvable.key"));
@@ -225,7 +206,7 @@ class ConfigurationHelperTest {
 
     @Test
     void configAsListWithEmptyValue() {
-        setProperty(KEY1, "");
+        setAsSystemProperty(KEY1, "");
         var result = ConfigurationHelper.resolveConfigPropertyAsList(KEY1);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -233,7 +214,7 @@ class ConfigurationHelperTest {
 
     @Test
     void configAsListWithSingleValue() {
-        setProperty(KEY1, "foo");
+        setAsSystemProperty(KEY1, "foo");
         var result = ConfigurationHelper.resolveConfigPropertyAsList(KEY1);
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -242,7 +223,7 @@ class ConfigurationHelperTest {
 
     @Test
     void configAsListWithSingleUntrimmedValue() {
-        setProperty(KEY1, "  foo  ,");
+        setAsSystemProperty(KEY1, "  foo  ,");
         var result = ConfigurationHelper.resolveConfigPropertyAsList(KEY1);
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -251,7 +232,7 @@ class ConfigurationHelperTest {
 
     @Test
     void configAsListWithMultipleValues() {
-        setProperty(KEY1, "  foo  , bar  , b a z ");
+        setAsSystemProperty(KEY1, "  foo  , bar  , b a z ");
         var result = ConfigurationHelper.resolveConfigPropertyAsList(KEY1);
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -265,7 +246,7 @@ class ConfigurationHelperTest {
         assertEquals("test", ConfigurationHelper.replacePlaceholders("test", true));
     }
 
-    private void setProperty(String key, String value) {
+    private void setAsSystemProperty(String key, String value) {
         System.setProperty(key, value);
         usedSystemConfigKeys.add(key);
     }

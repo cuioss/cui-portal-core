@@ -36,7 +36,7 @@ import java.util.Objects;
  * This class can be used to dynamically create Annotations which can be used in
  * AnnotatedTyp. This is e.g. the case if you configure an annotation via
  * properties or XML file. In those cases you cannot use
- * {@link javax.enterprise.util.AnnotationLiteral} because the type is not known
+ * {@link jakarta.enterprise.util.AnnotationLiteral} because the type is not known
  * at compile time.
  * </p>
  * <p>
@@ -64,7 +64,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
 
     /**
      * Required to use the result of the factory instead of a default implementation
-     * of {@link javax.enterprise.util.AnnotationLiteral}.
+     * of {@link jakarta.enterprise.util.AnnotationLiteral}.
      *
      * @param annotationClass class of the target annotation
      */

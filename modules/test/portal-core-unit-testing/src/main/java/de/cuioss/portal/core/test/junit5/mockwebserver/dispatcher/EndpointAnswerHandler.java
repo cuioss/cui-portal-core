@@ -17,7 +17,7 @@ package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.Getter;
 import lombok.Setter;

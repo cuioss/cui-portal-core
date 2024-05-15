@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import de.cuioss.portal.authentication.oauth.OauthRedirector;
 import lombok.Getter;

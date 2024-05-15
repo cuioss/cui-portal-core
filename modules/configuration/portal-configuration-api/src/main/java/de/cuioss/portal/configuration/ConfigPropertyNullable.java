@@ -20,8 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 /**
  * <h1>Nullable ConfigProperty</h1>
@@ -35,9 +35,9 @@ import javax.inject.Qualifier;
  * <h2>Valid Beans</h2>
  * <p>
  * The usage of this annotation is only encouraged for passivation capable beans
- * such as {@link javax.enterprise.context.SessionScoped} beans or any other
+ * such as {@link jakarta.enterprise.context.SessionScoped} beans or any other
  * bean that must implement the {@link java.io.Serializable} interface. For
- * other beans, such as {@link javax.enterprise.context.ApplicationScoped}
+ * other beans, such as {@link jakarta.enterprise.context.ApplicationScoped}
  * beans, the usage of {@link java.util.Optional} is encouraged - but only if
  * you don't want an exception for a missing config property.
  * </p>

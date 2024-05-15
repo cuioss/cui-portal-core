@@ -17,10 +17,9 @@ package de.cuioss.portal.common.bundle.support;
 
 import java.util.Optional;
 
-import javax.annotation.Priority;
-
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
+import jakarta.annotation.Priority;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

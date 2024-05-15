@@ -20,11 +20,11 @@ import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMet
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.GET;
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.POST;
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.PUT;
-import static javax.servlet.http.HttpServletResponse.SC_CREATED;
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_IMPLEMENTED;
-import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_CREATED;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_IMPLEMENTED;
+import static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 import org.junit.jupiter.api.Test;
 

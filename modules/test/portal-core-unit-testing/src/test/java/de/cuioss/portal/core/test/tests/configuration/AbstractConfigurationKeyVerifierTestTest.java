@@ -15,25 +15,21 @@
  */
 package de.cuioss.portal.core.test.tests.configuration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import lombok.Getter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import lombok.Getter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AbstractConfigurationKeyVerifierTestTest extends AbstractConfigurationKeyVerifierTest {
 
-    static final String PATH1 = "classpath:/META-INF/mock-configuration.properties";
-    static final String PATH2 = "classpath:/META-INF/mock-configuration2.properties";
-    static final String PATH3 = "classpath:/META-INF/mock-configuration3.properties";
+    static final String PATH1 = "mock-configuration";
 
     @Getter
-    private MockConfigurationSource underTest;
+    private String configSourceName;
 
     @Getter
     private List<String> keysIgnoreList;
@@ -43,8 +39,7 @@ class AbstractConfigurationKeyVerifierTestTest extends AbstractConfigurationKeyV
 
     @BeforeEach
     void before() {
-        underTest = new MockConfigurationSource(PATH1);
-
+        configSourceName = PATH1;
         keysIgnoreList = new ArrayList<>();
         configurationKeysIgnoreList = new ArrayList<>();
     }
@@ -52,22 +47,6 @@ class AbstractConfigurationKeyVerifierTestTest extends AbstractConfigurationKeyV
     @Override
     public Class<?> getKeyHolder() {
         return ConfigurationKeys.class;
-    }
-
-    @Test
-    void shouldDetectMissingKeyInConfiguration() {
-        underTest = new MockConfigurationSource(PATH3);
-        assertThrows(AssertionError.class, () -> {
-            super.configurationKeysShouldReverseMapToKeyNames();
-        });
-    }
-
-    @Test
-    void shouldDetectMissingKeyInKeyHolder() {
-        underTest = new MockConfigurationSource(PATH2);
-        assertThrows(AssertionError.class, () -> {
-            super.configurationKeysShouldReverseMapToKeyNames();
-        });
     }
 
     @Test

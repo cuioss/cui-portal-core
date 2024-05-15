@@ -15,39 +15,17 @@
  */
 package de.cuioss.portal.metrics;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.metrics.Timer;
+import org.eclipse.microprofile.metrics.*;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import org.eclipse.microprofile.metrics.ConcurrentGauge;
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetadataBuilder;
-import org.eclipse.microprofile.metrics.Meter;
-import org.eclipse.microprofile.metrics.Metric;
-import org.eclipse.microprofile.metrics.MetricFilter;
-import org.eclipse.microprofile.metrics.MetricID;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricType;
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.SimpleTimer;
-import org.eclipse.microprofile.metrics.Snapshot;
-import org.eclipse.microprofile.metrics.Tag;
-import org.eclipse.microprofile.metrics.Timer;
 
 /**
  * Simple Mock variant of {@link MetricRegistry}. Partially implemented.
@@ -59,24 +37,22 @@ import org.eclipse.microprofile.metrics.Timer;
 public class PortalTestMetricRegistry implements MetricRegistry {
 
     private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException(
-            "Not implemented yet");
+        "Not implemented yet");
 
     private final Map<String, Metadata> metadataMap = new HashMap<>();
     private final Map<MetricID, Metric> metricMap = new ConcurrentHashMap<>();
 
     /**
      * @param name metric name
-     *
      * @return the metric with the given name
      */
     public Optional<Metric> getMetric(final String name) {
         return metricMap.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).map(Map.Entry::getValue)
-                .findAny();
+            .findAny();
     }
 
     /**
      * @param name
-     *
      * @return {@link Optional} on the requested {@link MetricID}
      */
     public Optional<MetricID> getMetricID(final String name) {
@@ -85,7 +61,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     /**
      * @param name metric name
-     *
      * @return the tags for the given metric name
      */
     public Optional<Map<String, String>> getTags(final String name) {
@@ -95,26 +70,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
             }
         }
         return Optional.empty();
-    }
-
-    @Override
-    public <T extends Metric> T register(final String name, final T metric) {
-        metricMap.put(new MetricID(name), metric);
-        return metric;
-    }
-
-    @Override
-    public <T extends Metric> T register(final Metadata metadata, final T metric) {
-        metricMap.put(new MetricID(metadata.getName()), metric);
-        metadataMap.put(metadata.getName(), metadata);
-        return metric;
-    }
-
-    @Override
-    public <T extends Metric> T register(final Metadata metadata, final T metric, final Tag... tags) {
-        metricMap.put(new MetricID(metadata.getName(), tags), metric);
-        metadataMap.put(metadata.getName(), metadata);
-        return metric;
     }
 
     @Override
@@ -139,31 +94,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public Counter counter(final Metadata metadata, final Tag... tags) {
-        return null;
-    }
-
-    @Override
-    public ConcurrentGauge concurrentGauge(final String name) {
-        return null;
-    }
-
-    @Override
-    public ConcurrentGauge concurrentGauge(final String name, final Tag... tags) {
-        return null;
-    }
-
-    @Override
-    public ConcurrentGauge concurrentGauge(MetricID metricID) {
-        return null;
-    }
-
-    @Override
-    public ConcurrentGauge concurrentGauge(final Metadata metadata) {
-        return null;
-    }
-
-    @Override
-    public ConcurrentGauge concurrentGauge(final Metadata metadata, final Tag... tags) {
         return null;
     }
 
@@ -194,6 +124,12 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public <T extends Number> Gauge<T> gauge(Metadata metadata, Supplier<T> supplier, Tag... tags) {
+        metricMap.put(new MetricID(metadata.getName()), new Gauge() {
+            @Override
+            public Number getValue() {
+                return null;
+            }
+        });
         return null;
     }
 
@@ -219,31 +155,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public Histogram histogram(final Metadata metadata, final Tag... tags) {
-        return null;
-    }
-
-    @Override
-    public Meter meter(final String name) {
-        return null;
-    }
-
-    @Override
-    public Meter meter(final String name, final Tag... tags) {
-        return null;
-    }
-
-    @Override
-    public Meter meter(MetricID metricID) {
-        return null;
-    }
-
-    @Override
-    public Meter meter(final Metadata metadata) {
-        return null;
-    }
-
-    @Override
-    public Meter meter(final Metadata metadata, final Tag... tags) {
         return null;
     }
 
@@ -308,34 +219,14 @@ public class PortalTestMetricRegistry implements MetricRegistry {
             }
 
             @Override
-            public double getFifteenMinuteRate() {
-                return 0;
-            }
-
-            @Override
-            public double getFiveMinuteRate() {
-                return 0;
-            }
-
-            @Override
-            public double getMeanRate() {
-                return 0;
-            }
-
-            @Override
-            public double getOneMinuteRate() {
-                return 0;
-            }
-
-            @Override
             public Snapshot getSnapshot() {
                 throw NOT_IMPLEMENTED_EXCEPTION;
             }
         };
 
         metricMap.put(id, timer);
-        metadataMap.put(name, new MetadataBuilder().withName(name).withType(MetricType.TIMER)
-                .withUnit(MetricUnits.NANOSECONDS).build());
+        metadataMap.put(name, new MetadataBuilder().withName(name)
+            .withUnit(MetricUnits.NANOSECONDS).build());
         return timer;
     }
 
@@ -355,31 +246,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     }
 
     @Override
-    public SimpleTimer simpleTimer(final String name) {
-        return null;
-    }
-
-    @Override
-    public SimpleTimer simpleTimer(final String name, final Tag... tags) {
-        return null;
-    }
-
-    @Override
-    public SimpleTimer simpleTimer(MetricID metricID) {
-        return null;
-    }
-
-    @Override
-    public SimpleTimer simpleTimer(final Metadata metadata) {
-        return null;
-    }
-
-    @Override
-    public SimpleTimer simpleTimer(final Metadata metadata, final Tag... tags) {
-        return null;
-    }
-
-    @Override
     public Metric getMetric(MetricID metricID) {
         return null;
     }
@@ -394,10 +260,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
         return null;
     }
 
-    @Override
-    public ConcurrentGauge getConcurrentGauge(MetricID metricID) {
-        return null;
-    }
 
     @Override
     public Gauge<?> getGauge(MetricID metricID) {
@@ -409,18 +271,9 @@ public class PortalTestMetricRegistry implements MetricRegistry {
         return null;
     }
 
-    @Override
-    public Meter getMeter(MetricID metricID) {
-        return null;
-    }
 
     @Override
     public Timer getTimer(MetricID metricID) {
-        return null;
-    }
-
-    @Override
-    public SimpleTimer getSimpleTimer(MetricID metricID) {
         return null;
     }
 
@@ -483,16 +336,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     }
 
     @Override
-    public SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges() {
-        return Collections.emptySortedMap();
-    }
-
-    @Override
-    public SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges(final MetricFilter filter) {
-        return Collections.emptySortedMap();
-    }
-
-    @Override
     public SortedMap<MetricID, Histogram> getHistograms() {
         return Collections.emptySortedMap();
     }
@@ -500,16 +343,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public SortedMap<MetricID, Histogram> getHistograms(final MetricFilter filter) {
         return Collections.emptySortedMap();
-    }
-
-    @Override
-    public SortedMap<MetricID, Meter> getMeters() {
-        return null;
-    }
-
-    @Override
-    public SortedMap<MetricID, Meter> getMeters(final MetricFilter filter) {
-        return null;
     }
 
     @Override
@@ -525,16 +358,6 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public SortedMap<MetricID, Timer> getTimers(final MetricFilter filter) {
-        return null;
-    }
-
-    @Override
-    public SortedMap<MetricID, SimpleTimer> getSimpleTimers() {
-        return null;
-    }
-
-    @Override
-    public SortedMap<MetricID, SimpleTimer> getSimpleTimers(final MetricFilter filter) {
         return null;
     }
 
@@ -558,8 +381,14 @@ public class PortalTestMetricRegistry implements MetricRegistry {
         return null;
     }
 
+    /**
+     * Returns the scope of this metric registry.
+     *
+     * @return Scope of this registry (VENDOR_SCOPE, BASE_SCOPE, APPLICATION_SCOPE, or a custom scope)
+     */
     @Override
-    public Type getType() {
-        return null;
+    public String getScope() {
+        return "";
     }
+
 }

@@ -18,7 +18,7 @@ package de.cuioss.portal.configuration.impl.source;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.environment.util.Collections;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;

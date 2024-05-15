@@ -15,38 +15,28 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
-import de.cuioss.portal.configuration.ConfigurationStorage;
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
-import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
-import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.PortalConfigurationStorage;
+import de.cuioss.portal.configuration.*;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.types.ConfigAsList;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+
+import java.util.*;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
@@ -88,7 +78,7 @@ import lombok.ToString;
  *   private PortalConfigurationMock configuration;
  * </code>
  * </pre>
- *
+ * <p>
  * Initialize it like
  *
  * <pre>
@@ -99,7 +89,7 @@ import lombok.ToString;
  *   }
  * </code>
  * </pre>
- *
+ * <p>
  * and use it like:
  *
  * <pre>
@@ -140,6 +130,7 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
      */
     public void fireEvent() {
         configurationChangeEvent.fire(configurationMap);
+        ConfigProvider.getConfig().getConfigValue("test.value.for.change");
     }
 
     /**
@@ -151,6 +142,7 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
     public void fireEvent(final Map<String, String> deltaMap) {
         configurationMap.putAll(deltaMap);
         configurationChangeEvent.fire(deltaMap);
+        ConfigProvider.getConfig().getConfigValue("test.value.for.change");
     }
 
     /**
@@ -252,11 +244,13 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
 
     @Override
     public Map<String, String> getProperties() {
+        LOGGER.trace("Requested Properties: {}", configurationMap);
         return immutableMap(configurationMap);
     }
 
     @Override
     public Set<String> getPropertyNames() {
+        LOGGER.trace("Requested Property Names: {}", configurationMap);
         return configurationMap.keySet();
     }
 
@@ -275,8 +269,11 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
         return "PortalConfigurationMock[config-impl]";
     }
 
+    private static final CuiLogger LOGGER = new CuiLogger(PortalConfigurationMock.class);
+
     @Override
     public Map<String, String> getConfigurationMap() {
+        LOGGER.trace("Requested Map: {}", configurationMap);
         return immutableMap(configurationMap);
     }
 }

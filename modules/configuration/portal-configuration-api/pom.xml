@@ -14,15 +14,19 @@
     <artifactId>portal-configuration-api</artifactId>
     <name>Portal Configuration API</name>
     <description>Extensions to the micro-profile configuration</description>
-    <dependencies>
-        <dependency>
-            <groupId>de.cuioss</groupId>
-            <artifactId>cui-core-ui-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>de.cuioss</groupId>
+      <artifactId>cui-core-ui-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.interceptor</groupId>
+      <artifactId>jakarta.interceptor-api</artifactId>
+    </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>

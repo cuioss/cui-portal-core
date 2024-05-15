@@ -15,26 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
@@ -44,14 +24,27 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionType;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal
-@AddBeanClasses({ ConnectionMetadataProducer.class, ConnectionMetadata.class })
-@EnableTestLogger
+@AddBeanClasses({ConnectionMetadataProducer.class, ConnectionMetadata.class})
+@EnableTestLogger(trace = {ConfigurationHelper.class, PortalConfigurationMock.class})
 class ConnectionMetadataProducerTest {
 
     private static final String TOKEN_VALUE = "tokenValue";
@@ -63,7 +56,7 @@ class ConnectionMetadataProducerTest {
     private static final String KEYSTORE_PASSWORD = "initinit";
     private static final String PASSWORD3 = "password3";
     private static final String USER = "user";
-    private static final String CONNECTION_URL = "http://de.icw-global.com/";
+    private static final String CONNECTION_URL = "https://cuioss.de/";
     private static final String DESCRIPTION = "Some description";
     private String truststoreLocation;
     private String keystoreLocation;
@@ -392,7 +385,7 @@ class ConnectionMetadataProducerTest {
     void shouldHandleConfigProperties() {
         defaultConfig();
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE,
-                AuthenticationType.NONE.name());
+            AuthenticationType.NONE.name());
         configuration.fireEvent();
         assertTrue(metadataProvider.get().getContextMap().isEmpty());
 
@@ -409,16 +402,6 @@ class ConnectionMetadataProducerTest {
         configuration.fireEvent();
 
         assertEquals(AuthenticationType.BASIC, metadataProvider.get().getAuthenticationType());
-    }
-
-    @Test
-    void shouldHandleTracing() {
-        defaultConfig();
-        configuration.fireEvent();
-        assertTrue(metadataProvider.get().isTracingEnabled());
-
-        configuration.fireEvent(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRACING, "false");
-        assertFalse(metadataProvider.get().isTracingEnabled());
     }
 
     @Test
@@ -481,16 +464,16 @@ class ConnectionMetadataProducerTest {
     private void certificateConfig() {
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION,
-                truststoreLocation);
+            truststoreLocation);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD,
-                TRUSTSTORE_PASSWORD);
+            TRUSTSTORE_PASSWORD);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION,
-                keystoreLocation);
+            keystoreLocation);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
-                KEYSTORE_PASSWORD);
+            KEYSTORE_PASSWORD);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD, PASSWORD3);
 

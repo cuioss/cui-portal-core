@@ -25,8 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.io.FileLoader;

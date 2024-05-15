@@ -17,7 +17,7 @@ package de.cuioss.portal.authentication;
 
 import java.util.function.Function;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import de.cuioss.portal.authentication.facade.AuthenticationFacade;
 import de.cuioss.portal.common.priority.PortalPriorities;

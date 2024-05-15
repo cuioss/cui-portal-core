@@ -21,9 +21,8 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javax.annotation.Priority;
-
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
 
 /**
  * Used for configuring ResourceBundles. Implementations should provide a

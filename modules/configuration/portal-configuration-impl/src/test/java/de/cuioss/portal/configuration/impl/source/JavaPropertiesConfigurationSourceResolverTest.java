@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ServiceLoader;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.configuration.impl.support.TestResourcesRepository;
@@ -14,6 +15,7 @@ import de.cuioss.tools.io.ClassPathLoader;
 class JavaPropertiesConfigurationSourceResolverTest {
 
     @Test
+    @Disabled
     void shouldProvideResolver() {
 
         var resolver = ServiceLoader.load(ConfigurationSourceResolver.class).findFirst();

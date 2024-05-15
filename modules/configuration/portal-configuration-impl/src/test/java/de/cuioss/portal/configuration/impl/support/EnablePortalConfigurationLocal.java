@@ -15,21 +15,20 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
+import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
+import io.smallrye.config.inject.ConfigProducer;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-
-import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
-import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
-import io.smallrye.config.inject.ConfigProducer;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Using this annotations at type-level of a junit 5 test provides the basic
+ * Using this annotation at type-level of a junit 5 test provides the basic
  * types for handling configuration in unit-tests. It includes the types:
  *
  * <ul>
@@ -43,7 +42,7 @@ import io.smallrye.config.inject.ConfigProducer;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-@AddBeanClasses({ ConfigProducer.class, PortalConfigProducer.class, PortalConfigurationMock.class,
-        ConfigChangeObserver.class })
+@AddBeanClasses({ConfigProducer.class, PortalConfigProducer.class, PortalConfigurationMock.class,
+    ConfigChangeObserver.class})
 public @interface EnablePortalConfigurationLocal {
 }

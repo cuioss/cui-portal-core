@@ -21,8 +21,8 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.Application;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.Application;
 
 import de.cuioss.portal.common.cdi.PortalBeanManager;
 import de.cuioss.tools.logging.CuiLogger;
@@ -40,7 +40,7 @@ import lombok.ToString;
  * needed. Sadly there is no corresponding interface, solely an Abstract-Class
  * that can not be proxied by CDI. Currently it's sole use is the context of the
  * PortalApplication, that it exposes it on
- * {@link Application#getResourceBundle(javax.faces.context.FacesContext, String)}
+ * {@link Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
  * with the name "msgs"
  *
  * It can be used directly in jsf views: {@code #{msgs['page.401.title']}}

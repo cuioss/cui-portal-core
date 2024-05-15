@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.configuration.source;
 
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
-
-import java.util.Locale;
-import java.util.Map;
-
 import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.configuration.impl.PropertiesConfigurationProvider;
 import de.cuioss.tools.collect.CollectionLiterals;
@@ -27,6 +22,11 @@ import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
+
+import java.util.Locale;
+import java.util.Map;
+
+import static de.cuioss.tools.string.MoreStrings.isEmpty;
 
 /**
  * @author Sven Haag
@@ -49,7 +49,6 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
      * {@link de.cuioss.tools.io.FileTypePrefix}s.
      *
      * @param path to the properties file
-     *
      * @throws IllegalArgumentException if {@code path} is empty or {@code null} or
      *                                  does not have a {@code properties} file
      *                                  extension.
@@ -65,7 +64,6 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
      * @param path     to the properties file
      * @param optional if true, doesn't throw an exception if the file isn't
      *                 available.
-     *
      * @throws IllegalArgumentException if {@code path} is empty or {@code null} or
      *                                  does not have a {@code properties} file
      *                                  extension.
@@ -78,10 +76,9 @@ public class PropertiesConfigSource extends AbstractPortalConfigSource implement
      * Instantly loads the given file. The path might be prefixed with one of the
      * {@link de.cuioss.tools.io.FileTypePrefix}s.
      *
-     * @param path     to the properties file
-     * @param optional if true, doesn't throw an exception if the file isn't
-     *                 available.
-     *
+     * @param fileLoader to the properties file
+     * @param optional   if true, doesn't throw an exception if the file isn't
+     *                   available.
      * @throws IllegalArgumentException if {@code path} is empty or {@code null} or
      *                                  does not have a {@code properties} file
      *                                  extension.

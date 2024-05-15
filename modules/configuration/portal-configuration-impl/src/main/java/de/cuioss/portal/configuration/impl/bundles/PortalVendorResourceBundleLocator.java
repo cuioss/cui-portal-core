@@ -18,11 +18,11 @@ package de.cuioss.portal.configuration.impl.bundles;
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.EqualsAndHashCode;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
 import java.io.Serial;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
 import static de.cuioss.portal.configuration.PortalConfigurationDefaults.CUSTOM_BUNDLE_PATH;
 
 /**
- * Defines the vendor specific bundle to be defined within a portal application,
+ * Defines the vendor-specific bundle to be defined within a portal application,
  * that is "de.cuioss.portal.i18n.vendor-messages" with the Priority
  * {@link PortalPriorities#PORTAL_ASSEMBLY_LEVEL + 10}
  *

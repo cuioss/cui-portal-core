@@ -19,7 +19,7 @@ import static de.cuioss.tools.base.Preconditions.checkArgument;
 
 import java.util.Optional;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
