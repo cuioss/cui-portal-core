@@ -19,17 +19,13 @@ import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import lombok.experimental.UtilityClass;
 
-import java.io.Serializable;
-
 /**
  * Provides the keys used for the web.xml based configuration of the portal.
  *
  * @author Oliver Wolff
  */
 @UtilityClass
-public class PortalConfigurationKeys implements Serializable {
-
-    private static final long serialVersionUID = 6880786388570386870L;
+public class PortalConfigurationKeys {
 
     /**
      * Prefix, unifying naming.
@@ -69,7 +65,7 @@ public class PortalConfigurationKeys implements Serializable {
 
     private static final String LISTENER_BASE = PORTAL_BASE + "listener.";
 
-    private static final String LAZYLOADING_BASE = PORTAL_BASE + "lazyLoading.";
+    private static final String LAZY_LOADING_BASE = PORTAL_BASE + "lazyLoading.";
 
     public static final String APPLICATION_CONTEXT_NAME = "application.context.name";
 
@@ -148,7 +144,7 @@ public class PortalConfigurationKeys implements Serializable {
     /**
      * This is used for setting the top-level menu as parent. In previous versions
      * {@code null} as parent was interpreted as indicator for displaying the
-     * menu-item as top-level element
+     * menu-item as a top-level element
      */
     public static final String MENU_TOP_IDENTIFIER = "top";
 
@@ -560,7 +556,7 @@ public class PortalConfigurationKeys implements Serializable {
      * Defines the timeout to retrieve a backend request in seconds. After this
      * timeout the request will be aborted.
      */
-    public static final String PORTAL_LAZYLOADING_REQUEST_RETRIEVE_TIMEOUT = LAZYLOADING_BASE
+    public static final String PORTAL_LAZYLOADING_REQUEST_RETRIEVE_TIMEOUT = LAZY_LOADING_BASE
         + "request.retrieve.timeout";
 
     /**
@@ -568,7 +564,7 @@ public class PortalConfigurationKeys implements Serializable {
      * timeout the request will be aborted. This can happen if the initial rendering
      * or the ajax update request was aborted because of redirect.
      */
-    public static final String PORTAL_LAZYLOADING_REQUEST_HANDLE_TIMEOUT = LAZYLOADING_BASE + "request.handle.timeout";
+    public static final String PORTAL_LAZYLOADING_REQUEST_HANDLE_TIMEOUT = LAZY_LOADING_BASE + "request.handle.timeout";
 
     /**
      * Default portal customization directory.

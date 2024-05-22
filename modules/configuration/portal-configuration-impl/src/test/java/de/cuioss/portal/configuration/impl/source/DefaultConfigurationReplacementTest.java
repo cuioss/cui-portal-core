@@ -15,37 +15,39 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-
-import jakarta.inject.Inject;
-
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
+import de.cuioss.tools.collect.CollectionLiterals;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import lombok.Getter;
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
 class DefaultConfigurationReplacementTest {
 
-    @Inject
-    @Getter
-    private ConfigurationResolver underTest;
+    public static final String PRODUCTION = "production";
+    public static final String PROFILE = "smallrye.config.profile";
 
     @Test
-    void shouldReplaceVersionForResourceHandler() {
-        assertTrue(underTest.containsKey(PORTAL_STAGE));
-        assertNotNull(underTest.getString(PORTAL_STAGE));
+    void shouldProvideConfiguration() {
+        assertTrue(ConfigurationHelper.resolveConfigProperties().containsKey(PORTAL_STAGE));
+        assertEquals(PRODUCTION, ConfigurationHelper.resolveConfigProperty(PORTAL_STAGE).get());
     }
 
     @Test
-    void shouldEnumerateKeys() {
-        assertTrue(Collections.list(underTest.getKeys()).size() > 10);
+    void shouldProvideReplacedConfiguration() {
+        assertTrue(ConfigurationHelper.resolveConfigProperties().containsKey(PROFILE));
+        assertEquals(PRODUCTION, ConfigurationHelper.resolveConfigProperty(PORTAL_STAGE).get());
     }
 
+    @Test
+    void shouldProvideReplacedConfigurationFromMPConfig() {
+        assertTrue(CollectionLiterals.mutableList(ConfigProvider.getConfig().getPropertyNames()).contains(PROFILE));
+        assertEquals(PRODUCTION, ConfigProvider.getConfig().getValue(PORTAL_STAGE, String.class));
+    }
 }
