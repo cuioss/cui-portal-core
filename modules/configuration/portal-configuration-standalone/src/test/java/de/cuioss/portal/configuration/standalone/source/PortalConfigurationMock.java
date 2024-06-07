@@ -15,38 +15,26 @@
  */
 package de.cuioss.portal.configuration.standalone.source;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
-import de.cuioss.portal.configuration.ConfigurationStorage;
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
-import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
-import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.PortalConfigurationStorage;
+import de.cuioss.portal.configuration.*;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.types.ConfigAsList;
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+
+import java.util.*;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
@@ -113,7 +101,6 @@ import lombok.ToString;
  * @author Oliver Wolff
  */
 @PortalConfigurationSource
-@PortalConfigurationStorage
 @ApplicationScoped
 @Priority(PortalConfigurationMock.PRIORITY)
 @EqualsAndHashCode(of = "configurationMap")

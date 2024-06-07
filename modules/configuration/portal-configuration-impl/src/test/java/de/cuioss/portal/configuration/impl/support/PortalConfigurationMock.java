@@ -103,7 +103,6 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  * @author Oliver Wolff
  */
 @PortalConfigurationSource
-@PortalConfigurationStorage
 @ApplicationScoped
 @Priority(PortalConfigurationMock.PRIORITY)
 @EqualsAndHashCode(of = "configurationMap")

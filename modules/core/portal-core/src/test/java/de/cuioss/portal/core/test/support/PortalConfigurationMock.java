@@ -15,37 +15,29 @@
  */
 package de.cuioss.portal.core.test.support;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.portal.common.stage.ProjectStage;
+import de.cuioss.portal.configuration.*;
+import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
+import de.cuioss.portal.configuration.initializer.PortalInitializer;
+import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
+import de.cuioss.portal.configuration.types.ConfigAsList;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-
-import de.cuioss.portal.common.priority.PortalPriorities;
-import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
-import de.cuioss.portal.configuration.ConfigurationStorage;
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
-import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
-import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.PortalConfigurationStorage;
-import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
-import de.cuioss.portal.configuration.initializer.PortalInitializer;
-import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
-import de.cuioss.portal.configuration.types.ConfigAsList;
-import jakarta.annotation.Priority;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
@@ -87,7 +79,7 @@ import lombok.ToString;
  *   private PortalConfigurationMock configuration;
  * </code>
  * </pre>
- *
+ * <p>
  * Initialize it like
  *
  * <pre>
@@ -98,7 +90,7 @@ import lombok.ToString;
  *   }
  * </code>
  * </pre>
- *
+ * <p>
  * and use it like:
  *
  * <pre>
@@ -112,7 +104,6 @@ import lombok.ToString;
  * @author Oliver Wolff
  */
 @PortalConfigurationSource
-@PortalConfigurationStorage
 @ApplicationScoped
 @Priority(PortalPriorities.PORTAL_ASSEMBLY_LEVEL)
 @EqualsAndHashCode(of = "configurationMap", callSuper = false)
@@ -163,7 +154,6 @@ public class PortalConfigurationMock extends AbstractPortalConfigSource implemen
      *
      * @param key   of the entry
      * @param value of the entry
-     *
      */
     public void fireEvent(String key, String value) {
         fireEvent(immutableMap(key, value));
@@ -177,7 +167,6 @@ public class PortalConfigurationMock extends AbstractPortalConfigSource implemen
      * @param value1 of the entry1
      * @param key2   of the entry2
      * @param value2 of the entry2
-     *
      */
     public void fireEvent(String key1, String value1, String key2, String value2) {
         fireEvent(immutableMap(key1, value1, key2, value2));
