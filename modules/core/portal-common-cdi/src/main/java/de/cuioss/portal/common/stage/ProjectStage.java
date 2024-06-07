@@ -32,21 +32,18 @@ public enum ProjectStage implements CuiProjectStage {
     TEST,
 
     /***/
-    CONFIGURATION,
-
-    /***/
     PRODUCTION;
 
     private static final String PROJECT_STAGE_CONFIGURATION_ERROR = """
-            Portal-500: Unknown project stage '{}' detected! \
-            Set the property 'portal.configuration.stage' to one of: development, test, configuration, production\
-            """;
+        Portal-500: Unknown project stage '{}' detected! \
+        Set the property 'portal.configuration.stage' to one of: development, test, configuration, production\
+        """;
 
     /**
-     * Try to find corresponding portal project stage from string.
+     * Try to find the corresponding portal project stage from string.
      *
      * @param stage
-     * @return corresponding stage or PRODUCTION if stage is unknown.
+     * @return the corresponding stage or PRODUCTION if stage is unknown.
      */
     public static ProjectStage fromString(final String stage) {
         if (null != stage) {
@@ -81,8 +78,4 @@ public enum ProjectStage implements CuiProjectStage {
         return PRODUCTION == this;
     }
 
-    @Override
-    public boolean isConfiguration() {
-        return CONFIGURATION == this;
-    }
 }

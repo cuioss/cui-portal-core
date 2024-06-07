@@ -15,38 +15,36 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Portal variant of {@link CuiProjectStage}. It computes the project-stage from
  * the parameter {@link PortalConfigurationKeys#PORTAL_STAGE}
  * <p>
- * Currently it supports the following stages:
+ * Currently, it supports the following stages:
  * <ul>
  * <li>{@link ProjectStage#DEVELOPMENT}</li>
  * <li>{@link ProjectStage#TEST}</li>
- * <li>{@link ProjectStage#CONFIGURATION}</li>
  * <li>{@link ProjectStage#PRODUCTION}</li>
  * </ul>
  *
@@ -58,19 +56,20 @@ import lombok.ToString;
 @ToString(of = "projectStage", doNotUseGetters = true)
 public class PortalProjectStageImpl implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 178765109802042493L;
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalProjectStageImpl.class);
 
     private static final String PROJECT_STAGE_XY_DETECTED = """
-            Portal-101: Project stage '{}' detected. \
-            Set the property '\
-            """ + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.";
+        Portal-101: Project stage '{}' detected. \
+        Set the property '\
+        """ + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.";
 
     private static final String PROJECT_STAGE_CONFIGURATION_DETECTED = """
-            Portal-103: Project stage 'configuration' detected. Complete the configuration wizard or \
-            set the property 'icw.portal.configuration.stage' to 'production' for productive usage.\
-            """;
+        Portal-103: Project stage 'configuration' detected. Complete the configuration wizard or \
+        set the property 'icw.portal.configuration.stage' to 'production' for productive usage.\
+        """;
 
     private static final String PROJECT_STAGE_PRODUCTION_DETECTED = "Portal-001: Running in Production-Mode";
 
@@ -89,7 +88,7 @@ public class PortalProjectStageImpl implements Serializable {
     Provider<String> portalStageConfigurationProvider;
 
     /**
-     * Initializes the bean. See class documentation for expected result.
+     * Initializes the bean. See class documentation for an expected result.
      */
     @PostConstruct
     void initialize() {
@@ -98,19 +97,16 @@ public class PortalProjectStageImpl implements Serializable {
         projectStage = configuredProjectStage;
 
         switch (configuredProjectStage) {
-        case DEVELOPMENT:
-            LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "development");
-            break;
-        case TEST:
-            LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "test");
-            break;
-        case CONFIGURATION:
-            LOGGER.warn(PROJECT_STAGE_CONFIGURATION_DETECTED);
-            break;
-        case PRODUCTION:
-        default:
-            LOGGER.info(PROJECT_STAGE_PRODUCTION_DETECTED);
-            break;
+            case DEVELOPMENT:
+                LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "development");
+                break;
+            case TEST:
+                LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "test");
+                break;
+            case PRODUCTION:
+            default:
+                LOGGER.info(PROJECT_STAGE_PRODUCTION_DETECTED);
+                break;
         }
     }
 
@@ -121,7 +117,7 @@ public class PortalProjectStageImpl implements Serializable {
      * @param deltaMap
      */
     void portalConfigurationChangeEventListener(
-            @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
+        @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
         if (deltaMap.containsKey(PortalConfigurationKeys.PORTAL_STAGE)) {
             LOGGER.debug("Change in portal stage configuration found, reconfigure");
             initialize();
