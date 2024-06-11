@@ -15,23 +15,15 @@
  */
 package de.cuioss.portal.configuration.standalone.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Map;
-
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.event.Observes;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
+import de.cuioss.portal.configuration.impl.schedule.FileWatcherServiceImpl;
+import de.cuioss.test.generator.Generators;
+import de.cuioss.test.generator.TypedGenerator;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import io.smallrye.config.inject.ConfigProducer;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
@@ -39,38 +31,23 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
-import de.cuioss.portal.configuration.impl.schedule.ConfigChangeObserver;
-import de.cuioss.portal.configuration.impl.schedule.FileWatcherServiceImpl;
-import de.cuioss.portal.configuration.schedule.FileChangedEvent;
-import de.cuioss.test.generator.Generators;
-import de.cuioss.test.generator.TypedGenerator;
-import de.cuioss.test.juli.junit5.EnableTestLogger;
-import io.smallrye.config.inject.ConfigProducer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-@AddBeanClasses({ ConfigProducer.class, PortalConfigProducer.class, FileWatcherServiceImpl.class,
-        PortalConfigurationMock.class, InstallationConfigSourcePathInitializer.class, ConfigChangeObserver.class,
-        InstallationFileConfigSource.class, InstallationProductionFileConfigSource.class })
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@AddBeanClasses({ConfigProducer.class, PortalConfigProducer.class, FileWatcherServiceImpl.class,
+    PortalConfigurationMock.class,
+    InstallationFileConfigSource.class, InstallationProductionFileConfigSource.class})
 @EnableAutoWeld
-@EnableTestLogger(debug = { AbstractInstallationConfigSource.class })
+@EnableTestLogger(debug = {AbstractInstallationConfigSource.class})
 class PortalInstallationConfigurationTest {
 
     private static final Path CONFIG_DIR = Paths.get("target/test-classes/META-INF/installation-configuration-test");
-    private static final Path APPLICATION_YML = CONFIG_DIR.resolve("application.yml");
-    private static final Path APPLICATION_PRODUCTION_YML = CONFIG_DIR.resolve("application-production.yml");
-    private static final Path APPLICATION_USER_YML = CONFIG_DIR.resolve("application-user.yml");
     private static final String PROPERTY_VALUE_PROD = "property_value_b";
-    private static final Path PATH_NOT_THERE = Paths.get("/not/there");
 
     final TypedGenerator<String> keyValueGenerator = Generators.letterStrings(10, 15);
-
-    private Map<String, String> payload;
-
-    @Inject
-    @FileChangedEvent
-    private Event<Path> fileChangeEvent;
 
     @Inject
     @PortalConfigurationSource
@@ -89,7 +66,6 @@ class PortalInstallationConfigurationTest {
         configuration.put(PORTAL_CONFIG_DIR, CONFIG_DIR.toString());
 
         configuration.initializeConfigurationSystem();
-        configuration.fireEvent();
     }
 
     @AfterAll
@@ -102,40 +78,5 @@ class PortalInstallationConfigurationTest {
         assertEquals(PROPERTY_VALUE_PROD, keyValue.get());
     }
 
-    @Test
-    void shouldReactOnFileChangeEvents() {
-        // InvalidPath should be ignored
-        payload = null;
-        fileChangeEvent.fire(PATH_NOT_THERE);
-        assertNull(payload);
 
-        payload = null;
-        fileChangeEvent.fire(APPLICATION_YML); // initial loading of config source
-        assertNull(payload);
-        appendArbitraryProperty(APPLICATION_YML); // do actual config change
-        fileChangeEvent.fire(APPLICATION_YML);
-        assertNotNull(payload);
-
-        payload = null;
-        fileChangeEvent.fire(APPLICATION_PRODUCTION_YML); // initial loading of config source
-        assertNull(payload);
-        appendArbitraryProperty(APPLICATION_PRODUCTION_YML); // do actual config change
-        fileChangeEvent.fire(APPLICATION_PRODUCTION_YML);
-        assertNotNull(payload);
-
-        payload = null;
-        fileChangeEvent.fire(APPLICATION_USER_YML);
-        assertNull(payload); // because file does not exist
-    }
-
-    private void appendArbitraryProperty(final Path file) {
-        final var yamlProperty = System.lineSeparator() + keyValueGenerator.next() + ": " + keyValueGenerator.next();
-        assertDoesNotThrow(() -> {
-            Files.write(file, yamlProperty.getBytes(), StandardOpenOption.APPEND);
-        }, "Could not append to file");
-    }
-
-    void providerChangeEventListener(@Observes @ConfigurationSourceChangeEvent final Map<String, String> eventMap) {
-        payload = eventMap;
-    }
 }

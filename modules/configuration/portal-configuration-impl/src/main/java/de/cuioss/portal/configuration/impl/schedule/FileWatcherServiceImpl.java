@@ -15,29 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
-
-import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
@@ -46,8 +23,23 @@ import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
 import de.cuioss.tools.io.MorePaths;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
 
 /**
  * Replacement for initial quartz based module (cdi-portal-core-scheduler). It
@@ -202,19 +194,6 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
         List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath).toList();
         log.trace("getRegisteredPaths callled, returning {}", paths);
         return paths;
-    }
-
-    void configurationChangeEventListener(@Observes @PortalConfigurationChangeEvent Map<String, String> deltaMap) {
-        if (deltaMap.containsKey(SCHEDULER_FILE_SCAN_ENABLED)) {
-            final var enabled = Boolean.parseBoolean(deltaMap.get(SCHEDULER_FILE_SCAN_ENABLED));
-            log.debug("Portal-011: Changed configuration of '{}' found, new value is '{}', reconfigure",
-                    SCHEDULER_FILE_SCAN_ENABLED, enabled);
-            if (enabled) {
-                initialize();
-            } else {
-                destroy();
-            }
-        }
     }
 
     @SuppressWarnings("squid:S1188") // Not to much logic, so the number of lines are ok

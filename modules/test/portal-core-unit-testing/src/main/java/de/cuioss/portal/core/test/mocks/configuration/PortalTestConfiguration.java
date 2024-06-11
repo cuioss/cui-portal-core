@@ -15,32 +15,28 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static java.util.Collections.synchronizedMap;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.tools.collect.MapBuilder;
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static java.util.Collections.synchronizedMap;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
@@ -60,7 +56,7 @@ import lombok.ToString;
  *   private PortalTestConfiguration configuration;
  * </code>
  * </pre>
- *
+ * <p>
  * and use it like:
  *
  * <pre>
@@ -70,7 +66,7 @@ import lombok.ToString;
  *   configuration.fireEvent();
  * </code>
  * </pre>
- *
+ * <p>
  * or like
  *
  * <pre>
@@ -79,7 +75,7 @@ import lombok.ToString;
  *   configuration.fireEvent("key1", "value1", "key2", "value2");
  * </code>
  * </pre>
- *
+ * <p>
  * To explicitly remove/erase a property use {@link #remove(String)} or
  * {@link #removeAll()}. This sets the given property value to an empty string,
  * which in MP-Config terms defines the removal of a property.
@@ -98,33 +94,27 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
 
     private static final Map<String, String> properties = synchronizedMap(new HashMap<>());
 
-    /** Contains the delta config since the last fireEvent */
+    /**
+     * Contains the delta config since the last fireEvent
+     */
     private static final Map<String, String> delta = synchronizedMap(new HashMap<>());
-
-    @Inject
-    @ConfigurationSourceChangeEvent
-    private Event<Map<String, String>> configurationChangeEvent;
 
     @Inject
     @PortalInitializer
     private Instance<ApplicationInitializer> applicationInitializers;
 
     /**
-     * Fires the current status as {@link ConfigurationSourceChangeEvent}
+     * Fires the event
      */
     public void fireEvent() {
         if (!delta.isEmpty()) {
-            configurationChangeEvent.fire(MapBuilder.copyFrom(delta).toImmutableMap());
             handlePortalConfigDir();
             delta.clear();
         }
     }
 
     /**
-     * Fires the given map directly as {@link ConfigurationSourceChangeEvent}
-     *
-     * @param deltaMap the deltaMap implicitly fired as
-     *                 {@link ConfigurationSourceChangeEvent}
+     * Configures the given map
      */
     public void fireEvent(final Map<String, String> deltaMap) {
         deltaMap.forEach(this::put);

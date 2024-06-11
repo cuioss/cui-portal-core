@@ -16,14 +16,12 @@
 package de.cuioss.portal.configuration.impl.producer;
 
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -35,7 +33,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Portal variant of {@link CuiProjectStage}. It computes the project-stage from
@@ -65,11 +62,6 @@ public class PortalProjectStageImpl implements Serializable {
         Portal-101: Project stage '{}' detected. \
         Set the property '\
         """ + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.";
-
-    private static final String PROJECT_STAGE_CONFIGURATION_DETECTED = """
-        Portal-103: Project stage 'configuration' detected. Complete the configuration wizard or \
-        set the property 'icw.portal.configuration.stage' to 'production' for productive usage.\
-        """;
 
     private static final String PROJECT_STAGE_PRODUCTION_DETECTED = "Portal-001: Running in Production-Mode";
 
@@ -107,20 +99,6 @@ public class PortalProjectStageImpl implements Serializable {
             default:
                 LOGGER.info(PROJECT_STAGE_PRODUCTION_DETECTED);
                 break;
-        }
-    }
-
-    /**
-     * Listener for {@link PortalConfigurationChangeEvent}s. Reconfigures the
-     * project-stage-configuration
-     *
-     * @param deltaMap
-     */
-    void portalConfigurationChangeEventListener(
-        @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
-        if (deltaMap.containsKey(PortalConfigurationKeys.PORTAL_STAGE)) {
-            LOGGER.debug("Change in portal stage configuration found, reconfigure");
-            initialize();
         }
     }
 }

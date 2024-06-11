@@ -15,36 +15,28 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.AUTHENTICATION_BASE;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_DISCOVER_PATH;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
-import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
-import static de.cuioss.tools.string.MoreStrings.isBlank;
+import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
+import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
+import de.cuioss.portal.restclient.CuiRestClientBuilder;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.GET;
+import lombok.Getter;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-import jakarta.ws.rs.GET;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
-import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
-import de.cuioss.portal.configuration.PortalConfigurationChangeInterceptor;
-import de.cuioss.portal.restclient.CuiRestClientBuilder;
-import de.cuioss.tools.logging.CuiLogger;
-import jakarta.annotation.PostConstruct;
-import lombok.Getter;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
+import static de.cuioss.tools.string.MoreStrings.isBlank;
 
 /**
  * Produces {@link Oauth2Configuration} using the new config params
@@ -139,7 +131,7 @@ public class Oauth2DiscoveryConfigurationProducer {
             }
         } else {
             LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback", OPEN_ID_SERVER_BASE_URL,
-                    OPEN_ID_DISCOVER_PATH);
+                OPEN_ID_DISCOVER_PATH);
         }
 
         LOGGER.debug("oauth config: {}", configuration);
@@ -164,19 +156,19 @@ public class Oauth2DiscoveryConfigurationProducer {
         // web-browser.
         for (final Map.Entry<String, Object> entry : discovery.entrySet()) {
             switch (entry.getKey()) {
-            case "authorization_endpoint":
-                newConfiguration.setAuthorizeUri((String) entry.getValue());
-                break;
-            case "userinfo_endpoint":
-                newConfiguration.setUserInfoUri((String) entry.getValue());
-                break;
-            case "token_endpoint":
-                newConfiguration.setTokenUri((String) entry.getValue());
-                break;
-            case "end_session_endpoint":
-                newConfiguration.setLogoutUri((String) entry.getValue());
-                break;
-            default:
+                case "authorization_endpoint":
+                    newConfiguration.setAuthorizeUri((String) entry.getValue());
+                    break;
+                case "userinfo_endpoint":
+                    newConfiguration.setUserInfoUri((String) entry.getValue());
+                    break;
+                case "token_endpoint":
+                    newConfiguration.setTokenUri((String) entry.getValue());
+                    break;
+                case "end_session_endpoint":
+                    newConfiguration.setLogoutUri((String) entry.getValue());
+                    break;
+                default:
             }
         }
 
@@ -192,18 +184,5 @@ public class Oauth2DiscoveryConfigurationProducer {
         });
 
         return newConfiguration;
-    }
-
-    /**
-     * Listener for {@link PortalConfigurationChangeEvent}s. Reconfigures the
-     * default-resource-configuration
-     *
-     * @param deltaMap include difference to current configuration settings
-     */
-    @PortalConfigurationChangeInterceptor(keyPrefix = AUTHENTICATION_BASE)
-    void configurationChangeEventListener(
-            @Observes @PortalConfigurationChangeEvent final Map<String, String> deltaMap) {
-        LOGGER.info("Change in oauth2 configuration found, reconfigure");
-        init();
     }
 }

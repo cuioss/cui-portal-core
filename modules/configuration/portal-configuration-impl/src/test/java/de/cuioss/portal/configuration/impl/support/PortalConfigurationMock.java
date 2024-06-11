@@ -17,14 +17,15 @@ package de.cuioss.portal.configuration.impl.support;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.*;
+import de.cuioss.portal.configuration.ConfigurationStorage;
+import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.types.ConfigAsList;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
@@ -60,13 +61,6 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  * <p>
  * If you want to add the portal-default configuration you need to add
  * {@code de.cuioss.portal.configuration.impl.source.PortalDefaultConfiguration}
- * to {@link AddBeanClasses} as well.
- * </p>
- * <p>
- * If your configuration listens to {@link PortalConfigurationChangeEvent}s and
- * are annotated with {@link PortalConfigurationChangeInterceptor} you need to
- * add
- * {@code de.cuioss.portal.configuration.impl.PortalConfigurationChangeInterceptorImpl}
  * to {@link AddBeanClasses} as well.
  * </p>
  * Now you can inject the {@link PortalConfigurationMock}
@@ -117,30 +111,21 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
     private static final Map<String, String> configurationMap = Collections.synchronizedMap(new HashMap<>());
 
     @Inject
-    @ConfigurationSourceChangeEvent
-    private Event<Map<String, String>> configurationChangeEvent;
-
-    @Inject
     @PortalInitializer
     private Instance<ApplicationInitializer> applicationInitializers;
 
     /**
-     * Fires the current status as {@link ConfigurationSourceChangeEvent}
+     * Tests config for "test.value.for.change")
      */
     public void fireEvent() {
-        configurationChangeEvent.fire(configurationMap);
         ConfigProvider.getConfig().getConfigValue("test.value.for.change");
     }
 
     /**
-     * Fires the given map directly as {@link ConfigurationSourceChangeEvent}
-     *
-     * @param deltaMap the deltaMap implicitly fired as
-     *                 {@link ConfigurationSourceChangeEvent}
+     * Updates the map
      */
     public void fireEvent(final Map<String, String> deltaMap) {
         configurationMap.putAll(deltaMap);
-        configurationChangeEvent.fire(deltaMap);
         ConfigProvider.getConfig().getConfigValue("test.value.for.change");
     }
 

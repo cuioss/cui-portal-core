@@ -15,34 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.THEME_DEFAULT;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyOrThrow;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
-
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.configuration.MetricsConfigKeys;
-import de.cuioss.portal.configuration.PortalConfigurationChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
@@ -53,6 +26,23 @@ import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
 import de.cuioss.portal.configuration.types.ConfigAsFilteredMap;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.string.MoreStrings;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.THEME_DEFAULT;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyOrThrow;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
@@ -135,18 +125,6 @@ class PortalConfigSourceTest {
     void shouldOverwriteKeysCorrectly() {
         configuration.fireEvent(THEME_DEFAULT, SOME_VALUE);
         assertEquals(SOME_VALUE, resolveConfigProperty(THEME_DEFAULT).orElse(null));
-    }
-
-    @Test
-    void shouldHandleChangeOfAdditionalConfiguration() {
-        configuration.fireEvent(SOME_KEY, SOME_VALUE);
-        assertEquals(SOME_VALUE, resolveConfigProperty(SOME_KEY).orElse(null));
-
-        payload = null;
-        configuration.fireEvent(SOME_KEY, SOME_KEY);
-        assertNotNull(payload);
-        assertEquals(SOME_KEY, payload.get(SOME_KEY));
-        assertEquals(SOME_KEY, resolveConfigProperty(SOME_KEY).orElse(null));
     }
 
     @Test
@@ -237,9 +215,9 @@ class PortalConfigSourceTest {
         final var ENV_KEY = PREFIX.toUpperCase() + "_" + "PORTAL_TEST_ENV";
 
         assertTrue(
-                StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
-                        .anyMatch(clazz -> clazz instanceof TestEnvConfigSource),
-                "TestEnvConfigSource class not available in configuration system");
+            StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
+                .anyMatch(clazz -> clazz instanceof TestEnvConfigSource),
+            "TestEnvConfigSource class not available in configuration system");
 
         TestEnvConfigSource.getAdditionalProperties().put(ENV_KEY, "ENV");
         TestEnvConfigSource.getAdditionalProperties().put("PLACEHOLDER", "${" + ENV_KEY + ":}"); // indirection
@@ -257,7 +235,7 @@ class PortalConfigSourceTest {
          * );
          */
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER").orElse(null),
-                "expanded value expected");
+            "expanded value expected");
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER_YAML").orElse(null));
 
         // adding system property which has higher priority than env property
@@ -276,9 +254,9 @@ class PortalConfigSourceTest {
     @Test
     void configHelperShouldUseResolvedPortalConfigValue() {
         System.setProperty("TEST_CONFIG_PRIO", ""); // this empty string should be used due to
-                                                    // higher prio,
+        // higher prio,
         configuration.fireEvent("TEST_CONFIG_PRIO", "value"); // despite there is a value in a lower
-                                                              // prio config source
+        // prio config source
 
         final var all = ConfigurationHelper.resolveConfigProperties();
         assertFalse(all.containsKey("TEST_CONFIG_PRIO"), "properties with empty value should be unavailable");
@@ -288,10 +266,5 @@ class PortalConfigSourceTest {
     void expandsNestedKeys() {
         assertDoesNotThrow(() -> nestedKeyReplacement.get(), "nested key should be present in test config");
         assertEquals("stringvalue", nestedKeyReplacement.get());
-    }
-
-    void configurationChangeEventListener(
-            @Observes @PortalConfigurationChangeEvent final Map<String, String> eventMap) {
-        payload = eventMap;
     }
 }

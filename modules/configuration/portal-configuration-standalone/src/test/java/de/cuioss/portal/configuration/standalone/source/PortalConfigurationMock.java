@@ -17,13 +17,14 @@ package de.cuioss.portal.configuration.standalone.source;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.*;
+import de.cuioss.portal.configuration.ConfigurationStorage;
+import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.types.ConfigAsList;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
@@ -60,13 +61,6 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  * {@code de.cuioss.portal.configuration.standalone.source.PortalDefaultConfiguration}
  * to {@link AddBeanClasses} as well.
  * </p>
- * <p>
- * If your configuration listens to {@link PortalConfigurationChangeEvent}s and
- * are annotated with {@link PortalConfigurationChangeInterceptor} you need to
- * add
- * {@code de.cuioss.portal.configuration.impl.PortalConfigurationChangeInterceptorImpl}
- * to {@link AddBeanClasses} as well.
- * </p>
  * Now you can inject the {@link PortalConfigurationMock}
  *
  * <pre>
@@ -76,7 +70,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  *   private PortalConfigurationMock configuration;
  * </code>
  * </pre>
- *
+ * <p>
  * Initialize it like
  *
  * <pre>
@@ -87,7 +81,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  *   }
  * </code>
  * </pre>
- *
+ * <p>
  * and use it like:
  *
  * <pre>
@@ -114,30 +108,19 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
      */
     private static final Map<String, String> configurationMap = Collections.synchronizedMap(new HashMap<>());
 
-    @Inject
-    @ConfigurationSourceChangeEvent
-    private Event<Map<String, String>> configurationChangeEvent;
 
     @Inject
     @PortalInitializer
     private Instance<ApplicationInitializer> applicationInitializers;
 
     /**
-     * Fires the current status as {@link ConfigurationSourceChangeEvent}
-     */
-    public void fireEvent() {
-        configurationChangeEvent.fire(configurationMap);
-    }
-
-    /**
-     * Fires the given map directly as {@link ConfigurationSourceChangeEvent}
+     * Fires the given map directly as
      *
      * @param deltaMap the deltaMap implicitly fired as
-     *                 {@link ConfigurationSourceChangeEvent}
+     *                 {
      */
     public void fireEvent(final Map<String, String> deltaMap) {
         configurationMap.putAll(deltaMap);
-        configurationChangeEvent.fire(deltaMap);
     }
 
     /**
@@ -207,7 +190,6 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
      */
     public void setPortalProjectStage(final ProjectStage projectStage) {
         put(PortalConfigurationKeys.PORTAL_STAGE, projectStage.name().toLowerCase());
-        fireEvent();
     }
 
     /**

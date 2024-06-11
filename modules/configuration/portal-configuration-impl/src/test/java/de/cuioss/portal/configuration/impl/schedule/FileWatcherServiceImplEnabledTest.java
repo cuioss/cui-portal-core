@@ -15,12 +15,19 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
+import de.cuioss.portal.configuration.schedule.FileChangedEvent;
+import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import lombok.Getter;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,21 +35,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
-import de.cuioss.portal.configuration.schedule.FileChangedEvent;
-import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
-import lombok.Getter;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
@@ -107,7 +101,6 @@ class FileWatcherServiceImplEnabledTest {
 
     @Test
     @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
-
     void shouldDetectChanges() throws IOException {
         assertTrue(underTest.isUpAndRunning());
         underTest.register(testFileHandler.getFile1());
@@ -128,17 +121,6 @@ class FileWatcherServiceImplEnabledTest {
         assertFileChangeEvent(directory);
     }
 
-    @Test
-    void shouldHandleConfigurationChanges() {
-        assertTrue(underTest.isUpAndRunning());
-        configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "false");
-        configuration.fireEvent();
-        assertFalse(underTest.isUpAndRunning());
-        configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "true");
-        configuration.fireEvent();
-        assertTrue(underTest.isUpAndRunning());
-    }
-
     void fileChangeListener(@Observes @FileChangedEvent final Path newPath) {
         pathFromEvent = newPath;
     }
@@ -155,9 +137,9 @@ class FileWatcherServiceImplEnabledTest {
     private void assertFileChangeEvent(final Path filePath) throws IOException {
         // wait for FileChangedEvent
         assertDoesNotThrow(() -> await().atMost(3, TimeUnit.SECONDS).until(() -> null != pathFromEvent),
-                "did not receive file change event");
+            "did not receive file change event");
 
         assertTrue(Files.isSameFile(filePath, pathFromEvent), "file paths are expected to be equal:\n\tfilePath="
-                + filePath.toAbsolutePath() + "\n\tpathFromEvent=" + pathFromEvent + "\n");
+            + filePath.toAbsolutePath() + "\n\tpathFromEvent=" + pathFromEvent + "\n");
     }
 }

@@ -15,24 +15,17 @@
  */
 package de.cuioss.portal.core.test.tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Map;
-
-import jakarta.enterprise.event.Observes;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import jakarta.inject.Inject;
-
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * There are several use-cases to test for the test config source.
@@ -135,16 +128,6 @@ public class PortalTestConfigurationTest {
         // should receive a delta map with 2 empty keys
         assertNotNull(configSourceChanges);
         assertEquals(2, configSourceChanges.size());
-    }
-
-    void configSourceChangeEventListener(@Observes @ConfigurationSourceChangeEvent final Map<String, String> deltaMap) {
-        assertNotNull(deltaMap, "ConfigurationSourceChangeEvent payload must never be null!");
-        assertFalse(deltaMap.isEmpty(), """
-                An empty delta map is useless. \
-                Removed properties must be indicated via an empty string value\
-                """);
-        assertUnmodifiable(deltaMap);
-        configSourceChanges = deltaMap;
     }
 
     @SuppressWarnings("squid:S1872")

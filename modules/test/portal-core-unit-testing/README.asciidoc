@@ -312,7 +312,7 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
     private JwksResolveDispatcher jwksResolveDispatcher = new JwksResolveDispatcher();
 
     @Getter
-    private CombinedDispatcher dispatcher = new CombinedDispatcher().addDispatcher(jwksResolveDispatcher);
+    private final CombinedDispatcher dispatcher = new CombinedDispatcher().addDispatcher(jwksResolveDispatcher);
 
     @BeforeEach
     void setupMockServer() {

@@ -15,32 +15,19 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static de.cuioss.tools.collect.MoreCollections.isEmpty;
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Map;
-
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.ConfigurationSourceChangeEvent;
 import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import jakarta.inject.Inject;
 import lombok.Getter;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -50,13 +37,6 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
     @PortalConfigurationSource
     @Getter
     private PortalTestConfiguration underTest;
-
-    private Map<String, String> fromEvent;
-
-    @BeforeEach
-    void beforeEach() {
-        fromEvent = null;
-    }
 
     @Test
     void shouldHandleProjectStage() {
@@ -149,17 +129,10 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
     }
 
     void assertConfigPresent(String key, String value) {
-        assertFalse(isEmpty(fromEvent));
-        assertEquals(value, fromEvent.get(key));
+        assertEquals(value, underTest.getValue(key));
     }
 
     void assertConfigNotPresent(String key) {
-        if (!isEmpty(fromEvent) && fromEvent.containsKey(key)) {
-            assertTrue(isEmpty(fromEvent.get(key)));
-        }
-    }
-
-    void listen(@Observes @ConfigurationSourceChangeEvent final Map<String, String> map) {
-        fromEvent = map;
+        assertNull(underTest.getValue(key));
     }
 }

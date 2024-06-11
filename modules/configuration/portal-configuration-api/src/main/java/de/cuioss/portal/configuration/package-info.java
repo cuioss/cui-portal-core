@@ -23,16 +23,6 @@
  * {@link de.cuioss.portal.configuration.types.ConfigAsList},
  * {@link de.cuioss.portal.configuration.types.ConfigAsSet}
  * </p>
- * <h3>Reacting on Changes</h3>
- * <p>
- * Some parts of the configuration can change at runtime. In order to
- * participate you can can listen to
- * {@link de.cuioss.portal.configuration.PortalConfigurationChangeEvent} the
- * payload is the map with the changed key/ values. Sample:
- *
- * <pre>
- * <code>void configurationChangeEventListener(&#64;Observes &#64;PortalConfigurationChangeEvent Map<String, String> deltaMap)</code>
- * </pre>
  *
  * @author Oliver Wolff
  */
