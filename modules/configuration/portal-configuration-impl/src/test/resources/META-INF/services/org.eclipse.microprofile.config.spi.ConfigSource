@@ -1,8 +1,6 @@
 de.cuioss.portal.configuration.impl.support.TestEnvConfigSource
 de.cuioss.portal.configuration.impl.support.PortalConfigurationMock
-de.cuioss.portal.configuration.impl.support.TestYamlFileConfigurationSource
 de.cuioss.portal.configuration.impl.support.TestPropertiesFileConfigurationSource
-de.cuioss.portal.configuration.impl.source.FancyYamlFileConfigSource
 de.cuioss.portal.configuration.impl.source.HighReloadableConfigSource
 de.cuioss.portal.configuration.impl.source.LowReloadableConfigSource
 

@@ -31,28 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LoaderUtilsTest {
 
     @Test
-    void shouldLoadExistingFiles() {
-        assertFalse(LoaderUtils.loadConfigurationFromSource(EXISTING_YML).isEmpty());
-    }
-
-    @Test
-    void shouldNotLoadNonExistingPropertyFile() {
-        assertTrue(LoaderUtils.loadConfigurationFromSource(NOT_EXISTING_YML).isEmpty());
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.ERROR, "Portal-519");
-
-    }
-
-    @Test
-    void shouldNotLoadNonExistingYml() {
-        assertTrue(LoaderUtils.loadConfigurationFromSource(NOT_EXISTING_YML).isEmpty());
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.ERROR, "Portal-519");
-    }
-
-    @Test
     void shouldCreateFromFileResources() {
-        assertFalse(loadConfigurationFromSource(EXISTING_YML).isEmpty());
-        assertTrue(loadConfigurationFromSource(NOT_EXISTING_YML).isEmpty());
-        assertTrue(loadConfigurationFromSource(NOT_EXISTING_PROPERTIES).isEmpty());
         assertTrue(loadConfigurationFromSource((FileLoader) null).isEmpty());
         assertTrue(loadConfigurationFromSource((FileConfigurationSource) null).isEmpty());
         assertTrue(loadConfigurationFromSource(EMPTY_PATH).isEmpty());

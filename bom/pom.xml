@@ -22,19 +22,7 @@
             </dependency>
             <dependency>
                 <groupId>de.cuioss.portal.configuration</groupId>
-                <artifactId>portal-configuration-yaml</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.cuioss.portal.configuration</groupId>
                 <artifactId>portal-configuration-impl</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.cuioss.portal.configuration</groupId>
-                <artifactId>portal-configuration-standalone</artifactId>
                 <version>${project.version}</version>
                 <scope>runtime</scope>
             </dependency>

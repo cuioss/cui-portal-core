@@ -80,10 +80,6 @@ class PortalConfigSourceTest {
     private Provider<CacheConfig> invalidCacheConfigProvider;
 
     @Inject
-    @ConfigProperty(name = "array.list")
-    private Set<String> arrayList;
-
-    @Inject
     @ConfigProperty(name = "string.list")
     private Set<String> stringList;
 
@@ -101,9 +97,6 @@ class PortalConfigSourceTest {
     void listAndArrays() {
         assertNotNull(stringList);
         assertEquals(3, stringList.size());
-
-        assertNotNull(arrayList);
-        assertEquals(3, arrayList.size());
     }
 
     @Test
@@ -260,11 +253,5 @@ class PortalConfigSourceTest {
 
         final var all = ConfigurationHelper.resolveConfigProperties();
         assertFalse(all.containsKey("TEST_CONFIG_PRIO"), "properties with empty value should be unavailable");
-    }
-
-    @Test
-    void expandsNestedKeys() {
-        assertDoesNotThrow(() -> nestedKeyReplacement.get(), "nested key should be present in test config");
-        assertEquals("stringvalue", nestedKeyReplacement.get());
     }
 }
