@@ -79,9 +79,9 @@ public final class PortalPriorities {
     public static final int PORTAL_INSTALLATION_LEVEL = 150;
 
     /**
-     * Helper method that sorts a number of given objects regarding to their
+     * Helper method that sorts a number of given objects regarding their
      * priority. The Priority is assumed to be defined by the {@link Priority}
-     * annotation at class level. It it is not set the priority is defaulted to
+     * annotation at class level. If it is not set, the priority is defaulted to
      * {@value #DEFAULT_LEVEL}
      *
      * @param toBeSorted must not be null

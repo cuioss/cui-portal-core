@@ -33,7 +33,7 @@ public class PortalConfigurationKeys {
     public static final String ENABLED = "enabled";
 
     /**
-     * The base path for all CUI Portal based keys.
+     * The base path for all CUI Portal-based keys.
      */
     public static final String PORTAL_BASE = "portal.";
 
@@ -375,7 +375,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.view.suppressed
+     * 'portal.view.suppressed'
      * <p>
      * Defines the view that are being suppressed: The portal provides many
      * artifacts that can be overridden by concrete portals. This can be services or
@@ -389,7 +389,7 @@ public class PortalConfigurationKeys {
      * Caution: The views are relative to the root, usually starting with /faces.
      * The distinct values are to be checked using String#startsWith(). The default
      * for the portal is '', saying no view is to be suppressed. Multiple view
-     * supressions can be configured by using the
+     * suppressions can be configured by using the
      * {@linkplain #CONTEXT_PARAM_SEPARATOR} character.
      * </p>
      */
@@ -406,12 +406,19 @@ public class PortalConfigurationKeys {
 
     /**
      * Prefix for identifying context-parameter defining the restrictions for
-     * certain roles: "portal.view.restrict.role.". The portal defines a view-level
-     * access rights-managements. All Views can be found under '/'. The matching of
-     * certain views is checked using String#startsWith(). Therefore you can omit
-     * any suffixes and define partial trees quite easily. The individual views
-     * and/or subtrees can be separated by colons. If subtree is defined it always
-     * has to finished by '/', in case of single page without '/'. A concrete view
+     * certain roles: 'portal.view.restrict.role.'.
+     * The portal defines view-level
+     * access rights-management.
+     * All Views can be found under '/'.
+     * The matching of
+     * certain views is checked using String#startsWith().
+     * Therefore, you can omit
+     * any suffixes and define partial trees quite easily.
+     * The individual views
+     * and/or subtrees can be separated by colons.
+     * If subtree is defined, it always
+     * has to finish by '/', in case of single page without '/'.
+     * A concrete view
      * restriction is always prepended by the string 'portal.view.restrict.role.'
      * Sample: portal.view.restrict.role.admin=/admin/,/content/verify will result
      * in all views under '/admin/' and the single view '/content/verify.jsf' be
@@ -421,7 +428,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.view.transient
+     * 'portal.view.transient'
      * <p>
      * Defines the view that are transient, therefore not part of the state saving.
      * Caution: The views are relative to the root, usually starting with /faces.
@@ -433,7 +440,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.history.exclude_parameter
+     * 'portal.history.exclude_parameter'
      * <p>
      * Defines the url-parameter to be ignored for the server side history manager
      * as comma separated list. <em>Caution</em>: The checks are all lower-cased,
@@ -445,7 +452,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.history.view_excludes
+     * 'portal.history.view_excludes'
      * <p>
      * Defines the views that are to be excluded from the server-side history, as
      * comma separated list. The distinct values are to be checked using
@@ -457,7 +464,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.pages.login.logged_in_strategy
+     * 'portal.pages.login.logged_in_strategy'
      * <p>
      * Defines the behavior of the login page if called with an already logged-in
      * user. Currently there are two strategies available: 'goto_home' resulting in
@@ -469,17 +476,17 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.pages.login.default_userstore
+     * 'portal.pages.login.default_user_store'
      * <p>
      * Define configuration for default selected user store. If no valid setting is
      * defined first available user store should be used.
      * </p>
      */
-    public static final String PAGES_LOGIN_DEFAULT_USERSTORE = PAGES_LOGIN_BASE + "default_userstore";
+    public static final String PAGES_LOGIN_DEFAULT_USER_STORE = PAGES_LOGIN_BASE + "default_user_store";
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.pages.error.404_redirect_to_home
+     * 'portal.pages.error.404_redirect_to_home'
      * <p>
      * Defines the the behavior of the 404 / resource not found view. If set to
      * 'true' the application will implicitly redirect to the home-view If set to
@@ -490,19 +497,19 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.storage.cookieMaxAge
+     * 'portal.storage.cookieMaxAge'
      * <p>
      * Defines the maximum age of the cookie in seconds; if negative, means the
      * cookie is not stored.
      * </p>
      */
-    public static final String CLIENT_STORAGE_COOKIE_MAXAGE = STORAGE_BASE + "cookieMaxAge";
+    public static final String CLIENT_STORAGE_COOKIE_MAX_AGE = STORAGE_BASE + "cookieMaxAge";
 
     private static final String CSP_BASE = HTTP_HEADER_BASE + "csp.";
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.httpHeader.csp.enabled
+     * 'portal.httpHeader.csp.enabled'
      * <p>
      * Defines an optional header parameter to enable the Content Security Policy.
      * </p>
@@ -516,7 +523,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.httpHeader.csp.views
+     * 'portal.httpHeader.csp.views'
      * <p>
      * Defines for which views the csp header should be added.
      * </p>
@@ -525,7 +532,7 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * portal.httpHeader.csp.content
+     * 'portal.httpHeader.csp.content'
      * <p>
      * Defines the content of the csp header.
      * </p>
@@ -556,7 +563,7 @@ public class PortalConfigurationKeys {
      * Defines the timeout to retrieve a backend request in seconds. After this
      * timeout the request will be aborted.
      */
-    public static final String PORTAL_LAZYLOADING_REQUEST_RETRIEVE_TIMEOUT = LAZY_LOADING_BASE
+    public static final String PORTAL_LAZY_LOADING_REQUEST_RETRIEVE_TIMEOUT = LAZY_LOADING_BASE
         + "request.retrieve.timeout";
 
     /**
@@ -564,7 +571,7 @@ public class PortalConfigurationKeys {
      * timeout the request will be aborted. This can happen if the initial rendering
      * or the ajax update request was aborted because of redirect.
      */
-    public static final String PORTAL_LAZYLOADING_REQUEST_HANDLE_TIMEOUT = LAZY_LOADING_BASE + "request.handle.timeout";
+    public static final String PORTAL_LAZY_LOADING_REQUEST_HANDLE_TIMEOUT = LAZY_LOADING_BASE + "request.handle.timeout";
 
     /**
      * Default portal customization directory.
@@ -579,7 +586,7 @@ public class PortalConfigurationKeys {
      * {@code true}
      * </p>
      */
-    public static final String PORTAL_LISTENER_STICKYMESSAGES = LISTENER_BASE + "StickyMessages.enabled";
+    public static final String PORTAL_LISTENER_STICKY_MESSAGES = LISTENER_BASE + "StickyMessages.enabled";
 
     /**
      * Context parameter within configuration-subsystem with the name
@@ -589,7 +596,7 @@ public class PortalConfigurationKeys {
      * {@code true}
      * </p>
      */
-    public static final String PORTAL_LISTENER_HISTORYMANAGER = LISTENER_BASE + "HistoryManager.enabled";
+    public static final String PORTAL_LISTENER_HISTORY_MANAGER = LISTENER_BASE + "HistoryManager.enabled";
 
     /**
      * Context parameter within configuration-subsystem with the name
@@ -628,17 +635,17 @@ public class PortalConfigurationKeys {
 
     /**
      * Context parameter within configuration-subsystem with the name
-     * 'portal.listener.ViewSupression.enabled'
+     * 'portal.listener.ViewSuppression.enabled'
      * <p>
-     * Defines whether the listener for ViewSupression is enabled. Defaults to
+     * Defines whether the listener for ViewSuppression is enabled. Defaults to
      * {@code true}
      * </p>
      */
-    public static final String PORTAL_LISTENER_VIEW_SUPRESSION = LISTENER_BASE + "ViewSupression.enabled";
+    public static final String PORTAL_LISTENER_VIEW_SUPPRESSION = LISTENER_BASE + "ViewSuppression.enabled";
 
     /**
      * Context parameter within configuration-subsystem with the name:
-     * portal.authentication.servlet.allowBasicAuth
+     * 'portal.authentication.servlet.allowBasicAuth'
      * <p>
      * Used in the servlet authentication context to check whether BASIC
      * authentication is allowed. Valid values are: true|false Default value: true
