@@ -15,12 +15,11 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-
-import java.util.Optional;
-
+import de.cuioss.portal.common.cdi.AnnotationInstanceProvider;
+import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
+import de.cuioss.tools.string.Splitter;
 import jakarta.enterprise.inject.spi.CDI;
-
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -28,10 +27,7 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import de.cuioss.portal.common.cdi.AnnotationInstanceProvider;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
-import de.cuioss.tools.string.Splitter;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
 
 /**
  * Junit 5 {@link Extension} controlling the initialization process of a
@@ -49,9 +45,9 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
     private static final Logger log = LoggerFactory.getLogger(PortalTestConfigurationExtension.class);
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         Class<?> testClass = context.getTestClass()
-                .orElseThrow(() -> new IllegalStateException("Unable to determine Test-class"));
+            .orElseThrow(() -> new IllegalStateException("Unable to determine Test-class"));
         log.debug(() -> "Processing test-class " + testClass);
 
         CDI<Object> cdi;
@@ -59,19 +55,19 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
             cdi = CDI.current();
         } catch (IllegalStateException e) {
             throw new IllegalStateException("""
-                    CDI not present, change the order of annotation and put @EnableAutoWeld above \
-                    @EnablePortalConfiguration\
-                    """, e);
+                CDI not present, change the order of annotation and put @EnableAutoWeld above \
+                @EnablePortalConfiguration\
+                """, e);
         }
 
         var configuration = cdi
-                .select(PortalTestConfiguration.class, AnnotationInstanceProvider.of(PortalConfigurationSource.class))
-                .get();
+            .select(PortalTestConfiguration.class, AnnotationInstanceProvider.of(PortalConfigurationSource.class))
+            .get();
         log.debug(() -> "Resolved " + configuration);
 
         configuration.clear();
 
-        var annotation = extractAnnotation(testClass);
+        var annotation = AnnotationSupport.findAnnotation(testClass, EnablePortalConfiguration.class);
         if (annotation.isPresent()) {
             log.debug(() -> "Resolved annotation " + annotation.get());
             for (String element : annotation.get().configuration()) {
@@ -84,17 +80,4 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
 
         log.debug(() -> "Finished processing instance " + testClass);
     }
-
-    private static Optional<EnablePortalConfiguration> extractAnnotation(Class<?> testClass) {
-        Optional<EnablePortalConfiguration> annotation = AnnotationSupport.findAnnotation(testClass,
-                EnablePortalConfiguration.class);
-        if (annotation.isPresent()) {
-            return annotation;
-        }
-        if (Object.class.equals(testClass.getClass())) {
-            return Optional.empty();
-        }
-        return extractAnnotation(testClass.getSuperclass());
-    }
-
 }
