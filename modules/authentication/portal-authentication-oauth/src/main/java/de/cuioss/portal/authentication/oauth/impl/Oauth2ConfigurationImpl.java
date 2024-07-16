@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import java.io.Serial;
 import java.util.List;
 
 import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
@@ -34,6 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Oauth2ConfigurationImpl implements Oauth2Configuration {
 
+    @Serial
     private static final long serialVersionUID = 6666334248327168722L;
 
     private String clientId;

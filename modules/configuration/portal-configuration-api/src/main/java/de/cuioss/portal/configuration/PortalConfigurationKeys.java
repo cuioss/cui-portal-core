@@ -97,8 +97,7 @@ public class PortalConfigurationKeys {
      * Context parameter prefix within configuration-subsystem with the name
      * portal.dashboard.widget.
      * <p>
-     * Activates dashboard widgets (see
-     * com.icw.ehf.cui.portal.cdi.api.dashboard.PortalDashboardWidget) and defines
+     * Activates dashboard widgets and defines
      * their order.
      */
     public static final String DASHBOARD_WIDGET = PORTAL_BASE + "dashboard.widget.";
@@ -108,12 +107,12 @@ public class PortalConfigurationKeys {
      * portal.menu.
      * <p>
      * Activates navigation menu items (see
-     * com.icw.ehf.cui.components.bootstrap.menu.model.NavigationMenuItem and
+     * de.cuioss.jsf.api.components.model.menu.NavigationMenuItem and
      * defines their order and hierarchy.
      * </p>
      * <p>
      * Each entry consists of a logical name matching
-     * com.icw.ehf.cui.components.bootstrap.menu.model.NavigationMenuItem#getId(),
+     * NavigationMenuItem#getId(),
      * and the properties "enabled", "order" and "parent".
      * </p>
      * Example:
@@ -297,8 +296,7 @@ public class PortalConfigurationKeys {
      * A comma separated list of libraries that should be handled by the
      * CuiResourceHandler. Handled by the resource handler means selecting the
      * .min-version of the resource is available and adding a cache-buster to the
-     * resource request. The default value for the CDI portal is:
-     * "com.icw.cui.fonts,com.icw.portal.css,com.icw.cui.javascript,thirdparty.legacy.js,thirdparty.js"
+     * resource request.
      * </p>
      */
     public static final String RESOURCE_HANDLED_LIBRARIES = RESOURCE_BASE + "handled_libraries";
@@ -616,7 +614,7 @@ public class PortalConfigurationKeys {
      * <p>
      * Defines whether the listener for tracing faces-requests is enabled. Defaults
      * to {@code false}. In order to activate tracing on the application log you
-     * must set the Logger for de.icw.cui.portal.application.metrics.RequestTracer
+     * must set the Logger for de.cuioss.portal.ui.runtime.application.listener.metrics.RequestTracer
      * to debug. In case of metrics being enabled as well it will register as
      * metric.
      * </p>

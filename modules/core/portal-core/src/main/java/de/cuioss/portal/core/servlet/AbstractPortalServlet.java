@@ -16,6 +16,7 @@
 package de.cuioss.portal.core.servlet;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -58,6 +59,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     private static final String NOT_LOGGED_IN = "Portal-523: Could not process Request, because the user must be logged in for this request";
     private static final String USER = "Portal-523: Could not process Request, because of the condition '{}' is not met for user '{}'";
 
+    @Serial
     private static final long serialVersionUID = 5418492528395532112L;
 
     private final CuiLogger log = new CuiLogger(getClass());

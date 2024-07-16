@@ -16,10 +16,7 @@
 package de.cuioss.portal.common.cdi;
 
 import static de.cuioss.portal.common.cdi.PortalBeanManager.resolveBean;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -55,7 +52,7 @@ class PortalBeanManagerTest {
     void shouldReturnNormalScopedBeanWithQualifierAndHighestPriorityViaInterface() {
         final Optional<TestInterface> check = resolveBean(TestInterface.class, TestAnnotation.class);
         assertTrue(check.isPresent());
-        assertTrue(check.get() instanceof TestBeanWithQualifierAndPriority20);
+        assertInstanceOf(TestBeanWithQualifierAndPriority20.class, check.get());
     }
 
     @Test

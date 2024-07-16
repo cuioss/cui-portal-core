@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,6 +31,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Token implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1814898874197817661L;
 
     private String id_token;

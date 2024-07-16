@@ -15,11 +15,14 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
+import java.io.Serial;
+
 /**
  * @author Matthias Walliczek
  */
 public class OauthAuthenticationException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -2351542706407596661L;
 
     public OauthAuthenticationException(final String string) {

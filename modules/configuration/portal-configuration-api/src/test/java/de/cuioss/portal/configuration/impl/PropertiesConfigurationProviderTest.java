@@ -40,7 +40,7 @@ class PropertiesConfigurationProviderTest extends ValueObjectTest<PropertiesConf
         implements TypedGenerator<FileLoader> {
 
     private static final String BASE = "src/test/resources/";
-    private static final String ONE = BASE + "cui_logger.properties";
+    private static final String ONE = BASE + "base_test.properties";
     private static final String TWO = BASE + "test.properties";
     private static final String INVALID_PROPERTIES = BASE + "keystore1.keystore";
 

@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -53,6 +54,7 @@ import lombok.ToString;
 @ToString
 public class PortalResourceBundleBean extends ResourceBundle implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3953649686127640297L;
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalResourceBundleBean.class);

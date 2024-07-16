@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.configuration.cache;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,7 @@ import lombok.ToString;
 @ToString
 public class CacheConfig implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -9171609866171876392L;
 
     /** The config key suffix for the {@link #expiration} property */

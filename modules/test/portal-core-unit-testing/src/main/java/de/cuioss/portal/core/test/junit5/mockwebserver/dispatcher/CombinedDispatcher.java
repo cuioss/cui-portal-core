@@ -25,6 +25,7 @@ import lombok.NonNull;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Aggregates a number of {@link ModuleDispatcherElement}s in order to reuse
@@ -68,7 +69,7 @@ public class CombinedDispatcher extends Dispatcher {
      * RecordedRequest)
      */
     @Override
-    public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+    public @NotNull MockResponse dispatch(@NonNull RecordedRequest request) throws InterruptedException {
         var path = request.getPath();
         var mapper = HttpMethodMapper.of(request);
         LOGGER.info("Processing method '{}' with path '{}'", mapper, path);

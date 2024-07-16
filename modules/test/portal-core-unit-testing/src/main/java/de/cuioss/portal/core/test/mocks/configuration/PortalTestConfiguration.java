@@ -87,7 +87,6 @@ import static java.util.Collections.synchronizedMap;
 @PortalConfigurationSource
 @EqualsAndHashCode(of = "properties", callSuper = true)
 @ToString(of = "properties")
-// Keep in sync with de.icw.portal.authentication.tests.PortalTestConfiguration
 public class PortalTestConfiguration extends AbstractPortalConfigSource {
 
     public static final int PRIORITY = PortalPriorities.PORTAL_ASSEMBLY_LEVEL + 20;

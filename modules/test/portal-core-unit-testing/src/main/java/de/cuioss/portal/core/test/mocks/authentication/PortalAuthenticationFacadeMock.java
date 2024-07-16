@@ -18,6 +18,7 @@ package de.cuioss.portal.core.test.mocks.authentication;
 import static de.cuioss.portal.authentication.facade.AuthenticationResults.invalidResultKey;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -131,7 +132,7 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
      * @param authenticated
      */
     public void assertAuthenticated(final boolean authenticated) {
-        assertTrue(authenticated == current.isAuthenticated());
+        assertEquals(authenticated, current.isAuthenticated());
     }
 
     /**

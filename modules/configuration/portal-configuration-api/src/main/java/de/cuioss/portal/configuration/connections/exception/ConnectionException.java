@@ -17,6 +17,8 @@ package de.cuioss.portal.configuration.connections.exception;
 
 import lombok.Getter;
 
+import java.io.Serial;
+
 /**
  * General exception to be thrown if anything goes wrong while trying to
  * <em>establish</em> the connection. Other exceptions that are specific to the
@@ -26,6 +28,7 @@ import lombok.Getter;
  */
 public class ConnectionException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 3441459660135305431L;
 
     @Getter

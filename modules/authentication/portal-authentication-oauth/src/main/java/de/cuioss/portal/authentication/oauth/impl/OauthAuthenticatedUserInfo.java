@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import java.io.Serial;
 import java.util.Optional;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
@@ -25,6 +26,7 @@ import lombok.experimental.Delegate;
 @RequiredArgsConstructor
 public class OauthAuthenticatedUserInfo implements AuthenticatedUserInfo {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * The key of the accessToken to be stored in the

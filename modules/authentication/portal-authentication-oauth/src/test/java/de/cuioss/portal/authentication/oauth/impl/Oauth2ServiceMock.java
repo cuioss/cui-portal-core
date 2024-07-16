@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ import lombok.Setter;
 
 public class Oauth2ServiceMock implements Oauth2Service, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2635417375165112609L;
 
     @Getter

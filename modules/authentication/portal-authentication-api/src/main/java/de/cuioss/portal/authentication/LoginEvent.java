@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Builder;
@@ -29,6 +30,7 @@ import lombok.Value;
 @Builder
 public class LoginEvent implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2436530653889693514L;
 
     /**

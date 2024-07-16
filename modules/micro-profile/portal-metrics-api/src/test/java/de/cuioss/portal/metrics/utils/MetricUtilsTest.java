@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 
+import java.io.Serial;
+
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = MetricsConfigKeys.PORTAL_METRICS_APP_NAME + ":test-app")
 class MetricUtilsTest {
@@ -70,6 +72,7 @@ class MetricUtilsTest {
 
     public static class MetricUtilsTestException extends Exception {
 
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 }

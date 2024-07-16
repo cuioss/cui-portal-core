@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
+import java.io.Serial;
 import java.util.Optional;
 
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
@@ -28,6 +29,7 @@ import lombok.ToString;
 @ToString
 public class MissingBundle implements ResourceBundleLocator {
 
+    @Serial
     private static final long serialVersionUID = 7756501560722570148L;
 
     @Override

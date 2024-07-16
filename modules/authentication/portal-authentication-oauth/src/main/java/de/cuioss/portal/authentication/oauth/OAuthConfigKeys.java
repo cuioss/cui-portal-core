@@ -20,7 +20,6 @@ import lombok.experimental.UtilityClass;
 /**
  * Provide the keys for the application.properties to configure oauth2.
  * <p>
- * See also https://wiki.icw.int/display/CUI/Howto+enable+Oauth2+Authentication
  *
  * @author Matthias Walliczek
  */
@@ -28,7 +27,7 @@ import lombok.experimental.UtilityClass;
 public class OAuthConfigKeys {
 
     /**
-     * Base key for constructing keys root at 'authentication.'.
+     * Base key for constructing key root at 'authentication.'.
      */
     public static final String AUTHENTICATION_BASE = "authentication.";
 
@@ -152,7 +151,6 @@ public class OAuthConfigKeys {
      * <p>
      * The url of the server that provides the authentication endpoints. It is
      * interpreted as a complete url including context path, e.g.
-     * https://sso-evaluation.dev.icw.int:9443/
      * </p>
      */
     public static final String OPEN_ID_SERVER_BASE_URL = OPEN_ID_SERVER_BASE + "url";

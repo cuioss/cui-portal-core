@@ -50,7 +50,7 @@ import de.cuioss.uimodel.application.LoginCredentials;
 @VerifyBuilder
 class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
 
-    private static final String URL = "http://de.icw-global.com/";
+    private static final String URL = "https://cuioss.de";
     private final TypedGenerator<String> stringGenerator = strings(1, 10);
     private final KeyStoreInfoGenerator keystoreInfos = new KeyStoreInfoGenerator();
     private final TrustStoreInfoGenerator truststoreInfos = new TrustStoreInfoGenerator();

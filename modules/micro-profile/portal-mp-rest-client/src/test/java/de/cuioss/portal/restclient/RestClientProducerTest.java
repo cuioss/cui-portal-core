@@ -36,6 +36,7 @@ import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
@@ -62,7 +63,7 @@ class RestClientProducerTest implements MockWebServerHolder {
         return new Dispatcher() {
 
             @Override
-            public MockResponse dispatch(RecordedRequest request) {
+            public @NotNull MockResponse dispatch(@NotNull RecordedRequest request) {
                 assert request.getPath() != null;
                 return switch (request.getPath()) {
                     case "/success/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)

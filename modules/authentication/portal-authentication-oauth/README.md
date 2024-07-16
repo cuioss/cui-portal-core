@@ -1,5 +1,3 @@
-See https://wiki.icw.int/display/CUI/Oauth2+Authentication
-
 Please add a microprofile rest implementation to the classpath - if not using cui parent poms.
 
 ## Adding RestEasy dependencies

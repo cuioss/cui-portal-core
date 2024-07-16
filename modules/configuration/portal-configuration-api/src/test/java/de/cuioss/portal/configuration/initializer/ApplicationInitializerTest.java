@@ -31,6 +31,7 @@ class ApplicationInitializerTest {
         var intermediate = new TestInitializer(ApplicationInitializer.ORDER_INTERMEDIATE);
         var late = new TestInitializer(ApplicationInitializer.ORDER_LATE);
 
+        //noinspection EqualsWithItself
         assertEquals(0, intermediate.compareTo(intermediate));
         assertEquals(-1, early.compareTo(intermediate));
         assertEquals(1, late.compareTo(intermediate));

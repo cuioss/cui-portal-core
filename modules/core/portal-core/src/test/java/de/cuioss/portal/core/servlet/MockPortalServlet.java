@@ -16,6 +16,7 @@
 package de.cuioss.portal.core.servlet;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -29,6 +30,7 @@ import lombok.Setter;
 @ApplicationScoped
 public class MockPortalServlet extends AbstractPortalServlet {
 
+    @Serial
     private static final long serialVersionUID = -6932935998287415457L;
 
     @Getter

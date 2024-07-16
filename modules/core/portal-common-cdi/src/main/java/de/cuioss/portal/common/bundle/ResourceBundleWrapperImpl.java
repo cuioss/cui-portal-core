@@ -17,6 +17,7 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -63,6 +64,7 @@ import lombok.ToString;
 @ToString(of = "keyList", doNotUseGetters = true)
 public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
+    @Serial
     private static final long serialVersionUID = 9136037316650210138L;
 
     private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleWrapperImpl.class);

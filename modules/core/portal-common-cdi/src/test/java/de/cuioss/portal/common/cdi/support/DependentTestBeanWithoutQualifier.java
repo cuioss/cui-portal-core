@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.cdi.support;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -35,6 +36,7 @@ import lombok.ToString;
 @ToString
 public class DependentTestBeanWithoutQualifier implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -5664254977845330549L;
 
     /**

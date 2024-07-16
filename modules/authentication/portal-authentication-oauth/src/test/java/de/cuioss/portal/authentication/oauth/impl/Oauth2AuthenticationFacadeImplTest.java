@@ -99,7 +99,7 @@ class Oauth2AuthenticationFacadeImplTest
     private MockWebServer mockWebServer;
 
     @Getter
-    private OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
+    private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
     @BeforeEach
     void beforeEach() {
@@ -305,9 +305,6 @@ class Oauth2AuthenticationFacadeImplTest
 
     @Test
     void retrieveClientLogoutUrlWithParams() {
-        // configuration.fireEvent(DeprecatedOauth2ConfigurationKeys.OAUTH2LOGOUT_URI,
-        // "http://logout");
-
         var token = new Token();
         token.setId_token("idtoken");
         var testUser = BaseAuthenticatedUserInfo.builder()

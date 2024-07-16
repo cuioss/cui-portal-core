@@ -18,6 +18,7 @@ package de.cuioss.portal.configuration.impl.source;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
+import lombok.NonNull;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -40,12 +41,12 @@ import java.util.ResourceBundle;
 public class ConfigurationResolver extends ResourceBundle {
 
     @Override
-    protected Object handleGetObject(final String key) {
+    protected Object handleGetObject(final @NonNull String key) {
         return ConfigurationHelper.resolveConfigProperty(key).orElse("Undefined");
     }
 
     @Override
-    public Enumeration<String> getKeys() {
+    public @NonNull Enumeration<String> getKeys() {
         return Collections.enumeration(ConfigurationHelper.resolveConfigPropertyNames());
     }
 

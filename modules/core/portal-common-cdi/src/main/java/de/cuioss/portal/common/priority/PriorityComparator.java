@@ -25,7 +25,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Helper class for sorting elements regarding to its {@link Priority}
+ * Helper class for sorting elements regarding its {@link Priority}
  * annotation. In case the given class does not have a {@link Priority}
  * annotation present an order of {@code 0} is assumed.
  *
@@ -65,10 +65,10 @@ public class PriorityComparator implements Comparable<PriorityComparator> {
     /**
      * Recursively find the first appearance of the {@link Priority} annotation
      *
-     * @param annotatedClass may be null
+     * @param annotatedClass maybe null
      * @return
      */
-    private Priority findPriorityAnnotation(final Class<? extends Object> annotatedClass) {
+    private Priority findPriorityAnnotation(final Class<?> annotatedClass) {
         if (null == annotatedClass) {
             return null;
         }

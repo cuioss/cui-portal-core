@@ -15,15 +15,15 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
-
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnableMockWebServer
 class MockWebServerExtensionTest implements MockWebServerHolder {
@@ -41,10 +41,11 @@ class MockWebServerExtensionTest implements MockWebServerHolder {
         return new Dispatcher() {
 
             @Override
-            public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+            public @NotNull MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+                assert request.getPath() != null;
                 return switch (request.getPath()) {
-                case "/index" -> new MockResponse().setResponseCode(200);
-                default -> new MockResponse().setResponseCode(403);
+                    case "/index" -> new MockResponse().setResponseCode(200);
+                    default -> new MockResponse().setResponseCode(403);
                 };
             }
         };

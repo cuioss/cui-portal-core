@@ -15,11 +15,14 @@
  */
 package de.cuioss.portal.configuration.connections.exception;
 
+import java.io.Serial;
+
 /**
  * @author Oliver Wolff
  */
 public class ConnectionConfigurationException extends ConnectionException {
 
+    @Serial
     private static final long serialVersionUID = -9083478212303783709L;
 
     private final String message;

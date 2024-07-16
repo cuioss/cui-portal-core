@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.core.user;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.enterprise.context.Dependent;
@@ -48,6 +49,7 @@ public class PortalUserProducer implements Serializable {
 
     private static final String BEAN_NAME = "portalUser";
 
+    @Serial
     private static final long serialVersionUID = -4732319864322086918L;
 
     private AuthenticatedUserInfo userInfo;

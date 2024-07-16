@@ -75,7 +75,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     private MockHttpServletRequest servletRequest;
 
     @Getter
-    private OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
+    private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
     @BeforeEach
     void beforeEach() {

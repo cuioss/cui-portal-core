@@ -37,6 +37,7 @@ import mockwebserver3.RecordedRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
@@ -77,7 +78,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
         return new Dispatcher() {
 
             @Override
-            public MockResponse dispatch(final RecordedRequest request) {
+            public @NotNull MockResponse dispatch(final @NotNull RecordedRequest request) {
                 if ("/something".equals(request.getPath())) {
                     if (HttpMethod.GET.equals(request.getMethod())) {
                         return new MockResponse().setResponseCode(HttpServletResponse.SC_OK)

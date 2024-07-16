@@ -48,6 +48,7 @@ import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -120,7 +121,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         return new Dispatcher() {
 
             @Override
-            public MockResponse dispatch(final RecordedRequest request) {
+            public @NotNull MockResponse dispatch(final @NotNull RecordedRequest request) {
                 return switch (request.getPath()) {
                     case "/success/test" -> {
                         if (doNotModifiedTest) {

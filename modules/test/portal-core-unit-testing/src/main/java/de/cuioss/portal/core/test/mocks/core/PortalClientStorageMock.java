@@ -22,6 +22,8 @@ import de.cuioss.portal.core.storage.PortalClientStorage;
 import de.cuioss.portal.core.storage.impl.MapStorageImpl;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * Mock Variant of {@link PortalClientStorage}
  *
@@ -32,6 +34,7 @@ import lombok.ToString;
 @ToString
 public class PortalClientStorageMock extends MapStorageImpl<String, String> implements ClientStorage {
 
+    @Serial
     private static final long serialVersionUID = -4658738277163105697L;
 
 }

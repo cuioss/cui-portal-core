@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration strict="true">
     <Properties>
-        <Property name="consoleLayoutPattern">%d{ISO8601} %highlight{%-5p}%notEmpty{[T:%X{traceId},S:%X{spanId},P:%X{parentId}]} [%magenta{%t}] %cyan{%c} - %m%n
+        <Property name="consoleLayoutPattern">%d{ISO8601}
+            %highlight{%-5p}%notEmpty{[T:%X{traceId},S:%X{spanId},P:%X{parentId}]} [%magenta{%t}] %cyan{%c} - %m%n
         </Property>
     </Properties>
     <Appenders>
@@ -10,8 +11,6 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.icw" level="DEBUG"/>
-        <Logger name="de.icw" level="DEBUG"/>
         <Logger name="org.jboss.resteasy" level="DEBUG"/>
         <Logger name="org.jboss.resteasy.resteasy_jaxrs.i18n" level="INFO"/>
         <Logger name="okhttp3.mockwebserver" level="DEBUG"/>

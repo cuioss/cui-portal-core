@@ -75,11 +75,12 @@ class ConfigurationPlaceholderHelperTest {
         var warnMsgs = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.WARN);
         assertEquals(1, warnMsgs.size(), "Missing WARN log statement for Portal-161 message");
         var firstWarnMsg = warnMsgs.get(0).getMessage();
-        if ("Portal-161: Missing config key/s: missing_1, missing_2".equals(firstWarnMsg)
-                || "Portal-161: Missing config key/s: missing_2, missing_1".equals(firstWarnMsg)) {
-            // test passed
-        } else {
-            fail("Unexpected WARN log statement for Portal-161: " + firstWarnMsg);
+        switch (firstWarnMsg) {
+            case "Portal-161: Missing config key/s: missing_1, missing_2",
+                 "Portal-161: Missing config key/s: missing_2, missing_1" -> {
+                // test passed
+            }
+            default -> fail("Unexpected WARN log statement for Portal-161: " + firstWarnMsg);
         }
     }
 

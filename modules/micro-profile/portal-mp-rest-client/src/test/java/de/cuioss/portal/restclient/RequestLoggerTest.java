@@ -15,8 +15,17 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import de.cuioss.test.generator.Generators;
+import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.core.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,37 +35,18 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientRequestContext;
-import jakarta.ws.rs.core.Configuration;
-import jakarta.ws.rs.core.Cookie;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
-
-import org.junit.jupiter.api.Test;
-
-import de.cuioss.test.generator.Generators;
-import de.cuioss.test.juli.LogAsserts;
-import de.cuioss.test.juli.TestLogLevel;
-import de.cuioss.test.juli.junit5.EnableTestLogger;
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
 @EnableTestLogger(trace = RequestLoggerTest.class)
 class RequestLoggerTest {
 
     private static final CuiLogger log = new CuiLogger(RequestLoggerTest.class);
 
-    private static final String URI = "https://icw-global.com/company/careers/";
+    private static final String URI = "https://cuioss.de";
+
     private static final String METHOD = Generators.fixedValues("GET", "POST", "LIST", "PUT", null).next();
     private static final boolean HAS_BODY = Generators.booleans().next();
     private static final String STRING = Generators.strings().next();

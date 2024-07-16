@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.MediaType;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
@@ -124,7 +125,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     }
 
     @Override
-    public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+    public @NotNull MockResponse dispatch(RecordedRequest request) throws InterruptedException {
         LOGGER.info(() -> "Serve request " + request.getPath());
         return switch (request.getPath()) {
         case "/" + OIDC_DISCOVERY_PATH -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)

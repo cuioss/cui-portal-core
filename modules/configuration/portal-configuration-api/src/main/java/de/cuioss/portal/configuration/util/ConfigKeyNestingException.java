@@ -15,12 +15,15 @@
  */
 package de.cuioss.portal.configuration.util;
 
+import java.io.Serial;
+
 /**
  * Exception for a configuration key whose default value contains a placeholder
  * again for too many times.
  */
 public final class ConfigKeyNestingException extends IllegalStateException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public ConfigKeyNestingException(String configKey) {

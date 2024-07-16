@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Collections;
 
 import jakarta.inject.Inject;
@@ -127,6 +128,7 @@ class AbstractPortalServletTest {
     void shouldProvideSensibleDefaults() {
         AbstractPortalServlet servlet = new AbstractPortalServlet() {
 
+            @Serial
             private static final long serialVersionUID = -3472474929349372042L;
 
             @Override

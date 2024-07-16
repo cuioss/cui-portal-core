@@ -33,9 +33,9 @@ import okio.Buffer;
 
 class CombinedDispatcherTest {
 
-    private static AllOkDispatcher okDispatcher = new AllOkDispatcher();
+    private static final AllOkDispatcher okDispatcher = new AllOkDispatcher();
 
-    private static PassThroughDispatcher passDispatcher = new PassThroughDispatcher();
+    private static final PassThroughDispatcher passDispatcher = new PassThroughDispatcher();
 
     @Test
     void shouldHandleConstructor() {

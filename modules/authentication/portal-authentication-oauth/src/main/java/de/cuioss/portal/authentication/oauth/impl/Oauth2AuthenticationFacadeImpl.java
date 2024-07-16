@@ -20,6 +20,7 @@ import static java.net.URLEncoder.encode;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -83,6 +84,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     private static final String ERROR_INVALID_SCOPE = "invalid_scope";
 
+    @Serial
     private static final long serialVersionUID = -7635870199193359039L;
 
     private static final String AUTHENTICATED_USER_INFO_KEY = "AuthenticatedUserInfo";

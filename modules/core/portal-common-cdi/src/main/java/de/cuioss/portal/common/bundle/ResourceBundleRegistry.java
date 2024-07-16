@@ -17,6 +17,7 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ import lombok.ToString;
 @ToString(of = "resolvedPaths", doNotUseGetters = true)
 public class ResourceBundleRegistry implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2611987921899581695L;
 
     private static final CuiLogger log = new CuiLogger(ResourceBundleRegistry.class);

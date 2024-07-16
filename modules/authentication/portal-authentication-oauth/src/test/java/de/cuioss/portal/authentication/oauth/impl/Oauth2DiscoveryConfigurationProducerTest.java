@@ -54,7 +54,7 @@ class Oauth2DiscoveryConfigurationProducerTest
     private PortalTestConfiguration configuration;
 
     @Getter
-    private OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
+    private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
     @Test
     void testInit() {

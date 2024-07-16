@@ -21,6 +21,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * Basic Implementation of {@link TokenResolver} used for static tokens that do
  * not change for a specific user.
@@ -33,6 +35,7 @@ import lombok.ToString;
 @ToString(of = "key") // Only key, because Token may be considered as sensitive data
 public class StaticTokenResolver implements TokenResolver {
 
+    @Serial
     private static final long serialVersionUID = 7523596484663692845L;
 
     @Getter

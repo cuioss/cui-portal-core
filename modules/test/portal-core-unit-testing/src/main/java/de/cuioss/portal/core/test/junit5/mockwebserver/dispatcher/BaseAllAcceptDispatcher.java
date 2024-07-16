@@ -6,6 +6,7 @@ package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSortedSet;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,15 +43,12 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
 
     /**
      * Resets all contained {@link EndpointAnswerHandler}
-     *
-     * @return The current instance of this dispatcher
      */
-    public BaseAllAcceptDispatcher reset() {
+    public void reset() {
         getResult.resetToDefaultResponse();
         postResult.resetToDefaultResponse();
         putResult.resetToDefaultResponse();
         deleteResult.resetToDefaultResponse();
-        return this;
     }
 
     @Override
@@ -78,10 +76,9 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
      *
      * @param mapper       One or more mapper to identify the corresponding
      *                     {@link HttpMethodMapper}
-     * @param mockResponse may be null
-     * @return The instance itself
+     * @param mockResponse maybe null
      */
-    public BaseAllAcceptDispatcher setMethodToResult(MockResponse mockResponse, HttpMethodMapper... mapper) {
+    public void setMethodToResult(MockResponse mockResponse, HttpMethodMapper... mapper) {
         for (HttpMethodMapper element : mapper) {
             switch (element) {
             case GET:
@@ -97,10 +94,9 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
                 deleteResult.setResponse(mockResponse);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown method: " + mapper);
+                throw new IllegalArgumentException("Unknown method: " + Arrays.toString(mapper));
             }
         }
-        return this;
     }
 
     /**
@@ -108,13 +104,11 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
      *
      * @param mapper       One or more mapper to identify the corresponding
      *                     {@link HttpMethodMapper}
-     * @param mockResponse may be null
-     * @return The instance itself
+     * @param mockResponse maybe null
      */
-    public BaseAllAcceptDispatcher setAllButGivenMethodToResult(MockResponse mockResponse, HttpMethodMapper... mapper) {
+    public void setAllButGivenMethodToResult(MockResponse mockResponse, HttpMethodMapper... mapper) {
         Set<HttpMethodMapper> all = mutableSet(HttpMethodMapper.values());
         all.removeAll(mutableSortedSet(mapper));
-        setMethodToResult(mockResponse, all.toArray(new HttpMethodMapper[all.size()]));
-        return this;
+        setMethodToResult(mockResponse, all.toArray(new HttpMethodMapper[0]));
     }
 }

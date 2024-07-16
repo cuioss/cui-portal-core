@@ -22,6 +22,7 @@ import de.cuioss.tools.logging.CuiLogger;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import lombok.NonNull;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
@@ -30,6 +31,7 @@ import mockwebserver3.RecordedRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
@@ -61,7 +63,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
         return new Dispatcher() {
 
             @Override
-            public MockResponse dispatch(final RecordedRequest request) {
+            public MockResponse dispatch(final @NonNull @NotNull RecordedRequest request) {
                 if ("/success/test".equals(request.getPath())) {
                     return new MockResponse().setResponseCode(HttpServletResponse.SC_OK);
                 }

@@ -46,6 +46,7 @@ public class CuiRestClientBuilder {
     private static final CuiLogger log = new CuiLogger(CuiRestClientBuilder.class);
 
     private static final String DISABLE_DEFAULT_MAPPER_PROPERTY_KEY = "microprofile.rest.client.disable.default.mapper";
+    public static final String RESPONSE_EXCEPTION_MAPPER = "org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper";
 
     private final RestClientBuilder mpRestClientBuilder;
     private boolean traceLogEnabled;
@@ -225,8 +226,7 @@ public class CuiRestClientBuilder {
      */
     public CuiRestClientBuilder enableDefaultExceptionHandler() {
         try {
-            Class<?> defaultResponseExceptionMapper = Class.forName(
-                "org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper", false,
+            Class<?> defaultResponseExceptionMapper = Class.forName(RESPONSE_EXCEPTION_MAPPER, false,
                 CuiRestClientBuilder.class.getClassLoader());
             register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();

@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -51,9 +52,8 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
 
         var mockWebServer = new MockWebServer();
 
-        assertTrue(testInstance instanceof MockWebServerHolder,
-                "In order to use within a test the test-class must implement de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder "
-                        + testInstance);
+        assertInstanceOf(MockWebServerHolder.class, testInstance, "In order to use within a test the test-class must implement de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder "
+            + testInstance);
 
         var holder = (MockWebServerHolder) testInstance;
         holder.setMockWebServer(mockWebServer);

@@ -36,7 +36,7 @@ class ConfigPlaceholder {
     private static final String PLACEHOLDER_DEFAULT_VALUE_SPLITTER = ":";
 
     /**
-     * the placeholders key
+     * the placeholder key
      */
     @Getter
     private final @NonNull String configKey;
@@ -69,9 +69,9 @@ class ConfigPlaceholder {
     /**
      * Parse the given string.
      * <p>
-     * Spring Framework will use an empty string, if there is nothing behind the
+     * Spring Framework will use an empty string if there is nothing behind the
      * double colon, see:
-     * https://github.com/spring-projects/spring-framework/blob/dad0b1e98cacf417cc5c68b5884e7a1e47b85000/spring-core/src/main/java/org/springframework/util/PropertyPlaceholderHelper.java#L156
+     * <a href="https://github.com/spring-projects/spring-framework/blob/dad0b1e98cacf417cc5c68b5884e7a1e47b85000/spring-core/src/main/java/org/springframework/util/PropertyPlaceholderHelper.java#L156">...</a>
      *
      * @param placeholder must not be null
      * @throws IllegalArgumentException if the given string is not a placeholder

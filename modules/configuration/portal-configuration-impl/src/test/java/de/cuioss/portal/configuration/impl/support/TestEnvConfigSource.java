@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,7 @@ import lombok.Getter;
  */
 public class TestEnvConfigSource extends AbstractConfigSource {
 
+    @Serial
     private static final long serialVersionUID = -5057298427034467643L;
 
     private static final Pattern PATTERN = Pattern.compile("[^a-zA-Z0-9_]");

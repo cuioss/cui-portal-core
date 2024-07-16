@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.EqualsAndHashCode;
@@ -35,6 +36,7 @@ import lombok.ToString;
 @ToString
 public class UserStore implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1854435554671404250L;
 
     @Getter

@@ -17,6 +17,7 @@ package de.cuioss.portal.authentication.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class BaseAuthenticatedUserInfo implements AuthenticatedUserInfo {
 
+    @Serial
     private static final long serialVersionUID = 5675055136230020827L;
 
     @Getter

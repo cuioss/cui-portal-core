@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.cdi;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -29,7 +30,7 @@ import java.util.Objects;
  * Copied from deltaspike core
  * <p>
  * A small helper class to create an Annotation instance of the given annotation
- * class via {@link java.lang.reflect.Proxy}. The annotation literal gets filled
+ * class via {@link Proxy}. The annotation literal gets filled
  * with the default values.
  * </p>
  * <p>
@@ -50,9 +51,10 @@ import java.util.Objects;
  * Annotation a = AnnotationInstanceProvider.of(annotationClass)
  * </pre>
  *
- * @author https://github.com/apache/deltaspike/blob/ds-1.9.2/deltaspike/core/api/src/main/java/org/apache/deltaspike/core/util/metadata/AnnotationInstanceProvider.java
+ * @author <a href="https://github.com/apache/deltaspike/blob/ds-1.9.2/deltaspike/core/api/src/main/java/org/apache/deltaspike/core/util/metadata/AnnotationInstanceProvider.java">...</a>
  */
 public class AnnotationInstanceProvider implements Annotation, InvocationHandler, Serializable {
+    @Serial
     private static final long serialVersionUID = -2345068201195886173L;
     private static final Object[] EMPTY_OBJECT_ARRAY = {};
     @SuppressWarnings("rawtypes") // owolff: Original Code
@@ -102,32 +104,34 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     }
 
     private static synchronized <T extends Annotation> Annotation initAnnotation(Class<T> annotationClass,
-            Map<String, ?> values) {
-        return (Annotation) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[] { annotationClass },
-                new AnnotationInstanceProvider(annotationClass, values));
+                                                                                 Map<String, ?> values) {
+        return (Annotation) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[]{annotationClass},
+            new AnnotationInstanceProvider(annotationClass, values));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
-        if ("hashCode".equals(method.getName())) {
-            return hashCode();
-        }
-        if ("equals".equals(method.getName())) {
-            if (Proxy.isProxyClass(args[0].getClass())
-                    && Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider) {
-                return equals(Proxy.getInvocationHandler(args[0]));
-
+    public Object invoke(Object proxy, Method method, Object[] args) {
+        switch (method.getName()) {
+            case "hashCode" -> {
+                return hashCode();
             }
-            return equals(args[0]);
-        }
-        if ("annotationType".equals(method.getName())) {
-            return annotationType();
-        }
-        if ("toString".equals(method.getName())) {
-            return toString();
+            case "equals" -> {
+                if (Proxy.isProxyClass(args[0].getClass())
+                    && Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider) {
+                    return equals(Proxy.getInvocationHandler(args[0]));
+
+                }
+                return equals(args[0]);
+            }
+            case "annotationType" -> {
+                return annotationType();
+            }
+            case "toString" -> {
+                return toString();
+            }
         }
         if (memberValues.containsKey(method.getName())) {
             return memberValues.get(method.getName());
@@ -189,7 +193,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
                 for (Map.Entry<String, ?> entry : memberValues.entrySet()) {
                     try {
                         var oValue = annotationClass.getMethod(entry.getKey(), EMPTY_CLASS_ARRAY).invoke(o,
-                                EMPTY_OBJECT_ARRAY);
+                            EMPTY_OBJECT_ARRAY);
                         if (oValue == null || entry.getValue() == null || !oValue.equals(entry.getValue())) {
                             return false;
                         }
@@ -212,8 +216,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     @Override
     public int hashCode() {
         var result = 0;
-        Class<? extends Annotation> type = annotationClass;
-        for (Method m : type.getDeclaredMethods()) {
+        for (Method m : annotationClass.getDeclaredMethods()) {
             try {
                 var value = invoke(this, m, EMPTY_OBJECT_ARRAY);
                 if (value == null) {

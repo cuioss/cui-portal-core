@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,6 +39,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class PortalSessionStorageMock extends MapStorageImpl<Serializable, Serializable> implements SessionStorage {
 
+    @Serial
     private static final long serialVersionUID = 2230273572072236755L;
 
     @Getter
