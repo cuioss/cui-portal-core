@@ -15,11 +15,9 @@
  */
 package de.cuioss.portal.core.servlet;
 
-import java.io.IOException;
-import java.io.Serial;
-import java.util.Collection;
-import java.util.Collections;
-
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.PortalUser;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.Servlet;
@@ -28,9 +26,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.PortalUser;
-import de.cuioss.tools.logging.CuiLogger;
+import java.io.IOException;
+import java.io.Serial;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * Provides a minimal layer for modeling {@link Servlet}s that can be enabled by
@@ -49,11 +49,12 @@ import de.cuioss.tools.logging.CuiLogger;
  * will be called.
  *
  * @author Oliver Wolff
- *
  */
 public abstract class AbstractPortalServlet extends HttpServlet {
 
-    /** Portal-523: Could not process Request, due to {}. */
+    /**
+     * Portal-523: Could not process Request, due to {}.
+     */
     public static final String PORTAL_523 = "Portal-523: Could not process Request, due to {}";
 
     private static final String NOT_LOGGED_IN = "Portal-523: Could not process Request, because the user must be logged in for this request";
@@ -105,7 +106,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
             return false;
         }
         var requiredRoles = getRequiredRoles();
-        if (!requiredRoles.isEmpty() && !user.getRoles().containsAll(requiredRoles)) {
+        if (!requiredRoles.isEmpty() && !new HashSet<>(user.getRoles()).containsAll(requiredRoles)) {
             log.warn(USER, "User should provide the roles " + requiredRoles, user);
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
@@ -115,7 +116,8 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     }
 
     /**
-     * The actual payload method for the concrete servlet. If it is called all
+     * The actual payload method for the concrete servlet.
+     * If it is called, all
      * checks are already done and the implementor can focus on the business logic.
      * All {@link RuntimeException} are translated to an
      * {@link HttpServletResponse#SC_INTERNAL_SERVER_ERROR}
@@ -128,31 +130,35 @@ public abstract class AbstractPortalServlet extends HttpServlet {
 
     /**
      * @return boolean indicating whether the Servlet-Request is enabled at all.
-     *         Usually this is controlled by a configured-property. If this method
-     *         returns false it will be translated to
-     *         {@link HttpServletResponse#SC_SERVICE_UNAVAILABLE}. Defaults to
-     *         {@code true}
+     * Usually, this is controlled by a configured property.
+     * If this method
+     * returns false it will be translated to
+     * {@link HttpServletResponse#SC_SERVICE_UNAVAILABLE}.
+     * Defaults to
+     * {@code true}
      */
     public boolean isEnabled() {
         return true;
     }
 
     /**
-     * @return boolean indicating whether the servlet needs a logged in user. If it
-     *         is {@code true} the system will check whether the current user is
-     *         logged in. If the user is not logged in it will return
-     *         {@link HttpServletResponse#SC_FORBIDDEN}. Defaults to {@code false}
+     * @return boolean indicating whether the servlet needs a logged-in user.
+     * If it is {@code true} the system will check whether the current user is
+     * logged in.
+     * If the user is not logged in it will return
+     * {@link HttpServletResponse#SC_FORBIDDEN}.
+     * Defaults to {@code false}
      */
     public boolean isLoggedInUserRequired() {
         return false;
     }
 
     /**
-     * @return a {@link Collection} of roles that are <em>all</em> required in order
-     *         to render the content. The default implementation will return an
-     *         empty {@link Collection}. If this method provides at least one role
-     *         that user does not provide the servlet will return
-     *         {@link HttpServletResponse#SC_FORBIDDEN}
+     * @return a {@link Collection} of roles that are <em>all</em> required
+     * to render the content. The default implementation will return an
+     * empty {@link Collection}. If this method provides at least one role
+     * that user does not provide the servlet will return
+     * {@link HttpServletResponse#SC_FORBIDDEN}
      */
     public Collection<String> getRequiredRoles() {
         return Collections.emptyList();
@@ -160,7 +166,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
 
     /**
      * @return the {@link AuthenticatedUserInfo} resolved against the injected
-     *         {@link PortalUser}
+     * {@link PortalUser}
      */
     protected AuthenticatedUserInfo getUserInfo() {
         return userInfoProvider.get();
