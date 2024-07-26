@@ -35,8 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Base test for testing the mapping of a set of configurationKeys to a specific
  * {@link ConfigSource}.
  * The concrete {@link ConfigSource} will be identified by the key {@link #CONFIG_NAME} matching to the provided {@link #getConfigSourceName()}
- * In essence,
- * it is about ensuring that the key mapping to a default configuration is complete and detecting name changes.
+ * In essence, it is about ensuring that the key mapping to a default configuration is complete and detecting name changes.
  * You can adjust the test-behavior by filtering the corresponding keys that are
  * checked, see therefore {@link #getKeysIgnoreList()} and {@link #getConfigurationKeysIgnoreList()}
  *
