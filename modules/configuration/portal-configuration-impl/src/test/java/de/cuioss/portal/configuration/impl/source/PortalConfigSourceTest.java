@@ -17,7 +17,6 @@ package de.cuioss.portal.configuration.impl.source;
 
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
@@ -29,13 +28,11 @@ import de.cuioss.tools.string.MoreStrings;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
@@ -58,7 +55,6 @@ class PortalConfigSourceTest {
     private static final String SOME_VALUE = "someValue";
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     private Map<String, String> payload;
@@ -79,24 +75,9 @@ class PortalConfigSourceTest {
     @ConfigAsCacheConfig(name = "", defaultExpiration = 4, defaultSize = 3)
     private Provider<CacheConfig> invalidCacheConfigProvider;
 
-    @Inject
-    @ConfigProperty(name = "string.list")
-    private Set<String> stringList;
-
-    @Inject
-    @ConfigProperty(name = "nested.key.replacement")
-    private Provider<String> nestedKeyReplacement;
-
     @BeforeEach
     void beforeTest() {
         configuration.clear();
-        configuration.initializeConfigurationSystem();
-    }
-
-    @Test
-    void listAndArrays() {
-        assertNotNull(stringList);
-        assertEquals(3, stringList.size());
     }
 
     @Test

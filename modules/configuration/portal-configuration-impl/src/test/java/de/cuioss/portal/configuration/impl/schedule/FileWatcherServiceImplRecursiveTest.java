@@ -36,7 +36,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
@@ -61,7 +60,6 @@ class FileWatcherServiceImplRecursiveTest {
     private FileWatcherServiceImpl underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     private Path newPathToRegister;
@@ -70,7 +68,6 @@ class FileWatcherServiceImplRecursiveTest {
     @BeforeEach
     void beforeTest() throws IOException {
         configuration.clear();
-        configuration.initializeConfigurationSystem();
         testFileHandler.setup();
         underTest.initialize();
     }

@@ -16,7 +16,6 @@
 package de.cuioss.portal.configuration.impl.producer;
 
 import de.cuioss.portal.configuration.ConfigPropertyNullable;
-import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.types.*;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -31,7 +30,6 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.File;
@@ -268,18 +266,6 @@ public class PortalConfigProducer {
         final var cacheConfig = new CacheConfig(expiration, timeUnit, size, recordStats && portalMetricsEnabled.get());
         LOGGER.trace("CacheConfig: {}", cacheConfig);
         return cacheConfig;
-    }
-
-    @Produces
-    @Dependent
-    List<FileConfigurationSource> produceFileConfigurationSourceList(final InjectionPoint injectionPoint) {
-        final List<FileConfigurationSource> result = new ArrayList<>();
-        ConfigProvider.getConfig().getConfigSources().forEach(configSource -> {
-            if (configSource instanceof FileConfigurationSource source) {
-                result.add(source);
-            }
-        });
-        return result;
     }
 
     private static Locale resolveLocale(final String localeAsString, final boolean defaultToSystem) {

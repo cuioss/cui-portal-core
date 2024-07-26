@@ -15,23 +15,18 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CUSTOMIZATION_ENABLED;
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_SERVLET_BASIC_AUTH_ALLOWED;
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
-
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
+import java.util.Optional;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "key1:value1")
@@ -46,7 +41,6 @@ class PortalConfigurationMockExtensionTest {
     private Provider<Optional<String>> attributeMpOptional;
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
 
     PortalConfigurationMockExtensionTest() {

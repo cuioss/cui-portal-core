@@ -16,10 +16,13 @@
 package de.cuioss.portal.configuration.impl.source;
 
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.collect.CollectionLiterals;
+import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
@@ -32,6 +35,14 @@ class DefaultConfigurationReplacementTest {
 
     public static final String PRODUCTION = "production";
     public static final String PROFILE = "smallrye.config.profile";
+
+    @Inject
+    private PortalConfigurationMock configuration;
+
+    @BeforeEach
+    void setUp() {
+        configuration.clear();
+    }
 
     @Test
     void shouldProvideConfiguration() {

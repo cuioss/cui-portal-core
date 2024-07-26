@@ -15,27 +15,24 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.uimodel.application.CuiProjectStage;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.Getter;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal
-@AddBeanClasses({ PortalProjectStageImpl.class })
+@AddBeanClasses({PortalProjectStageImpl.class})
 class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<PortalProjectStageImpl> {
 
     @Inject
@@ -43,7 +40,6 @@ class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<
     private PortalProjectStageImpl underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @Inject

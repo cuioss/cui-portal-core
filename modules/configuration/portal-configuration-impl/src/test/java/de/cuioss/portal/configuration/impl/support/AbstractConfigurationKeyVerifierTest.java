@@ -15,37 +15,36 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
-import de.cuioss.portal.configuration.FileConfigurationSource;
-import de.cuioss.portal.configuration.impl.source.LoaderUtils;
-import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Base test for testing the mapping of a set of configurationKeys to a specific
- * {@link FileConfigurationSource}.
- * In essence, it is about ensuring that the key
- * mapping to a default configuration is complete and detecting name changes.
+ * {@link ConfigSource}.
+ * The concrete {@link ConfigSource} will be identified by the key {@link #CONFIG_NAME} matching to the provided {@link #getConfigSourceName()}
+ * In essence, it is about ensuring that the key mapping to a default configuration is complete and detecting name changes.
  * You can adjust the test-behavior by filtering the corresponding keys that are
- * checked, see therefore {@link #getKeysIgnoreList()} and
- * {@link #getConfigurationKeysIgnoreList()}
+ * checked, see therefore {@link #getKeysIgnoreList()} and {@link #getConfigurationKeysIgnoreList()}
  *
  * @author Oliver Wolff
  */
 public abstract class AbstractConfigurationKeyVerifierTest {
 
-    private static final CuiLogger log = new CuiLogger(AbstractConfigurationKeyVerifierTest.class);
+    public static final String CONFIG_NAME = "config_name";
+    private static final CuiLogger LOGGER = new CuiLogger(AbstractConfigurationKeyVerifierTest.class);
 
     /**
      * @return the class providing the keys as public static final variables. This
@@ -54,15 +53,16 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     public abstract Class<?> getKeyHolder();
 
     /**
-     * @return a {@link FileConfigurationSource} that will be checked against the
+     * @return the name of {@link org.eclipse.microprofile.config.spi.ConfigSource} that will be checked against the
      * derived keys.
+     * The name is expected to be found under the key {@value #CONFIG_NAME}
      */
-    public abstract FileConfigurationSource getUnderTest();
+    public abstract String getConfigSourceName();
 
     /**
      * Defines the keys from the {@link #getKeyHolder()} that are not to be checked
-     * against {@link #getUnderTest()}. The filtering is done within
-     * {@link #resolveKeyNames()}
+     * against {@link #getConfigSourceName()} .
+     * The filtering is done within {@link #resolveKeyNames()}
      *
      * @return a list of key names to be ignored. The default implementation returns
      * an empty {@link List}. Must not return {@code null}
@@ -86,14 +86,14 @@ public abstract class AbstractConfigurationKeyVerifierTest {
 
     /**
      * Tests whether each checked key, provided by {@link #resolveKeyNames()} is
-     * backed by the given configuration {@link #getUnderTest()}
+     * backed by the given configuration {@link #getConfigSourceName()}
      */
     @Test
     void keyNamesShouldBeProvidedByConfiguration() {
         var configurationKeys = extractConfigurationKeys();
         var resolvedKeyNames = resolveKeyNames();
 
-        log.info("Checking resolvedKeyNames:{}against configurationKeys:{}",
+        LOGGER.info("Checking resolvedKeyNames:{}against configurationKeys:{}",
             System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
                 + System.lineSeparator(),
             System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
@@ -114,9 +114,9 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     @Test
     void configurationKeysShouldReverseMapToKeyNames() {
         var configurationKeys = resolveConfigurationKeyNames();
-        var resolvedKeyNames = resolveKeyNames();
-        log.info("Checking configurationKeys='{}' against resolvedKeyNames='{}'", resolvedKeyNames, configurationKeys);
-        List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeyNames.contains(key))
+        var resolvedKeysFromType = resolveKeyNames();
+        LOGGER.info("Checking configurationKeys='{}' against resolvedKeysFromType='{}'", resolvedKeysFromType, configurationKeys);
+        List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeysFromType.contains(key))
             .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
@@ -146,11 +146,11 @@ public abstract class AbstractConfigurationKeyVerifierTest {
                         keys.add(value);
                     }
                 } else {
-                    log.debug("Field '{}' is not a String, ignoring", field.getName());
+                    LOGGER.debug("Field '{}' is not a String, ignoring", field.getName());
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 var message = "Unable to read field " + field.getName() + " due to " + e.getMessage();
-                log.error(message, e);
+                LOGGER.error(message, e);
                 fail(message);
             }
         }
@@ -158,7 +158,7 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     }
 
     /**
-     * @return the Keys derived by reading the from {@link #getUnderTest()} and
+     * @return the Keys derived by reading them from {@link #getConfigSourceName()} and
      * removing the keys from {@link #getConfigurationKeysIgnoreList()}
      */
     public SortedSet<String> resolveConfigurationKeyNames() {
@@ -183,28 +183,31 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     /**
      * Extracts non-empty keys, as empty keys are handled as non-existing in
      * MicroProfile config.
+     * It checks
+     * for a {@link ConfigSource} containing the key {@link #CONFIG_NAME} with the value provided by {@link #getConfigSourceName()}
      *
-     * @return the {@link SortedSet} of non-empty configuration keys from the
-     * provided {@link FileConfigurationSource} using
-     * {@link AbstractConfigurationKeyVerifierTest#getUnderTest()}
+     * @return the {@link SortedSet} of non-empty configuration keys for the given {@link ConfigSource}.
+     * The key {@link #CONFIG_NAME} will implicitly be filtered.
      */
     protected SortedSet<String> extractConfigurationKeys() {
-        final Map<String, String> properties;
-        if (getUnderTest() instanceof AbstractPortalConfigSource) {
-            properties = ((AbstractPortalConfigSource) getUnderTest()).getProperties();
-        } else {
-            properties = LoaderUtils.loadConfigurationFromSource(getUnderTest());
-        }
+        final var name = getConfigSourceName();
+        assertNotNull(emptyToNull(name), "You must provide a configuration source name");
 
-        return properties.entrySet().stream().filter(Objects::nonNull).filter(entry -> !isEmptyValue(entry))
-            .map(Map.Entry::getKey).collect(Collectors.toCollection(TreeSet::new));
-    }
-
-    private static boolean isEmptyValue(final Map.Entry<String, String> entry) {
-        if (isEmpty(entry.getValue())) {
-            log.warn("Found empty value for property: {}. It is advised to remove it.", entry.getKey());
-            return true;
+        Optional<ConfigSource> found = Optional.empty();
+        for (var source : ConfigProvider.getConfig().getConfigSources()) {
+            if (name.equals(source.getValue(CONFIG_NAME))) {
+                found = Optional.of(source);
+                break;
+            }
         }
-        return false;
+        if (found.isPresent()) {
+            TreeSet<String> strings = new TreeSet<>(found.get().getPropertyNames());
+            strings.remove(CONFIG_NAME);
+            return strings;
+        }
+        var foundNames = StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false).map(ConfigSource::getName).collect(Collectors.toSet());
+        fail(String.format("Unable to find any configuration source named '%s', available sources: '%s'", name, foundNames));
+
+        return null;
     }
 }

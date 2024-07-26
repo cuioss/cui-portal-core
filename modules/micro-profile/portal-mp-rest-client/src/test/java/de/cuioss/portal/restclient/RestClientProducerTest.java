@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
@@ -82,7 +81,6 @@ class RestClientProducerTest implements MockWebServerHolder {
     private Provider<RestClientHolder<TestResource>> underTestProvider;
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
 
     @Setter

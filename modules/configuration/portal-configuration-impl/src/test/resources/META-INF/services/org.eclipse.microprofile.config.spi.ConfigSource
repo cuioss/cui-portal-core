@@ -1,7 +1,4 @@
 de.cuioss.portal.configuration.impl.support.TestEnvConfigSource
 de.cuioss.portal.configuration.impl.support.PortalConfigurationMock
-de.cuioss.portal.configuration.impl.support.TestPropertiesFileConfigurationSource
-de.cuioss.portal.configuration.impl.source.HighReloadableConfigSource
-de.cuioss.portal.configuration.impl.source.LowReloadableConfigSource
 
 #de.cuioss.portal.configuration.impl.support.UnsupportedConfigSource

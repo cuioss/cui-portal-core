@@ -3,7 +3,7 @@
 == What is it?
 
 It is about mock-classes, base-classes, test-infrastructure and extensions (Junit 5). 
-This is the starting point for all unit-test in the context of the cui-portal. 
+This is the starting point for all unit-tests in the context of the cui-portal.
 
 == Maven Coordinates
 
@@ -19,7 +19,8 @@ This is the starting point for all unit-test in the context of the cui-portal.
 
 === Configuration
 
-The handling of configuration is simplified. The `@EnablePortalConfiguration` bootstraps the configuration-sub-system and adds the necessary producer by using `@AddBeanClasses`.
+The handling of configuration is simplified.
+The `@EnablePortalConfiguration` bootstraps the configuration-subsystem and adds the necessary producer by using `@AddBeanClasses`.
 
 [source,java]
 ----
@@ -28,7 +29,7 @@ The handling of configuration is simplified. The `@EnablePortalConfiguration` bo
 class ConfigurationEnabledTest {
 ----
 
-Additional configuration can be added either by the annotation, for all tests:
+Additional configuration can be added, either by the annotation, for all tests:
 
 [source,java]
 ----
@@ -46,7 +47,6 @@ or by injecting the `PortalTestConfiguration` for applying in the context of cer
 class ConfigurationEnabledTest {
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
     
     @​Test
@@ -58,7 +58,8 @@ class ConfigurationEnabledTest {
 
 === Testing a ResourceBundle-Locator
 
-This tests the initial structure, the provided path and an actual message to be resolved. In order to work the module needs a test / runtime dependency on `de.cuioss.portal.ui:portal-ui-runtime`
+This tests the initial structure, the provided path and an actual message to be resolved.
+To work the module needs a test / runtime dependency on `de.cuioss.portal.ui:portal-ui-runtime`
 
 [source,java]
 ----
@@ -87,7 +88,8 @@ class RuntimeBundleNamesTest implements ShouldBeNotNull<RuntimeBundleNames> {
 
 === Module Consistency Test
 
-A consistent module must be deployable within a CDI-Context. It must define all dependencies. This is checked by `de.cuioss.portal.core.test.tests.BaseModuleConsistencyTest`.
+A consistent module must be deployable within a CDI-Context. It must define all dependencies.
+This is checked by `de.cuioss.portal.core.test.tests.BaseModuleConsistencyTest`.
 
 [source,java]
 ----
@@ -95,9 +97,10 @@ class ModuleConsistencyTest extends BaseModuleConsistencyTest {
 }
 ----
 
-The test actually starts a Weld-Container and looks up the Bean-Manager. In addition it checks for the file `META-INF/beans.xml` being present. 
+The test actually starts a Weld-Container and looks up the Bean-Manager.
+In addition, it checks for the file `META-INF/beans.xml` being present.
 
-In case you want to add beans or modify the dev-mode you just need to implement the callback method:
+In case you want to add beans or modify the dev-mode, you need to implement the callback method:
 
 [source,java]
 ----
@@ -108,7 +111,7 @@ In case you want to add beans or modify the dev-mode you just need to implement 
 ----
 This adds producers for the servlet objects, derived from JSF-FacesContext.
 
-Variant for a producer for pure mock-object without relying to JSF:
+Variant for a producer for pure mock-object without relying on JSF:
 
 [source,java]
 ----
@@ -165,7 +168,7 @@ The actual documentation can be found at class level
 
 === Using EasyMock
 
-*!!! Attention !!!* using easymock with JUnit 5 + CDI require easy mock version 4.1 or higher additional infos see link:https://easymock.org/user-guide.html[Easymock user-guide]
+*!!! Attention !!!* Using easymock with JUnit 5 + CDI requires easy mock version 4.1 or higher additional info see link:https://easymock.org/user-guide.html[Easymock user-guide]
 
 [source,java]
 ----
@@ -188,7 +191,7 @@ private SomeMockedService mockedOne;
 
 This module supports an extension for using link:https://github.com/square/okhttp/tree/master/mockwebserver[MockWebServer]. You need add the dependency first:
 
-[source,java]
+[source,xml]
 ----
 <dependency>
     <groupId>com.squareup.okhttp3</groupId>
@@ -355,7 +358,7 @@ On some rare cases you need to access the `de.cuioss.portal.configuration.instal
 [source,java]
 ----
 @EnableAlternatives(PortalInstallationPathsMock.class)
-class TestWithInstalltionPaths {
+class TestWithInstallationPaths {
 
     @Inject
     @PortalInstallationPaths

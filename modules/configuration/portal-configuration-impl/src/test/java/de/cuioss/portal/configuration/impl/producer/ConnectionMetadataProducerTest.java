@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
@@ -76,12 +75,10 @@ class ConnectionMetadataProducerTest {
     private Provider<ConnectionMetadata> metadataNotFailProvider;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @BeforeEach
     void before() {
-        configuration.initializeConfigurationSystem();
         final var testResources = Paths.get("src/test/resources");
         truststoreLocation = testResources.resolve("host.keystore").toFile().getAbsolutePath();
         keystoreLocation = testResources.resolve("ca.keystore").toFile().getAbsolutePath();

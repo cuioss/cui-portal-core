@@ -15,27 +15,22 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
+import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
 import jakarta.inject.Inject;
-
+import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
-import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
-import lombok.Getter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
@@ -49,14 +44,12 @@ class FileWatcherServiceImplDisabledTest {
     private FileWatcherServiceImpl underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     private static final Path POM = Paths.get("pom.xml");
 
     @BeforeEach
     void beforeTest() throws IOException {
-        configuration.initializeConfigurationSystem();
         // clear all registered paths
         underTest.unregister(underTest.getRegisteredPaths().toArray(new Path[0]));
         testFileHandler.setup();

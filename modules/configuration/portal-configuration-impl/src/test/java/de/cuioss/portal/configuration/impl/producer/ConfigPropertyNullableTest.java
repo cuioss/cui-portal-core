@@ -15,20 +15,17 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import de.cuioss.portal.configuration.ConfigPropertyNullable;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.ConfigPropertyNullable;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SuppressWarnings("el-syntax")
 @EnableAutoWeld
@@ -38,7 +35,6 @@ class ConfigPropertyNullableTest {
     private static final String KEY = "a.config.key";
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @Inject
@@ -48,7 +44,6 @@ class ConfigPropertyNullableTest {
     @BeforeEach
     void beforeTest() {
         configuration.clear();
-        configuration.initializeConfigurationSystem();
     }
 
     @Test

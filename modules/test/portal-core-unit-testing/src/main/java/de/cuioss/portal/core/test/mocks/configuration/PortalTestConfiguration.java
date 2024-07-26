@@ -18,29 +18,26 @@ package de.cuioss.portal.core.test.mocks.configuration;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
-import de.cuioss.portal.configuration.initializer.PortalInitializer;
-import de.cuioss.portal.configuration.source.AbstractPortalConfigSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CONFIG_DIR;
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static java.util.Collections.synchronizedMap;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
- * <em>Caution:</em> The described Configuration only works in context of junit
+ * <em>Caution:</em> The described Configuration only works in the context of junit
  * 5
  * <h2>Test Setup</h2>
  * <p>
@@ -84,10 +81,11 @@ import static java.util.Collections.synchronizedMap;
  */
 @ApplicationScoped
 @Priority(PortalTestConfiguration.PRIORITY)
-@PortalConfigurationSource
-@EqualsAndHashCode(of = "properties", callSuper = true)
+@EqualsAndHashCode(of = "properties")
 @ToString(of = "properties")
-public class PortalTestConfiguration extends AbstractPortalConfigSource {
+public class PortalTestConfiguration implements ConfigSource {
+
+    private static final CuiLogger LOGGER = new CuiLogger(PortalTestConfiguration.class);
 
     public static final int PRIORITY = PortalPriorities.PORTAL_ASSEMBLY_LEVEL + 20;
 
@@ -98,16 +96,11 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
      */
     private static final Map<String, String> delta = synchronizedMap(new HashMap<>());
 
-    @Inject
-    @PortalInitializer
-    private Instance<ApplicationInitializer> applicationInitializers;
-
     /**
      * Fires the event
      */
     public void fireEvent() {
         if (!delta.isEmpty()) {
-            handlePortalConfigDir();
             delta.clear();
         }
     }
@@ -223,23 +216,65 @@ public class PortalTestConfiguration extends AbstractPortalConfigSource {
     }
 
     @Override
-    public int getPortalPriority() {
-        return PRIORITY;
-    }
-
-    @Override
     public Map<String, String> getProperties() {
         return immutableMap(properties);
     }
 
-    private void handlePortalConfigDir() {
-        if (delta.containsKey(PORTAL_CONFIG_DIR)) {
-            final var newValue = delta.get(PORTAL_CONFIG_DIR);
-            if ("".equals(newValue)) {
-                System.clearProperty(PORTAL_CONFIG_DIR);
-            } else {
-                System.setProperty(PORTAL_CONFIG_DIR, delta.get(PORTAL_CONFIG_DIR));
+    /**
+     * @return {@link Class#getSimpleName()}
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * Do not overwrite this function. Use {@link #getPortalPriority()} instead.
+     * <p>
+     * As Portal priorities are within the range 0-150, the final value will fit
+     * nicely within the MP config source ordinals 100-250. Hence, all portal config
+     * sources sit below the "EnvConfigSource".
+     *
+     * @return {@link ConfigSource#DEFAULT_ORDINAL} + {@link #getPortalPriority()}.
+     */
+    @Override
+    public int getOrdinal() {
+        return getConfigOrdinalFromSource().orElse(ConfigSource.DEFAULT_ORDINAL + getPortalPriority());
+    }
+
+    @Override
+    public String getValue(final String key) {
+        return getProperties().get(key);
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
+    }
+
+    /**
+     * Provide a portal priority to reflect the importance of this config source.
+     * Higher values have higher importance. Don't exceed a value of
+     * <code>199</code> as this would conflict with the default config sources
+     * provided by SmallRye.
+     *
+     * @return {@link PortalPriorities#PORTAL_CORE_LEVEL}
+     */
+    public int getPortalPriority() {
+        return PortalPriorities.PORTAL_CORE_LEVEL;
+    }
+
+    protected Optional<Integer> getConfigOrdinalFromSource() {
+        final var configOrdinal = this.getValue(ConfigSource.CONFIG_ORDINAL);
+        if (null != configOrdinal) {
+            try {
+                final var ordinal = Integer.parseInt(configOrdinal);
+                LOGGER.trace("config_ordinal of {}={}", getName(), ordinal);
+                return Optional.of(ordinal);
+            } catch (final NumberFormatException nfe) {
+                LOGGER.trace(nfe, "config_ordinal is not a number. source={}", getName());
             }
         }
+        return Optional.empty();
     }
 }

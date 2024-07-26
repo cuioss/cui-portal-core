@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.configuration.source;
+package de.cuioss.portal.configuration.impl.support;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
-import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.ToString;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -31,16 +30,11 @@ import java.util.Set;
  * {@link ConfigSource} has an ordinal of {@link ConfigSource#DEFAULT_ORDINAL} +
  * {@link PortalPriorities#PORTAL_CORE_LEVEL} per default.
  *
- * <p>
- * This is a {@link FileConfigurationSource} to allow testing with
- * AbstractConfigurationKeyVerifierTest. This should have no side effects as
- * instances of this class are not known to CDI.
- * </p>
  *
  * @author Sven Haag
  */
 @ToString
-public abstract class AbstractPortalConfigSource implements ConfigSource {
+abstract class AbstractPortalConfigSource implements ConfigSource {
 
     private static final CuiLogger LOGGER = new CuiLogger(AbstractPortalConfigSource.class);
 
@@ -49,9 +43,6 @@ public abstract class AbstractPortalConfigSource implements ConfigSource {
      */
     @Override
     public String getName() {
-        if (this instanceof FileConfigurationSource source) {
-            return getClass().getSimpleName() + "[source=" + source.getPath() + "]";
-        }
         return getClass().getSimpleName();
     }
 

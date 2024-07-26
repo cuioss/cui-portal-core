@@ -15,27 +15,24 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
-import java.util.Locale;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.types.ConfigAsLocale;
 import de.cuioss.portal.configuration.types.ConfigAsLocaleList;
 import de.cuioss.tools.string.Joiner;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.Getter;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Locale;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
@@ -54,7 +51,6 @@ class ConfigurationProducerLocaleTest {
     private PortalConfigProducer underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @Inject
@@ -72,7 +68,7 @@ class ConfigurationProducerLocaleTest {
     @Test
     void shouldProduceLocaleList() {
         configuration.put(CONFIGURATION_KEY,
-                Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(), Locale.ENGLISH.toString()));
+            Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(), Locale.ENGLISH.toString()));
 
         configuration.fireEvent();
         assertEquals(2, injectedLocaleList.get().size());
@@ -81,7 +77,7 @@ class ConfigurationProducerLocaleTest {
     @Test
     void shouldIgnoreDuplicatesLocaleList() {
         configuration.put(CONFIGURATION_KEY, Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(),
-                Locale.ENGLISH.toString(), Locale.GERMANY.toString()));
+            Locale.ENGLISH.toString(), Locale.GERMANY.toString()));
 
         configuration.fireEvent();
         assertEquals(2, injectedLocaleList.get().size());

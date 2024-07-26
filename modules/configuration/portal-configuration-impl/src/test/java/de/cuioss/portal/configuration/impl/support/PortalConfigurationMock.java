@@ -17,9 +17,7 @@ package de.cuioss.portal.configuration.impl.support;
 
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.ConfigurationStorage;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.types.ConfigAsList;
@@ -34,10 +32,12 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.
@@ -96,12 +96,11 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  *
  * @author Oliver Wolff
  */
-@PortalConfigurationSource
 @ApplicationScoped
 @Priority(PortalConfigurationMock.PRIORITY)
 @EqualsAndHashCode(of = "configurationMap")
 @ToString
-public class PortalConfigurationMock implements ConfigurationStorage, ConfigSource {
+public class PortalConfigurationMock implements ConfigSource {
 
     public static final int PRIORITY = PortalPriorities.PORTAL_ASSEMBLY_LEVEL + 10;
 
@@ -151,18 +150,6 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
      */
     public void fireEvent(final String key1, final String value1, final String key2, final String value2) {
         fireEvent(immutableMap(key1, value1, key2, value2));
-    }
-
-    /**
-     * Initializes the configuration system explicitly. This is usually done by a
-     * servlet-event but must be explicitly done if used in unit-tests
-     */
-    public void initializeConfigurationSystem() {
-        final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
-        Collections.sort(initializers);
-        for (final ApplicationInitializer applicationInitializer : initializers) {
-            applicationInitializer.initialize();
-        }
     }
 
     /**
@@ -216,17 +203,6 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
     }
 
     @Override
-    public void updateConfigurationMap(final Map<String, String> map) {
-        clear();
-        configurationMap.putAll(map);
-    }
-
-    @Override
-    public void updateConfigurationProperty(final String key, final String value) {
-        put(key, value);
-    }
-
-    @Override
     public Map<String, String> getProperties() {
         LOGGER.trace("Requested Properties: {}", configurationMap);
         return immutableMap(configurationMap);
@@ -255,9 +231,4 @@ public class PortalConfigurationMock implements ConfigurationStorage, ConfigSour
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalConfigurationMock.class);
 
-    @Override
-    public Map<String, String> getConfigurationMap() {
-        LOGGER.trace("Requested Map: {}", configurationMap);
-        return immutableMap(configurationMap);
-    }
 }

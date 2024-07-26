@@ -15,31 +15,23 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.types.ConfigAsList;
 import de.cuioss.test.generator.Generators;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Ensure we always get what we expect from the MicroProfile config
@@ -68,13 +60,11 @@ class MPProducerTest {
     private static final String KEY_UNTRIMMED_STRING = KEY_BASE + "untrimmedString";
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @BeforeEach
     void beforeTest() {
         configuration.clear();
-        configuration.initializeConfigurationSystem();
     }
 
     @Inject

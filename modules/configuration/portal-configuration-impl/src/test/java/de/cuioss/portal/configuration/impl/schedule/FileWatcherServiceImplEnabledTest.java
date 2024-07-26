@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
@@ -50,7 +49,6 @@ class FileWatcherServiceImplEnabledTest {
     private FileWatcherServiceImpl underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     private static final Path POM = Paths.get("pom.xml");
@@ -59,7 +57,6 @@ class FileWatcherServiceImplEnabledTest {
     @BeforeEach
     void beforeTest() throws IOException {
         configuration.clear();
-        configuration.initializeConfigurationSystem();
         pathFromEvent = null;
         testFileHandler.setup();
         underTest.clear();

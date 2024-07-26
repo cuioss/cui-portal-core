@@ -15,31 +15,8 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.math.BigInteger;
-import java.util.Random;
-
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.MediaType;
-
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.jboss.resteasy.cdi.ResteasyCdiExtension;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.AddExtensions;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
@@ -48,9 +25,25 @@ import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.net.UrlParameter;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.MockWebServer;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.Random;
+
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
@@ -67,7 +60,6 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     private Oauth2ServiceImpl underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
 
     @Produces

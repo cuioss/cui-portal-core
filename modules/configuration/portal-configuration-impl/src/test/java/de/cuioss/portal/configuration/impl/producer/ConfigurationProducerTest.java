@@ -17,7 +17,6 @@ package de.cuioss.portal.configuration.impl.producer;
 
 import de.cuioss.portal.configuration.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.MetricsConfigKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
@@ -31,9 +30,7 @@ import jakarta.inject.Provider;
 import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -66,7 +63,6 @@ class ConfigurationProducerTest {
     private PortalConfigProducer underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @Inject

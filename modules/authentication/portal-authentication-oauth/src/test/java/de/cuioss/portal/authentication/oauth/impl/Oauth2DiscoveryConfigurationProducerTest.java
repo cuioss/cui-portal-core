@@ -16,7 +16,6 @@
 package de.cuioss.portal.authentication.oauth.impl;
 
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
@@ -34,9 +33,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -53,7 +50,6 @@ class Oauth2DiscoveryConfigurationProducerTest
     private Oauth2DiscoveryConfigurationProducer underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
 
     @Getter

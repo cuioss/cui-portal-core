@@ -16,7 +16,7 @@
 package de.cuioss.portal.core.test.mocks.configuration;
 
 import de.cuioss.portal.common.stage.ProjectStage;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfiguration> {
 
     @Inject
-    @PortalConfigurationSource
     @Getter
     private PortalTestConfiguration underTest;
 
@@ -130,9 +129,14 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
 
     void assertConfigPresent(String key, String value) {
         assertEquals(value, underTest.getValue(key));
+        var resolved = ConfigurationHelper.resolveConfigProperty(key);
+        assertTrue(resolved.isPresent(), "Resolved configuration property '" + key + "' is not present");
+        assertEquals(value, resolved.get(), "Resolved configuration property '" + key + "' is not resolved");
     }
 
     void assertConfigNotPresent(String key) {
         assertNull(underTest.getValue(key));
+        var resolved = ConfigurationHelper.resolveConfigProperty(key);
+        assertFalse(resolved.isPresent(), "Resolved configuration property '" + key + "' is not present");
     }
 }

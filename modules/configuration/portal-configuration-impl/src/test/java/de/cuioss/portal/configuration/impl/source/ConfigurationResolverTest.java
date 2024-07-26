@@ -15,19 +15,16 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import jakarta.inject.Inject;
-
+import lombok.Getter;
 import org.jboss.weld.environment.util.Collections;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
-import lombok.Getter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
@@ -38,7 +35,6 @@ class ConfigurationResolverTest {
     private ConfigurationResolver underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalConfigurationMock configuration;
 
     @Test
