@@ -54,7 +54,7 @@ import lombok.Setter;
 import mockwebserver3.MockWebServer;
 
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @EnableMockWebServer
 @AddBeanClasses({ Oauth2DiscoveryConfigurationProducer.class })
 @AddExtensions(ResteasyCdiExtension.class)

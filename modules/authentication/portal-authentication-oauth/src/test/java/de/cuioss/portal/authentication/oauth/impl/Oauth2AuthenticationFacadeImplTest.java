@@ -66,7 +66,7 @@ import mockwebserver3.MockWebServer;
 
 @EnableMockWebServer
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @AddBeanClasses({ Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
         RedirectorMock.class })
 @AddExtensions(ResteasyCdiExtension.class)

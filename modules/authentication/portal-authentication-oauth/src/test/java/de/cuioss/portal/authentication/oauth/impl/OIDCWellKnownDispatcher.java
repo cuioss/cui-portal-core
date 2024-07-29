@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -54,6 +55,9 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     public static final FileLoader CONFIGURATION = FileLoaderUtility
             .getLoaderForPath(FileTypePrefix.CLASSPATH + "/openid-configuration.json");
 
+    public static final FileLoader INVALID_CONFIGURATION = FileLoaderUtility
+            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/openid-configuration-invalid.json");
+
     public static final FileLoader TOKEN = FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/token.json");
 
     public static final FileLoader CLIENT_TOKEN = FileLoaderUtility
@@ -75,13 +79,16 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     @Getter
     private String currentPort;
 
+    @Setter
+    private boolean simulateInvalidOidcConfig = false;
+
     public void reset() {
         tokenResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
                 .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(FileLoaderUtility.toStringUnchecked(TOKEN));
+                .setBody(toStringUnchecked(TOKEN));
         userInfoResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
                 .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(FileLoaderUtility.toStringUnchecked(USER_INFO));
+                .setBody(toStringUnchecked(USER_INFO));
     }
 
     public void assertAuthorizeURL(String actualUrl, String... parts) {
@@ -125,12 +132,14 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     }
 
     @Override
-    public @NotNull MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+    public @NotNull MockResponse dispatch(RecordedRequest request) {
         LOGGER.info(() -> "Serve request " + request.getPath());
         return switch (request.getPath()) {
         case "/" + OIDC_DISCOVERY_PATH -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
                 .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(FileLoaderUtility.toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
+                .setBody(simulateInvalidOidcConfig
+                    ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
+                    : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
         case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
         case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
         default -> {
@@ -139,5 +148,4 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
         }
         };
     }
-
 }

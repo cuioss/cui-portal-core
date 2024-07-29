@@ -165,4 +165,8 @@ public class OAuthConfigKeys {
      */
     public static final String OPEN_ID_DISCOVER_PATH = OPEN_ID_SERVER_BASE + "discovery_path";
 
+    /**
+     * Ensure that the final config is valid, i.e. required attributes are present.
+     */
+    public static final String CONFIG_VALIDATION_ENABLED = OPEN_ID_BASE + "validation.enabled";
 }

@@ -28,12 +28,15 @@ import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.MockWebServer;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -56,12 +59,17 @@ class Oauth2DiscoveryConfigurationProducerTest
     @Getter
     private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
+    @BeforeEach
+    void beforeEach() {
+        configuration.fireEvent(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
+    }
+
     @Test
     void testInit() {
-
         dispatcher.configure(configuration, mockWebServer);
 
         var result = underTest.getConfiguration();
+
         assertNotNull(result);
         assertNotNull(result.getTokenUri());
         assertNotNull(result.getAuthorizeUri());
@@ -74,7 +82,8 @@ class Oauth2DiscoveryConfigurationProducerTest
         dispatcher.configure(configuration, mockWebServer);
         var url1 = new URLGenerator().next().toString();
         var url2 = new URLGenerator().next().toString();
-        configuration.fireEvent(OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
+        configuration.fireEvent(
+            OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
             OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, url2);
 
         var result = underTest.getConfiguration();
@@ -83,4 +92,16 @@ class Oauth2DiscoveryConfigurationProducerTest
         assertEquals(url2, result.getUserInfoUri());
     }
 
+    @Test
+    void invalidOpenIdConfig() {
+        configuration.put(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "true");
+        dispatcher.setSimulateInvalidOidcConfig(true);
+        dispatcher.configure(configuration, mockWebServer);
+
+        WeldException ex = assertThrows(WeldException.class, underTest::getConfiguration);
+
+        assertNotNull(ex.getCause());
+        assertNotNull(ex.getCause().getCause());
+        assertEquals(IllegalStateException.class, ex.getCause().getCause().getClass());
+    }
 }

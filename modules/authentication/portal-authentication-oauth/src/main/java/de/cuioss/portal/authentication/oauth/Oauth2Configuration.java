@@ -74,4 +74,10 @@ public interface Oauth2Configuration extends Serializable {
     String getPostLogoutRedirectUri();
 
     boolean isLogoutWithIdTokenHintEnabled();
+
+    /**
+     * Validate oauth2 config.
+     * @throws IllegalStateException if e.g. a required config param is missing or invalid.
+     */
+    void validate();
 }
