@@ -17,7 +17,7 @@ class Oauth2ConfigurationImplTest {
     void validConfig() {
         Oauth2ConfigurationImpl config = createConfig();
 
-        assertDoesNotThrow(() -> config.validate());
+        assertDoesNotThrow(config::validate);
     }
 
     @Test
@@ -25,7 +25,7 @@ class Oauth2ConfigurationImplTest {
         Oauth2ConfigurationImpl config = createConfig();
         config.setTokenUri(null);
 
-        assertThrows(IllegalStateException.class, () -> config.validate());
+        assertThrows(IllegalStateException.class, config::validate);
     }
 
     @Test
@@ -33,7 +33,7 @@ class Oauth2ConfigurationImplTest {
         Oauth2ConfigurationImpl config = createConfig();
         config.setClientId(null);
 
-        assertThrows(IllegalStateException.class, () -> config.validate());
+        assertThrows(IllegalStateException.class, config::validate);
     }
 
     @Test
@@ -41,7 +41,7 @@ class Oauth2ConfigurationImplTest {
         Oauth2ConfigurationImpl config = createConfig();
         config.setAuthorizeUri(null);
 
-        assertThrows(IllegalStateException.class, () -> config.validate());
+        assertThrows(IllegalStateException.class, config::validate);
     }
 
     private Oauth2ConfigurationImpl createConfig() {

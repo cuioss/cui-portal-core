@@ -129,8 +129,9 @@ public class Oauth2DiscoveryConfigurationProducer {
             final var builder = new CuiRestClientBuilder(LOGGER);
             final var discoveryURI = addTrailingSlashToUrl(settingServerBaseUrl) + settingOauth2discoveryUri;
             LOGGER.debug("Using discoveryURI {}", discoveryURI);
-            try {
-                final var discovery = builder.url(discoveryURI).build(RequestDiscovery.class).getDiscovery();
+            builder.url(discoveryURI);
+            try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
+                final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
             } catch (final Exception e) {
                 LOGGER.error(e, "Auto discovery of oauth config failed, using URI: {}", discoveryURI);

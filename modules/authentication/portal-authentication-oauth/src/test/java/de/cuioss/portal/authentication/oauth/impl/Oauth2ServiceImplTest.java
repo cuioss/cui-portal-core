@@ -101,7 +101,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testDeprecatedCreateAuthenticatedUserInfo() throws IOException, InterruptedException {
+    void testDeprecatedCreateAuthenticatedUserInfo() throws InterruptedException {
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -161,7 +161,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testRetrieveClientToken() throws IOException, InterruptedException {
+    void testRetrieveClientToken() throws InterruptedException {
 
         var token = underTest.retrieveClientToken(null);
         assertNotNull(token);
@@ -209,7 +209,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldHandleMissingRefreshToken() throws InterruptedException {
+    void shouldHandleMissingRefreshToken() {
         var user = setupAuthorizedUser();
         user.getToken().setRefresh_token(null);
         user.getToken().setAccess_token(null);
@@ -223,12 +223,10 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldRetrieveAuthenticatedUser() throws InterruptedException {
+    void shouldRetrieveAuthenticatedUser() {
         var user = setupAuthorizedUser();
         var result = underTest.retrieveAuthenticatedUser("scoe", user.getToken(), 0);
         assertNotNull(result);
         assertTrue(user.isAuthenticated());
-
     }
-
 }

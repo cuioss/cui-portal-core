@@ -23,9 +23,6 @@ import java.util.List;
  */
 public interface Oauth2Configuration extends Serializable {
 
-    /**
-     * @return
-     */
     String getAuthorizeUri();
 
     /**

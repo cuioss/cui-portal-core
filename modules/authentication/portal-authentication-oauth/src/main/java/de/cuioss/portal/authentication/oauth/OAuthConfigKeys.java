@@ -71,7 +71,7 @@ public class OAuthConfigKeys {
      * <p>
      * The (cluster-internal) url to the oauth2 servers token endpoint. For
      * cluster-internal communication with the server, e.g.
-     * https://xyz/member-account-facade/oidc.
+     * {@code https://xyz/member-account-facade/oidc}.
      * </p>
      * <p>
      * If this config property is not set, the value served form the well-know
@@ -85,7 +85,7 @@ public class OAuthConfigKeys {
      * <p>
      * The (cluster-internal) url to the oauth2 servers userinfo endpoint. For
      * cluster-internal communication with the server, e.g.
-     * https://xyz/member-account-facade/oidc/userinfo.
+     * {@code https://xyz/member-account-facade/oidc/userinfo}.
      * </p>
      * <p>
      * If this config property is not set, the value served form the well-know

@@ -60,9 +60,6 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     public static final FileLoader TOKEN = FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/token.json");
 
-    public static final FileLoader CLIENT_TOKEN = FileLoaderUtility
-            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/clientToken.json");
-
     public static final FileLoader USER_INFO = FileLoaderUtility
             .getLoaderForPath(FileTypePrefix.CLASSPATH + "/userInfo.json");
 
@@ -122,7 +119,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         var request = mockWebServer.takeRequest();
         while (null != request) {
-            if (!request.getPath().contains(OIDC_DISCOVERY_PATH)) {
+            if (!isOidcDiscoveryPath(request.getPath())) {
                 builder.add(request);
             }
             request = mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS);
@@ -131,21 +128,31 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
         return builder.toImmutableList();
     }
 
+    private boolean isOidcDiscoveryPath(String path) {
+        return path != null && path.contains(OIDC_DISCOVERY_PATH);
+    }
+
     @Override
     public @NotNull MockResponse dispatch(RecordedRequest request) {
         LOGGER.info(() -> "Serve request " + request.getPath());
+
+        if (null == request.getPath()) {
+            LOGGER.warn(() -> "Unable to serve request " + request.getPath());
+            new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+        }
+
         return switch (request.getPath()) {
-        case "/" + OIDC_DISCOVERY_PATH -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
+            case "/" + OIDC_DISCOVERY_PATH -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
                 .addHeader("Content-Type", MediaType.APPLICATION_JSON)
                 .setBody(simulateInvalidOidcConfig
                     ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
                     : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
-        case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
-        case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
-        default -> {
-            LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-            yield new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
-        }
+            case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
+            case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
+            default -> {
+                LOGGER.warn(() -> "Unable to serve request " + request.getPath());
+                yield new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+            }
         };
     }
 }
