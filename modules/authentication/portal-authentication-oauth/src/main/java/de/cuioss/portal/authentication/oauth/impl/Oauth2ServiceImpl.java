@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static de.cuioss.tools.base.Preconditions.checkState;
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
 import static java.net.URLEncoder.encode;
 import static java.util.Objects.requireNonNull;
@@ -210,6 +211,8 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     @Override
     public String retrieveClientToken(String scopes) {
         var configuration = configurationProvider.get();
+        checkState(null != configuration.getTokenUri(), "tokenUri must not be null");
+
         final var builder = new CuiRestClientBuilder(log)
             .basicAuth(configuration.getClientId(), configuration.getClientSecret())
             .register(new AcceptJsonHeaderFilter());

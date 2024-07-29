@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_DISCOVER_PATH;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
 import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
 import static de.cuioss.tools.string.MoreStrings.isBlank;
 
@@ -102,6 +104,10 @@ public class Oauth2DiscoveryConfigurationProducer {
     @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL)
     private Provider<Optional<String>> internalUserInfoUrl;
 
+    @Inject
+    @ConfigProperty(name = OAuthConfigKeys.CONFIG_VALIDATION_ENABLED)
+    private Provider<Boolean> configValidationEnabled;
+
     /**
      * The request to retrieve information about the current authenticated user.
      */
@@ -123,8 +129,9 @@ public class Oauth2DiscoveryConfigurationProducer {
             final var builder = new CuiRestClientBuilder(LOGGER);
             final var discoveryURI = addTrailingSlashToUrl(settingServerBaseUrl) + settingOauth2discoveryUri;
             LOGGER.debug("Using discoveryURI {}", discoveryURI);
-            try {
-                final var discovery = builder.url(discoveryURI).build(RequestDiscovery.class).getDiscovery();
+            builder.url(discoveryURI);
+            try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
+                final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
             } catch (final Exception e) {
                 LOGGER.error(e, "Auto discovery of oauth config failed, using URI: {}", discoveryURI);
@@ -135,6 +142,10 @@ public class Oauth2DiscoveryConfigurationProducer {
         }
 
         LOGGER.debug("oauth config: {}", configuration);
+
+        if (null != configuration && configValidationEnabled.get()) {
+            configuration.validate();
+        }
     }
 
     private Oauth2Configuration createConfiguration(final Map<String, Object> discovery) {

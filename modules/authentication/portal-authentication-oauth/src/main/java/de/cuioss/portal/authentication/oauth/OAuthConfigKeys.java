@@ -71,7 +71,7 @@ public class OAuthConfigKeys {
      * <p>
      * The (cluster-internal) url to the oauth2 servers token endpoint. For
      * cluster-internal communication with the server, e.g.
-     * https://xyz/member-account-facade/oidc.
+     * {@code https://xyz/member-account-facade/oidc}.
      * </p>
      * <p>
      * If this config property is not set, the value served form the well-know
@@ -85,7 +85,7 @@ public class OAuthConfigKeys {
      * <p>
      * The (cluster-internal) url to the oauth2 servers userinfo endpoint. For
      * cluster-internal communication with the server, e.g.
-     * https://xyz/member-account-facade/oidc/userinfo.
+     * {@code https://xyz/member-account-facade/oidc/userinfo}.
      * </p>
      * <p>
      * If this config property is not set, the value served form the well-know
@@ -165,4 +165,8 @@ public class OAuthConfigKeys {
      */
     public static final String OPEN_ID_DISCOVER_PATH = OPEN_ID_SERVER_BASE + "discovery_path";
 
+    /**
+     * Ensure that the final config is valid, i.e. required attributes are present.
+     */
+    public static final String CONFIG_VALIDATION_ENABLED = OPEN_ID_BASE + "validation.enabled";
 }
