@@ -324,17 +324,27 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         LOGGER.trace("retrieveToken for scopes: {}", scopes);
         final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
         String idToken = null;
+
         if (currentUser.isPresent()) {
-            final var token = currentUser.get().getToken();
+            LOGGER.debug("we have a user");
+
             final var accessToken = checkAndRetrieveToken(currentUser.get(), scopes);
             if (null != accessToken) {
+                LOGGER.debug("accessToken present. returning accessToken.");
                 return accessToken;
             }
+
+            final var token = currentUser.get().getToken();
             if (token != null) {
+                LOGGER.debug("CUI Token present. extracting idToken.");
                 idToken = token.getId_token();
+            } else {
+                LOGGER.debug("No CUI Token available. Cannot set idToken.");
             }
         }
-        LOGGER.debug("token not present, redirecting to oauth server");
+
+        LOGGER.debug("accessToken not present, redirecting to oauth server using idToken={}.", null != idToken);
+        LOGGER.trace("using idToken: {}", idToken);
         sendRedirect(scopes, idToken);
         return null;
     }
@@ -463,6 +473,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private String checkAndRetrieveToken(final OauthAuthenticatedUserInfo currentUser, final String scopes) {
         final var token = currentUser.getToken();
         if (checkToken(token, currentUser.getTokenTimestamp())) {
+            LOGGER.debug("token is valid.");
             var allFound = true;
             final var existing = Splitter.on(' ').omitEmptyStrings().splitToList(currentUser.getScopes());
             for (final String requested : Splitter.on(' ').omitEmptyStrings().splitToList(scopes)) {
@@ -487,11 +498,14 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             return false;
         }
         if (MoreStrings.isEmpty(token.getExpires_in())) {
+            LOGGER.trace("token has no expiration. token is valid!");
             return true;
         }
         try {
             final var expires = timestamp + Integer.parseInt(token.getExpires_in()) - 10;
-            return expires > (int) (System.currentTimeMillis() / 1000L);
+            final boolean valid = expires > (int) (System.currentTimeMillis() / 1000L);
+            LOGGER.trace("checked expire time. token valid?: {}", valid);
+            return valid;
         } catch (final NumberFormatException e) {
             LOGGER.warn("Portal-149: Oauth2 token.expires_in not a valid number", e);
             return false;
