@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.configuration;
 
+import lombok.experimental.UtilityClass;
+
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.ENABLED;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_BASE;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TracingConfigKeys {
@@ -58,13 +58,13 @@ public class TracingConfigKeys {
 
     /**
      * Probability of requests that should be sampled, ranging from {@code 0.0} to
-     * {@code 1.0}. E.g. 1.0 = 100% requests should be sampled.
+     * {@code 1.0}. E.g., 1.0 = 100% requests should be sampled.
      * 'portal.tracing.probability'
      */
     public static final String PORTAL_TRACING_SAMPLER_PROBABILITY = PORTAL_TRACING_BASE + "probability";
 
     /**
-     * Sampling rate per second (integer). E.g. for surge protection.
+     * Sampling rate per second (integer). E.g., for surge protection.
      * 'portal.tracing.rate'
      */
     public static final String PORTAL_TRACING_SAMPLER_RATE = PORTAL_TRACING_BASE + "rate";

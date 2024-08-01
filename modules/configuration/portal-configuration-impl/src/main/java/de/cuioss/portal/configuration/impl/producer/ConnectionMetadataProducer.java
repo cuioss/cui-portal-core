@@ -62,14 +62,14 @@ public class ConnectionMetadataProducer {
      */
     public static final String MISSING_BASENAME_MSG = "Portal-117: Configuration setting for baseName is missing.";
     private static final String MISSING_CONFIG_MSG = "Portal-119: Missing configuration for {} detected.";
-    private static final String MISSING_BASICAUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: ";
+    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: ";
     private static final String MISSING_TOKEN_CONFIG_MSG = "Portal-120: Configuration for token based authentication is incomplete. Missing: ";
     private static final String INVALID_NUMBER_VALUE = "Portal-526: Invalid content for '%s', expected a number but was '%s'";
 
     /**
      * Try to create {@linkplain ConnectionMetadata}<br>
      * <h2>Attention</h2> If configuration is invalid and validation should be done
-     * the injection will failed with
+     * the injection will fail with
      * {@linkplain jakarta.enterprise.inject.CreationException} caused by
      * {@linkplain IllegalArgumentException}
      *
@@ -179,12 +179,12 @@ public class ConnectionMetadataProducer {
                 final var userName = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
                 if (MoreStrings.isEmpty(userName)) {
                     handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME,
-                        MISSING_BASICAUTH_CONFIG_MSG + "Username", failOnInvalidConfiguration);
+                        MISSING_BASIC_AUTH_CONFIG_MSG + "Username", failOnInvalidConfiguration);
                 }
                 final var password = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD);
                 if (MoreStrings.isEmpty(password)) {
                     handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD,
-                        MISSING_BASICAUTH_CONFIG_MSG + "Password", failOnInvalidConfiguration);
+                        MISSING_BASIC_AUTH_CONFIG_MSG + "Password", failOnInvalidConfiguration);
                 }
                 builder.loginCredentials(LoginCredentials.builder().username(userName).password(password).build());
                 break;

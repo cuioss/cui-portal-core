@@ -15,30 +15,26 @@
  */
 package de.cuioss.portal.configuration.types;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
-
-import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Injects a config property as an immutable list of trimmed Strings. In case
- * the property is null or empty and there is no {@link #defaultValue()} set it
+ * the property is null or empty, and there is no {@link #defaultValue()} set it
  * will be an empty list. The default splitting character is
  * {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}.
  *
  * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface ConfigAsList {
 
@@ -50,7 +46,7 @@ public @interface ConfigAsList {
 
     /**
      * @return the separator char, defaults to
-     *         {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
+     * {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
     @Nonbinding
     char separator() default PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
