@@ -94,7 +94,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
      */
     @Override
     public void initialize() {
-        if (enabledProvider.get().booleanValue()) {
+        if (enabledProvider.get()) {
             log.debug("Initializing FileWatcherService");
             if (null == watcherService) {
                 try {
@@ -113,8 +113,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 executor.execute(fileWatchExecutor());
             }
             upAndRunning = true;
-            // Using the scheduling like this we won't miss elements that have already been
-            // scheduled
+            // Using the scheduling like this, we won't miss elements that have already been scheduled
             handleScheduling();
             log.debug("FileWatcherService initialized, files are scheduled");
         } else {
@@ -143,7 +142,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
         if (null != executor) {
             executor.shutdown();
         }
-        log.debug("Shutting down FileWatcherService was successfull");
+        log.debug("Shutting down FileWatcherService was successfully");
     }
 
     @Override
@@ -192,11 +191,11 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     @Override
     public List<Path> getRegisteredPaths() {
         List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath).toList();
-        log.trace("getRegisteredPaths callled, returning {}", paths);
+        log.trace("getRegisteredPaths called, returning {}", paths);
         return paths;
     }
 
-    @SuppressWarnings("squid:S1188") // Not to much logic, so the number of lines are ok
+    @SuppressWarnings("squid:S1188") // Not too much logic, so the number of lines is ok
     private Runnable fileWatchExecutor() {
         return () -> {
             while (upAndRunning) {
@@ -210,7 +209,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     Thread.currentThread().interrupt();
                     break;
                 } catch (ClosedWatchServiceException e) {
-                    // Hm feels a little clumsy. Should consider correct Interruption handling
+                    // Hm, feels a little clumsy. Should consider correct Interruption handling
                     log.debug("Shutdown while waiting");
                 } catch (Exception e) {
                     log.error("Portal-515: Error while polling / accessing the file-system", e);
@@ -241,12 +240,10 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
         for (AbstractFileDescriptor element : changed) {
             log.debug("Delivering notification for path changes of: '{}'", element.getPath());
             try {
-                // Handling the event should not throw an exception, because this will break the
-                // iteration over all
-                // event listener - however, if it happens (it is a file system operation that
-                // may
-                // fail due to IO
-                // errors) it should at least not crash the service at all.
+                // Handling the event should not throw an exception.
+                // This will break the iteration over all event listeners - however,
+                // if it happens (it is a file system operation that
+                // may fail due to IO errors), it should at least not crash the service at all.
                 fileChangeEvent.fire(element.getPath());
             } catch (Exception e) {
                 log.error("Portal-533: Handling fileChangedEvent failed for file {}: ", e,

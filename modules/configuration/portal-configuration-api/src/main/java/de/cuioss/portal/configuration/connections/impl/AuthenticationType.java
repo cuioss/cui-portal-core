@@ -15,16 +15,16 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Defines the kind of authorization needed for a certain connection.
@@ -34,16 +34,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum AuthenticationType {
 
-    /** No authentication required. */
+    /**
+     * No authentication required.
+     */
     NONE("none", false),
 
-    /** User name and password. */
+    /**
+     * Username and password.
+     */
     BASIC("basic", false),
 
-    /** A certificate, usually chosen by name from a trust-store. */
+    /**
+     * A certificate, usually chosen by name from a trust-store.
+     */
     CERTIFICATE("certificate", false),
 
-    /** Defines a static token for all connections. */
+    /**
+     * Defines a static token for all connections.
+     */
     TOKEN_APPLICATION("token.application", true),
 
     /**
@@ -76,14 +84,14 @@ public enum AuthenticationType {
      * @param configuration to be used for determining the concrete
      *                      {@link AuthenticationType}
      * @return the resolved {@link AuthenticationType} if it can be extracted,
-     *         {@link AuthenticationType#NONE} otherwise. The algorithm checks the
-     *         keys for containing corresponding token, saying in case of containing
-     *         the substring "authentication.certificate" it will return
-     *         {@link AuthenticationType#CERTIFICATE}, in case of containing the
-     *         substring "authentication.basic" it will return
-     *         {@link AuthenticationType#BASIC}. It will detect variants like
-     *         'authentication=certificate' as well. The first match of enum
-     *         {@link AuthenticationType} is used.
+     * {@link AuthenticationType#NONE} otherwise. The algorithm checks the
+     * keys for containing corresponding token, saying in case of containing
+     * the substring "authentication.certificate" it will return
+     * {@link AuthenticationType#CERTIFICATE}, in case of containing the
+     * substring "authentication.basic" it will return
+     * {@link AuthenticationType#BASIC}. It will detect variants like
+     * 'authentication=certificate' as well. The first match of enum
+     * {@link AuthenticationType} is used.
      */
     public static AuthenticationType resolveFrom(String basename, Map<String, String> configuration) {
         if (null == configuration || configuration.isEmpty()) {
