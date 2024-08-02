@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import de.cuioss.portal.configuration.ConfigPropertyNullable;
+import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;

@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import de.cuioss.portal.configuration.ConfigPropertyNullable;
+import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalConfigurationMock;
 import jakarta.inject.Inject;
