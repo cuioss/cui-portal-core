@@ -2,22 +2,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>de.cuioss.portal.configuration</groupId>
         <artifactId>configuration</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>portal-configuration-impl</artifactId>
     <name>Portal Configuration Runtime</name>
     <description>Provides the implementation-classes for the
         portal-configuration extensions
     </description>
+
     <properties>
         <version.waitility>4.2.1</version.waitility>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.impl
         </maven.jar.plugin.automatic.module.name>
     </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -28,6 +32,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>de.cuioss.portal.configuration</groupId>
@@ -37,10 +42,33 @@
             <groupId>jakarta.inject</groupId>
             <artifactId>jakarta.inject-api</artifactId>
         </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>test</classifier>
+                            <includes>
+                                <include>**/support/**</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
