@@ -13,7 +13,7 @@
         portal-configuration extensions
     </description>
     <properties>
-        <version.waitility>4.2.1</version.waitility>
+        <version.waitility>4.2.2</version.waitility>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.impl
         </maven.jar.plugin.automatic.module.name>
