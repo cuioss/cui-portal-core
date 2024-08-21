@@ -15,20 +15,19 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
-
-import java.util.Optional;
-
 import lombok.NonNull;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
+
+import java.util.Optional;
+
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 public class AllOkDispatcher implements ModuleDispatcherElement {
 
     public static final String BASE = "/allOk";
 
-    private static final MockResponse OK_RESPONSE = new MockResponse().addHeader("Content-Type", "application/json")
-            .setResponseCode(SC_OK);
+    private static final MockResponse OK_RESPONSE = new MockResponse.Builder().addHeader("Content-Type", "application/json").code(SC_OK).build();
 
     @Override
     public String getBaseUrl() {

@@ -15,31 +15,30 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.MediaType;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
-
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
 import de.cuioss.tools.io.FileTypePrefix;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import okhttp3.Headers;
+import org.jetbrains.annotations.NotNull;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OIDCWellKnownDispatcher extends Dispatcher {
 
@@ -80,12 +79,8 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     private boolean simulateInvalidOidcConfig = false;
 
     public void reset() {
-        tokenResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(toStringUnchecked(TOKEN));
-        userInfoResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(toStringUnchecked(USER_INFO));
+        tokenResult = new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), toStringUnchecked(TOKEN));
+        userInfoResult = new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), toStringUnchecked(USER_INFO));
     }
 
     public void assertAuthorizeURL(String actualUrl, String... parts) {
@@ -138,20 +133,19 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         if (null == request.getPath()) {
             LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-            new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+            new MockResponse(HttpServletResponse.SC_NOT_FOUND);
         }
 
         return switch (request.getPath()) {
-            case "/" + OIDC_DISCOVERY_PATH -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(simulateInvalidOidcConfig
-                    ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
-                    : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
+            case "/" + OIDC_DISCOVERY_PATH ->
+                    new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
+                            ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
+                            : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
             case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
             case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
             default -> {
                 LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-                yield new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                yield new MockResponse(HttpServletResponse.SC_NOT_FOUND);
             }
         };
     }

@@ -31,6 +31,7 @@ import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import okhttp3.Headers;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
@@ -65,11 +66,10 @@ class RestClientProducerTest implements MockWebServerHolder {
             public @NotNull MockResponse dispatch(@NotNull RecordedRequest request) {
                 assert request.getPath() != null;
                 return switch (request.getPath()) {
-                    case "/success/test" -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                        .addHeader("Content-Type", "application/fhir+xml").addHeader("ETag", "W/123").setBody("test");
-                    case "/error/test" ->
-                        new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    default -> new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                    case "/success/test" ->
+                            new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml", "ETag", "W/123"), "test");
+                    case "/error/test" -> new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    default -> new MockResponse(HttpServletResponse.SC_NOT_FOUND);
                 };
             }
         };

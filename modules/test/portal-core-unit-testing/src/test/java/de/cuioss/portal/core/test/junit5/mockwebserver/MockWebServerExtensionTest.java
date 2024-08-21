@@ -44,8 +44,8 @@ class MockWebServerExtensionTest implements MockWebServerHolder {
             public @NotNull MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
                 assert request.getPath() != null;
                 return switch (request.getPath()) {
-                    case "/index" -> new MockResponse().setResponseCode(200);
-                    default -> new MockResponse().setResponseCode(403);
+                    case "/index" -> new MockResponse(200);
+                    default -> new MockResponse(403);
                 };
             }
         };
