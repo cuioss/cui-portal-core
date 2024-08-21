@@ -30,7 +30,6 @@
     </issueManagement>
     <properties>
         <version.cui.parent>0.7.4</version.cui.parent>
-        <version.log4j>2.23.1</version.log4j>
     </properties>
     <modules>
         <module>bom</module>
