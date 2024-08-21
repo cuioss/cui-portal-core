@@ -13,21 +13,10 @@
         portal-configuration extensions
     </description>
     <properties>
-        <version.waitility>4.2.1</version.waitility>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.configuration.impl
         </maven.jar.plugin.automatic.module.name>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.awaitility</groupId>
-                <artifactId>awaitility</artifactId>
-                <version>${version.waitility}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>de.cuioss.portal.configuration</groupId>
