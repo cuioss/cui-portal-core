@@ -24,7 +24,7 @@ The core modules of the cui-portal incorporate portal-configuration and portal-a
 <dependency>
     <groupId>de.cuioss.portal</groupId>
     <artifactId>bom</artifactId>
-    <version>${version.cui.portal.core}</version>
+    <version>1.0</version>
     <type>pom</type>
     <scope>import</scope>
 </dependency>
@@ -32,5 +32,12 @@ The core modules of the cui-portal incorporate portal-configuration and portal-a
 
 == Features / Modules
 
-./modules/authentication/[portal-authentication]
+link:modules/authentication/[portal-authentication]
 
+link:modules/configuration/[portal-configuration]
+
+link:modules/core/[portal-core]
+
+link:modules/micro-profile/[micro-profile]
+
+link:modules/test/portal-core-unit-testing[portal-core-unit-testing]

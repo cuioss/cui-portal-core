@@ -1,0 +1,15 @@
+= portal-authentication
+
+== What is it?
+
+Groups all modules providing authorization for the cuioss-portal.
+
+== Features / Modules
+
+link:portal-authentication-api/[portal-authentication-api]
+
+link:portal-authentication-dummy/[portal-authentication-dummy]
+
+link:portal-authentication-mock/[portal-authentication-mock]
+
+link:portal-authentication-oauth/[portal-authentication-oauth]
