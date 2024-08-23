@@ -15,34 +15,28 @@
  */
 package de.cuioss.portal.authentication.mock;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.inject.Provider;
-import jakarta.servlet.http.HttpServletRequest;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.facade.AuthenticationFacade;
-import de.cuioss.portal.authentication.facade.AuthenticationResults;
-import de.cuioss.portal.authentication.facade.AuthenticationSource;
-import de.cuioss.portal.authentication.facade.FormBasedAuthenticationFacade;
-import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.*;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo.BaseAuthenticatedUserInfoBuilder;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.portal.configuration.types.ConfigAsList;
 import de.cuioss.uimodel.application.LoginCredentials;
 import de.cuioss.uimodel.result.ResultObject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Provider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Dummy implementation of the {@link AuthenticationFacade} interface.
@@ -149,7 +143,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
-            final LoginCredentials loginCredentials) {
+                                                     final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()
@@ -196,7 +190,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(final HttpServletRequest servletRequest) {
         var userInfo = (AuthenticatedUserInfo) servletRequest.getSession().getAttribute(USER_INFO_KEY);
         if (null == userInfo) {
-            if (defaultLoggedIn.get().booleanValue()) {
+            if (defaultLoggedIn.get()) {
                 var userName = defaultUserName.get();
                 userInfo = createDefaultUserInfoBuilder().identifier(userName).qualifiedIdentifier(userName)
                         .displayName(userName).build();

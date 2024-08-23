@@ -1,0 +1,8 @@
+= portal-core
+
+== What is it?
+
+Provides some basic-classes / utilities
+
+* link:portal-common-cdi/[portal-common-cdi]
+* link:portal-core/[portal-core]

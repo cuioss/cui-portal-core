@@ -15,26 +15,21 @@
  */
 package de.cuioss.portal.common.cdi;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-import static java.util.Objects.requireNonNull;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import de.cuioss.portal.common.priority.PriorityComparator;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
-
-import de.cuioss.portal.common.priority.PriorityComparator;
 import lombok.experimental.UtilityClass;
 
+import java.lang.annotation.Annotation;
+import java.util.*;
+
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import static java.util.Objects.requireNonNull;
+
 /**
- * Utility classes for dealing with CDI-Beans. In essence it contains some
+ * Utility classes for dealing with CDI-Beans. In essence, it contains some
  * convenient ways to call the Bean manger like instantiating the Annotations.
  *
  * @author Oliver Wolff
@@ -46,17 +41,16 @@ public final class PortalBeanManager {
      * Looks up a normal scoped CDI-bean programmatically.
      *
      * @param beanManager     an instance of the beanManager for doing the lookup.
-     * @param beanClass       identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with,
+     * @param beanClass       identifying the type to be loaded must not be null
+     * @param annotationClass the class the concrete type must be annotated with
      *                        may be null
-     *
      * @return the found bean, or null if none could be found. It will throw an
-     *         {@link IllegalArgumentException} in case of the bean cannot be
-     *         identified exactly.
+     * {@link IllegalArgumentException} in case of the bean cannot be
+     * identified exactly.
      */
     @SuppressWarnings("unchecked")
     private static <T, V extends Annotation> T getCDIBean(final BeanManager beanManager, final Class<T> beanClass,
-            final Class<V> annotationClass) {
+                                                          final Class<V> annotationClass) {
         requireNonNull(beanClass, "beanClass");
         requireNonNull(beanManager, "beanManager");
 
@@ -88,16 +82,15 @@ public final class PortalBeanManager {
     /**
      * Shorthand for resolving a CDI Bean
      *
-     * @param beanClass       identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with,
+     * @param beanClass       identifying the type to be loaded must not be null
+     * @param annotationClass the class the concrete type must be annotated with
      *                        may be null
      * @param <T>
      * @param <V>
-     *
      * @return the found bean, or {@link Optional#empty()} if none could be found
      */
     public static <T, V extends Annotation> Optional<T> resolveBean(final Class<T> beanClass,
-            final Class<V> annotationClass) {
+                                                                    final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass));
     }
 
@@ -105,16 +98,15 @@ public final class PortalBeanManager {
      * Shorthand for resolving a CDI Bean or throwing an IllegalStateException
      * otherwise.
      *
-     * @param beanClass       identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with,
+     * @param beanClass       identifying the type to be loaded must not be null
+     * @param annotationClass the class the concrete type must be annotated with
      *                        may be null
      * @param <T>
      * @param <V>
-     *
      * @return the found bean
      */
     public static <T, V extends Annotation> T resolveBeanOrThrowIllegalStateException(final Class<T> beanClass,
-            final Class<V> annotationClass) {
+                                                                                      final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass)).orElseThrow(
                 () -> new IllegalStateException("Portal-532: " + createErrorMessage(beanClass, annotationClass)));
     }
@@ -124,9 +116,8 @@ public final class PortalBeanManager {
      * {@link #resolveBeanOrThrowIllegalStateException(Class, Class)} with
      * {@code null} for the parameter annotation.
      *
-     * @param beanClass identifying the type to be loaded, must not be null
+     * @param beanClass identifying the type to be loaded must not be null
      * @param <T>
-     *
      * @return the found bean, or {@link Optional#empty()} if none could be found
      */
     public static <T> T resolveRequiredBean(final Class<T> beanClass) {
@@ -137,17 +128,16 @@ public final class PortalBeanManager {
      * Helper method for resolving the beanTypes according to the given identifier.
      *
      * @param beanManager     an instance of the beanManager for doing the lookup.
-     * @param beanClass       identifying the type to be loaded, must not be null
-     * @param annotationClass the class the concrete type must be annotated with,
+     * @param beanClass       identifying the type to be loaded must not be null
+     * @param annotationClass the class the concrete type must be annotated with
      *                        may be null
      * @param <T>
      * @param <V>
-     *
      * @return the resolved beanTypes.
      */
     @SuppressWarnings("squid:S1452") // owolff: Not able to avoid the wildcard call here
     public static <T, V extends Annotation> Set<Bean<?>> resolveBeanTypes(final BeanManager beanManager,
-            final Class<T> beanClass, final Class<V> annotationClass) {
+                                                                          final Class<T> beanClass, final Class<V> annotationClass) {
         Set<Bean<?>> beanTypes;
         if (null == annotationClass) {
             beanTypes = beanManager.getBeans(beanClass);
@@ -167,7 +157,7 @@ public final class PortalBeanManager {
      * @param <V>
      */
     private static <T, V extends Annotation> void checkBeanTypesFound(final Class<T> beanClass,
-            final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
+                                                                      final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
         if (beanTypes.isEmpty())
             throw new IllegalArgumentException(createErrorMessage(beanClass, annotationClass));
     }
@@ -177,11 +167,10 @@ public final class PortalBeanManager {
      * @param annotationClass
      * @param <T>
      * @param <V>
-     *
      * @return the created error-message
      */
     public static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
-            final Class<V> annotationClass) {
+                                                                      final Class<V> annotationClass) {
         return "No bean of type " + beanClass + " and annotation "
                 + (null != annotationClass ? annotationClass.getName() : "(null)") + " could be found";
     }
@@ -194,11 +183,10 @@ public final class PortalBeanManager {
      * @param annotationClass tried to resolve
      * @param <T>
      * @param <V>
-     *
      * @return Portal-532 log message
      */
     public static <T, V extends Annotation> String createLogMessage(final Class<T> beanClass,
-            final Class<V> annotationClass) {
+                                                                    final Class<V> annotationClass) {
         return "Portal-532: " + createErrorMessage(beanClass, annotationClass);
     }
 

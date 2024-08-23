@@ -22,7 +22,7 @@ import java.io.Serializable;
  *
  * @author Oliver Wolff
  * @param <T> type of key. Must implement at least {@link Serializable}
- * @param <V> value, must implement at least {@link Serializable}
+ * @param <V> value must implement at least {@link Serializable}
  */
 public interface MapStorage<T extends Serializable, V extends Serializable> extends Serializable {
 

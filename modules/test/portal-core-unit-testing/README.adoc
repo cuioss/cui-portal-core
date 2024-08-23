@@ -168,7 +168,7 @@ The actual documentation can be found at class level
 
 === Using EasyMock
 
-*!!! Attention !!!* Using easymock with JUnit 5 + CDI requires easy mock version 4.1 or higher additional info see link:https://easymock.org/user-guide.html[Easymock user-guide]
+Additional info see link:https://easymock.org/user-guide.html[Easymock user-guide]
 
 [source,java]
 ----
@@ -189,7 +189,9 @@ private SomeMockedService mockedOne;
 
 === Using MockWebServer
 
-This module supports an extension for using link:https://github.com/square/okhttp/tree/master/mockwebserver[MockWebServer]. You need add the dependency first:
+This module supports an extension
+for using link:https://github.com/square/okhttp/tree/master/mockwebserver[MockWebServer].
+You need to add the dependency first:
 
 [source,xml]
 ----
@@ -349,21 +351,5 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
         }
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
     }
-----
-
-=== Testing InstallationPaths
-
-On some rare cases you need to access the `de.cuioss.portal.configuration.installationpaths.InstallationPaths` in a mock variant. This can be done by using:
-
-[source,java]
-----
-@EnableAlternatives(PortalInstallationPathsMock.class)
-class TestWithInstallationPaths {
-
-    @Inject
-    @PortalInstallationPaths
-    private PortalInstallationPathsMock installationPaths;
-    
-```    
 ----
 

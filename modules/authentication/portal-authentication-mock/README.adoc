@@ -1,10 +1,9 @@
 = portal-authentication-mock
-:toc:
-
 
 == What is it?
-Implementation of 'portal-authentication-api' for cases where it is only needed technically or for documentation purpose. 
-In contrast to 'portal-authentication-dummy' this module must never be used in production environments.
+Implementation of 'link:../portal-authentication-api/[portal-authentication-api]' for cases,
+where it is only needed technically or for documentation purpose.
+In contrast to 'link:../portal-authentication-dummy/[portal-authentication-dummy]' this module must never be used in production environments.
 
 == Maven Coordinates
 
