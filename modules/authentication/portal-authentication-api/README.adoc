@@ -1,0 +1,28 @@
+= portal-authentication-api
+
+== What is it?
+Provides types for handling authentication and authorization related information within the cui-portal.
+It is meant as an abstraction over different ways of authentication and authorization,
+see link:../[portal-authentication] for the different runtimes.
+
+== Maven Coordinates
+
+[source, xml]
+----
+    <dependency>
+        <groupId>de.cuioss.portal.authentication</groupId>
+        <artifactId>portal-authentication-api</artifactId>
+    </dependency>
+----
+
+== Usage
+
+The central object ist the `@Dependent`-scoped `AuthenticatedUserInfo`
+that has a number of methods interacting with the logged-in user.
+
+[source,java]
+----
+    @Inject
+    private AuthenticatedUserInfo userProvider;
+
+----

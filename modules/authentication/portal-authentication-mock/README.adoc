@@ -27,6 +27,6 @@ portal.MockAuthenticationFacade.username=user
 portal.MockAuthenticationFacade.system=mock
 portal.MockAuthenticationFacade.groups= // Comma separated String
 portal.MockAuthenticationFacade.roles= // Comma separated String
-portal.MockAuthenticationFacade.contextMap= // Suffix with the conrete keys, like portal.MockAuthenticationFacade.contextMap.mykey=myValue
+portal.MockAuthenticationFacade.contextMap= // Suffix with the concrete keys, like portal.MockAuthenticationFacade.contextMap.mykey=myValue
 
 ----

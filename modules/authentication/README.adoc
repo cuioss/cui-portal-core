@@ -2,14 +2,33 @@
 
 == What is it?
 
-Groups all modules providing authorization for the cuioss-portal.
+Groups all modules providing authentication and authorization for the cuioss-portal.
 
-== Features / Modules
+Within your code, you usually interact with types from link:portal-authentication-api/[portal-authentication-api].
 
-link:portal-authentication-api/[portal-authentication-api]
+It is assumed that at least one of the runtime modules is available:
 
-link:portal-authentication-dummy/[portal-authentication-dummy]
+* link:portal-authentication-oauth/[portal-authentication-oauth]: Default implementation for integrating against oauth2 / OICD.
 
-link:portal-authentication-mock/[portal-authentication-mock]
+* link:portal-authentication-dummy/[portal-authentication-dummy]:
+Implementation for cases where it is only needed technically.
+The implementation will always return a not-authenticated UserInfo.
+In contrast to 'link:portal-authentication-mock/[portal-authentication-mock]' this module can be used in production environments.
 
-link:portal-authentication-oauth/[portal-authentication-oauth]
+* link:portal-authentication-mock/[portal-authentication-mock]:
+Implementation for cases where it is only needed technically or for documentation purpose.
+In contrast to 'portal-authentication-dummy' this module must never be used in production environments.
+
+== Usage
+
+The central object ist the `@Dependent`-scoped `AuthenticatedUserInfo`
+that has a number of methods interacting with the logged-in user.
+
+[source,java]
+----
+    @Inject
+    private AuthenticatedUserInfo userProvider;
+
+----
+
+See link:portal-authentication-api/[portal-authentication-api] for more details

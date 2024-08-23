@@ -15,16 +15,15 @@
  */
 package de.cuioss.portal.authentication;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * To signal successful / failed login and logout events (e.g. to the atna
- * logger).
+ * To signal successful / failed login and logout events (e.g., to the audit-logger).
  */
 @Value
 @Builder
@@ -37,18 +36,24 @@ public class LoginEvent implements Serializable {
      * Identifies the concrete action that was executed
      */
     public enum Action {
-        /** Login was successful. */
+        /**
+         * Login was successful.
+         */
         LOGIN_SUCCESS,
 
-        /** Login failed. */
+        /**
+         * Login failed.
+         */
         LOGIN_FAILED,
-        /** User logged out. */
+        /**
+         * User logged out.
+         */
         LOGOUT
     }
 
     // Only needed for LOGIN_FAILED
-    private String username;
+    String username;
 
     @NonNull
-    private Action action;
+    Action action;
 }
