@@ -30,6 +30,7 @@ import lombok.Getter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.Closeable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,6 +40,7 @@ import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE
 import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
 import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
 import static de.cuioss.tools.string.MoreStrings.isBlank;
+import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 
 /**
  * Produces {@link Oauth2Configuration} using the new config params
@@ -151,7 +153,7 @@ public class Oauth2DiscoveryConfigurationProducer {
     private Oauth2Configuration createConfiguration(final Map<String, Object> discovery) {
         final var newConfiguration = new Oauth2ConfigurationImpl();
 
-        // fill dto with data from configuration system
+        // fill dto with data from a configuration system
 
         oauth2clientId.get().ifPresent(newConfiguration::setClientId);
         oauth2clientSecret.get().ifPresent(newConfiguration::setClientSecret);
@@ -159,12 +161,16 @@ public class Oauth2DiscoveryConfigurationProducer {
         oauth2initialScopes.get().ifPresent(newConfiguration::setInitialScopes);
         logoutRedirectParameter.get().ifPresent(newConfiguration::setLogoutRedirectParamName);
         postLogoutRedirectUri.get().ifPresent(newConfiguration::setPostLogoutRedirectUri);
-        roleMapperClaim.get().ifPresent(newConfiguration::setRoleMapperClaims);
+        Optional<List<String>> roleMapperClaims = roleMapperClaim.get();
+        if(roleMapperClaims.isPresent()) {
+            newConfiguration.setRoleMapperClaims(roleMapperClaims.get());
+        } else {
+            newConfiguration.setRoleMapperClaims(Collections.emptyList());
+        }
         logoutWithIdTokenHintProvider.get().ifPresent(newConfiguration::setLogoutWithIdTokenHintEnabled);
 
         // fill dto with data from discovery endpoint.
-        // endpoints are usually pointing to cluster-external URLs, i.e. reachable by
-        // web-browser.
+        // endpoints are usually pointing to cluster-external URLs, i.e., reachable by web-browser.
         for (final Map.Entry<String, Object> entry : discovery.entrySet()) {
             switch (entry.getKey()) {
                 case "authorization_endpoint":
