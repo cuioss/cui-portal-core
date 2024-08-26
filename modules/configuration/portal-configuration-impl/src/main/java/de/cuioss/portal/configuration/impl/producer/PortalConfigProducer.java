@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.types.*;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -70,7 +69,7 @@ public class PortalConfigProducer {
     Provider<Boolean> portalMetricsEnabled;
 
     /**
-     * @param injectionPoint
+     * @param injectionPoint providing the field-metadata
      * @return the resolved value or {@code null} if the key could not be found or
      * the resolved value is an empty {@link String}.
      */
@@ -89,7 +88,7 @@ public class PortalConfigProducer {
     }
 
     /**
-     * @param injectionPoint
+     * @param injectionPoint providing the field-metadata
      * @return list with trimmed strings and removed null values
      */
     @Produces
@@ -101,7 +100,7 @@ public class PortalConfigProducer {
     }
 
     /**
-     * @param injectionPoint
+     * @param injectionPoint providing the field-metadata
      * @return set with trimmed strings and removed null values
      */
     @Produces
@@ -110,7 +109,7 @@ public class PortalConfigProducer {
     Set<String> produceSplittedSet(final InjectionPoint injectionPoint) {
         final var metaData = resolveAnnotationOrThrow(injectionPoint, ConfigAsSet.class);
         return immutableSet(
-            resolveConfigPropertyAsList(metaData.name(), metaData.defaultValue(), metaData.separator()));
+                resolveConfigPropertyAsList(metaData.name(), metaData.defaultValue(), metaData.separator()));
     }
 
     @Produces
@@ -136,7 +135,7 @@ public class PortalConfigProducer {
         final var path = Path.of(pathAsString).normalize();
         if (metaData.failOnNotAccessible()) {
             checkArgument(path.toFile().exists(),
-                "Path " + pathAsString + " does not denote an existing file/directory");
+                    "Path " + pathAsString + " does not denote an existing file/directory");
         }
         return path;
     }
@@ -196,7 +195,7 @@ public class PortalConfigProducer {
     /**
      * Producer for filtered Maps, see {@link ConfigAsFilteredMap}
      *
-     * @param injectionPoint
+     * @param injectionPoint providing the field-metadata
      * @return a filtered map of properties filtered corresponding to
      * {@link ConfigAsFilteredMap#startsWith()}
      */
@@ -229,7 +228,7 @@ public class PortalConfigProducer {
                 expiration = Long.parseLong(configProperties.get(EXPIRATION_KEY).trim());
             } catch (final NumberFormatException e) {
                 LOGGER.error(e, INVALID_CONTENT_FOR_LONG, configKeyPrefix, EXPIRATION_KEY,
-                    configProperties.get(EXPIRATION_KEY));
+                        configProperties.get(EXPIRATION_KEY));
             }
         }
 
@@ -246,7 +245,7 @@ public class PortalConfigProducer {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
                 LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT, configKeyPrefix, SIZE_KEY, TimeUnit.values(),
-                    configProperties.get(SIZE_KEY));
+                        configProperties.get(SIZE_KEY));
             }
         }
 
@@ -254,7 +253,7 @@ public class PortalConfigProducer {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
                 LOGGER.error(INVALID_CONTENT_FOR_BOOLEAN, configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
-                    configValue);
+                        configValue);
                 recordStats = false;
             } else {
                 recordStats = Boolean.parseBoolean(configValue);

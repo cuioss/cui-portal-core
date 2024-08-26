@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
+import de.cuioss.tools.io.MorePaths;
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.Getter;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,10 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
-
-import de.cuioss.tools.io.MorePaths;
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.Getter;
 
 public final class TestFileHandler {
 
@@ -49,9 +49,6 @@ public final class TestFileHandler {
      * Combines the calls {@link #setupTestFileDirectory()}, creates two new files
      * and copies the content of {@link #SOURCE_FILE} into it and marks it for
      * deletion on exit.
-     *
-     * @return list of created files
-     * @throws IOException
      */
     public void setup() throws IOException {
         LOGGER.info("creating test data");
@@ -65,8 +62,6 @@ public final class TestFileHandler {
     /**
      * Combines the calls {@link #setupTestFileDirectory()} and
      * {@link #setupTestFile(Path)}
-     *
-     * @throws IOException
      */
     public void cleanup() {
         LOGGER.info("cleanup test files");
@@ -77,16 +72,10 @@ public final class TestFileHandler {
 
     /**
      * Sets the lastModifiedTime of {@param targetFile} to current + 1000ms
-     *
-     * @param targetFile
-     *
-     * @return
-     * @throws IOException
      */
-    public static long touchTargetFile(Path targetFile) throws IOException {
+    public static void touchTargetFile(Path targetFile) throws IOException {
         final var future = System.currentTimeMillis() + 1000;
         Files.setLastModifiedTime(targetFile, FileTime.fromMillis(future));
-        return future;
     }
 
     /**
@@ -94,7 +83,6 @@ public final class TestFileHandler {
      * deletion on exit. It can be accessed via {@link #getBaseDir()}.
      *
      * @return the path referencing the created file.
-     * @throws IOException
      */
     public Path setupTestFileDirectory() throws IOException {
         final var dir = Path.of("target/test-files", UUID.randomUUID().toString());
@@ -126,9 +114,7 @@ public final class TestFileHandler {
     }
 
     /**
-     * Deletes the given file quietly, if it exists
-     *
-     * @param targetFile
+     * Deletes the given file quietly if it exists
      */
     private static void deleteTestFile(Path targetFile) {
         if (Files.exists(targetFile)) {

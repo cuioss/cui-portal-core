@@ -24,6 +24,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SuppressWarnings("LombokBuilder")
 class Oauth2ConfigurationImplTest {
 
     private static final TypedGenerator<String> nonEmptyLetterStringGenerator = Generators.letterStrings(1, 5);

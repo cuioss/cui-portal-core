@@ -3,7 +3,7 @@
 == What is it?
 Implementation of 'link:../portal-authentication-api/[portal-authentication-api]' for cases where it is only needed technically.
 The implementation will always return a not-authenticated UserInfo.
-In contrast to 'link:portal-authentication-mock/[portal-authentication-mock]' this module can be used in production environments.
+In contrast to 'link:../portal-authentication-mock/[portal-authentication-mock]' this module can be used in production environments.
 
 == Maven Coordinates
 

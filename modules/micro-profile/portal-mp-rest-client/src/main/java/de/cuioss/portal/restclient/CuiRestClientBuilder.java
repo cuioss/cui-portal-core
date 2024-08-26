@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  * To enable log debugging / tracing set package
  * de.cuioss.portal.core.restclient to TRACE level in your logger configuration.
  */
+@SuppressWarnings("UnusedReturnValue")
 public class CuiRestClientBuilder {
 
     private static final CuiLogger log = new CuiLogger(CuiRestClientBuilder.class);
@@ -50,8 +51,6 @@ public class CuiRestClientBuilder {
 
     private final RestClientBuilder mpRestClientBuilder;
     private boolean traceLogEnabled;
-    private ConnectionMetadata connectionMetadata;
-    private String url;
     private final CuiLogger logger;
 
     /**
@@ -89,23 +88,23 @@ public class CuiRestClientBuilder {
      */
     public static void debugResponse(final Response response, final CuiLogger log) {
         log.debug("""
-                -- Client response filter --
-                Status: {}
-                StatusInfo: {}
-                Allowed Methods: {}
-                EntityTag: {}
-                Cookies: {}
-                Date: {}
-                Headers: {}
-                Language: {}
-                LastModified: {}
-                Links: {}
-                Location: {}
-                MediaType: {}
-                """, response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
-            response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
-            response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
-            response.getMediaType());
+                        -- Client response filter --
+                        Status: {}
+                        StatusInfo: {}
+                        Allowed Methods: {}
+                        EntityTag: {}
+                        Cookies: {}
+                        Date: {}
+                        Headers: {}
+                        Language: {}
+                        LastModified: {}
+                        Links: {}
+                        Location: {}
+                        MediaType: {}
+                        """, response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
+                response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
+                response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
+                response.getMediaType());
     }
 
     /**
@@ -121,19 +120,17 @@ public class CuiRestClientBuilder {
      * <li>read timeout</li>
      * </ul>
      *
-     * @param connectionMeta
      * @return this builder
      */
     @SuppressWarnings("squid:S3510") // owolff: False Positive, By design
     public CuiRestClientBuilder connectionMetadata(final ConnectionMetadata connectionMeta) {
-        connectionMetadata = connectionMeta;
         url(connectionMeta.getServiceUrl());
 
         sslContext(connectionMeta.resolveSSLContext());
         switch (connectionMeta.getAuthenticationType()) {
             case BASIC:
                 basicAuth(connectionMeta.getLoginCredentials().getUsername(),
-                    connectionMeta.getLoginCredentials().getPassword());
+                        connectionMeta.getLoginCredentials().getPassword());
                 break;
             case TOKEN_FROM_USER:
             case TOKEN_APPLICATION:
@@ -147,11 +144,7 @@ public class CuiRestClientBuilder {
         }
         if (connectionMeta.isDisableHostNameVerification()) {
             hostnameVerifier((hostname, sslSession) -> true); // NOSONAR:
-            // owolff: This is
-            // documented to
-            // be only used in
-            // context of
-            // testing
+            // owolff: This is documented to be only used in the context of testing
         }
         if (connectionMeta.getConnectionTimeout() > 0) {
             connectTimeout(connectionMeta.getConnectionTimeout(), connectionMeta.getConnectionTimeoutUnit());
@@ -160,7 +153,7 @@ public class CuiRestClientBuilder {
             readTimeout(connectionMeta.getReadTimeout(), connectionMeta.getReadTimeoutUnit());
         }
         if (!MoreStrings.isBlank(connectionMeta.getProxyHost()) && null != connectionMeta.getProxyPort()
-            && connectionMeta.getProxyPort() > 0) {
+                && connectionMeta.getProxyPort() > 0) {
             proxyAddress(connectionMeta.getProxyHost(), connectionMeta.getProxyPort());
         }
         return this;
@@ -227,13 +220,13 @@ public class CuiRestClientBuilder {
     public CuiRestClientBuilder enableDefaultExceptionHandler() {
         try {
             Class<?> defaultResponseExceptionMapper = Class.forName(RESPONSE_EXCEPTION_MAPPER, false,
-                CuiRestClientBuilder.class.getClassLoader());
+                    CuiRestClientBuilder.class.getClassLoader());
             register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();
         } catch (final Exception e) {
             log.error(
-                "Portal-541: Could not load org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper",
-                e);
+                    "Portal-541: Could not load org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper",
+                    e);
         }
         return this;
     }
@@ -261,7 +254,6 @@ public class CuiRestClientBuilder {
     public CuiRestClientBuilder url(final String url) {
         try {
             mpRestClientBuilder.baseUrl(new URL(url));
-            this.url = url;
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException("The URL '" + url + "' could not be parsed!", e);
         }
@@ -303,7 +295,7 @@ public class CuiRestClientBuilder {
     }
 
     /**
-     * Adds the the credentials for bearer-auth
+     * Adds the credentials for bearer-auth
      *
      * @param token to be passed to he contained builder
      * @return this builder
@@ -416,7 +408,7 @@ public class CuiRestClientBuilder {
      *
      * @param clazz the service interface which also must extend
      *              {@link java.io.Closeable}
-     * @param <T>   the services type
+     * @param <T>   the service type
      * @return T the service class
      */
     public <T extends Closeable> T build(final Class<T> clazz) {

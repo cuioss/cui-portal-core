@@ -55,7 +55,7 @@ class FileWatcherServiceImplDisabledTest {
     }
 
     @AfterEach
-    void afterTest() throws IOException {
+    void afterTest() {
         testFileHandler.cleanup();
     }
 
