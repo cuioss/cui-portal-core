@@ -15,30 +15,25 @@
  */
 package de.cuioss.portal.core.user;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.core.test.support.PortalAuthenticationFacadeMock;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
-
+import lombok.Getter;
 import org.easymock.EasyMock;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.PortalUser;
-import de.cuioss.portal.core.test.support.PortalAuthenticationFacadeMock;
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
-import lombok.Getter;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
-@AddBeanClasses({ PortalAuthenticationFacadeMock.class })
+@AddBeanClasses({PortalAuthenticationFacadeMock.class})
 @ActivateScopes(RequestScoped.class)
 class PortalUserProducerTest implements ShouldHandleObjectContracts<PortalUserProducer> {
 
@@ -53,7 +48,6 @@ class PortalUserProducerTest implements ShouldHandleObjectContracts<PortalUserPr
     private PortalUserProducer underTest;
 
     @Inject
-    @PortalUser
     private Provider<AuthenticatedUserInfo> userInfoProvider;
 
     /**

@@ -149,7 +149,6 @@ class PortalTestUserProducerTest {
     private PortalTestUserProducer userProducer;
 
     @Inject
-    @PortalUser
     private Provider<AuthenticatedUserInfo> userProvider;
 
     @Test

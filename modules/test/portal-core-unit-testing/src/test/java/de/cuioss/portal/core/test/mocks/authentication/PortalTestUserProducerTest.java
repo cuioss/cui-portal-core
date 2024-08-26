@@ -15,19 +15,14 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.PortalUser;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @AddBeanClasses(PortalTestUserProducer.class)
@@ -37,7 +32,6 @@ class PortalTestUserProducerTest {
     private PortalTestUserProducer userProducer;
 
     @Inject
-    @PortalUser
     private Provider<AuthenticatedUserInfo> userProvider;
 
     @Test
