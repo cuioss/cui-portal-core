@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +45,7 @@ class FileWatcherServiceImplDisabledTest {
     @Inject
     private PortalConfigurationMock configuration;
 
-    private static final Path POM = Paths.get("pom.xml");
+    private static final Path POM = Path.of("pom.xml");
 
     @BeforeEach
     void beforeTest() throws IOException {

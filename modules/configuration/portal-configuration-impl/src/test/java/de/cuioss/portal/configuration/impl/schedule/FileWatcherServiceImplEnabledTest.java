@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -51,7 +50,7 @@ class FileWatcherServiceImplEnabledTest {
     @Inject
     private PortalConfigurationMock configuration;
 
-    private static final Path POM = Paths.get("pom.xml");
+    private static final Path POM = Path.of("pom.xml");
     private Path pathFromEvent;
 
     @BeforeEach

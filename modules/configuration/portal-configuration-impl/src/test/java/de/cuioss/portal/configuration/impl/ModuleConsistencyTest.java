@@ -18,12 +18,12 @@ package de.cuioss.portal.configuration.impl;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Paths;
-
 import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.Weld;
 import org.junit.jupiter.api.Test;
+
+import java.nio.file.Path;
 
 /**
  * Tests the complete cdi environment / wiring
@@ -50,7 +50,7 @@ class ModuleConsistencyTest {
 
     @Test
     void moduleShouldProvideBeansXml() {
-        assertTrue(Paths.get("src", "main", "resources", "META-INF", "beans.xml").toFile().exists(),
+        assertTrue(Path.of("src", "main", "resources", "META-INF", "beans.xml").toFile().exists(),
                 "It is best-practice that each module provides a beans.xml");
     }
 

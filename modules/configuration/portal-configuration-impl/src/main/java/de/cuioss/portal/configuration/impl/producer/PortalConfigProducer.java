@@ -34,7 +34,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -134,7 +133,7 @@ public class PortalConfigProducer {
             throw new IllegalArgumentException("Path must not be null nor empty, property is " + metaData.name());
         }
 
-        final var path = Paths.get(pathAsString).normalize();
+        final var path = Path.of(pathAsString).normalize();
         if (metaData.failOnNotAccessible()) {
             checkArgument(path.toFile().exists(),
                 "Path " + pathAsString + " does not denote an existing file/directory");

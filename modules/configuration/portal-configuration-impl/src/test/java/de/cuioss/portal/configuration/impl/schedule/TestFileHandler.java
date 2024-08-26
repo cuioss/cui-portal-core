@@ -19,7 +19,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
@@ -32,7 +31,7 @@ public final class TestFileHandler {
 
     private static final CuiLogger LOGGER = new CuiLogger(TestFileHandler.class);
 
-    private static final Path SOURCE_FILE = Paths.get("src/test/resources/META-INF/test.properties");
+    private static final Path SOURCE_FILE = Path.of("src/test/resources/META-INF/test.properties");
 
     @Getter
     private Path baseDir;
@@ -98,7 +97,7 @@ public final class TestFileHandler {
      * @throws IOException
      */
     public Path setupTestFileDirectory() throws IOException {
-        final var dir = Paths.get("target/test-files", UUID.randomUUID().toString());
+        final var dir = Path.of("target/test-files", UUID.randomUUID().toString());
 
         if (!Files.exists(dir)) {
             LOGGER.info("creating {}", dir.toAbsolutePath());

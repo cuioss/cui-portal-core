@@ -35,7 +35,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,7 +79,7 @@ class ConnectionMetadataProducerTest {
 
     @BeforeEach
     void before() {
-        final var testResources = Paths.get("src/test/resources");
+        final var testResources = Path.of("src/test/resources");
         truststoreLocation = testResources.resolve("host.keystore").toFile().getAbsolutePath();
         keystoreLocation = testResources.resolve("ca.keystore").toFile().getAbsolutePath();
         systemKeystores();
