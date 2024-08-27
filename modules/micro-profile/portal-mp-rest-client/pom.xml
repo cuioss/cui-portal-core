@@ -20,9 +20,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>de.cuioss.portal.configuration</groupId>
-            <artifactId>portal-configuration-impl</artifactId>
-            <scope>compile</scope>
+            <groupId>de.cuioss.portal.core</groupId>
+            <artifactId>portal-configuration</artifactId>
         </dependency>
         <dependency>
             <!-- RestEasy depends on jcl. This is a way to satisfy this. -->

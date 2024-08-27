@@ -1,0 +1,3 @@
+de.cuioss.portal.configuration.impl.support.TestEnvConfigSource
+de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal
+#de.cuioss.portal.configuration.impl.support.UnsupportedConfigSource

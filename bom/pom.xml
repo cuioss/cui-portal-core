@@ -13,19 +13,6 @@
     <description>BOM for the portal-core-modules</description>
     <dependencyManagement>
         <dependencies>
-            <!-- Configuration-->
-            <dependency>
-                <groupId>de.cuioss.portal.configuration</groupId>
-                <artifactId>portal-configuration-api</artifactId>
-                <version>${project.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.cuioss.portal.configuration</groupId>
-                <artifactId>portal-configuration-impl</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
             <!-- Authentication-->
             <dependency>
                 <groupId>de.cuioss.portal.authentication</groupId>
@@ -50,6 +37,13 @@
                 <artifactId>portal-authentication-mock</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <!-- Configuration-->
+            <dependency>
+                <groupId>de.cuioss.portal.core</groupId>
+                <artifactId>portal-configuration</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
             </dependency>
             <!-- Portal-Common-->
             <dependency>

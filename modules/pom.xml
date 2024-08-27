@@ -37,7 +37,6 @@
         </dependencies>
     </dependencyManagement>
     <modules>
-        <module>configuration</module>
         <module>authentication</module>
         <module>core</module>
         <module>micro-profile</module>
