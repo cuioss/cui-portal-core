@@ -54,12 +54,10 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         assertNull(underTest.getValue(key));
         assertConfigNotPresent(key);
 
-        underTest.put(key, value);
-        underTest.fireEvent();
+        underTest.update(key, value);
         assertConfigPresent(key, value);
 
         underTest.remove(key);
-        underTest.fireEvent();
         assertConfigNotPresent(key);
     }
 
@@ -71,11 +69,10 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         assertNull(underTest.getValue(key));
         assertConfigNotPresent(key);
 
-        underTest.fireEvent(key, value);
+        underTest.update(key, value);
         assertConfigPresent(key, value);
 
         underTest.removeAll();
-        underTest.fireEvent();
         assertConfigNotPresent(key);
         underTest.removeAll();
     }
@@ -90,12 +87,11 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         assertNull(underTest.getValue(key));
         assertConfigNotPresent(key);
 
-        underTest.fireEvent(key, value, key2, value2);
+        underTest.update(key, value, key2, value2);
         assertConfigPresent(key, value);
         assertConfigPresent(key2, value2);
 
         underTest.removeAll();
-        underTest.fireEvent();
         assertConfigNotPresent(key);
         assertConfigNotPresent(key2);
     }
@@ -110,21 +106,17 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         assertNull(underTest.getValue(key));
         assertConfigNotPresent(key);
 
-        underTest.putAll(immutableMap(key, value, key2, value2));
-        underTest.fireEvent();
+        underTest.update(immutableMap(key, value, key2, value2));
         assertConfigPresent(key, value);
         assertConfigPresent(key2, value2);
 
         underTest.removeAll();
-        underTest.fireEvent();
         assertConfigNotPresent(key);
         assertConfigNotPresent(key2);
 
-        underTest.fireEvent(immutableMap(key, value, key2, value2));
+        underTest.update(immutableMap(key, value, key2, value2));
         assertConfigPresent(key, value);
         assertConfigPresent(key2, value2);
-
-        assertThrows(IllegalArgumentException.class, () -> underTest.putAll(null));
     }
 
     void assertConfigPresent(String key, String value) {

@@ -114,8 +114,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     @Test
     void testCreateAuthenticatedUserInfo() throws InterruptedException {
 
-        configuration.put(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
-        configuration.fireEvent();
+        configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
 
         var code = new BigInteger(260, new Random()).toString(32);
 

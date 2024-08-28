@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static java.util.Collections.synchronizedMap;
 
@@ -58,9 +57,8 @@ import static java.util.Collections.synchronizedMap;
  *
  * <pre>
  * <code>
- *   configuration.put("key1", "value1");
- *   configuration.put("key2", "value2");
- *   configuration.fireEvent();
+ *   configuration.update("key1", "value1");
+ *   configuration.update("key2", "value2");
  * </code>
  * </pre>
  * <p>
@@ -68,8 +66,8 @@ import static java.util.Collections.synchronizedMap;
  *
  * <pre>
  * <code>
- *   configuration.fireEvent("key1", "value1");
- *   configuration.fireEvent("key1", "value1", "key2", "value2");
+ *   configuration.update("key1", "value1");
+ *   configuration.update("key1", "value1", "key2", "value2");
  * </code>
  * </pre>
  * <p>
@@ -92,40 +90,25 @@ public class PortalTestConfiguration implements ConfigSource {
     private static final Map<String, String> properties = synchronizedMap(new HashMap<>());
 
     /**
-     * Contains the delta config since the last fireEvent
-     */
-    private static final Map<String, String> delta = synchronizedMap(new HashMap<>());
-
-    /**
-     * Fires the event
-     */
-    public void fireEvent() {
-        if (!delta.isEmpty()) {
-            delta.clear();
-        }
-    }
-
-    /**
      * Configures the given map
      */
-    public void fireEvent(final Map<String, String> deltaMap) {
-        deltaMap.forEach(this::put);
-        fireEvent();
+    public void update(final Map<String, String> deltaMap) {
+        properties.putAll(deltaMap);
     }
 
     /**
-     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a
+     * Shorthand for calling {@link #update(Map)} without the need for creating a
      * map
      *
      * @param key   of the entry
      * @param value of the entry
      */
-    public void fireEvent(final String key, final String value) {
-        fireEvent(immutableMap(key, value));
+    public void update(final String key, final String value) {
+        update(immutableMap(key, value));
     }
 
     /**
-     * Shorthand for calling {@link #fireEvent(Map)} without the need for creating a
+     * Shorthand for calling {@link #update(Map)} without the need for creating a
      * map
      *
      * @param key1   of the entry1
@@ -133,29 +116,8 @@ public class PortalTestConfiguration implements ConfigSource {
      * @param key2   of the entry2
      * @param value2 of the entry2
      */
-    public void fireEvent(final String key1, final String value1, final String key2, final String value2) {
-        fireEvent(immutableMap(key1, value1, key2, value2));
-    }
-
-    /**
-     * Adds a key / value pair
-     *
-     * @param key
-     * @param value
-     */
-    public void put(final String key, final String value) {
-        properties.put(key, value);
-        delta.put(key, value);
-    }
-
-    /**
-     * Similar to {@link #fireEvent(Map)} but without firing an event.
-     *
-     * @param map to be added to this config source
-     */
-    public void putAll(final Map<String, String> map) {
-        checkArgument(null != map, "map must not be null");
-        map.forEach(this::put);
+    public void update(final String key1, final String value1, final String key2, final String value2) {
+        update(immutableMap(key1, value1, key2, value2));
     }
 
     /**
@@ -165,22 +127,17 @@ public class PortalTestConfiguration implements ConfigSource {
      * @see #removeAll()
      */
     public void clear() {
-        delta.clear();
         properties.clear();
-        System.clearProperty(PortalConfigurationKeys.PORTAL_CONFIG_DIR);
     }
 
     /**
      * If the key exists in the local storage: Marks it as removed in the delta map
      * and removes it from the local storage.
      *
-     * @param key
+     * @param key to be removed
      */
     public void remove(final String key) {
-        if (properties.containsKey(key)) {
-            delta.put(key, "");
-            properties.remove(key);
-        }
+        properties.remove(key);
     }
 
     /**
@@ -188,15 +145,14 @@ public class PortalTestConfiguration implements ConfigSource {
      * properties from the local storage.
      */
     public void removeAll() {
-        properties.forEach((k, v) -> delta.put(k, ""));
         properties.clear();
     }
 
     /**
-     * @param projectStage
+     * @param projectStage to be set
      */
     public void setPortalProjectStage(final de.cuioss.portal.common.stage.ProjectStage projectStage) {
-        fireEvent(PortalConfigurationKeys.PORTAL_STAGE, projectStage.name().toLowerCase());
+        update(PortalConfigurationKeys.PORTAL_STAGE, projectStage.name().toLowerCase());
     }
 
     /**

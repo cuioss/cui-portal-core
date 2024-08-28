@@ -101,12 +101,11 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     public void configure(PortalTestConfiguration configuration, MockWebServer mockWebServer) {
         currentPort = String.valueOf(mockWebServer.getPort());
-        configuration.put(OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL, "http://localhost:" + mockWebServer.getPort());
-        configuration.put(OAuthConfigKeys.OPEN_ID_DISCOVER_PATH, OIDC_DISCOVERY_PATH);
-        configuration.put(OAuthConfigKeys.OPEN_ID_CLIENT_ID, CLIENT_ID);
-        configuration.put(OAuthConfigKeys.OPEN_ID_CLIENT_SECRET, CLIENT_SECRET);
-        configuration.put(OAuthConfigKeys.EXTERNAL_HOSTNAME, EXTERNAL_HOSTNAME);
-        configuration.fireEvent();
+        configuration.update(OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL, "http://localhost:" + mockWebServer.getPort());
+        configuration.update(OAuthConfigKeys.OPEN_ID_DISCOVER_PATH, OIDC_DISCOVERY_PATH);
+        configuration.update(OAuthConfigKeys.OPEN_ID_CLIENT_ID, CLIENT_ID);
+        configuration.update(OAuthConfigKeys.OPEN_ID_CLIENT_SECRET, CLIENT_SECRET);
+        configuration.update(OAuthConfigKeys.EXTERNAL_HOSTNAME, EXTERNAL_HOSTNAME);
     }
 
     public List<RecordedRequest> nonWellKnownRequests(MockWebServer mockWebServer) throws InterruptedException {

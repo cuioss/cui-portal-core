@@ -57,7 +57,7 @@ class Oauth2DiscoveryConfigurationProducerTest
 
     @BeforeEach
     void beforeEach() {
-        configuration.fireEvent(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
+        configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
     }
 
     @Test
@@ -78,7 +78,7 @@ class Oauth2DiscoveryConfigurationProducerTest
         dispatcher.configure(configuration, mockWebServer);
         var url1 = new URLGenerator().next().toString();
         var url2 = new URLGenerator().next().toString();
-        configuration.fireEvent(
+        configuration.update(
             OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
             OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, url2);
 
@@ -90,7 +90,7 @@ class Oauth2DiscoveryConfigurationProducerTest
 
     @Test
     void invalidOpenIdConfig() {
-        configuration.put(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "true");
+        configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "true");
         dispatcher.setSimulateInvalidOidcConfig(true);
         dispatcher.configure(configuration, mockWebServer);
 

@@ -55,7 +55,7 @@ class PortalConfigurationMockExtensionTest {
         assertNotNull(attributeMpOptional);
         assertTrue(attributeMpOptional.get().isPresent());
 
-        configuration.fireEvent(PORTAL_CUSTOMIZATION_ENABLED, "false");
+        configuration.update(PORTAL_CUSTOMIZATION_ENABLED, "false");
         assertTrue(attributeMpProvider.get());
     }
 }

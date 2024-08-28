@@ -51,7 +51,7 @@ class ConfigurationEnabledTest {
     
     @​Test
     void shouldAdjustConfiguration() {
-        configuration.fireEvent("someKey", "someValue");
+        configuration.update("someKey", "someValue");
     }
 ----
 
@@ -262,7 +262,7 @@ Dispatcher for a jwks endpoint
 [source,java]
 ----
 /**
- * Handles the Resolving of JWKS Files from the Mocked oauth-Server. In essence it returns the file
+ * Handles the Resolving of JWKS Files from the Mocked oauth-Server. In essence, it returns the file
  * "src/test/resources/token/test-public-key.jwks"
  */
 public class JwksResolveDispatcher implements ModuleDispatcherElement {
@@ -323,10 +323,8 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
         mockserverPort = mockWebServer.getPort();
         configuration.put(VERIFY_SIGNATURE_JWKS_URL,
                 "http://localhost:" + mockserverPort + jwksResolveDispatcher.getBaseUrl());
-        configuration.put(VERIFY_SIGNATURE_ISSUER, TestTokenProducer.ISSUER);
-        configuration.put(VERIFY_SIGNATURE_REFRESH_INTERVAL, "60");
-        configuration.fireEvent();
-
+        configuration.update(VERIFY_SIGNATURE_ISSUER, TestTokenProducer.ISSUER);
+        configuration.update(VERIFY_SIGNATURE_REFRESH_INTERVAL, "60");
         jwksResolveDispatcher.setCallCounter(0);
     }
 
@@ -340,7 +338,7 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
             JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(token, parser, LOGGER));
             assertValidJsonWebToken(jsonWebToken, token);
         }
-        // For some reason there are always at least 2 calls, instead of expected one call. No
+        // For some reason, there are always at least 2 calls, instead of expected one call. No
         // problem because as shown within this test, the number stays at 2
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
 

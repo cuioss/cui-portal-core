@@ -94,7 +94,7 @@ class RestClientProducerTest implements MockWebServerHolder {
 
     @Test
     void testServiceAvailable() {
-        configuration.fireEvent("abc.url", mockWebServer.url("success").toString());
+        configuration.update("abc.url", mockWebServer.url("success").toString());
         assertNotNull(underTestProvider.get());
         assertTrue(underTestProvider.get().isServiceAvailable());
         assertEquals("test", underTestProvider.get().get().test());

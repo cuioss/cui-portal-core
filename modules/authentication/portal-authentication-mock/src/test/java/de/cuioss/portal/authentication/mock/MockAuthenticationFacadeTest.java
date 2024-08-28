@@ -68,7 +68,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
 
     @Test
     void shouldNotAuthenticateAsDefaultAsConfigured() {
-        configuration.fireEvent(MockAuthenticationFacade.CONFIGURATION_KEY_AUTHENTICATED, "false");
+        configuration.update(MockAuthenticationFacade.CONFIGURATION_KEY_AUTHENTICATED, "false");
         final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertNotNull(userInfo);
         assertFalse(userInfo.isAuthenticated());
@@ -76,7 +76,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
 
     @Test
     void shouldProvideConfiguredRoles() {
-        configuration.fireEvent(MockAuthenticationFacade.CONFIGURATION_KEY_ROLES, "role, role2");
+        configuration.update(MockAuthenticationFacade.CONFIGURATION_KEY_ROLES, "role, role2");
         final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertEquals(2, userInfo.getRoles().size());
     }
