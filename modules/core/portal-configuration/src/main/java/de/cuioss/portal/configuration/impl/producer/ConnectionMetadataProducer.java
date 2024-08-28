@@ -88,7 +88,7 @@ public class ConnectionMetadataProducer {
     @ConfigAsConnectionMetadata(baseName = "unused")
     ConnectionMetadata produceConnectionMetadata(final InjectionPoint injectionPoint) {
         final var metaData = ConfigurationHelper.resolveAnnotation(injectionPoint, ConfigAsConnectionMetadata.class)
-            .orElseThrow(() -> new IllegalStateException("Invalid usage"));
+                .orElseThrow(() -> new IllegalStateException("Invalid usage"));
         log.trace("Producing configuration for '{}'", metaData.baseName());
         final var failOnInvalidConfiguration = metaData.failOnInvalidConfiguration();
         return createConnectionMetadata(metaData.baseName(), failOnInvalidConfiguration);
@@ -120,10 +120,10 @@ public class ConnectionMetadataProducer {
         builder.serviceUrl(properties.get(ConnectionMetadataKeys.URL_KEY));
 
         builder.disableHostNameVerification(parseBoolean(
-            properties.getOrDefault(ConnectionMetadataKeys.TRANSPORT_DISABLE_HOSTNAME_VALIDATION, "false")));
+                properties.getOrDefault(ConnectionMetadataKeys.TRANSPORT_DISABLE_HOSTNAME_VALIDATION, "false")));
 
         builder.connectionType(ConnectionType.resolveFrom(
-            properties.getOrDefault(ConnectionMetadataKeys.TYPE_KEY, ConnectionType.UNDEFINED.name())));
+                properties.getOrDefault(ConnectionMetadataKeys.TYPE_KEY, ConnectionType.UNDEFINED.name())));
 
         handleAuthentication(name, failOnInvalidConfiguration, builder, properties);
 
@@ -131,19 +131,19 @@ public class ConnectionMetadataProducer {
         builder.trustStoreInfo(getTruststoreInformation(properties).orElse(null));
 
         getPositiveLong(name + ConnectionMetadataKeys.CONNECTION_TIMEOUT,
-            properties.get(ConnectionMetadataKeys.CONNECTION_TIMEOUT), failOnInvalidConfiguration)
-            .ifPresent(builder::connectionTimeout);
+                properties.get(ConnectionMetadataKeys.CONNECTION_TIMEOUT), failOnInvalidConfiguration)
+                .ifPresent(builder::connectionTimeout);
 
         getPositiveLong(name + ConnectionMetadataKeys.READ_TIMEOUT, properties.get(ConnectionMetadataKeys.READ_TIMEOUT),
-            failOnInvalidConfiguration).ifPresent(builder::readTimeout);
+                failOnInvalidConfiguration).ifPresent(builder::readTimeout);
 
         builder.proxyHost(properties.get(ConnectionMetadataKeys.PROXY_HOST));
         getPositiveInt(name + ConnectionMetadataKeys.PROXY_PORT, properties.get(ConnectionMetadataKeys.PROXY_PORT),
-            failOnInvalidConfiguration).ifPresent(builder::proxyPort);
+                failOnInvalidConfiguration).ifPresent(builder::proxyPort);
 
         final var meta = builder.build();
         meta.getContextMap().putAll(ConfigurationHelper.getFilteredPropertyMap(properties,
-            suffixNameWithDot(ConnectionMetadataKeys.CONFIG_KEY), true));
+                suffixNameWithDot(ConnectionMetadataKeys.CONFIG_KEY), true));
         log.debug("Created Connection Metadata '{}'", meta);
         if (!failOnInvalidConfiguration) {
             return meta;
@@ -179,12 +179,12 @@ public class ConnectionMetadataProducer {
                 final var userName = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
                 if (MoreStrings.isEmpty(userName)) {
                     handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME,
-                        MISSING_BASIC_AUTH_CONFIG_MSG + "Username", failOnInvalidConfiguration);
+                            MISSING_BASIC_AUTH_CONFIG_MSG + "Username", failOnInvalidConfiguration);
                 }
                 final var password = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD);
                 if (MoreStrings.isEmpty(password)) {
                     handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD,
-                        MISSING_BASIC_AUTH_CONFIG_MSG + "Password", failOnInvalidConfiguration);
+                            MISSING_BASIC_AUTH_CONFIG_MSG + "Password", failOnInvalidConfiguration);
                 }
                 builder.loginCredentials(LoginCredentials.builder().username(userName).password(password).build());
                 break;
@@ -192,12 +192,12 @@ public class ConnectionMetadataProducer {
                 final var key = filteredProperties.get(ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY);
                 if (MoreStrings.isEmpty(key)) {
                     handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY,
-                        MISSING_TOKEN_CONFIG_MSG + "Key", failOnInvalidConfiguration);
+                            MISSING_TOKEN_CONFIG_MSG + "Key", failOnInvalidConfiguration);
                 }
                 final var token = filteredProperties.get(ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN);
                 if (MoreStrings.isEmpty(token)) {
                     handleMissingProperty(suffixNameWithDot(baseName) + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN,
-                        MISSING_TOKEN_CONFIG_MSG + "Token", failOnInvalidConfiguration);
+                            MISSING_TOKEN_CONFIG_MSG + "Token", failOnInvalidConfiguration);
                 }
                 builder.tokenResolver(new StaticTokenResolver(key, token));
                 break;
@@ -226,7 +226,7 @@ public class ConnectionMetadataProducer {
         log.trace("Resolving TruststoreInformation");
         final var truststoreLocation = filteredProperties.get(ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION);
         final var truststorePassword = extractFirstKeyValue(filteredProperties,
-            ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD);
+                ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD);
 
         if (null == truststoreLocation || truststorePassword.isEmpty()) {
             if (log.isDebugEnabled()) {
@@ -245,15 +245,15 @@ public class ConnectionMetadataProducer {
         }
 
         return Optional.of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.TRUST_STORE)
-            .location(new File(truststoreLocation)).storePassword(truststorePassword.get()).build());
+                .location(new File(truststoreLocation)).storePassword(truststorePassword.get()).build());
     }
 
     private static Optional<KeyStoreProvider> getKeystoreInformation(final Map<String, String> filteredProperties) {
         log.trace("Resolving KeystoreInformation");
         final var keystoreLocation = extractKeystoreLocation(filteredProperties);
         final var keystorePassword = extractFirstKeyValue(filteredProperties,
-            ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
-            ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD);
+                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD);
 
         if (keystoreLocation.isEmpty() || keystorePassword.isEmpty()) {
             if (log.isDebugEnabled()) {
@@ -268,12 +268,12 @@ public class ConnectionMetadataProducer {
         }
 
         final var keyPassword = extractFirstKeyValue(filteredProperties,
-            ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
-            ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD).orElse(keystorePassword.get());
+                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD).orElse(keystorePassword.get());
 
         return Optional.of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
-            .location(new File(keystoreLocation.get())).storePassword(keystorePassword.get())
-            .keyPassword(keyPassword).build());
+                .location(new File(keystoreLocation.get())).storePassword(keystorePassword.get())
+                .keyPassword(keyPassword).build());
     }
 
     private static Optional<String> extractKeystoreLocation(final Map<String, String> filteredProperties) {

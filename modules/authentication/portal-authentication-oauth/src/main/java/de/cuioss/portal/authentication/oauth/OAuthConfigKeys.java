@@ -19,7 +19,6 @@ import lombok.experimental.UtilityClass;
 
 /**
  * Provide the keys for the application.properties to configure oauth2.
- * <p>
  *
  * @author Matthias Walliczek
  */

@@ -280,4 +280,8 @@ public class ConnectionMetadata implements Serializable {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_PROXY);
         }
     }
+
+    public static class ConnectionMetadataBuilder {
+        // Needed for lombok-builder plus javadoc
+    }
 }
