@@ -1,5 +1,4 @@
 = cui-portal-core
-:toc:
 
 == Status
 

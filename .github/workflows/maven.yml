@@ -96,7 +96,7 @@ jobs:
       if: ${{endsWith(steps.project.outputs.version, '-SNAPSHOT')}}
       run: |
         mvn -B --no-transfer-progress -Prelease-snapshot,javadoc-mm-reporting install
-        mvn -B --no-transfer-progress -Prelease-snapshot,javadoc-mm-reporting deploy -Dmaven.test.skip=true
+        mvn -B --no-transfer-progress -Prelease-snapshot deploy -Dmaven.test.skip=true
       env:
         MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.OSS_SONATYPE_PASSWORD }}
