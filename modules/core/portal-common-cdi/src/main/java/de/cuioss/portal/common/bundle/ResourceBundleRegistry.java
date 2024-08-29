@@ -39,9 +39,9 @@ import lombok.ToString;
 
 /**
  * Registry for the ResourceBundleNames. The injected
- * {@link ResourceBundleLocator}s must have unique paths and define an existing
- * {@link ResourceBundle}. In addition they should be annotated with the
- * corresponding {@link Priority}
+ * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator}s must have unique paths and define an existing
+ * {@link java.util.ResourceBundle}. In addition they should be annotated with the
+ * corresponding {@link jakarta.annotation.Priority}
  *
  * @author Oliver Wolff
  */

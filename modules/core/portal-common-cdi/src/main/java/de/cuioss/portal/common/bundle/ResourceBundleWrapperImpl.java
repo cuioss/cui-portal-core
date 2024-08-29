@@ -48,13 +48,13 @@ import lombok.ToString;
 /**
  * It can do the following tricks:
  * <ul>
- * <li>Define a working {@link Serializable} contract for
- * {@link ResourceBundle}s</li>
- * <li>Listens and acts on {@link LocaleChangeEvent}s</li>
+ * <li>Define a working {@link java.io.Serializable} contract for
+ * {@link java.util.ResourceBundle}s</li>
+ * <li>Listens and acts on {@link de.cuioss.portal.common.locale.LocaleChangeEvent}s</li>
  * </ul>
  *
- * Handling of Missing Keys: On {@link ProjectStage#DEVELOPMENT} it will throw a
- * {@link MissingResourceException}. Otherwise it will return the requested key,
+ * Handling of Missing Keys: On {@link de.cuioss.portal.common.stage.ProjectStage#DEVELOPMENT} it will throw a
+ * {@link java.util.MissingResourceException}. Otherwise it will return the requested key,
  * surrounded with Question-Marks
  *
  * @author Oliver Wolff
@@ -83,6 +83,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private final List<String> keyList = new CopyOnWriteArrayList<>();
 
+    /** {@inheritDoc} */
     @Override
     public String getString(final String key) {
 
@@ -127,11 +128,13 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
         return resolvedBundles;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Enumeration<String> getKeys() {
         return Collections.enumeration(keySet());
     }
 
+    /** {@inheritDoc} */
     @Override
     @Synchronized
     public Set<String> keySet() {
@@ -145,6 +148,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
         return mutableSet(keyList);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getBundleContent() {
         return Joiner.on(", ").join(resourceBundleRegistry.getResolvedPaths());

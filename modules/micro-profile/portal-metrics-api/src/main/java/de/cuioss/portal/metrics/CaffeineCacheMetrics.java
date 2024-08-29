@@ -43,7 +43,7 @@ import static org.eclipse.microprofile.metrics.MetricRegistry.name;
  * &#64;Inject
  * &#64;RegistryType(type = MetricRegistry.Type.APPLICATION)
  * private MetricRegistry appRegistry;
- * final Cache<String, String> cache = Caffeine.newBuilder().maximumSize(cacheConfig.getSize())
+ * final Cache&lt;String, String&gt; cache = Caffeine.newBuilder().maximumSize(cacheConfig.getSize())
  *         .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit()).recordStats().build();
  * new CaffeineCacheMetrics("my-cache-name", cache, cacheConfig).bindTo(appRegistry);
  * </pre>

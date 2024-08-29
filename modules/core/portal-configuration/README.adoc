@@ -17,6 +17,7 @@ Provides some portal-specific extensions to microprofile-config. In addition it 
 * link:src/main/java/de/cuioss/portal/configuration/types/[Additional configuration-types]
 * link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[Simplifies the programmatic lookup up configuration-properties]
 
+
 Constant Key classes for:
 
 * link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[Portal-Configuration-Core]

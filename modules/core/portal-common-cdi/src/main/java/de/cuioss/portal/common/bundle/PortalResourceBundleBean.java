@@ -33,15 +33,15 @@ import lombok.ToString;
 
 /**
  * <p>
- * Portal variant of {@link ResourceBundle}. It delegates to
- * {@link ResourceBundleWrapper} that does the actual heavy lifting.
+ * Portal variant of {@link java.util.ResourceBundle}. It delegates to
+ * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} that does the actual heavy lifting.
  * </p>
  * <p>
- * It usage is for cases where there is technically a {@link ResourceBundle}
+ * It usage is for cases where there is technically a {@link java.util.ResourceBundle}
  * needed. Sadly there is no corresponding interface, solely an Abstract-Class
  * that can not be proxied by CDI. Currently it's sole use is the context of the
  * PortalApplication, that it exposes it on
- * {@link Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
+ * {@link jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
  * with the name "msgs"
  *
  * It can be used directly in jsf views: {@code #{msgs['page.401.title']}}
@@ -66,16 +66,19 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     private String allBundleNames;
 
+    /** {@inheritDoc} */
     @Override
     protected Object handleGetObject(final String key) {
         return resourceBundleWrapper.getString(key);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Enumeration<String> getKeys() {
         return Collections.enumeration(keySet());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> keySet() {
         return resourceBundleWrapper.keySet();
@@ -83,7 +86,9 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * Factory Method creating a new instance with loading the contained
-     * {@link ResourceBundleWrapper}, {@link SessionScoped} from the CDR-COntext
+     * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper}, {@link jakarta.enterprise.context.SessionScoped} from the CDR-COntext
+     *
+     * @return a {@link de.cuioss.portal.common.bundle.PortalResourceBundleBean} object
      */
     public static PortalResourceBundleBean resolveFromCDIContext() {
         LOGGER.debug("Resolving PortalResourceBundleBean from CDI-Context");

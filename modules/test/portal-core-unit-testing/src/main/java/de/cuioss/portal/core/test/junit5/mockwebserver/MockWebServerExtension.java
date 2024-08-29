@@ -16,7 +16,6 @@
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 

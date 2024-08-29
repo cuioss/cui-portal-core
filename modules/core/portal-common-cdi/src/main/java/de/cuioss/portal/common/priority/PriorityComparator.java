@@ -25,8 +25,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Helper class for sorting elements regarding its {@link Priority}
- * annotation. In case the given class does not have a {@link Priority}
+ * Helper class for sorting elements regarding its {@link jakarta.annotation.Priority}
+ * annotation. In case the given class does not have a {@link jakarta.annotation.Priority}
  * annotation present an order of {@code 0} is assumed.
  *
  * @author Oliver Wolff
@@ -42,6 +42,8 @@ public class PriorityComparator implements Comparable<PriorityComparator> {
     private final Object wrapped;
 
     /**
+     * <p>Constructor for PriorityComparator.</p>
+     *
      * @param wrappedObject must not be null
      */
     public PriorityComparator(final Object wrappedObject) {
@@ -83,6 +85,7 @@ public class PriorityComparator implements Comparable<PriorityComparator> {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int compareTo(final PriorityComparator other) {
         return other.getOrder().compareTo(order);

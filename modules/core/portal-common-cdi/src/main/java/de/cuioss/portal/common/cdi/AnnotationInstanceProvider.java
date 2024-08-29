@@ -46,8 +46,8 @@ import java.util.Objects;
  *
  * <pre>
  * String annotationClassName = ...;
- * Class<? extends annotation> annotationClass =
- *     (Class<? extends Annotation>) ClassUtils.getClassLoader(null).loadClass(annotationClassName);
+ * Class&lt;? extends annotation&gt; annotationClass =
+ *     (Class&lt;? extends Annotation&gt;) ClassUtils.getClassLoader(null).loadClass(annotationClassName);
  * Annotation a = AnnotationInstanceProvider.of(annotationClass)
  * </pre>
  *
