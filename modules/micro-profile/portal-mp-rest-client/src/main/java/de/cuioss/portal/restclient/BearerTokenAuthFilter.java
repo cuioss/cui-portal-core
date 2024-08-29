@@ -15,12 +15,13 @@
  */
 package de.cuioss.portal.restclient;
 
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.HttpHeaders;
-
-import de.cuioss.tools.string.MoreStrings;
 import lombok.RequiredArgsConstructor;
+
+import static de.cuioss.tools.string.MoreStrings.isEmpty;
 
 /**
  * Client filter that will do token authentication. You must allocate it and
@@ -29,12 +30,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BearerTokenAuthFilter implements ClientRequestFilter {
 
+    private static final CuiLogger LOGGER = new CuiLogger(BearerTokenAuthFilter.class);
+    private static final String AUTH_HEADER_PREFIX = "Bearer ";
+
     private final String token;
 
     @Override
     public void filter(ClientRequestContext requestContext) {
-        if (!MoreStrings.isEmpty(token)) {
-            requestContext.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        LOGGER.trace("token: {}", token);
+        if (!isEmpty(token)) {
+            requestContext.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, AUTH_HEADER_PREFIX + token);
         }
     }
 }

@@ -76,10 +76,10 @@ public interface Oauth2Service {
     String retrieveClientToken(String scopes);
 
     /**
-     * refresh the current access token
+     * Refresh the {@link Token} in the current users context map.
      *
-     * @param currentUser
-     * @return
+     * @param currentUser current oauth user
+     * @return access token
      */
     String refreshToken(OauthAuthenticatedUserInfo currentUser);
 }
