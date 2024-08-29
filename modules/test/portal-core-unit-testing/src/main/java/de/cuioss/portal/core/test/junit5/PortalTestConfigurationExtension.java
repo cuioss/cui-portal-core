@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import de.cuioss.portal.common.cdi.AnnotationInstanceProvider;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.string.Splitter;
 import jakarta.enterprise.inject.spi.CDI;
@@ -60,9 +58,7 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
                 """, e);
         }
 
-        var configuration = cdi
-            .select(PortalTestConfiguration.class, AnnotationInstanceProvider.of(PortalConfigurationSource.class))
-            .get();
+        var configuration = cdi.select(PortalTestConfiguration.class).get();
         log.debug(() -> "Resolved " + configuration);
 
         configuration.clear();
@@ -74,7 +70,7 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
                 var splitted = Splitter.on(':').splitToList(element);
                 checkArgument(2 <= splitted.size(), "Expected element in the form key:value, but was " + element);
                 log.debug(() -> "Adding configuration entry: " + element);
-                configuration.put(splitted.get(0), element.substring(element.indexOf(':') + 1));
+                configuration.update(splitted.get(0), element.substring(element.indexOf(':') + 1));
             }
         }
 

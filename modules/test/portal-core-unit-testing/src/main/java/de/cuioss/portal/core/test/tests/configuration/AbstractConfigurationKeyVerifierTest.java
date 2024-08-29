@@ -35,8 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Base test for testing the mapping of a set of configurationKeys to a specific
  * {@link ConfigSource}.
  * The concrete {@link ConfigSource} will be identified by the key {@link #CONFIG_NAME} matching to the provided {@link #getConfigSourceName()}
- * In essence,
- * it is about ensuring that the key mapping to a default configuration is complete and detecting name changes.
+ * In essence, it is about ensuring that the key mapping to a default configuration is complete and detecting name changes.
  * You can adjust the test-behavior by filtering the corresponding keys that are
  * checked, see therefore {@link #getKeysIgnoreList()} and {@link #getConfigurationKeysIgnoreList()}
  *
@@ -207,7 +206,7 @@ public abstract class AbstractConfigurationKeyVerifierTest {
             return strings;
         }
         var foundNames = StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false).map(ConfigSource::getName).collect(Collectors.toSet());
-        fail(String.format("Unable to find any configuration source named '%s', available sources: '%s'", name, foundNames));
+        fail("Unable to find any configuration source named '%s', available sources: '%s'".formatted(name, foundNames));
 
         return null;
     }

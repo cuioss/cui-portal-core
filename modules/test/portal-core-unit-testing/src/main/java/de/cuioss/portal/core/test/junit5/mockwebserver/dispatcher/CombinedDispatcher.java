@@ -15,11 +15,9 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.MoreStrings;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import mockwebserver3.Dispatcher;
@@ -27,9 +25,11 @@ import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Aggregates a number of {@link ModuleDispatcherElement}s in order to reuse
- * functionality
+ * Aggregates a number of {@link ModuleDispatcherElement}s to reuse functionality
  */
 @NoArgsConstructor
 public class CombinedDispatcher extends Dispatcher {
@@ -62,15 +62,9 @@ public class CombinedDispatcher extends Dispatcher {
         singleDispatcher.addAll(CollectionLiterals.mutableList(dispatcherElement));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see okhttp3.mockwebserver.Dispatcher#dispatch(okhttp3.mockwebserver.
-     * RecordedRequest)
-     */
     @Override
     public @NotNull MockResponse dispatch(@NonNull RecordedRequest request) throws InterruptedException {
-        var path = request.getPath();
+        var path = MoreStrings.nullToEmpty(request.getPath());
         var mapper = HttpMethodMapper.of(request);
         LOGGER.info("Processing method '{}' with path '{}'", mapper, path);
 
@@ -97,13 +91,13 @@ public class CombinedDispatcher extends Dispatcher {
         if (!endWithTeapot) {
             code = HTTP_CODE_NOT_FOUND;
         }
-        return new MockResponse().setResponseCode(code);
+        return new MockResponse(code);
     }
 
     /**
      * @param endWithTeapot If set to {@code true} on mismatch of the request will
      *                      return a Http-Code '418', '404' otherwise
-     * @return The instance itself in order to use it in a builder-style
+     * @return The instance itself to use it in a builder-style
      */
     public CombinedDispatcher endWithTeapot(boolean endWithTeapot) {
         this.endWithTeapot = endWithTeapot;
@@ -112,7 +106,7 @@ public class CombinedDispatcher extends Dispatcher {
 
     /**
      * @param dispatcherElement must not be null
-     * @return The instance itself in order to use it in a builder-style
+     * @return The instance itself to use it in a builder-style
      */
     public CombinedDispatcher addDispatcher(@NonNull ModuleDispatcherElement dispatcherElement) {
         singleDispatcher.add(dispatcherElement);
@@ -121,7 +115,7 @@ public class CombinedDispatcher extends Dispatcher {
 
     /**
      * @param dispatcherElements must not be null
-     * @return The instance itself in order to use it in a builder-style
+     * @return The instance itself to use it in a builder-style
      */
     public CombinedDispatcher addDispatcher(@NonNull List<ModuleDispatcherElement> dispatcherElements) {
         singleDispatcher.addAll(dispatcherElements);
@@ -130,7 +124,7 @@ public class CombinedDispatcher extends Dispatcher {
 
     /**
      * @param dispatcherElements to be added
-     * @return The instance itself in order to use it in a builder-style
+     * @return The instance itself to use it in a builder-style
      */
     public CombinedDispatcher addDispatcher(ModuleDispatcherElement... dispatcherElements) {
         singleDispatcher.addAll(CollectionLiterals.mutableList(dispatcherElements));

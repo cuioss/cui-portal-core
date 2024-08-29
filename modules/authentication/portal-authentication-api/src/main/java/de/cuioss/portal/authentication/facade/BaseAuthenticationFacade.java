@@ -15,16 +15,15 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
-import java.util.List;
-
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;
 import de.cuioss.portal.common.priority.PortalPriorities;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
+import java.util.List;
+
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Abstract implementation to handle {@link PortalUserEnricher}s.
@@ -36,13 +35,13 @@ public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
 
     /**
      * Enriches the given {@link AuthenticatedUserInfo} using the available
-     * {@link PortalUserEnricher} implemenentations that are part of the
+     * {@link PortalUserEnricher} implementations that are part of the
      * cdi-context.
      * <p>
      * The {@linkplain PortalUserEnricher} are sorted via {@link PortalPriorities}
      * if multiple instances are found.
      * <p>
-     * The enriched {@linkplain AuthenticatedUserInfo} is returned as result.
+     * The enriched {@linkplain AuthenticatedUserInfo} is returned as a result.
      *
      * @param authenticatedUserInfo the instance to enrich
      * @return the enriched instance

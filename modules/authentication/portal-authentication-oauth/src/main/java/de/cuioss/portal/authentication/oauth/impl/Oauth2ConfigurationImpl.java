@@ -24,6 +24,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static de.cuioss.tools.base.Preconditions.checkState;
+
 /**
  * Default implementation.
  *
@@ -42,10 +44,19 @@ public class Oauth2ConfigurationImpl implements Oauth2Configuration {
 
     private String clientSecret;
 
+    /**
+     * Used by the client to obtain authorization from the resource owner via user-agent redirection.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth 2.0 Authorization Request</a>
+     */
     private String authorizeUri;
 
     private String userInfoUri;
 
+    /**
+     * Used by the client to exchange an authorization grant for an access token,
+     * typically with client authentication.
+     */
     private String tokenUri;
 
     private String externalContextPath;
@@ -61,4 +72,14 @@ public class Oauth2ConfigurationImpl implements Oauth2Configuration {
     private String postLogoutRedirectUri;
 
     private boolean logoutWithIdTokenHintEnabled;
+
+    public void validate() {
+        validateRequiredAttributes();
+    }
+
+    private void validateRequiredAttributes() {
+        checkState(null != clientId, "OAuth clientId missing");
+        checkState(null != authorizeUri, "OAuth authorizeUri missing");
+        checkState(null != tokenUri, "OAuth tokenUri missing");
+    }
 }

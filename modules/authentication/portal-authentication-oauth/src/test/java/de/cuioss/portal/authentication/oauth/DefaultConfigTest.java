@@ -15,10 +15,7 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import de.cuioss.portal.configuration.FileConfigurationSource;
 import de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest;
-import de.cuioss.portal.core.test.tests.configuration.PropertiesDefaultConfigSource;
-import lombok.Getter;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import java.util.List;
@@ -27,9 +24,6 @@ import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
-
-    @Getter
-    private final FileConfigurationSource underTest = new PropertiesDefaultConfigSource();
 
     @Override
     public Class<?> getKeyHolder() {
@@ -48,7 +42,7 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
     @Override
     public List<String> getKeysIgnoreList() {
         return immutableList(OPEN_ID_CLIENT_ID, OPEN_ID_CLIENT_SECRET, OPEN_ID_SERVER_BASE_URL, EXTERNAL_HOSTNAME,
-            OPEN_ID_SERVER_TOKEN_URL, OPEN_ID_SERVER_USER_INFO_URL, OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
+                OPEN_ID_SERVER_TOKEN_URL, OPEN_ID_SERVER_USER_INFO_URL, OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI, OPEN_ID_ROLE_MAPPER_CLAIM);
     }
 
     @Override

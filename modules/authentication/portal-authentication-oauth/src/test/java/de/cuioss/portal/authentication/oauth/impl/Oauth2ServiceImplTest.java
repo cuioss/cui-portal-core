@@ -15,32 +15,8 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Random;
-
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.MediaType;
-
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.jboss.resteasy.cdi.ResteasyCdiExtension;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.AddExtensions;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
@@ -49,12 +25,28 @@ import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.net.UrlParameter;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.MockWebServer;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.Random;
+
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @EnableMockWebServer
 @AddBeanClasses({ Oauth2DiscoveryConfigurationProducer.class })
 @AddExtensions(ResteasyCdiExtension.class)
@@ -68,7 +60,6 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     private Oauth2ServiceImpl underTest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
 
     @Produces
@@ -101,7 +92,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testDeprecatedCreateAuthenticatedUserInfo() throws IOException, InterruptedException {
+    void testDeprecatedCreateAuthenticatedUserInfo() throws InterruptedException {
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -123,8 +114,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     @Test
     void testCreateAuthenticatedUserInfo() throws InterruptedException {
 
-        configuration.put(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
-        configuration.fireEvent();
+        configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
 
         var code = new BigInteger(260, new Random()).toString(32);
 
@@ -161,7 +151,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testRetrieveClientToken() throws IOException, InterruptedException {
+    void testRetrieveClientToken() throws InterruptedException {
 
         var token = underTest.retrieveClientToken(null);
         assertNotNull(token);
@@ -209,7 +199,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldHandleMissingRefreshToken() throws InterruptedException {
+    void shouldHandleMissingRefreshToken() {
         var user = setupAuthorizedUser();
         user.getToken().setRefresh_token(null);
         user.getToken().setAccess_token(null);
@@ -223,12 +213,10 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldRetrieveAuthenticatedUser() throws InterruptedException {
+    void shouldRetrieveAuthenticatedUser() {
         var user = setupAuthorizedUser();
         var result = underTest.retrieveAuthenticatedUser("scoe", user.getToken(), 0);
         assertNotNull(result);
         assertTrue(user.isAuthenticated());
-
     }
-
 }

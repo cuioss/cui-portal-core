@@ -32,14 +32,6 @@ import java.util.Map;
 public interface AuthenticatedUserInfo extends Serializable {
 
     /**
-     * Bean name for looking up instances.
-     *
-     * @deprecated owolff: Should solely be used with types
-     */
-    @Deprecated(forRemoval = true)
-    String BEAN_NAME = "authenticatedUserInfoBean";
-
-    /**
      * Returns <code>true</code> in case of user is authenticated already and
      * <code>false</code> otherwise.
      *

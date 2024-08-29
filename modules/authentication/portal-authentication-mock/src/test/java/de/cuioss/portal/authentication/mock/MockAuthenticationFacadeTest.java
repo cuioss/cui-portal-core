@@ -15,28 +15,22 @@
  */
 package de.cuioss.portal.authentication.mock;
 
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import jakarta.inject.Inject;
-
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import de.cuioss.uimodel.application.LoginCredentials;
 import de.cuioss.uimodel.result.ResultState;
+import jakarta.inject.Inject;
 import lombok.Getter;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -45,7 +39,6 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
     private MockHttpServletRequest servletRequest;
 
     @Inject
-    @PortalConfigurationSource
     private PortalTestConfiguration configuration;
 
     @BeforeEach
@@ -75,7 +68,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
 
     @Test
     void shouldNotAuthenticateAsDefaultAsConfigured() {
-        configuration.fireEvent(MockAuthenticationFacade.CONFIGURATION_KEY_AUTHENTICATED, "false");
+        configuration.update(MockAuthenticationFacade.CONFIGURATION_KEY_AUTHENTICATED, "false");
         final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertNotNull(userInfo);
         assertFalse(userInfo.isAuthenticated());
@@ -83,7 +76,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
 
     @Test
     void shouldProvideConfiguredRoles() {
-        configuration.fireEvent(MockAuthenticationFacade.CONFIGURATION_KEY_ROLES, "role, role2");
+        configuration.update(MockAuthenticationFacade.CONFIGURATION_KEY_ROLES, "role, role2");
         final var userInfo = underTest.retrieveCurrentAuthenticationContext(servletRequest);
         assertEquals(2, userInfo.getRoles().size());
     }
@@ -105,7 +98,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
         var name = letterStrings(3, 8).next();
         var password = letterStrings(3, 8).next();
         var result = underTest.login(servletRequest,
-                LoginCredentials.builder().username(name).password(password).build());
+            LoginCredentials.builder().username(name).password(password).build());
         assertEquals(ResultState.ERROR, result.getState());
         // Incomplete Credentials
         result = underTest.login(servletRequest, LoginCredentials.builder().username(name).build());

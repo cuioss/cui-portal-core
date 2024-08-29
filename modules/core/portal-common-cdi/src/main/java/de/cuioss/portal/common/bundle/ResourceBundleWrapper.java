@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  * Defines the portal-contract dealing with UnifiedResourceBundle Technically it
- * provides an interface similar to {@link ResourceBundle}
+ * provides an interface similar to {@link java.util.ResourceBundle}
  *
  * @author Oliver Wolff
  */
@@ -36,14 +36,12 @@ public interface ResourceBundleWrapper extends Serializable {
      * @param key to be looked up
      * @return the resolved message if key is defined, otherwise "??[key value]??"
      *         will be returned and warning will be written
-     * @throws MissingResourceException if key is unknown and application is in
-     *                                  development mode
      */
     String getString(String key);
 
     /**
-     * Technical method for {@link ResourceBundle} caching the resolved keys and
-     * values @see {@link ResourceBundle#getKeys()}
+     * Technical method for {@link java.util.ResourceBundle} caching the resolved keys and
+     * values @see {@link java.util.ResourceBundle#getKeys()}
      *
      * @return an Enumeration of the keys contained in this ResourceBundle and its
      *         parent bundles.
@@ -53,11 +51,15 @@ public interface ResourceBundleWrapper extends Serializable {
     }
 
     /**
+     * <p>keySet.</p>
+     *
      * @return set of all supported keys of this bundle
      */
     Set<String> keySet();
 
     /**
+     * <p>getBundleContent.</p>
+     *
      * @return a list of all configured bundles to be used for debugging.
      */
     String getBundleContent();

@@ -1,0 +1,18 @@
+= portal-metrics-api
+
+== What is it?
+Provides some extensions to microprofile-metrics-api
+
+== Maven Coordinates
+
+[source, xml]
+----
+    <dependency>
+        <groupId>de.cuioss.portal.mirco-profile</groupId>
+        <artifactId>portal-metrics-api</artifactId>
+    </dependency>
+----
+
+== Core Types and Concepts
+
+* link:src/main/java/de/cuioss/portal/metrics/CaffeineCacheMetrics.java[CaffeineCacheMetrics]

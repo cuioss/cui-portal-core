@@ -15,9 +15,11 @@
  */
 package de.cuioss.portal.core.user;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.UserChangeEvent;
+import de.cuioss.portal.authentication.facade.AuthenticationFacade;
+import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Observes;
@@ -26,25 +28,20 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
-
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.PortalUser;
-import de.cuioss.portal.authentication.UserChangeEvent;
-import de.cuioss.portal.authentication.facade.AuthenticationFacade;
-import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
-import jakarta.annotation.PostConstruct;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * Stateful producer for the {@link AuthenticatedUserInfo} identified by
- * {@link PortalUser}
+ * Stateful producer for the {@link AuthenticatedUserInfo}
  *
  * @author Oliver Wolff
  */
 @RequestScoped
-@EqualsAndHashCode(exclude = { "authenticationFacade", "servletRequestProvider" })
-@ToString(exclude = { "authenticationFacade", "servletRequestProvider" })
+@EqualsAndHashCode(exclude = {"authenticationFacade", "servletRequestProvider"})
+@ToString(exclude = {"authenticationFacade", "servletRequestProvider"})
 public class PortalUserProducer implements Serializable {
 
     private static final String BEAN_NAME = "portalUser";
@@ -72,7 +69,6 @@ public class PortalUserProducer implements Serializable {
 
     @Produces
     @Named(BEAN_NAME)
-    @PortalUser
     @Dependent
     AuthenticatedUserInfo produceAuthenticatedUserInfo() {
         return userInfo;
@@ -80,8 +76,6 @@ public class PortalUserProducer implements Serializable {
 
     /**
      * Listener on changes of the user. Will be used during login action.
-     *
-     * @param newUserInfo
      */
     void actOnUserChangeEvent(@Observes @UserChangeEvent final AuthenticatedUserInfo newUserInfo) {
         userInfo = newUserInfo;

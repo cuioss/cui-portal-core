@@ -15,14 +15,12 @@
  */
 package de.cuioss.portal.restclient;
 
-import de.cuioss.portal.configuration.PortalConfigurationSource;
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import de.cuioss.portal.configuration.connections.impl.StaticTokenResolver;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
-import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.generator.impl.URLGenerator;
@@ -31,7 +29,6 @@ import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.LoginCredentials;
-import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -63,9 +60,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_REPORTER_URL;
 import static de.cuioss.test.generator.Generators.enumValues;
 import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static okhttp3.tls.internal.TlsUtil.localhost;
 import static org.junit.jupiter.api.Assertions.*;
@@ -107,10 +104,6 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         Response getResponse();
     }
 
-    @Inject
-    @PortalConfigurationSource
-    private PortalTestConfiguration configuration;
-
     @Setter
     private MockWebServer mockWebServer;
 
@@ -125,20 +118,16 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
                 return switch (request.getPath()) {
                     case "/success/test" -> {
                         if (doNotModifiedTest) {
-                            yield new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_MODIFIED);
+                            yield new MockResponse(HttpServletResponse.SC_NOT_MODIFIED);
                         }
-                        yield new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                            .addHeader("Content-Type", MEDIA_TYPE_FHIR_XML).addHeader("ETag", "W/123")
-                            .addHeader("Expires", "Fri, 02 Dec 2050 16:00:00 GMT").setBody(TEXT);
+                        yield new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MEDIA_TYPE_FHIR_XML, "ETag", "W/123", "Expires", "Fri, 02 Dec 2050 16:00:00 GMT"), TEXT);
                     }
-                    case "/error/test" ->
-                        new MockResponse().setResponseCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    case "/post" -> new MockResponse().setResponseCode(HttpServletResponse.SC_CREATED);
-                    case "/unauthorized/test" ->
-                        new MockResponse().setResponseCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    case "/collection" -> new MockResponse().addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                        .setBody("[\"a\", \"b\"]");
-                    default -> new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
+                    case "/error/test" -> new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    case "/post" -> new MockResponse(HttpServletResponse.SC_CREATED);
+                    case "/unauthorized/test" -> new MockResponse(HttpServletResponse.SC_UNAUTHORIZED);
+                    case "/collection" ->
+                            new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), "[\"a\", \"b\"]");
+                    default -> new MockResponse(HttpServletResponse.SC_NOT_FOUND);
                 };
             }
         };
@@ -166,41 +155,46 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void testError() {
-        final var underTest = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString()).basicAuth("user",
-            "pass");
+        final var underTest = new CuiRestClientBuilder(LOG)
+                .url(mockWebServer.url("error").toString())
+                .basicAuth("user", "pass");
         service = underTest.build(TestResource.class);
 
         assertThrows(WebApplicationException.class, service::test);
 
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO,
-            "Request URI: " + mockWebServer.url("error/test"));
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: GET");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/fhir+xml]");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Authorization: [Basic dXNlcjpwYXNz]");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
+        assertLogMessagePresentContaining(TestLogLevel.INFO,
+                "Request URI: " + mockWebServer.url("error/test"));
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: GET");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/fhir+xml]");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Authorization: [Basic dXNlcjpwYXNz]");
     }
 
     @Test
     void testResponseError() {
-        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString()).build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG)
+                .url(mockWebServer.url("error").toString())
+                .build(TestResource.class);
+
         assertDoesNotThrow(service::getResponse);
     }
 
     @Test
     void requestWithBody() {
-        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("").toString()).build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG)
+                .url(mockWebServer.url("").toString())
+                .build(TestResource.class);
         assertDoesNotThrow(() -> service.postString(STRING));
 
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: " + mockWebServer.url("/post"));
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: POST");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/json]");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Content-Type: [text/plain]");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Body:");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, STRING);
-
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: " + mockWebServer.url("/post"));
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: POST");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/json]");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Content-Type: [text/plain]");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, "Body:");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, STRING);
     }
 
     @Test
@@ -209,13 +203,13 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         var response = service.getResponse();
         assertNotNull(response);
         CuiRestClientBuilder.debugResponse(response, LOG);
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG, "-- Client response filter --");
+        assertLogMessagePresentContaining(TestLogLevel.DEBUG, "-- Client response filter --");
     }
 
     @Test
     void shouldDeactivateLogTracing() {
         service = new CuiRestClientBuilder(LOG).traceLogEnabled(false).url(mockWebServer.url("success").toString())
-            .build(TestResource.class);
+                .build(TestResource.class);
 
         final var result = service.test();
         assertEquals(TEXT, result);
@@ -227,11 +221,12 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void testCorrectHostname() {
-        final var handshakeCertificates = localhost();
+        final var handshakeCertificates = localhostCerts();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
-
-        service = new CuiRestClientBuilder(LOG).sslContext(handshakeCertificates.sslContext())
-            .url(mockWebServer.url("success").toString()).build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG)
+                .sslContext(handshakeCertificates.sslContext())
+                .url(mockWebServer.url("success").toString())
+                .build(TestResource.class);
 
         final var result = service.test();
 
@@ -245,7 +240,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
         final var heldCertificate = new HeldCertificate.Builder().commonName(hostname).build();
         final var handshakeCertificates = new HandshakeCertificates.Builder().heldCertificate(heldCertificate)
-            .addTrustedCertificate(heldCertificate.certificate()).build();
+                .addTrustedCertificate(heldCertificate.certificate()).build();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
         mockWebServer.start(InetAddress.getByName(hostname), 0);
 
@@ -255,8 +250,8 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         mockWebServer.setDispatcher(getDispatcher());
 
         service = new CuiRestClientBuilder(LOG).sslContext(handshakeCertificates.sslContext())
-            .url(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
-            .build(TestResource.class);
+                .url(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
+                .build(TestResource.class);
         final var result = service.test();
         assertEquals(TEXT, result);
         assertNotNull(takeRequest(), "Request didn't happen");
@@ -274,10 +269,10 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         mockWebServer.setDispatcher(getDispatcher());
 
         service = new CuiRestClientBuilder(LOG).connectionMetadata(ConnectionMetadata.builder()
-            .serviceUrl(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
-            .authenticationType(AuthenticationType.BASIC)
-            .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
-            .sslContext(handshakeCertificates.sslContext()).build()).build(TestResource.class);
+                .serviceUrl(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
+                .authenticationType(AuthenticationType.BASIC)
+                .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
+                .sslContext(handshakeCertificates.sslContext()).build()).build(TestResource.class);
 
         assertThrows(ProcessingException.class, () -> service.test());
     }
@@ -285,22 +280,26 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     @Test
     void registersExceptionMapper() {
         final var serviceBoom = new CuiRestClientBuilder(LOG).url(mockWebServer.url("b00m").toString())
-            .registerExceptionMapper(response -> new ExceptionMapperTestException()).build(TestResource.class);
+                .registerExceptionMapper(response -> new ExceptionMapperTestException()).build(TestResource.class);
         assertThrows(ExceptionMapperTestException.class, serviceBoom::test);
 
         final var serviceError = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString())
-            .registerExceptionMapper(response -> new ExceptionMapperTestException()).build(TestResource.class);
+                .registerExceptionMapper(response -> new ExceptionMapperTestException()).build(TestResource.class);
         assertThrows(ExceptionMapperTestException.class, serviceError::test);
     }
-
 
     @Test
     void basicAuth() {
         service = new CuiRestClientBuilder(LOG)
-            .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
-                .authenticationType(AuthenticationType.BASIC)
-                .loginCredentials(LoginCredentials.builder().username("user").password("pass").build()).build())
-            .build(TestResource.class);
+                .connectionMetadata(ConnectionMetadata.builder()
+                        .serviceUrl(mockWebServer.url("success").toString())
+                        .authenticationType(AuthenticationType.BASIC)
+                        .loginCredentials(LoginCredentials.builder()
+                                .username("user")
+                                .password("pass")
+                                .build())
+                        .build())
+                .build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
         final var headers = takeRequest().getHeaders();
@@ -310,10 +309,11 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     @Test
     void sendAuthenticationToken() {
         service = new CuiRestClientBuilder(LOG)
-            .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
-                .authenticationType(AuthenticationType.TOKEN_APPLICATION)
-                .tokenResolver(new StaticTokenResolver("Authentication", "BEARER abc")).build())
-            .build(TestResource.class);
+                .connectionMetadata(ConnectionMetadata.builder()
+                        .serviceUrl(mockWebServer.url("success").toString())
+                        .authenticationType(AuthenticationType.TOKEN_APPLICATION)
+                        .tokenResolver(new StaticTokenResolver("Authentication", "BEARER abc")).build())
+                .build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
         final var headers = takeRequest().getHeaders();
@@ -323,10 +323,11 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     @Test
     void shouldHandleAllAttributes() {
         var builder = new CuiRestClientBuilder(LOG)
-            .connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
-                .authenticationType(AuthenticationType.NONE).connectionTimeout(4).proxyHost("host")
-                .proxyPort(8080).disableHostNameVerification(true).contextMap(immutableMap("key", "value"))
-                .connectionTimeoutUnit(TimeUnit.MICROSECONDS).readTimeout(7).build());
+                .connectionMetadata(ConnectionMetadata.builder()
+                        .serviceUrl(mockWebServer.url("success").toString())
+                        .authenticationType(AuthenticationType.NONE).connectionTimeout(4).proxyHost("host")
+                        .proxyPort(8080).disableHostNameVerification(true).contextMap(immutableMap("key", "value"))
+                        .connectionTimeoutUnit(TimeUnit.MICROSECONDS).readTimeout(7).build());
         assertDoesNotThrow(() -> builder.build(TestResource.class));
 
     }
@@ -334,9 +335,10 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     @Test
     void sendGeneralToken() {
         CuiRestClientBuilder cuiRestClientBuilder = new CuiRestClientBuilder(LOG);
-        cuiRestClientBuilder.connectionMetadata(ConnectionMetadata.builder().serviceUrl(mockWebServer.url("success").toString())
-            .authenticationType(AuthenticationType.TOKEN_APPLICATION)
-            .tokenResolver(new StaticTokenResolver("Key", "Value")).build());
+        cuiRestClientBuilder.connectionMetadata(ConnectionMetadata.builder()
+                .serviceUrl(mockWebServer.url("success").toString())
+                .authenticationType(AuthenticationType.TOKEN_APPLICATION)
+                .tokenResolver(new StaticTokenResolver("Key", "Value")).build());
         service = cuiRestClientBuilder.build(TestResource.class);
 
         assertDoesNotThrow(() -> service.test());
@@ -346,11 +348,13 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     void canEnableDefaultExceptionHandler() {
-        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString()).build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG)
+                .url(mockWebServer.url("error").toString())
+                .build(TestResource.class);
         assertThrows(InternalServerErrorException.class, () -> service.test());
 
         service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("error").toString())
-            .enableDefaultExceptionHandler().build(TestResource.class);
+                .enableDefaultExceptionHandler().build(TestResource.class);
 
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, "Portal-541");
 
@@ -369,7 +373,9 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
      */
     @Test
     void handlesCollections() {
-        service = new CuiRestClientBuilder(LOG).url(mockWebServer.url("").toString()).build(TestResource.class);
+        service = new CuiRestClientBuilder(LOG)
+                .url(mockWebServer.url("").toString())
+                .build(TestResource.class);
         // RESTEASY003145: Unable to find a MessageBodyReader of content-type
         // application/json
         // and type interface java.util.List
@@ -391,7 +397,6 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         assertDoesNotThrow(() -> builder.build(TestResource.class));
     }
 
-
     private RecordedRequest takeRequest() {
         try {
             return mockWebServer.takeRequest(25, TimeUnit.SECONDS);
@@ -408,5 +413,23 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
         ExceptionMapperTestException() {
         }
+    }
+
+    /**
+     * @return same as #{okhttp3.tls.internal.TlsUtil#localhost()} but
+     * additionally with subjectAlternativeName {@code 127.0.0.1}.
+     */
+    private HandshakeCertificates localhostCerts() {
+        // Generate a self-signed cert for the server to serve and the client to trust.
+        var heldCertificate = new HeldCertificate.Builder()
+                .commonName("localhost")
+                .addSubjectAlternativeName("localhost")
+                .addSubjectAlternativeName("127.0.01")
+                .addSubjectAlternativeName("localhost.localdomain")
+                .build();
+        return new HandshakeCertificates.Builder()
+                .heldCertificate(heldCertificate)
+                .addTrustedCertificate(heldCertificate.certificate())
+                .build();
     }
 }

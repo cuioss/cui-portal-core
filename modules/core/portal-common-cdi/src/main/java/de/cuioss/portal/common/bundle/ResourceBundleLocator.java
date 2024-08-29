@@ -26,8 +26,8 @@ import jakarta.annotation.Priority;
 
 /**
  * Used for configuring ResourceBundles. Implementations should provide a
- * {@link Priority}. Because of the overwriting mechanics a higher
- * {@link Priority} of one of the concrete bundles results in a higher priority
+ * {@link jakarta.annotation.Priority}. Because of the overwriting mechanics a higher
+ * {@link jakarta.annotation.Priority} of one of the concrete bundles results in a higher priority
  * of said bundles, resulting in the key to be chosen of the ones with the
  * higher ordering. Number higher than 100 should always be reserved for
  * assemblies / applications
@@ -36,18 +36,24 @@ import jakarta.annotation.Priority;
  */
 public interface ResourceBundleLocator extends Serializable {
 
+    /** Constant <code>LOGGER</code> */
     CuiLogger LOGGER = new CuiLogger(ResourceBundleLocator.class);
 
     /**
+     * <p>getBundlePath.</p>
+     *
      * @return paths of the resource bundles if it can be loaded. <em>Caution: </em>
-     *         {@link ResourceBundleRegistry} assumes that only loadable paths are
+     *         {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry} assumes that only loadable paths are
      *         to be returned. Therefore, each implementation must take care.
      */
     Optional<String> getBundlePath();
 
     /**
-     * @return an {@link Optional} {@link ResourceBundle} derived by the path of
+     * <p>getBundle.</p>
+     *
+     * @return an {@link java.util.Optional} {@link java.util.ResourceBundle} derived by the path of
      *         {@link #getBundlePath()}
+     * @param locale a {@link java.util.Locale} object
      */
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();

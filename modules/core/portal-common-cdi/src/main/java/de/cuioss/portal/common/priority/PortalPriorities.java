@@ -30,11 +30,11 @@ import lombok.experimental.UtilityClass;
  * <h2>Design</h2>
  * <p>
  * Some items at the portal need an explicit ordering in order to check the
- * priority. For e.g. instances of {@link ResourceBundleLocator} can have a
+ * priority. For e.g. instances of {@link de.cuioss.portal.common.bundle.ResourceBundleLocator} can have a
  * higher priority for overwriting portal defined messages. The ordering relies
- * on the {@link Priority} annotation on the corresponding elements. The higher
- * the {@link Priority#value()} the higher is the priority. If the corresponding
- * element has not annotated with {@link Priority} the order will be defaulted
+ * on the {@link jakarta.annotation.Priority} annotation on the corresponding elements. The higher
+ * the {@link jakarta.annotation.Priority#value()} the higher is the priority. If the corresponding
+ * element has not annotated with {@link jakarta.annotation.Priority} the order will be defaulted
  * to {@link #DEFAULT_LEVEL}
  * </p>
  * <h2>Implementation</h2>
@@ -80,13 +80,14 @@ public final class PortalPriorities {
 
     /**
      * Helper method that sorts a number of given objects regarding their
-     * priority. The Priority is assumed to be defined by the {@link Priority}
+     * priority. The Priority is assumed to be defined by the {@link jakarta.annotation.Priority}
      * annotation at class level. If it is not set, the priority is defaulted to
      * {@value #DEFAULT_LEVEL}
      *
      * @param toBeSorted must not be null
-     * @return the sorted list. In case of {@link List#size()} is lower than 2 the
+     * @return the sorted list. In case of {@link java.util.List#size()} is lower than 2 the
      *         original list will be returned.
+     * @param <T> a T class
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> sortByPriority(final List<T> toBeSorted) {

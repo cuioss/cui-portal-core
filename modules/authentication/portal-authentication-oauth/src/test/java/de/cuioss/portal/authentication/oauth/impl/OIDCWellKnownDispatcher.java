@@ -15,30 +15,30 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.MediaType;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
-
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
 import de.cuioss.tools.io.FileTypePrefix;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
+import okhttp3.Headers;
+import org.jetbrains.annotations.NotNull;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OIDCWellKnownDispatcher extends Dispatcher {
 
@@ -54,10 +54,10 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     public static final FileLoader CONFIGURATION = FileLoaderUtility
             .getLoaderForPath(FileTypePrefix.CLASSPATH + "/openid-configuration.json");
 
-    public static final FileLoader TOKEN = FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/token.json");
+    public static final FileLoader INVALID_CONFIGURATION = FileLoaderUtility
+            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/openid-configuration-invalid.json");
 
-    public static final FileLoader CLIENT_TOKEN = FileLoaderUtility
-            .getLoaderForPath(FileTypePrefix.CLASSPATH + "/clientToken.json");
+    public static final FileLoader TOKEN = FileLoaderUtility.getLoaderForPath(FileTypePrefix.CLASSPATH + "/token.json");
 
     public static final FileLoader USER_INFO = FileLoaderUtility
             .getLoaderForPath(FileTypePrefix.CLASSPATH + "/userInfo.json");
@@ -75,13 +75,12 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
     @Getter
     private String currentPort;
 
+    @Setter
+    private boolean simulateInvalidOidcConfig = false;
+
     public void reset() {
-        tokenResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(FileLoaderUtility.toStringUnchecked(TOKEN));
-        userInfoResult = new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(FileLoaderUtility.toStringUnchecked(USER_INFO));
+        tokenResult = new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), toStringUnchecked(TOKEN));
+        userInfoResult = new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), toStringUnchecked(USER_INFO));
     }
 
     public void assertAuthorizeURL(String actualUrl, String... parts) {
@@ -102,12 +101,11 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     public void configure(PortalTestConfiguration configuration, MockWebServer mockWebServer) {
         currentPort = String.valueOf(mockWebServer.getPort());
-        configuration.put(OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL, "http://localhost:" + mockWebServer.getPort());
-        configuration.put(OAuthConfigKeys.OPEN_ID_DISCOVER_PATH, OIDC_DISCOVERY_PATH);
-        configuration.put(OAuthConfigKeys.OPEN_ID_CLIENT_ID, CLIENT_ID);
-        configuration.put(OAuthConfigKeys.OPEN_ID_CLIENT_SECRET, CLIENT_SECRET);
-        configuration.put(OAuthConfigKeys.EXTERNAL_HOSTNAME, EXTERNAL_HOSTNAME);
-        configuration.fireEvent();
+        configuration.update(OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL, "http://localhost:" + mockWebServer.getPort());
+        configuration.update(OAuthConfigKeys.OPEN_ID_DISCOVER_PATH, OIDC_DISCOVERY_PATH);
+        configuration.update(OAuthConfigKeys.OPEN_ID_CLIENT_ID, CLIENT_ID);
+        configuration.update(OAuthConfigKeys.OPEN_ID_CLIENT_SECRET, CLIENT_SECRET);
+        configuration.update(OAuthConfigKeys.EXTERNAL_HOSTNAME, EXTERNAL_HOSTNAME);
     }
 
     public List<RecordedRequest> nonWellKnownRequests(MockWebServer mockWebServer) throws InterruptedException {
@@ -115,7 +113,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         var request = mockWebServer.takeRequest();
         while (null != request) {
-            if (!request.getPath().contains(OIDC_DISCOVERY_PATH)) {
+            if (!isOidcDiscoveryPath(request.getPath())) {
                 builder.add(request);
             }
             request = mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS);
@@ -124,20 +122,30 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
         return builder.toImmutableList();
     }
 
-    @Override
-    public @NotNull MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-        LOGGER.info(() -> "Serve request " + request.getPath());
-        return switch (request.getPath()) {
-        case "/" + OIDC_DISCOVERY_PATH -> new MockResponse().setResponseCode(HttpServletResponse.SC_OK)
-                .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(FileLoaderUtility.toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
-        case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
-        case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
-        default -> {
-            LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-            yield new MockResponse().setResponseCode(HttpServletResponse.SC_NOT_FOUND);
-        }
-        };
+    private boolean isOidcDiscoveryPath(String path) {
+        return path != null && path.contains(OIDC_DISCOVERY_PATH);
     }
 
+    @Override
+    public @NotNull MockResponse dispatch(RecordedRequest request) {
+        LOGGER.info(() -> "Serve request " + request.getPath());
+
+        if (null == request.getPath()) {
+            LOGGER.warn(() -> "Unable to serve request " + request.getPath());
+            new MockResponse(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+        return switch (request.getPath()) {
+            case "/" + OIDC_DISCOVERY_PATH ->
+                    new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
+                            ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
+                            : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
+            case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
+            case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
+            default -> {
+                LOGGER.warn(() -> "Unable to serve request " + request.getPath());
+                yield new MockResponse(HttpServletResponse.SC_NOT_FOUND);
+            }
+        };
+    }
 }

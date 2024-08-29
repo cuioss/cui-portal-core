@@ -1,0 +1,26 @@
+= portal-configuration
+
+== What is it?
+Provides some portal-specific extensions to microprofile-config. In addition it provides some default configuration.
+
+== Maven Coordinates
+
+[source, xml]
+----
+    <dependency>
+        <groupId>de.cuioss.portal.core</groupId>
+        <artifactId>portal-configuration</artifactId>
+    </dependency>
+----
+
+== Core Types and Concepts
+* link:src/main/java/de/cuioss/portal/configuration/types/[Additional configuration-types]
+* link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[Simplifies the programmatic lookup up configuration-properties]
+
+
+Constant Key classes for:
+
+* link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[Portal-Configuration-Core]
+* link:src/main/java/de/cuioss/portal/configuration/HealthCheckConfigKeys.java[Health-Check]
+* link:src/main/java/de/cuioss/portal/configuration/MetricsConfigKeys.java[Metrics]
+* link:src/main/java/de/cuioss/portal/configuration/TracingConfigKeys.java[Tracing]

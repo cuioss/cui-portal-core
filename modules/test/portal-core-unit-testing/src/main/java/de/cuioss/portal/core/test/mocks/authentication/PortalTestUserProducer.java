@@ -15,20 +15,18 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
+import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo.BaseAuthenticatedUserInfoBuilder;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
-
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.PortalUser;
-import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
-import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo.BaseAuthenticatedUserInfoBuilder;
-import jakarta.annotation.PostConstruct;
 import lombok.experimental.Delegate;
 
 /**
- * Replacement for instances of {@link PortalUser} producer, enabling finer
+ * Replacement for instances of {@link AuthenticatedUserInfo} producer, enabling finer
  * control without using an underlying service. <em>Caution: </em> This bean is
  * application scoped in order not to introduce problems with improper scoping.
  *
@@ -40,7 +38,9 @@ public class PortalTestUserProducer {
 
     private static final String USER = "user";
 
-    /** "portalUser" */
+    /**
+     * "portalUser"
+     */
     public static final String BEAN_NAME = "portalUser";
 
     @Delegate
@@ -58,7 +58,6 @@ public class PortalTestUserProducer {
     @SuppressWarnings("cdi-ambiguous-name")
     @Produces
     @Named(PortalTestUserProducer.BEAN_NAME)
-    @PortalUser
     @Dependent
     AuthenticatedUserInfo produceAuthenticatedUserInfo() {
         return userInfoBuilder.build();

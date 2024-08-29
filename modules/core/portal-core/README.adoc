@@ -1,0 +1,22 @@
+= portal-core
+
+== What is it?
+
+Provides types that define the non-ui parts of the portal.
+
+== Maven Coordinates
+
+[source,xml]
+----
+    <dependency>
+        <groupId>de.cuioss.portal.core</groupId>
+        <artifactId>portal-core</artifactId>
+    </dependency>
+----
+
+== Core Types and Concepts
+
+* link:src/main/java/de/cuioss/portal/core/listener/ServletLifecycleListener.java[ServletLifecycleListener]
+* link:src/main/java/de/cuioss/portal/core/servlet/package-info.java[Servlet-specific]
+* link:src/main/java/de/cuioss/portal/core/storage/package-info.java[Runtime Storage Objects]
+* link:src/main/java/de/cuioss/portal/core/user/PortalUserProducer.java[PortalUserProducer]

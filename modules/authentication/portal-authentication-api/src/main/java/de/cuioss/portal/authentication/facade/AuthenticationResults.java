@@ -26,7 +26,7 @@ import lombok.experimental.UtilityClass;
 
 /**
  * Provides constants for all authentication-modules as there are
- * {@link AuthenticatedUserInfo} for not logged in user and keys for the
+ * {@link AuthenticatedUserInfo} for not logged-in user and keys for the
  * resource bundles, defined at cdi-portal-core-impl module
  *
  * @author Oliver Wolff
@@ -34,14 +34,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AuthenticationResults {
 
-    private static final String NOT_LOGGED_IN2 = "Not logged in";
+    private static final String NOT_LOGGED_IN_MESSAGE = "Not logged in";
 
     /**
      * An {@link AuthenticatedUserInfo} with
      * {@link AuthenticatedUserInfo#isAuthenticated()} returning false
      */
     public static final AuthenticatedUserInfo NOT_LOGGED_IN = BaseAuthenticatedUserInfo.builder()
-            .displayName(NOT_LOGGED_IN2).authenticated(false).build();
+            .displayName(NOT_LOGGED_IN_MESSAGE).authenticated(false).build();
 
     /**
      * The key for the message "The credentials you provided are not complete".
@@ -55,13 +55,13 @@ public class AuthenticationResults {
     public static final String KEY_INVALID_CONFIGURATION = "portal.authentication.error.invalid_configuration";
 
     /**
-     * The key for the message "Cannot login with the supplied user details. Please
+     * The key for the message "Cannot log in with the supplied user details. Please
      * check your inputs".
      */
     public static final String KEY_INVALID_CREDENTIALS = "page.login.message.loginFailure";
 
     /**
-     * The key for the general Can not login message.
+     * The key for the general Cannot log in message.
      */
     public static final String KEY_UNABLE_TO_LOGIN = "portal.authentication.error.unable_to_login";
 
@@ -83,7 +83,7 @@ public class AuthenticationResults {
 
     /**
      * @param reason   the text to be displayed as reason.
-     * @param username the username entered by the user (e.g. to be added to the
+     * @param username the username entered by the user (e.g., to be added to the
      *                 atna event)
      * @param cause    the optional throwable to be wrapped
      *
@@ -91,17 +91,17 @@ public class AuthenticationResults {
      *         {@code RequestResultState#ERROR}, the given reason as message and the
      *         default result {@link #NOT_LOGGED_IN}
      */
-    public static final ResultObject<AuthenticatedUserInfo> invalidResult(final String reason, final String username,
-            final Throwable cause) {
+    public static ResultObject<AuthenticatedUserInfo> invalidResult(final String reason, final String username,
+                                                                    final Throwable cause) {
         return new ResultObject.Builder<AuthenticatedUserInfo>()
-                .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN2).identifier(username)
+                .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN_MESSAGE).identifier(username)
                         .authenticated(false).build())
                 .state(ResultState.ERROR).resultDetail(new ResultDetail(new DisplayName(reason), cause)).build();
     }
 
     /**
      * @param reasonKey the key for resolving the reason text.
-     * @param username  the username entered by the user (e.g. to be added to the
+     * @param username  the username entered by the user (e.g., to be added to the
      *                  atna event)
      * @param cause     the optional throwable to be wrapped
      *
@@ -109,10 +109,10 @@ public class AuthenticationResults {
      *         {@code RequestResultState#ERROR}, the given reason as message and the
      *         default result {@link #NOT_LOGGED_IN}
      */
-    public static final ResultObject<AuthenticatedUserInfo> invalidResultKey(final String reasonKey,
-            final String username, final Throwable cause) {
+    public static ResultObject<AuthenticatedUserInfo> invalidResultKey(final String reasonKey,
+                                                                       final String username, final Throwable cause) {
         return new ResultObject.Builder<AuthenticatedUserInfo>()
-                .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN2).identifier(username)
+                .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN_MESSAGE).identifier(username)
                         .authenticated(false).build())
                 .state(ResultState.ERROR).resultDetail(new ResultDetail(new LabeledKey(reasonKey), cause)).build();
     }
@@ -124,7 +124,7 @@ public class AuthenticationResults {
      *         {@code RequestResultState#VALID}, the given reason userInfo as
      *         payload
      */
-    public static final ResultObject<AuthenticatedUserInfo> validResult(final AuthenticatedUserInfo userInfo) {
+    public static ResultObject<AuthenticatedUserInfo> validResult(final AuthenticatedUserInfo userInfo) {
         return new ResultObject.Builder<AuthenticatedUserInfo>().result(userInfo).state(ResultState.VALID).build();
     }
 }

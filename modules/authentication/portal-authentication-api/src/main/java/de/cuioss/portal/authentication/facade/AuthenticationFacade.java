@@ -20,8 +20,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 
 /**
- * Basic interface for cui-portals authentication mechanism. This variant is
- * used by sso logins
+ * Basic interface for the cui-portals authentication mechanism.
+ * This variant is used by sso logins
  *
  * @author Matthias Walliczek
  *
@@ -33,7 +33,7 @@ public interface AuthenticationFacade {
      *
      * @param servletRequest The servlet request.
      * @return Returns <code>null</code> in case no authentication has taken place.
-     *         In case of a existing authentication a populated
+     *         In case of an existing authentication a populated
      *         {@link AuthenticatedUserInfo} instance is returned.
      */
     AuthenticatedUserInfo retrieveCurrentAuthenticationContext(HttpServletRequest servletRequest);

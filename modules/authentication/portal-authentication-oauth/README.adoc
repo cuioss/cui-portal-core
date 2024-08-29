@@ -1,0 +1,28 @@
+= portal-authentication-mock
+
+== What is it?
+
+Implementation of 'link:../portal-authentication-api/[portal-authentication-api]'.
+It is the current default implementation for production variants the cuioss-portal.
+
+It must always be used in conjunction with a concrete ui-module, currently this is https://github.com/cuioss/cui-portal-ui/tree/main/modules/portal-ui-oauth[portal-ui-oauth]
+
+== Maven Coordinates
+
+[source,xml]
+----
+    <dependency>
+        <groupId>de.cuioss.portal.authentication</groupId>
+        <artifactId>portal-authentication-oauth</artifactId>
+    </dependency>
+----
+
+== Configuration
+
+See link:src/main/resources/META-INF/microprofile-config.properties[microprofile-config.properties]
+
+== Usage
+
+In addition to the injection of the `AuthenticatedUserInfo` it provides the link:src/main/java/de/cuioss/portal/authentication/oauth/Oauth2AuthenticationFacade.java[Oauth2AuthenticationFacade]
+that gives you access on advanced OIDC feature like handling of the RefreshToken, scope-step-up and https://openid.net/specs/openid-connect-rpinitiated-1_0.html[OpenID Connect RP-Initiated Logout].
+See the javadoc for details.

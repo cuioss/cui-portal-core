@@ -16,7 +16,6 @@
 package de.cuioss.portal.core.servlet;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.PortalUser;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -66,7 +65,6 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     private final CuiLogger log = new CuiLogger(getClass());
 
     @Inject
-    @PortalUser
     Provider<AuthenticatedUserInfo> userInfoProvider;
 
     @Override
@@ -165,8 +163,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
     }
 
     /**
-     * @return the {@link AuthenticatedUserInfo} resolved against the injected
-     * {@link PortalUser}
+     * @return the {@link AuthenticatedUserInfo} resolved against the injected {@link AuthenticatedUserInfo}
      */
     protected AuthenticatedUserInfo getUserInfo() {
         return userInfoProvider.get();

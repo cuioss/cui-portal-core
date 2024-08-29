@@ -13,6 +13,7 @@
     <description>Groups all core modules of the portal</description>
     <name>Portal Core Modules</name>
     <modules>
+        <module>portal-configuration</module>
         <module>portal-core</module>
         <module>portal-common-cdi</module>
     </modules>

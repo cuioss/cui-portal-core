@@ -15,18 +15,16 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import java.util.List;
-
-import jakarta.servlet.http.HttpServletRequest;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.uimodel.application.LoginCredentials;
 import de.cuioss.uimodel.result.ResultObject;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * Extension to {@link AuthenticationFacade} that supports form-based logins
- *
  */
 public interface FormBasedAuthenticationFacade extends AuthenticationFacade {
 
@@ -38,19 +36,19 @@ public interface FormBasedAuthenticationFacade extends AuthenticationFacade {
      *                    authenticated.
      * @param credentials The credentials for authentication
      * @return A {@link ResultObject} with the corresponding
-     *         {@link AuthenticatedUserInfo} with
-     *         {@link AuthenticatedUserInfo#isAuthenticated()} being {@code true} in
-     *         case of successful logins, otherwise it will provide the
-     *         corresponding error message to be displayed.
+     * {@link AuthenticatedUserInfo} with
+     * {@link AuthenticatedUserInfo#isAuthenticated()} being {@code true} in
+     * case of successful logins, otherwise it will provide the
+     * corresponding error message to be displayed.
      */
     ResultObject<AuthenticatedUserInfo> login(HttpServletRequest request, LoginCredentials credentials);
 
     /**
-     * Provides list of available systems. Please note that no particular ordering
+     * Provides a list of available systems. Please note that no particular ordering
      * is added on top. The content is displayed on ui level as provided.
      *
      * @return The map providing the available system data. Must not be null but may
-     *         be empty.
+     * be empty.
      */
     List<UserStore> getAvailableUserStores();
 

@@ -15,16 +15,14 @@
  */
 package de.cuioss.portal.authentication;
 
-import java.util.function.Function;
-
-import jakarta.servlet.http.HttpServletRequest;
-
 import de.cuioss.portal.authentication.facade.AuthenticationFacade;
 import de.cuioss.portal.common.priority.PortalPriorities;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.function.Function;
 
 /**
- * To enrich an {@link AuthenticatedUserInfo} created by the
- * {@link AuthenticationFacade}.
+ * To enrich an {@link AuthenticatedUserInfo} created by the {@link AuthenticationFacade}.
  * <p>
  * Implementations of this interface will be called as part of
  * {@link AuthenticationFacade#retrieveCurrentAuthenticationContext(HttpServletRequest)}.
@@ -34,7 +32,7 @@ import de.cuioss.portal.common.priority.PortalPriorities;
  * <p>
  * The highest priority is called last.
  * <p>
- * The enriched {@linkplain AuthenticatedUserInfo} should be returned as result.
+ * The enriched {@linkplain AuthenticatedUserInfo} should be returned as a result.
  * <p>
  * If no enrichment is done, the same object should be returned, but never null.
  */

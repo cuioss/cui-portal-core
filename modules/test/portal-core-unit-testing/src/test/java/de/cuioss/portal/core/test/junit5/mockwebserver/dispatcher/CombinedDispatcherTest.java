@@ -15,21 +15,20 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
+import mockwebserver3.RecordedRequest;
+import okhttp3.Headers;
+import okio.Buffer;
+import org.junit.jupiter.api.Test;
+
+import java.net.Socket;
+import java.util.Collections;
+
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_NOT_FOUND;
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_TEAPOT;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import java.net.Socket;
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-
-import mockwebserver3.RecordedRequest;
-import okhttp3.Headers;
-import okio.Buffer;
 
 class CombinedDispatcherTest {
 
@@ -87,7 +86,7 @@ class CombinedDispatcherTest {
 
     static RecordedRequest createRequestFor(HttpMethodMapper mapper, CombinedDispatcher dispatcher, String urlPart) {
         return new RecordedRequest(mapper.name() + " " + urlPart + "someResource  HTTP/1.1",
-                Headers.of("key=value", "key2=value2"), Collections.emptyList(), 0, new Buffer(), 0, new Socket());
+                Headers.of("key=value", "key2=value2"), Collections.emptyList(), 0, new Buffer(), 0, new Socket(), null);
     }
 
 }
