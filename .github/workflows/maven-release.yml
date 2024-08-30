@@ -50,7 +50,7 @@ jobs:
         mvn -B --no-transfer-progress site:site site:stage
         git checkout ${{vars.GITHUB_BASE_REF}}
         git rebase release
-        mvn -B --no-transfer-progress release:perform
+        mvn -B --no-transfer-progress -Prelease-perform release:perform
       env:
         MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.OSS_SONATYPE_PASSWORD }}
