@@ -49,7 +49,7 @@ jobs:
         mvn -B --no-transfer-progress -Prelease,javadoc-mm-reporting release:clean release:prepare site:site site:stage -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
         git checkout ${{vars.GITHUB_BASE_REF}}
         git rebase release
-        mvn -B --no-transfer-progress -Prelease release:perform
+        mvn -B --no-transfer-progress -Prelease-perform release:perform
       env:
         MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.OSS_SONATYPE_PASSWORD }}
