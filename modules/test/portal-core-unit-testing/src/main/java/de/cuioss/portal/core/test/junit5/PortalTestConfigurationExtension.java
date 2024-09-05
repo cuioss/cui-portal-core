@@ -16,13 +16,12 @@
 package de.cuioss.portal.core.test.junit5;
 
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
+import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Splitter;
 import jakarta.enterprise.inject.spi.CDI;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import static de.cuioss.tools.base.Preconditions.checkArgument;
@@ -40,40 +39,40 @@ import static de.cuioss.tools.base.Preconditions.checkArgument;
  */
 public class PortalTestConfigurationExtension implements BeforeEachCallback {
 
-    private static final Logger log = LoggerFactory.getLogger(PortalTestConfigurationExtension.class);
+    private static final CuiLogger LOGGER = new CuiLogger(PortalTestConfigurationExtension.class);
 
     @Override
     public void beforeEach(ExtensionContext context) {
         Class<?> testClass = context.getTestClass()
-            .orElseThrow(() -> new IllegalStateException("Unable to determine Test-class"));
-        log.debug(() -> "Processing test-class " + testClass);
+                .orElseThrow(() -> new IllegalStateException("Unable to determine Test-class"));
+        LOGGER.debug(() -> "Processing test-class " + testClass);
 
         CDI<Object> cdi;
         try {
             cdi = CDI.current();
         } catch (IllegalStateException e) {
             throw new IllegalStateException("""
-                CDI not present, change the order of annotation and put @EnableAutoWeld above \
-                @EnablePortalConfiguration\
-                """, e);
+                    CDI not present, change the order of annotation and put @EnableAutoWeld above \
+                    @EnablePortalConfiguration\
+                    """, e);
         }
 
         var configuration = cdi.select(PortalTestConfiguration.class).get();
-        log.debug(() -> "Resolved " + configuration);
+        LOGGER.debug(() -> "Resolved " + configuration);
 
         configuration.clear();
 
         var annotation = AnnotationSupport.findAnnotation(testClass, EnablePortalConfiguration.class);
         if (annotation.isPresent()) {
-            log.debug(() -> "Resolved annotation " + annotation.get());
+            LOGGER.debug(() -> "Resolved annotation " + annotation.get());
             for (String element : annotation.get().configuration()) {
                 var splitted = Splitter.on(':').splitToList(element);
                 checkArgument(2 <= splitted.size(), "Expected element in the form key:value, but was " + element);
-                log.debug(() -> "Adding configuration entry: " + element);
+                LOGGER.debug(() -> "Adding configuration entry: " + element);
                 configuration.update(splitted.get(0), element.substring(element.indexOf(':') + 1));
             }
         }
 
-        log.debug(() -> "Finished processing instance " + testClass);
+        LOGGER.debug(() -> "Finished processing instance " + testClass);
     }
 }

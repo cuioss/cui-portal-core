@@ -15,19 +15,17 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-
-import java.util.Optional;
-
+import de.cuioss.tools.logging.CuiLogger;
+import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import mockwebserver3.MockWebServer;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * Handle the lifetime of an instance of {@link MockWebServer}, see
@@ -37,7 +35,7 @@ import mockwebserver3.MockWebServer;
  */
 public class MockWebServerExtension implements TestInstancePostProcessor, AfterEachCallback {
 
-    private static final Logger log = LoggerFactory.getLogger(MockWebServerExtension.class);
+    private static final CuiLogger LOGGER = new CuiLogger(MockWebServerExtension.class);
 
     /**
      * Identifies the {@link Namespace} under which the concrete instance of
@@ -45,14 +43,14 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
      */
     public static final Namespace NAMESPACE = Namespace.create("test", "portal", "MockWebServer");
 
-    @SuppressWarnings({ "squid:S2095" }) // owolff: Will be closed after all tests
+    @SuppressWarnings({"squid:S2095"}) // owolff: Will be closed after all tests
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
 
         var mockWebServer = new MockWebServer();
 
         assertInstanceOf(MockWebServerHolder.class, testInstance, "In order to use within a test the test-class must implement de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder "
-            + testInstance);
+                + testInstance);
 
         var holder = (MockWebServerHolder) testInstance;
         holder.setMockWebServer(mockWebServer);
@@ -60,7 +58,7 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
         if (extractAnnotation(testInstance.getClass()).map(annotation -> !annotation.manualStart())
                 .orElse(Boolean.FALSE)) {
             mockWebServer.start();
-            log.info(() -> "Started MockWebServer at " + mockWebServer.url("/"));
+            LOGGER.info(() -> "Started MockWebServer at " + mockWebServer.url("/"));
         }
         put(mockWebServer, context);
     }
@@ -69,10 +67,10 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
     public void afterEach(ExtensionContext context) throws Exception {
         var server = get(context);
         if (server.isPresent()) {
-            log.info(() -> "Shutting down MockWebServer at " + server.get().url("/"));
+            LOGGER.info(() -> "Shutting down MockWebServer at " + server.get().url("/"));
             server.get().shutdown();
         } else {
-            log.error(() -> "Server not present, therefore can not be shutdown");
+            LOGGER.error(() -> "Server not present, therefore can not be shutdown");
         }
 
     }

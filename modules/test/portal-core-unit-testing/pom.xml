@@ -13,11 +13,6 @@
         weld-junit testing
     </description>
     <properties>
-        <!-- Fix for
-        /home/oliver/git/cui-portal-core/modules/test/portal-core-unit-testing/src/main/java/de/cuioss/portal/core/test/junit5/mockwebserver/MockWebServerExtension.java:26: error: package org.junit.platform.commons.logging is not visible
-import org.junit.platform.commons.logging.Logger;
-        -->
-        <maven.javadoc.plugin.failOnError>false</maven.javadoc.plugin.failOnError>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.core.test
         </maven.jar.plugin.automatic.module.name>
