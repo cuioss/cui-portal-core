@@ -18,7 +18,6 @@ package de.cuioss.portal.common.bundle;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -36,7 +35,6 @@ import jakarta.inject.Provider;
 
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
-import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
@@ -54,7 +52,7 @@ import lombok.ToString;
  * </ul>
  *
  * Handling of Missing Keys: On {@link de.cuioss.portal.common.stage.ProjectStage#DEVELOPMENT} it will throw a
- * {@link java.util.MissingResourceException}. Otherwise it will return the requested key,
+ * {@link java.util.MissingResourceException}. Otherwise, it will return the requested key,
  * surrounded with Question-Marks
  *
  * @author Oliver Wolff

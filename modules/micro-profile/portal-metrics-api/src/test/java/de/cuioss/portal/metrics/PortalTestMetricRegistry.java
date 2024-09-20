@@ -124,12 +124,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public <T extends Number> Gauge<T> gauge(Metadata metadata, Supplier<T> supplier, Tag... tags) {
-        metricMap.put(new MetricID(metadata.getName()), new Gauge() {
-            @Override
-            public Number getValue() {
-                return null;
-            }
-        });
+        metricMap.put(new MetricID(metadata.getName()), (Gauge) () -> null);
         return null;
     }
 

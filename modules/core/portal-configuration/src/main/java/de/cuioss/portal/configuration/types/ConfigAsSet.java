@@ -32,7 +32,7 @@ import de.cuioss.portal.configuration.PortalConfigurationKeys;
 
 /**
  * Injects a config property as an immutable {@link Set} of trimmed Strings. In
- * case the the property is null or empty and there is no
+ * case the property is null or empty and there is no
  * {@link #defaultValue()} set it will be an empty {@link Set}. The default
  * splitting character is
  * {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}.

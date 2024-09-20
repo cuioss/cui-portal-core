@@ -59,7 +59,7 @@ public class ConnectionMetadataKeys {
      */
     public static final String AUTH_BASIC_USER_PASSWORD = AUTH_BASIC_BASE + PASSWORD;
 
-    /** User name for BASIC authentication type ("authentication.basic.username") */
+    /** Username for BASIC authentication type ("authentication.basic.username") */
     public static final String AUTH_BASIC_USER_NAME = AUTH_BASIC_BASE + "username";
 
     /**

@@ -439,7 +439,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             var errMsg = """
                     Portal-160: Missing config for logout URI. Check \
                     the end_session_endpoint property from userinfo endpoint.\
-                    """.formatted();
+                    """;
             LOGGER.warn(errMsg);
             throw new IllegalStateException(errMsg);
         }

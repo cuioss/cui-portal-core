@@ -40,7 +40,7 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
     private DummyAuthenticationFacade underTest;
 
     @Test
-    void shouldAllwaysReturnDummyUser() {
+    void shouldAlwaysReturnDummyUser() {
 
         assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, underTest.retrieveCurrentAuthenticationContext(null));
         assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, underTest.login(null, null).getResult());

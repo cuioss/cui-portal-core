@@ -19,7 +19,6 @@ import static de.cuioss.portal.authentication.facade.AuthenticationResults.inval
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 

@@ -26,7 +26,7 @@ The `@EnablePortalConfiguration` bootstraps the configuration-subsystem and adds
 ----
 @EnableAutoWeld
 @EnablePortalConfiguration
-class ConfigurationEnabledTest {
+class ConfigurationEnabledTest {}
 ----
 
 Additional configuration can be added, either by the annotation, for all tests:
@@ -35,7 +35,7 @@ Additional configuration can be added, either by the annotation, for all tests:
 ----
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = {"key1:value1", "key2:value2"})
-class ConfigurationEnabledTest {
+class ConfigurationEnabledTest {}
 ----
 
 or by injecting the `PortalTestConfiguration` for applying in the context of certain tests
@@ -49,10 +49,11 @@ class ConfigurationEnabledTest {
     @Inject
     private PortalTestConfiguration configuration;
     
-    @​Test
+    @Test
     void shouldAdjustConfiguration() {
         configuration.update("someKey", "someValue");
     }
+}
 ----
 
 
@@ -78,11 +79,10 @@ class RuntimeBundleNamesTest implements ShouldBeNotNull<RuntimeBundleNames> {
     @PortalResourceBundle
     private ResourceBundle bundle;
 
-    @​Test
+    @Test
     void shouldProvideAtLeastOneBundle() {
         assertEquals("Runtime Configuration", bundle.getString("portal.runtime.configuration.default.title"));
     }
-
 }
 ----
 
@@ -104,10 +104,10 @@ In case you want to add beans or modify the dev-mode, you need to implement the 
 
 [source,java]
 ----
-    @Override
-    protected Weld modifyWeldContainer(Weld weld) {
-        return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducers.class);
-    }
+@Override
+protected Weld modifyWeldContainer(Weld weld) {
+    return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducers.class);
+}
 ----
 This adds producers for the servlet objects, derived from JSF-FacesContext.
 
@@ -115,10 +115,10 @@ Variant for a producer for pure mock-object without relying on JSF:
 
 [source,java]
 ----
-    @Override
-    protected Weld modifyWeldContainer(Weld weld) {
-        return weld.addBeanClass(ServletMockObjectsProducers.class);
-    }
+@Override
+protected Weld modifyWeldContainer(Weld weld) {
+    return weld.addBeanClass(ServletMockObjectsProducers.class);
+}
 ---- 
 
 The corresponding producer-types are defined at https://github.com/cuioss/cui-jsf-test-basic/tree/main/src/main/java/de/cuioss/test/jsf/producer[cui-jsf-test-basic] 
@@ -133,7 +133,7 @@ class AssemblyConsistencyTest extends BaseAssemblyConsistencyTest {
 }
 ----
 
-The test actually starts a Weld-Container and looks up the Bean-Manager. In addition it checks for the file WEB-INF/beans.xml being present. 
+The test actually starts a Weld-Container and looks up the Bean-Manager. In addition, it checks for the file WEB-INF/beans.xml being present.
 
 === Handling AuthenticatedUserInfo
 
@@ -158,6 +158,7 @@ class PortalTestUserProducerTest {
         userProducer.authenticated(false);
         assertFalse(userProvider.get().isAuthenticated());
     }
+}
 ----
 
 === Testing a configuration Module
@@ -173,8 +174,7 @@ Additional info see link:https://easymock.org/user-guide.html[Easymock user-guid
 ----
 @ExtendWith(EasyMockExtension.class)
 @EnableAutoWeld
-class SomeTestClass {
-
+class SomeTestClass {}
 ----
 
 [source,java]
@@ -182,7 +182,6 @@ class SomeTestClass {
 @Produces
 @Mock
 private SomeMockedService mockedOne;
-
 ----
 
 
@@ -291,7 +290,7 @@ public class JwksResolveDispatcher implements ModuleDispatcherElement {
     /**
      * Verifies whether this endpoint was called the given times
      *
-     * @param expected
+     * @param expected amount of request calls
      */
     public void assertCallsAnswered(int expected) {
         assertEquals(expected, callCounter);
@@ -348,5 +347,6 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
         }
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
     }
+}
 ----
 

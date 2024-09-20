@@ -46,6 +46,9 @@ class ConfigurationHelperTest {
 
     private final Set<String> usedSystemConfigKeys = new HashSet<>();
 
+    final InjectionPoint ip = EasyMock.mock(InjectionPoint.class);
+    final Annotated annotated = EasyMock.mock(Annotated.class);
+
     enum TestEnum {
         ONE, TWO
     }
@@ -97,30 +100,22 @@ class ConfigurationHelperTest {
 
     @Test
     void shouldNotConvertToEnumOnWrongStringInput() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            convertToEnum("invalid", TestEnum.class);
-        });
+        assertThrows(IllegalArgumentException.class, () -> convertToEnum("invalid", TestEnum.class));
     }
 
     @Test
     void shouldNotConvertToEnumOnNullInput() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            convertToEnum(null, TestEnum.class);
-        });
+        assertThrows(IllegalArgumentException.class, () -> convertToEnum(null, TestEnum.class));
     }
 
     @Test
     void shouldNotConvertToEnumOnEmptyInput() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            convertToEnum("", TestEnum.class);
-        });
+        assertThrows(IllegalArgumentException.class, () -> convertToEnum("", TestEnum.class));
     }
 
     @Test
     void shouldNotConvertToEnumOnMissingDefault() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            convertToEnum("test", TestEnum.class, false, null);
-        });
+        assertThrows(IllegalArgumentException.class, () -> convertToEnum("test", TestEnum.class, false, null));
     }
 
     // Config Resolving
@@ -164,24 +159,15 @@ class ConfigurationHelperTest {
 
         assertEquals(VALUE_ONE, resolveConfigPropertyOrThrow(KEY1));
 
-        assertThrows(IllegalStateException.class, () -> {
-            resolveConfigPropertyOrThrow("not.there");
-        });
+        assertThrows(IllegalStateException.class, () -> resolveConfigPropertyOrThrow("not.there"));
     }
 
     @Test
     void shouldHandleInjectionPoint() {
-        assertThrows(NullPointerException.class, () -> {
-            ConfigurationHelper.resolveAnnotation(EmptyInjectionPoint.INSTANCE, null);
-        });
+        assertThrows(NullPointerException.class, () -> ConfigurationHelper.resolveAnnotation(EmptyInjectionPoint.INSTANCE, null));
 
-        assertThrows(NullPointerException.class, () -> {
-            ConfigurationHelper.resolveAnnotation(EmptyInjectionPoint.INSTANCE, Test.class);
-        });
+        assertThrows(NullPointerException.class, () -> ConfigurationHelper.resolveAnnotation(EmptyInjectionPoint.INSTANCE, Test.class));
     }
-
-    InjectionPoint ip = EasyMock.mock(InjectionPoint.class);
-    Annotated annotated = EasyMock.mock(Annotated.class);
 
     @Test
     void resolveAnnotationOrThrow() {

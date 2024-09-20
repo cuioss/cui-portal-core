@@ -27,13 +27,14 @@ import de.cuioss.tools.net.ssl.KeyStoreType;
 
 public class TrustStoreInfoGenerator implements TypedGenerator<KeyStoreProvider> {
 
-    private final TypedGenerator<File> trustores = fixedValues(BASE_PATH.resolve("truststore1.keystore").toFile(),
-            BASE_PATH.resolve("truststore2.keystore").toFile());
+    private final TypedGenerator<File> trustStores = fixedValues(
+        BASE_PATH.resolve("truststore1.keystore").toFile(),
+        BASE_PATH.resolve("truststore2.keystore").toFile());
 
     @Override
     public KeyStoreProvider next() {
         return KeyStoreProvider.builder().keyStoreType(KeyStoreType.TRUST_STORE)
-                .location(trustores.next().getAbsoluteFile()).storePassword(PASSWORD).build();
+                .location(trustStores.next().getAbsoluteFile()).storePassword(PASSWORD).build();
     }
 
     @Override

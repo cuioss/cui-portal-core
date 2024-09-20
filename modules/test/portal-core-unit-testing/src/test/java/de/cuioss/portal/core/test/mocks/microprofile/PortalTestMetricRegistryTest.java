@@ -118,7 +118,7 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         assertThrows(RuntimeException.class, () -> timer.time((Callable<?>) null));
         assertThrows(RuntimeException.class, () -> timer.time((Runnable) null));
         assertThrows(RuntimeException.class, () -> timer.update(null));
-        assertThrows(RuntimeException.class, () -> timer.getSnapshot());
+        assertThrows(RuntimeException.class, timer::getSnapshot);
 
         assertFalse(underTest.getTimers().isEmpty());
         assertTrue(underTest.getTimers((metricID, metric) -> true).isEmpty());

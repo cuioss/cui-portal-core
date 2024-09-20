@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
@@ -32,7 +31,6 @@ import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Priority;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -40,7 +38,7 @@ import lombok.ToString;
 /**
  * Registry for the ResourceBundleNames. The injected
  * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator}s must have unique paths and define an existing
- * {@link java.util.ResourceBundle}. In addition they should be annotated with the
+ * {@link java.util.ResourceBundle}. In addition, they should be annotated with the
  * corresponding {@link jakarta.annotation.Priority}
  *
  * @author Oliver Wolff

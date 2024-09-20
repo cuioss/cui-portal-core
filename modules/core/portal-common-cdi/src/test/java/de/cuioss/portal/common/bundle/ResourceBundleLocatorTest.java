@@ -23,7 +23,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
-import de.cuioss.portal.common.bundle.support.InvalidBundelPath;
+import de.cuioss.portal.common.bundle.support.InvalidBundlePath;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
 
 class ResourceBundleLocatorTest {
@@ -40,6 +40,6 @@ class ResourceBundleLocatorTest {
 
     @Test
     void shouldHandleInvalidPath() {
-        assertFalse(new InvalidBundelPath().getBundle(Locale.GERMANY).isPresent());
+        assertFalse(new InvalidBundlePath().getBundle(Locale.GERMANY).isPresent());
     }
 }

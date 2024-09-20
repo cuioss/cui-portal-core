@@ -91,9 +91,7 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
     void shouldFailOnInvalidKey() {
         var underTest = getUnderTest();
         projectStage = ProjectStage.DEVELOPMENT;
-        assertThrows(MissingResourceException.class, () -> {
-            underTest.getString("not.there");
-        });
+        assertThrows(MissingResourceException.class, () -> underTest.getString("not.there"));
     }
 
     @Test

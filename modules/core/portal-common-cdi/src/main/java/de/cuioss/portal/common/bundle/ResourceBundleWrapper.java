@@ -18,8 +18,6 @@ package de.cuioss.portal.common.bundle;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 /**

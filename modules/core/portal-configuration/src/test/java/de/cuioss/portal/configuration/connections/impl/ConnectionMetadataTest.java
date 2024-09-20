@@ -62,33 +62,27 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
     }
 
     @Test
-    void shouldFailWithMissingCredentials() throws Exception {
+    void shouldFailWithMissingCredentials() {
         final var builder = ConnectionMetadata.builder();
         builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
                 .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            builder.build().validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, () -> builder.build().validate());
     }
 
     @Test
-    void shouldFailWithInvalidCredentials() throws Exception {
+    void shouldFailWithInvalidCredentials() {
         final var builder = ConnectionMetadata.builder();
         builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
                 .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
         builder.loginCredentials(new LoginCredentials());
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            builder.build().validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, () -> builder.build().validate());
     }
 
     @Test
-    void shouldFailWithMissingTokenResolver() throws Exception {
+    void shouldFailWithMissingTokenResolver() {
         final var meta = getAnyValid();
         meta.setAuthenticationType(AuthenticationType.TOKEN_APPLICATION);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
@@ -100,57 +94,45 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
     }
 
     @Test
-    void shouldFailWithMissingServiceUrl() throws Exception {
+    void shouldFailWithMissingServiceUrl() {
         final var meta = getAnyValid();
         meta.setServiceUrl(null);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
-    void shouldFailWithMissingAuthenticationType() throws Exception {
+    void shouldFailWithMissingAuthenticationType() {
         final var meta = getAnyValid();
         meta.setAuthenticationType(null);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
-    void shouldFailWithMissingConnectionType() throws Exception {
+    void shouldFailWithMissingConnectionType() {
         final var meta = getAnyValid();
         meta.setConnectionType(null);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
-    void shouldFailWithInvalidProxyPort() throws Exception {
+    void shouldFailWithInvalidProxyPort() {
         final var meta = getAnyValid();
         meta.setProxyHost("bla");
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
-    void shouldFailWithInvalidProxyHost() throws Exception {
+    void shouldFailWithInvalidProxyHost() {
         final var meta = getAnyValid();
         meta.setProxyPort(123);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
-    void shouldFailWithMissingConnectionId() throws Exception {
+    void shouldFailWithMissingConnectionId() {
         final var meta = getAnyValid();
         meta.setConnectionId(null);
-        assertThrows(ConnectionConfigurationException.class, () -> {
-            meta.validate();
-        });
+        assertThrows(ConnectionConfigurationException.class, meta::validate);
     }
 
     @Test
@@ -180,16 +162,16 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
                         .location(new File("not/there")).build())
                 .trustStoreInfo(truststoreInfos.next()).connectionType(ConnectionType.REST)
                 .description(stringGenerator.next()).serviceUrl(URL).build();
-        assertThrows(IllegalStateException.class, () -> metaInvalidFile.resolveSSLContext());
+        assertThrows(IllegalStateException.class, metaInvalidFile::resolveSSLContext);
 
-        // Invalid keystore-pasword
+        // Invalid keystore-password
         var metaInvalidPassword = ConnectionMetadata.builder().authenticationType(AuthenticationType.BASIC)
                 .connectionId(stringGenerator.next())
                 .keyStoreInfo(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
-                        .location(keystoreInfos.next().getLocation()).storePassword("wronpassword").build())
+                        .location(keystoreInfos.next().getLocation()).storePassword("wrongpassword").build())
                 .trustStoreInfo(truststoreInfos.next()).connectionType(ConnectionType.REST)
                 .description(stringGenerator.next()).serviceUrl(URL).build();
-        assertThrows(IllegalStateException.class, () -> metaInvalidPassword.resolveSSLContext());
+        assertThrows(IllegalStateException.class, metaInvalidPassword::resolveSSLContext);
     }
 
     @Test

@@ -22,9 +22,6 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.Application;
-
 import de.cuioss.portal.common.cdi.PortalBeanManager;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
@@ -43,7 +40,7 @@ import lombok.ToString;
  * PortalApplication, that it exposes it on
  * {@link jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
  * with the name "msgs"
- *
+ * </p><p>
  * It can be used directly in jsf views: {@code #{msgs['page.401.title']}}
  * </p>
  *
