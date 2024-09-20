@@ -15,9 +15,23 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.net.URLEncoder.encode;
-import static java.util.Objects.requireNonNull;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.facade.AuthenticationSource;
+import de.cuioss.portal.authentication.facade.BaseAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
+import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
+import de.cuioss.portal.authentication.oauth.*;
+import de.cuioss.tools.collect.CollectionBuilder;
+import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.net.UrlParameter;
+import de.cuioss.tools.string.MoreStrings;
+import de.cuioss.tools.string.Splitter;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -27,39 +41,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-import jakarta.servlet.http.HttpServletRequest;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.facade.AuthenticationSource;
-import de.cuioss.portal.authentication.facade.BaseAuthenticationFacade;
-import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
-import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
-import de.cuioss.portal.authentication.oauth.LoginPagePath;
-import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
-import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
-import de.cuioss.portal.authentication.oauth.Oauth2Service;
-import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
-import de.cuioss.portal.authentication.oauth.OauthRedirector;
-import de.cuioss.portal.authentication.oauth.OidcRpInitiatedLogoutParams;
-import de.cuioss.portal.authentication.oauth.Token;
-import de.cuioss.tools.collect.CollectionBuilder;
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.net.UrlParameter;
-import de.cuioss.tools.string.MoreStrings;
-import de.cuioss.tools.string.Splitter;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.net.URLEncoder.encode;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Default implementation of {@link Oauth2AuthenticationFacade}. Uses
@@ -167,10 +153,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     }
 
     private Optional<AuthenticatedUserInfo> triggerAuthenticate(final List<UrlParameter> parameters,
-            final String scopes) {
-        final var code = parameters.stream().filter(parameter -> "code".equals(parameter.getName())).findAny();
-        final var state = parameters.stream().filter(parameter -> "state".equals(parameter.getName())).findAny();
-        final var error = parameters.stream().filter(parameter -> "error".equals(parameter.getName())).findAny();
+                                                                final String scopes) {
+        final var code = parameters.stream().filter(parameter -> "code" .equals(parameter.getName())).findAny();
+        final var state = parameters.stream().filter(parameter -> "state" .equals(parameter.getName())).findAny();
+        final var error = parameters.stream().filter(parameter -> "error" .equals(parameter.getName())).findAny();
         if (state.isPresent()) {
             if (code.isPresent()) {
                 return handleTriggerAuthenticate(scopes, code.get(), state.get());
@@ -193,7 +179,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @SuppressWarnings("squid:S3655") // already checked
     private Optional<AuthenticatedUserInfo> handleTriggerAuthenticate(final String scopes, final UrlParameter code,
-            final UrlParameter state) {
+                                                                      final UrlParameter state) {
         final var servletRequest = servletRequestProvider.get();
         LOGGER.debug("code and state parameter are present");
         final AuthenticatedUserInfo sessionUser;
@@ -439,7 +425,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             var errMsg = """
                     Portal-160: Missing config for logout URI. Check \
                     the end_session_endpoint property from userinfo endpoint.\
-                    """.formatted();
+                    """;
             LOGGER.warn(errMsg);
             throw new IllegalStateException(errMsg);
         }
