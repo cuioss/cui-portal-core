@@ -1,0 +1,28 @@
+= portal-authentication-token
+
+== What is it?
+Provides some convenience structures for dealing with JTW-Token.
+
+It is essentially a wrapper around the types from io.smallrye:smallrye-jwt.
+
+The core functionality is the simplified configuration of checking the signature of a given token, by looking up the corresponding public-keys from an oauth-server, tested with keycloak.
+
+== Maven Coordinates
+
+[source, xml]
+----
+    <dependency>
+        <groupId>de.cuioss.portal.authentication</groupId>
+        <artifactId>portal-authentication-token</artifactId>
+    </dependency>
+----
+
+== Usage
+
+The central objects are:
+
+* link:src/main/java/de/cuioss/portal/authentication/token/JwksAwareTokenParser.java[Configuration of the io.smallrye.jwt.auth.principal.JWTParser]
+
+* link:src/main/java/de/cuioss/portal/authentication/token/ParsedAccessToken.java[ParsedAccessToken]
+
+* link:src/main/java/de/cuioss/portal/authentication/token/ParsedIdToken.java[ParsedIdToken]

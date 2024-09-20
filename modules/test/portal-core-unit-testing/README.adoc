@@ -78,7 +78,7 @@ class RuntimeBundleNamesTest implements ShouldBeNotNull<RuntimeBundleNames> {
     @PortalResourceBundle
     private ResourceBundle bundle;
 
-    @​Test
+    @Test
     void shouldProvideAtLeastOneBundle() {
         assertEquals("Runtime Configuration", bundle.getString("portal.runtime.configuration.default.title"));
     }
