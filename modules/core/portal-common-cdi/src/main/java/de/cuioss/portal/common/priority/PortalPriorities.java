@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import jakarta.annotation.Priority;
 import lombok.experimental.UtilityClass;
 

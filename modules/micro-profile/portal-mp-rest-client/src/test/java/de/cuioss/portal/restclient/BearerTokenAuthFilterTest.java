@@ -63,7 +63,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
         return new Dispatcher() {
 
             @Override
-            public MockResponse dispatch(final @NonNull @NotNull RecordedRequest request) {
+            public @NotNull MockResponse dispatch(final @NonNull @NotNull RecordedRequest request) {
                 if ("/success/test" .equals(request.getPath())) {
                     return new MockResponse(HttpServletResponse.SC_OK);
                 }

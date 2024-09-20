@@ -36,7 +36,7 @@ public interface ModuleDispatcherElement {
 
     /**
      * @return the base URl for this Dispatcher part. The runtime will ensure that
-     *         only elements will called, where the current url starts with the one
+     *         only elements will be called, where the current url starts with the one
      *         given here. If you want to filter yourself you may return '/'. The
      *         {@link Optional} contract is unaffected by this.
      */

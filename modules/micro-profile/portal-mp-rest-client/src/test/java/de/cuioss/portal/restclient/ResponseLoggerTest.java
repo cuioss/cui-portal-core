@@ -100,16 +100,12 @@ class ResponseLoggerTest {
             @Override
             public Object getProperty(final String name) {
                 Objects.requireNonNull(name);
-                if ("P1".equals(name)) {
-                    return "V1";
-                }
-                if ("P2".equals(name)) {
-                    return "V2";
-                }
-                if ("P3".equals(name)) {
-                    return 666L;
-                }
-                return null;
+                return switch (name) {
+                    case "P1" -> "V1";
+                    case "P2" -> "V2";
+                    case "P3" -> 666L;
+                    default -> null;
+                };
             }
 
             @Override

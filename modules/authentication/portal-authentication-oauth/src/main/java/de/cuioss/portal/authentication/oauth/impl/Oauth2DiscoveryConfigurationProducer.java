@@ -40,7 +40,6 @@ import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE
 import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
 import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
 import static de.cuioss.tools.string.MoreStrings.isBlank;
-import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 
 /**
  * Produces {@link Oauth2Configuration} using the new config params

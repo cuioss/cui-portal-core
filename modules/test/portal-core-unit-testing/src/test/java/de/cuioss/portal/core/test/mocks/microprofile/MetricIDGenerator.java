@@ -30,10 +30,9 @@ class MetricIDGenerator implements TypedGenerator<MetricID> {
 
     @Override
     public MetricID next() {
-        if (booleans().next().booleanValue()) {
+        if (booleans().next()) {
             return new MetricID(names.next());
         }
         return new MetricID(names.next(), tags.next());
     }
-
 }

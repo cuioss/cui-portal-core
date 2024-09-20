@@ -31,13 +31,13 @@ class MetricIdBuilderTest {
     @Test
     void exceptionOnMissingName() {
         var builder = new MetricIdBuilder();
-        assertThrows(IllegalArgumentException.class, () -> builder.build());
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 
     @Test
     void exceptionOnEmptyName() {
         var builder = new MetricIdBuilder().name("");
-        assertThrows(IllegalArgumentException.class, () -> builder.build());
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 
     @Test
@@ -46,7 +46,7 @@ class MetricIdBuilderTest {
             fail("ExceptionMapper must not be processed if there is no exception given.");
             return null;
         });
-        assertDoesNotThrow(() -> builder.build());
+        assertDoesNotThrow(builder::build);
     }
 
     @Test
@@ -59,7 +59,7 @@ class MetricIdBuilderTest {
             countDown.countDown();
             return null;
         });
-        assertDoesNotThrow(() -> builder.build());
+        assertDoesNotThrow(builder::build);
         assertEquals(0L, countDown.getCount());
     }
 
@@ -70,7 +70,7 @@ class MetricIdBuilderTest {
         var testTag3 = new Tag("test3", "value");
 
         var builder = new MetricIdBuilder().name("test").tag(testTag1).tag(testTag2).tags(new Tag[] { testTag3 });
-        var metricID = assertDoesNotThrow(() -> builder.build());
+        var metricID = assertDoesNotThrow(builder::build);
 
         assertTrue(metricID.getTags().containsKey("test1"), "test Tag 1 missing");
         assertTrue(metricID.getTags().containsKey("test2"), "test Tag 2 missing");

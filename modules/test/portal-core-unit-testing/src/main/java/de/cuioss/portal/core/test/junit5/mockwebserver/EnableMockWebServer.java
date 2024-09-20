@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import mockwebserver3.MockWebServer;
 
 /**
- * Using this annotations at type-level of a junit 5 test will control an
+ * Using this annotation at type-level of a junit 5 test will control an
  * instance of {@link MockWebServer}. The class where this annotation is used
  * must implement {@link MockWebServerHolder}.
  * <p>

@@ -95,9 +95,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
     @Test
     void shouldFailOnInvalidKey() {
         projectStage = ProjectStage.DEVELOPMENT;
-        assertThrows(MissingResourceException.class, () -> {
-            underTest.getString("not.there");
-        });
+        assertThrows(MissingResourceException.class, () -> underTest.getString("not.there"));
     }
 
     void shouldLogOnInvalidKey() {

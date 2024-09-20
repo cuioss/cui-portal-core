@@ -24,7 +24,7 @@ public interface OauthRedirector {
 
     /**
      * Redirect to another url. The url is expected to be complete and independent
-     * from the current context.
+     * of the current context.
      *
      * @param url the url as string
      * @throws IllegalStateException if an exception occurred during redirect.

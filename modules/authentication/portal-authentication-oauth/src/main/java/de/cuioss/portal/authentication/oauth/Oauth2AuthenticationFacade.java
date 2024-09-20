@@ -60,7 +60,7 @@ public interface Oauth2AuthenticationFacade extends AuthenticationFacade {
     /**
      * Check if this request was caused by the oauth2 server after successful
      * authentication and the parameters contain valid authentication data. If so,
-     * retrieve the username and subject and create a authenticated
+     * retrieve the username and subject and create an authenticated
      * {@link AuthenticatedUserInfo} to be stored in the session and returned.
      * Otherwise, an unauthenticated {@link AuthenticatedUserInfo} will be returned.
      *

@@ -56,7 +56,7 @@ class BaseAllAcceptDispatcherTest {
     }
 
     @Test
-    void shouldModifyMethodsToForbiddden() {
+    void shouldModifyMethodsToForbidden() {
         var dispatcher = new BaseAllAcceptDispatcher(DEFAULT_PATH);
 
         dispatcher.setMethodToResult(EndpointAnswerHandler.RESPONSE_FORBIDDEN, DELETE, GET, POST, PUT);
@@ -85,7 +85,7 @@ class BaseAllAcceptDispatcherTest {
     }
 
     @Test
-    void shouldModifyOtherMethodsToForbiddden() {
+    void shouldModifyOtherMethodsToForbidden() {
         var dispatcher = new BaseAllAcceptDispatcher(DEFAULT_PATH);
 
         dispatcher.setAllButGivenMethodToResult(EndpointAnswerHandler.RESPONSE_FORBIDDEN, DELETE, GET, POST, PUT);

@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
 
@@ -202,7 +203,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 WatchKey watchKey = null;
                 try {
                     watchKey = watcherService.take();
-                    Thread.sleep(EVENT_TIMEOUT);
+                    TimeUnit.MILLISECONDS.sleep(EVENT_TIMEOUT);
                     handleChangedWatchKey(watchKey);
                 } catch (InterruptedException ie) {
                     log.debug("Interrupted, exiting loop", ie);

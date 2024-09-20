@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 
-public class InvalidBundelPath implements ResourceBundleLocator {
+public class InvalidBundlePath implements ResourceBundleLocator {
 
     @Serial
     private static final long serialVersionUID = 5363360633544306322L;

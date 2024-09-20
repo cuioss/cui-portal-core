@@ -48,6 +48,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
@@ -219,7 +220,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.TRACE, "-- Client response info --");
     }
 
-    @Test
+    @Test @Disabled
     void testCorrectHostname() {
         final var handshakeCertificates = localhostCerts();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());

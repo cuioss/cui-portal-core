@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import de.cuioss.tools.logging.CuiLogger;
-import jakarta.annotation.Priority;
 
 /**
  * Used for configuring ResourceBundles. Implementations should provide a
@@ -58,17 +57,33 @@ public interface ResourceBundleLocator extends Serializable {
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();
         if (bundlePath.isEmpty()) {
-            LOGGER.debug("No ResourceBundle to be loaded is present");
+            LOGGER.debug("ResourceBundle path not defined for class: %s", getClass().getName());
             return Optional.empty();
         }
+
         try {
-            Optional<ResourceBundle> loadedBundle = Optional.of(ResourceBundle.getBundle(bundlePath.get(), locale));
-            LOGGER.debug("Successfully loaded %s '%s' for '%s'", getClass().getName(), bundlePath.get(), locale);
-            return loadedBundle;
+            var rb = ResourceBundle.getBundle(bundlePath.get(), locale);
+            LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath.get(), locale);
+            return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn("Unable to load %s '%s' for '%s'".formatted(getClass().getName(), bundlePath.get(), locale), e);
-            return Optional.empty();
+            LOGGER.debug("Unable to load %s '%s' for locale '%s'".formatted(getClass().getName(), bundlePath, locale), e);
+            return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
         }
     }
 
+    /**
+     * This is needed in the context of a Quarkus module. Otherwise, the
+     * {@link ResourceBundle} can not be found. The difference to the default
+     * implementation is passing {@code Thread.currentThread().getContextClassLoader()}.
+     */
+    private Optional<ResourceBundle> getBundleViaCurrentThreadContextClassLoader(String bundlePath, Locale locale) {
+        try {
+            var rb = ResourceBundle.getBundle(bundlePath, locale, Thread.currentThread().getContextClassLoader());
+            LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath, locale);
+            return Optional.of(rb);
+        } catch (MissingResourceException e) {
+            LOGGER.warn("Unable to load %s '%s' for locale '%s'".formatted(getClass().getName(), bundlePath, locale), e);
+            return Optional.empty();
+        }
+    }
 }

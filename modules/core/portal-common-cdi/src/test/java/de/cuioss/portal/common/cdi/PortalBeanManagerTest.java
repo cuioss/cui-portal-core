@@ -71,9 +71,8 @@ class PortalBeanManagerTest {
 
     @Test
     void shouldThrowExceptionOnZeroBeansFound() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+            resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class));
     }
 
     @Test

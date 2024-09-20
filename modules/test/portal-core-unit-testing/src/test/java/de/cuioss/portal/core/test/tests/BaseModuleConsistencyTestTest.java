@@ -26,17 +26,13 @@ class BaseModuleConsistencyTestTest extends BaseModuleConsistencyTest {
     @Test
     protected void shouldStartUpContainer() {
         // This is not CDI module, therefore this test must fail
-        assertThrows(DeploymentException.class, () -> {
-            super.shouldStartUpContainer();
-        });
+        assertThrows(DeploymentException.class, super::shouldStartUpContainer);
     }
 
     @Override
     @Test
     protected void moduleShouldProvideBeansXml() {
         // This is not CDI module, therefore this test must fail
-        assertThrows(AssertionError.class, () -> {
-            super.moduleShouldProvideBeansXml();
-        });
+        assertThrows(AssertionError.class, super::moduleShouldProvideBeansXml);
     }
 }
