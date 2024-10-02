@@ -46,10 +46,10 @@ jobs:
     - name: Maven release ${{steps.metadata.outputs.current-version}}
       run: |
         git checkout -b release
-        mvn -B --no-transfer-progress -Prelease,javadoc-mm-reporting release:clean release:prepare site:site site:stage -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
+        ./mvnw -B --no-transfer-progress -Prelease,javadoc-mm-reporting release:clean release:prepare site:site site:stage -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
         git checkout ${{vars.GITHUB_BASE_REF}}
         git rebase release
-        mvn -B --no-transfer-progress -Prelease,javadoc-mm-reporting release:perform
+        ./mvnw -B --no-transfer-progress -Prelease,javadoc-mm-reporting release:perform
       env:
         MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.OSS_SONATYPE_PASSWORD }}
