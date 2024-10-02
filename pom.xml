@@ -27,7 +27,7 @@
         <system>GitHub Issues</system>
     </issueManagement>
     <properties>
-        <version.cui.parent>0.7-SNAPSHOT</version.cui.parent>
+        <version.cui.parent>0.7.9</version.cui.parent>
     </properties>
     <modules>
         <module>bom</module>
