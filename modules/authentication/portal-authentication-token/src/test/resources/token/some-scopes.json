@@ -1,0 +1,7 @@
+{
+  "scp": [
+    "openid",
+    "email",
+    "offline_access"
+  ]
+}
