@@ -20,35 +20,35 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [17,21,22]
+        version: [17,21,23]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up JDK ${{ matrix.version }}
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.version }}
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven, Java ${{ matrix.version }}
-      run: ./mvnw --no-transfer-progress package -Dmaven.compiler.source=${{ matrix.version }} -Dmaven.compiler.target=${{ matrix.version }}
+      run: ./mvnw --no-transfer-progress verify -Dmaven.compiler.source=${{ matrix.version }} -Dmaven.compiler.target=${{ matrix.version }}
 
   sonar-build:
     needs: build
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        
+
     - name: Set up JDK 17 for Sonar-build
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        
+
     - name: Cache SonarCloud packages
       uses: actions/cache@v3
       with:
@@ -72,12 +72,12 @@ jobs:
 
   deploy-snapshot:
     needs: sonar-build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up JDK 17 for snapshot release
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
