@@ -12,6 +12,9 @@
     <properties>
         <version.smallrye-jwt>4.6.0</version.smallrye-jwt>
         <version.parsson>1.1.7</version.parsson>
+        <maven.jar.plugin.automatic.module.name>
+            de.cuioss.portal.authentication.token
+        </maven.jar.plugin.automatic.module.name>
     </properties>
     <dependencyManagement>
         <dependencies>
