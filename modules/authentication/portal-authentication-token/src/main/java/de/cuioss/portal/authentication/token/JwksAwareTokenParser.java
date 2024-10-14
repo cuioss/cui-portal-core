@@ -12,7 +12,7 @@ import lombok.experimental.Delegate;
 
 /**
  * Variant of {@link JWTParser} that will be configured for remote loading of the public-keys.
- * They are needed to verify the signature or the token.
+ * They are necessary to verify the signature or the token.
  *
  * @author Oliver Wolff
  */
