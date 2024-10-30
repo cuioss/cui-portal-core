@@ -28,6 +28,7 @@ public class TestRealm {
         /**
          * The password of the realm-configured test-user.
          */
+        @SuppressWarnings("squid:S2068") // owolff: These credentials are for testing only
         public static final String PASSWORD = "adminPass";
     }
 
@@ -41,6 +42,7 @@ public class TestRealm {
         /**
          * The secret of the OIDC-Client.
          */
+        @SuppressWarnings("squid:S2068") // owolff: These credentials are for testing only
         public static final String SECRET = "yTKslWLtf4giJcWCaoVJ20H8sy6STexM";
     }
 
