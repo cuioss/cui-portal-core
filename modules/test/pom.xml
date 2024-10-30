@@ -12,5 +12,6 @@
     <name>Portal test modules</name>
     <modules>
         <module>portal-core-unit-testing</module>
+        <module>portal-keycloak-integration-test</module>
     </modules>
 </project>
