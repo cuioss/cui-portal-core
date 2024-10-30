@@ -60,6 +60,7 @@ public class TestRealm {
         /**
          * The password of the realm-configured test-user.
          */
+        @SuppressWarnings("squid:S2068") // owolff: These credentials are for testing only
         public static final String PASSWORD = "drowssap";
 
         /**
@@ -83,6 +84,7 @@ public class TestRealm {
      */
     public enum providedKeyStore {
         ;
+        @SuppressWarnings("squid:S2068") // owolff: These credentials are for testing only
         public static final String PASSWORD = "changeit";
         public static final String KEYSTORE_PATH = "/tls.jks";
     }
