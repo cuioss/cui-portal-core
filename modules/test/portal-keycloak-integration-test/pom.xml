@@ -12,47 +12,13 @@
     <artifactId>portal-keycloak-integration-test</artifactId>
 
     <properties>
-        <version.testcontainers-keycloak>3.5.1</version.testcontainers-keycloak>
-        <version.testcontainer>1.20.2</version.testcontainer>
-        <version.rest-assured>5.4.0</version.rest-assured>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.core.test.it.keycloak
         </maven.jar.plugin.automatic.module.name>
 
-        <sonar.coverage.exclusions>src/main/java/de/cuioss/portal/test/keycloakit/TestRealm.java</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>src/main/java/de/cuioss/portal/test/keycloakit/TestRealm.java
+        </sonar.coverage.exclusions>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers</artifactId>
-                <version>${version.testcontainer}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.github.dasniko</groupId>
-                <artifactId>testcontainers-keycloak</artifactId>
-                <version>${version.testcontainers-keycloak}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${version.testcontainer}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.rest-assured</groupId>
-                <artifactId>rest-assured</artifactId>
-                <version>${version.rest-assured}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
