@@ -8,6 +8,7 @@
         <artifactId>authentication</artifactId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
+    <description>Provides some convenience structures for dealing with JTW-Token.</description>
     <artifactId>portal.authentication.token</artifactId>
     <properties>
         <version.smallrye-jwt>4.6.0</version.smallrye-jwt>
