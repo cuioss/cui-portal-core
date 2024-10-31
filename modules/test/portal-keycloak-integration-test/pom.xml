@@ -18,6 +18,8 @@
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.core.test.it.keycloak
         </maven.jar.plugin.automatic.module.name>
+
+        <sonar.coverage.exclusions>src/main/java/de/cuioss/portal/test/keycloakit/TestRealm.java</sonar.coverage.exclusions>
     </properties>
     <dependencyManagement>
         <dependencies>
