@@ -4,7 +4,6 @@ import dasniko.testcontainers.keycloak.KeycloakContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +37,7 @@ public class KeycloakITBase {
                 "grant_type", "password",
                 "scope", requestedScopes,
                 "client_id", TestRealm.client.ID,
-                "client_secret", TestRealm.client.SECRET
+                "client_secret", TestRealm.client.PASSWORD
         );
     }
 
