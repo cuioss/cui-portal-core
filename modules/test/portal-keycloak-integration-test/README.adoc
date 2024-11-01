@@ -15,7 +15,6 @@ It provides:
 === Dependencies
 
 [source, xml]
----
 <dependency>
     <groupId>de.cuioss.portal.test</groupId>
     <artifactId>portal-keycloak-integration-test</artifactId>
@@ -33,7 +32,6 @@ It provides:
     <artifactId>jcl-over-slf4j</artifactId>
     <scope>test</scope>
 </dependency>
----
 
 === Testing
 
@@ -59,6 +57,12 @@ For usage details see link:src/test/java/de/cuioss/portal/test/keycloakit/Keyclo
 
 *Last Name*: `User`
 
+=== OIDC-Client
+
+*Client ID*: `test_client`
+
+*Client Secret*: `yTKslWLtf4giJcWCaoVJ20H8sy6STexM`
+
 == Exporting updated configuration
 
 Tested for keycloak 26.0.1
@@ -71,7 +75,7 @@ For a Local Docker-Container You need a mounted persistent volume for the h2-DB:
 
 Precondition: Local Docker-Container, with mounted persistent volume for h2
 
-Stop the keycloak, if it is running.
+Stop the keycloak if it is running.
 
 Start the keycloak exporter, as below:
 
