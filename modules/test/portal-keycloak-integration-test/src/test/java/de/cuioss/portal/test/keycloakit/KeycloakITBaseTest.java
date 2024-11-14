@@ -46,9 +46,13 @@ class KeycloakITBaseTest extends KeycloakITBase {
                 .when().get(getJWKSUrl())
                 .then().statusCode(200);
 
+        given()
+                .when().get(getIssuer())
+                .then().statusCode(200);
+
     }
 
-    // No @ParameterizedTest because of multiple keycloak starts for some reason withReuse does not work
+    // No @ParameterizedTest because of multiple keycloak-starts ... for some reason withReuse does not work
     // @CsvSource(value = {TokenTypes.ACCESS, TokenTypes.ID_TOKEN, TokenTypes.REFRESH})
     @Test
     void shouldAccessToken() {

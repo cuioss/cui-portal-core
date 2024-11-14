@@ -76,4 +76,11 @@ public class KeycloakITBase {
         return getOIDCUrl() + "certs";
     }
 
+    /**
+     * Resolves the Issuer-url for the configured realm.
+     */
+    protected String getIssuer() {
+        return keycloak.getAuthServerUrl() + "/realms/" + TestRealm.REALM_NAME;
+    }
+
 }

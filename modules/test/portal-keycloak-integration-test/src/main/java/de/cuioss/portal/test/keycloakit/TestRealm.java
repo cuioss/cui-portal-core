@@ -87,6 +87,7 @@ public class TestRealm {
         @SuppressWarnings("squid:S2068") // owolff: These credentials are for testing only
         public static final String PASSWORD = "changeit";
         public static final String KEYSTORE_PATH = "/tls.jks";
+        public static final String PUBLIC_CERT = "/tls.crt";
     }
 
 

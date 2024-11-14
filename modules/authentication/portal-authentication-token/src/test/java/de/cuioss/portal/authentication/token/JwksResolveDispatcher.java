@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class JwksResolveDispatcher implements ModuleDispatcherElement {
 
-    /** "/oidc/jwks.json" */
+    /**
+     * "/oidc/jwks.json"
+     */
     public static final String LOCAL_PATH = "/oidc/jwks.json";
     public static final String PUBLIC_KEY_JWKS = TestTokenProducer.BASE_PATH + "test-public-key.jwks";
     public static final String PUBLIC_KEY_OTHER = TestTokenProducer.BASE_PATH + "other-public-key.pub";
@@ -42,7 +44,7 @@ public class JwksResolveDispatcher implements ModuleDispatcherElement {
                 .toStringUnchecked(FileLoaderUtility.getLoaderForPath(currentKey))));
     }
 
-    void switchToOtherPublicKey(){
+    void switchToOtherPublicKey() {
         currentKey = PUBLIC_KEY_OTHER;
     }
 

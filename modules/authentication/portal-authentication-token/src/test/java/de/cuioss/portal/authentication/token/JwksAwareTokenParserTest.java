@@ -13,7 +13,10 @@ import org.junit.jupiter.api.Test;
 
 import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
 import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableMockWebServer
 class JwksAwareTokenParserTest implements MockWebServerHolder {
@@ -38,7 +41,7 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
     void setupMockServer() {
         mockserverPort = mockWebServer.getPort();
         jwksEndpoint = "http://localhost:" + mockserverPort + jwksResolveDispatcher.getBaseUrl();
-        tokenParser = new JwksAwareTokenParser(jwksEndpoint, JWKS_REFRESH_INTERVALL, TestTokenProducer.ISSUER);
+        tokenParser = JwksAwareTokenParser.builder().jwksEndpoint(jwksEndpoint).jwksRefreshIntervall(JWKS_REFRESH_INTERVALL).jwksIssuer(TestTokenProducer.ISSUER).build();
         jwksResolveDispatcher.setCallCounter(0);
     }
 
@@ -54,7 +57,7 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
 
     @Test
     void shouldFailFromRemoteWithInvalidIssuer() {
-        tokenParser = new JwksAwareTokenParser(jwksEndpoint, JWKS_REFRESH_INTERVALL, "Wrong Issuer");
+        tokenParser = JwksAwareTokenParser.builder().jwksEndpoint(jwksEndpoint).jwksRefreshIntervall(JWKS_REFRESH_INTERVALL).jwksIssuer("Wrong Issuer").build();
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
         JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
         assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);

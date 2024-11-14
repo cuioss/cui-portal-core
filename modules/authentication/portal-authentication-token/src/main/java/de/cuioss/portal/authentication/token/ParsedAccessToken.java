@@ -1,6 +1,7 @@
 package de.cuioss.portal.authentication.token;
 
 import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.Splitter;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonString;
@@ -10,7 +11,11 @@ import lombok.ToString;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -26,7 +31,7 @@ public class ParsedAccessToken extends ParsedToken {
 
     private static final CuiLogger LOGGER = new CuiLogger(ParsedAccessToken.class);
 
-    private static final String CLAIM_NAME_SCOPE = "scp";
+    private static final String CLAIM_NAME_SCOPE = "scope";
     private static final String CLAIM_NAME_NAME = "name";
     private static final String CLAIM_NAME_ROLES = "roles";
 
@@ -68,11 +73,7 @@ public class ParsedAccessToken extends ParsedToken {
             return Set.of();
         }
 
-        Set<String> result = jsonWebToken.<JsonArray>getClaim(CLAIM_NAME_SCOPE)
-                .getValuesAs(JsonString.class)
-                .stream()
-                .map(JsonString::getString).collect(toSet());
-
+        var result = Splitter.on(' ').splitToList(jsonWebToken.getClaim(CLAIM_NAME_SCOPE));
         LOGGER.debug("Extracted scopes: '%s'", result);
         return new TreeSet<>(result);
     }

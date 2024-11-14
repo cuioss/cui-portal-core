@@ -1,7 +1,3 @@
 {
-  "scp": [
-    "openid",
-    "email",
-    "offline_access"
-  ]
+  "scope": "openid email offline_access"
 }

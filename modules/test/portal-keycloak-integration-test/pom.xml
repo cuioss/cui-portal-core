@@ -25,6 +25,10 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.cuioss</groupId>
+            <artifactId>cui-java-tools</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.dasniko</groupId>
             <artifactId>testcontainers-keycloak</artifactId>
             <!-- Here we need 'compile', because we create a usable baseclass-->
