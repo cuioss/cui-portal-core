@@ -3,6 +3,7 @@ package de.cuioss.portal.authentication.token;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher;
+import de.cuioss.tools.io.IOStreams;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,9 @@ import mockwebserver3.MockWebServer;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
 import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
@@ -88,6 +92,15 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
             assertValidJsonWebToken(jsonWebToken, initialToken);
         }
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
+    }
+
+    @Test
+    void shouldConsumeJWKSDirectly() throws IOException {
+        String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
+        tokenParser = JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
+                new FileInputStream(JwksResolveDispatcher.PUBLIC_KEY_JWKS))).jwksIssuer(TestTokenProducer.ISSUER).build();
+        var token = ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER);
+        assertValidJsonWebToken(token, initialToken);
     }
 
     private void assertValidJsonWebToken(JsonWebToken jsonWebToken, String initialTokenString) {

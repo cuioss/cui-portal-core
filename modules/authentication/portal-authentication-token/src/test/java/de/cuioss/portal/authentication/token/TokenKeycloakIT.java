@@ -39,7 +39,6 @@ public class TokenKeycloakIT extends KeycloakITBase {
         var accessToken = ParsedAccessToken.fromTokenString(tokenString, parser);
         assertFalse(accessToken.isEmpty());
         assertTrue(accessToken.isValid());
-        LOGGER.info(accessToken.getScopes().toString());
         assertTrue(accessToken.providesScopes(SCOPES_AS_LIST));
         assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
 
@@ -48,6 +47,9 @@ public class TokenKeycloakIT extends KeycloakITBase {
         assertFalse(idToken.isEmpty());
         assertTrue(idToken.isValid());
         assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
+
+        tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.REFRESH);
+        LOGGER.info(tokenString);
     }
 
     private String requestToken(Map<String, String> parameter, String tokenType) {

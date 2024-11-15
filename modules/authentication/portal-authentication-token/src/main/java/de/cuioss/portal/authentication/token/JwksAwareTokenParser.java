@@ -80,11 +80,11 @@ public class JwksAwareTokenParser implements JWTParser {
         /**
          * Sets the public-key content for the verification of the token
          *
-         * @param publicKeyContent to be set
+         * @param jwksKeyContent to be set
          * @return the {@link Builder} itself
          */
-        public Builder publicKeyContent(String publicKeyContent) {
-            containedContextInfo.setPublicKeyContent(publicKeyContent);
+        public Builder jwksKeyContent(String jwksKeyContent) {
+            containedContextInfo.setPublicKeyContent(jwksKeyContent);
             return this;
         }
 
@@ -94,7 +94,7 @@ public class JwksAwareTokenParser implements JWTParser {
          */
         public JwksAwareTokenParser build() {
             Preconditions.checkArgument(null != containedContextInfo.getIssuedBy(), "jwksIssuer must be set");
-            Preconditions.checkArgument(null != containedContextInfo.getPublicKeyLocation() || null != containedContextInfo.getPublicKeyContent(), "either jwksEndpoint or getPublicKeyContent must be set");
+            Preconditions.checkArgument(null == containedContextInfo.getPublicKeyLocation() && null == containedContextInfo.getPublicKeyContent(), "either jwksEndpoint or getPublicKeyContent must be set");
             if (null != containedContextInfo.getJwksRefreshInterval()) {
                 LOGGER.debug("Defaulting jwksRefreshIntervall to %s", 180);
                 containedContextInfo.setJwksRefreshInterval(180);
