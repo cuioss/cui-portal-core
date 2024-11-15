@@ -41,22 +41,28 @@ public class TokenKeycloakIT extends KeycloakITBase {
         assertTrue(accessToken.isValid());
         assertTrue(accessToken.providesScopes(SCOPES_AS_LIST));
         assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
+        assertEquals(TokenType.ACCESS_TOKEN, accessToken.getType());
 
         tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ID_TOKEN);
         var idToken = ParsedIdToken.fromTokenString(tokenString, parser);
         assertFalse(idToken.isEmpty());
         assertTrue(idToken.isValid());
         assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
+        assertEquals(TokenType.ID_TOKEN, idToken.getType());
 
         tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.REFRESH);
-        LOGGER.info(tokenString);
+        var refreshToken = ParsedRefreshToken.fromTokenString(tokenString);
+        assertFalse(refreshToken.isEmpty());
+        assertEquals(TokenType.REFRESH_TOKEN, refreshToken.getType());
     }
 
     private String requestToken(Map<String, String> parameter, String tokenType) {
-        return given().contentType("application/x-www-form-urlencoded")
+        String tokenString = given().contentType("application/x-www-form-urlencoded")
                 .formParams(parameter)
                 .post(getTokenUrl()).then().assertThat().statusCode(200)
                 .extract().path(tokenType);
+        LOGGER.info(tokenType + "\n" + tokenString);
+        return tokenString;
     }
 
 }

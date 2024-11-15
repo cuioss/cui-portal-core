@@ -31,7 +31,10 @@ public class ParsedAccessToken extends ParsedToken {
 
     private static final CuiLogger LOGGER = new CuiLogger(ParsedAccessToken.class);
 
-    private static final String CLAIM_NAME_SCOPE = "scope";
+    /**
+     * The name for the scopes-claim.
+     */
+    public static final String CLAIM_NAME_SCOPE = "scope";
     private static final String CLAIM_NAME_NAME = "name";
     private static final String CLAIM_NAME_ROLES = "roles";
 

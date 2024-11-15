@@ -29,6 +29,8 @@ public class TestTokenProducer {
 
     public static final String SOME_SCOPES = BASE_PATH + "some-scopes.json";
 
+    public static final String REFRESH_TOKEN = BASE_PATH + "refresh-token.json";
+
     public static final String SOME_ROLES = BASE_PATH + "some-roles.json";
 
     public static final String SOME_NAME = BASE_PATH + "some-name.json";

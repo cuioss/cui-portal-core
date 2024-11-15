@@ -94,7 +94,7 @@ public class JwksAwareTokenParser implements JWTParser {
          */
         public JwksAwareTokenParser build() {
             Preconditions.checkArgument(null != containedContextInfo.getIssuedBy(), "jwksIssuer must be set");
-            Preconditions.checkArgument(null == containedContextInfo.getPublicKeyLocation() && null == containedContextInfo.getPublicKeyContent(), "either jwksEndpoint or getPublicKeyContent must be set");
+            Preconditions.checkArgument(null != containedContextInfo.getPublicKeyLocation() || null != containedContextInfo.getPublicKeyContent(), "either jwksEndpoint or getPublicKeyContent must be set");
             if (null != containedContextInfo.getJwksRefreshInterval()) {
                 LOGGER.debug("Defaulting jwksRefreshIntervall to %s", 180);
                 containedContextInfo.setJwksRefreshInterval(180);

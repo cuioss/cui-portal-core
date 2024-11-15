@@ -18,9 +18,8 @@ import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 
 /**
  * Wrapper around {@link JsonWebToken}
- * 
- * @author Oliver Wolff
  *
+ * @author Oliver Wolff
  */
 @RequiredArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -28,7 +27,9 @@ public abstract class ParsedToken {
 
     protected static final String EMPTY_NAME = "EMPTY";
 
-    /** <code>null</code> token. */
+    /**
+     * <code>null</code> token.
+     */
     public static final JsonWebToken EMPTY_WEB_TOKEN = new JsonWebToken() {
 
         @Override
@@ -99,6 +100,15 @@ public abstract class ParsedToken {
      */
     public boolean willExpireInSeconds(int seconds) {
         return OffsetDateTime.now().plusSeconds(seconds).isAfter(getExpirationTime());
+    }
+
+    /**
+     * Extracts the {@link TokenType} from the claim "type."
+     * <em>Caution:</em> This is only tested for keycloak.
+     * The claim 'typ' is not from the oauth spec.
+     */
+    public TokenType getType() {
+        return TokenType.fromTypClaim(jsonWebToken.getClaim("typ"));
     }
 
     /**
