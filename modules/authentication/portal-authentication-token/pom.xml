@@ -10,7 +10,7 @@
     </parent>
     <artifactId>portal.authentication.token</artifactId>
     <properties>
-        <version.smallrye-jwt>4.6.0</version.smallrye-jwt>
+        <version.smallrye-jwt>4.6.1</version.smallrye-jwt>
         <version.parsson>1.1.7</version.parsson>
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.authentication.token
