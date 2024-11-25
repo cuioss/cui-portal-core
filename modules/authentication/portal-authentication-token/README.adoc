@@ -10,12 +10,10 @@ The core functionality is the simplified configuration of checking the signature
 == Maven Coordinates
 
 [source, xml]
-----
-    <dependency>
-        <groupId>de.cuioss.portal.authentication</groupId>
-        <artifactId>portal-authentication-token</artifactId>
-    </dependency>
-----
+<dependency>
+    <groupId>de.cuioss.portal.authentication</groupId>
+    <artifactId>portal-authentication-token</artifactId>
+</dependency>
 
 == Usage
 

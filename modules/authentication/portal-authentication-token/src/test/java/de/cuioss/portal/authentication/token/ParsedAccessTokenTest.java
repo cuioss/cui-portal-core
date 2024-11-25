@@ -24,7 +24,6 @@ class ParsedAccessTokenTest {
     @Test
     void shouldParseValidToken() {
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
-
         ParsedAccessToken parsedAccessToken = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
 
         assertTrue(parsedAccessToken.isValid());
