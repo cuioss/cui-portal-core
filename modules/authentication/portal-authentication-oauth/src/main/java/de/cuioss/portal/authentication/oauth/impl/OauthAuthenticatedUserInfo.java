@@ -59,7 +59,7 @@ public class OauthAuthenticatedUserInfo implements AuthenticatedUserInfo {
     }
 
     /**
-     * @return {@link Token#getId_token()}
+     * @return The id-token
      */
     public Optional<String> getIdToken() {
         var token = getToken();
