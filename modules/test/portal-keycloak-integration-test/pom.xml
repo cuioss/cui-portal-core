@@ -18,7 +18,7 @@
 
         <sonar.coverage.exclusions>src/main/java/de/cuioss/portal/test/keycloakit/TestRealm.java
         </sonar.coverage.exclusions>
-        <maven.javadoc.plugin.failOnError>false</maven.javadoc.plugin.failOnError>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
     <dependencies>
         <dependency>
