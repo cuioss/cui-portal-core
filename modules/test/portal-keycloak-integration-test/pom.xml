@@ -17,12 +17,8 @@
             de.cuioss.portal.core.test.it.keycloak
         </maven.jar.plugin.automatic.module.name>
 
-        <sonar.coverage.exclusions>src/main/java/de/cuioss/portal/test/keycloakit/TestRealm.java
-        </sonar.coverage.exclusions>
-        <!-- Fixes the problem:
-            Error: [ERROR] Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.21.0:site (default-site) on project portal.authentication.token: Failed to render site: Error generating maven-javadoc-plugin:3.11.1:javadoc report: Unable to derive module descriptor for /home/runner/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-impl-base/2.0.0-beta-2/shrinkwrap-impl-base-2.0.0-beta-2.jar: Provider class implementingClassName=org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl not in module -> [Help 1]
-        -->
-        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <sonar.coverage.exclusions>src/main/java/de/cuioss/portal/test/keycloakit/TestRealm.java</sonar.coverage.exclusions>
+
     </properties>
     <dependencies>
         <dependency>
@@ -74,4 +70,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- Fixes the problem:
+    Error: [ERROR] Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.21.0:site (default-site) on project portal.authentication.token: Failed to render site: Error generating maven-javadoc-plugin:3.11.1:javadoc report: Unable to derive module descriptor for /home/runner/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-impl-base/2.0.0-beta-2/shrinkwrap-impl-base-2.0.0-beta-2.jar: Provider class implementingClassName=org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl not in module -> [Help 1]-->
+                    <legacyMode>true</legacyMode>
+                </configuration>
+
+            </plugin>
+        </plugins>
+    </build>
 </project>
