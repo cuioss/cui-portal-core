@@ -14,6 +14,11 @@
         <maven.jar.plugin.automatic.module.name>
             de.cuioss.portal.authentication.token
         </maven.jar.plugin.automatic.module.name>
+        <!-- Fixes the problem:
+    Error: [ERROR] Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.21.0:site (default-site) on project portal.authentication.token: Failed to render site: Error generating maven-javadoc-plugin:3.11.1:javadoc report: Unable to derive module descriptor for /home/runner/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-impl-base/2.0.0-beta-2/shrinkwrap-impl-base-2.0.0-beta-2.jar: Provider class implementingClassName=org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl not in module -> [Help 1]-->
+        <maven.javadoc.plugin.legacyMode>true</maven.javadoc.plugin.legacyMode>
+        <!-- For some reason, the fix above will be ignored by the mvn-site-plugin-->
+        <maven.site.plugin.generateReports>false</maven.site.plugin.generateReports>
     </properties>
     <dependencies>
         <dependency>
