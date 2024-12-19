@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.cuioss.portal.test</groupId>
         <artifactId>test</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.1.1</version>
     </parent>
     <artifactId>portal-core-unit-testing</artifactId>
     <description>Provides a number of structures to enable junit 5 and
