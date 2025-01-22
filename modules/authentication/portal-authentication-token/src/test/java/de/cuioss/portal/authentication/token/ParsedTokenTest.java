@@ -20,7 +20,6 @@ import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
-import io.smallrye.jwt.auth.principal.DefaultJWTParser;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.DEFAULT_TOKEN_PARSER;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,20 +42,24 @@ class ParsedTokenTest {
     @NullAndEmptySource
     @ValueSource(strings = "  ")
     void shouldProvideEmptyFallbackOnEmptyInput(String initialTokenString) {
-        JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
+        JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
+                TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
 
         Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                LogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
     }
 
     @Test
     void shouldProvideEmptyFallbackOnParseError() {
         String initialTokenString = Generators.letterStrings(10, 20).next();
 
-        JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
+        JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
+                TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
 
         Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
 
     @Test
@@ -62,10 +67,11 @@ class ParsedTokenTest {
         String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
 
         JsonWebToken jsonWebToken = ParsedToken
-                .jsonWebTokenFrom(initialTokenString, new DefaultJWTParser(TestTokenProducer.TEST_AUTH_CONTEXT_INFO_WRONG_ISSUER), LOGGER);
+                .jsonWebTokenFrom(initialTokenString, TestTokenProducer.WRONG_ISSUER_TOKEN_PARSER, LOGGER);
 
         Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
 
     @Test
@@ -73,10 +79,11 @@ class ParsedTokenTest {
         String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
 
         JsonWebToken jsonWebToken = ParsedToken
-                .jsonWebTokenFrom(initialTokenString, new DefaultJWTParser(TestTokenProducer.TEST_AUTH_CONTEXT_INFO_WRONG_PUBLIC_KEY),
-                        LOGGER);
+                .jsonWebTokenFrom(initialTokenString,
+                        TestTokenProducer.WRONG_SIGNATURE_TOKEN_PARSER, LOGGER);
         Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
 
     @Test

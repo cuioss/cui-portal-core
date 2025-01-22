@@ -133,4 +133,18 @@ public abstract class ParsedToken {
         return OffsetDateTime
                 .ofInstant(Instant.ofEpochSecond(jsonWebToken.getExpirationTime()), ZoneId.systemDefault());
     }
+
+    /**
+     * @return the subject from the underlying JWT token
+     */
+    public String getSubject() {
+        return jsonWebToken.getSubject();
+    }
+
+    /**
+     * @return the issuer from the underlying JWT token
+     */
+    public String getIssuer() {
+        return jsonWebToken.getIssuer();
+    }
 }

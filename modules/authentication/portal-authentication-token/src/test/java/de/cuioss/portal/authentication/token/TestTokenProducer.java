@@ -52,16 +52,20 @@ public class TestTokenProducer {
 
     public static final String SOME_ID_TOKEN = BASE_PATH + "some-id-token.json";
 
-
     public static final JWTAuthContextInfo TEST_AUTH_CONTEXT_INFO = new JWTAuthContextInfo(PUBLIC_KEY, ISSUER);
 
-    public static final JWTAuthContextInfo TEST_AUTH_CONTEXT_INFO_WRONG_PUBLIC_KEY =
-            new JWTAuthContextInfo(PUBLIC_KEY_OTHER, ISSUER);
+    public static final JWTAuthContextInfo TEST_AUTH_CONTEXT_INFO_WRONG_PUBLIC_KEY = new JWTAuthContextInfo(
+            PUBLIC_KEY_OTHER, ISSUER);
 
-    public static final JWTAuthContextInfo TEST_AUTH_CONTEXT_INFO_WRONG_ISSUER =
-            new JWTAuthContextInfo(PUBLIC_KEY, new StringBuilder(ISSUER).reverse().toString());
+    public static final JWTAuthContextInfo TEST_AUTH_CONTEXT_INFO_WRONG_ISSUER = new JWTAuthContextInfo(PUBLIC_KEY,
+            new StringBuilder(ISSUER).reverse().toString());
 
     public static final JWTParser DEFAULT_TOKEN_PARSER = new DefaultJWTParser(TEST_AUTH_CONTEXT_INFO);
+
+    public static final JWTParser WRONG_ISSUER_TOKEN_PARSER = new DefaultJWTParser(TEST_AUTH_CONTEXT_INFO_WRONG_ISSUER);
+
+    public static final JWTParser WRONG_SIGNATURE_TOKEN_PARSER = new DefaultJWTParser(
+            TEST_AUTH_CONTEXT_INFO_WRONG_PUBLIC_KEY);
 
     public static final String SUBJECT = Generators.letterStrings(10, 12).next();
 
