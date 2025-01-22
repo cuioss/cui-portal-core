@@ -2,6 +2,7 @@
 **/target
 **/bin
 **/.idea
+**/.vscode
 **/src/main/gen
 *.iml
 *.classpath
