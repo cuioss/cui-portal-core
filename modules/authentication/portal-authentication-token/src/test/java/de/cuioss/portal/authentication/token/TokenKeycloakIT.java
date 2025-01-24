@@ -51,7 +51,8 @@ public class TokenKeycloakIT extends KeycloakITBase {
         var tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ACCESS);
 
         var parser = JwksAwareTokenParser.builder().jwksEndpoint(getJWKSUrl()).jwksRefreshIntervall(100).jwksIssuer(getIssuer()).tTlsCertificatePath(TestRealm.providedKeyStore.PUBLIC_CERT).build();
-        var retrievedAccessToken = ParsedAccessToken.fromTokenString(tokenString, parser);
+        var factory = TokenFactory.of(parser);
+        var retrievedAccessToken = factory.createAccessToken(tokenString);
         assertTrue(retrievedAccessToken.isPresent());
 
         var accessToken = retrievedAccessToken.get();
@@ -62,7 +63,7 @@ public class TokenKeycloakIT extends KeycloakITBase {
 
         tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ID_TOKEN);
 
-        var idToken = ParsedIdToken.fromTokenString(tokenString, parser);
+        var idToken = factory.createIdToken(tokenString);
         assertFalse(idToken.isEmpty());
 
         assertFalse(idToken.get().isExpired());

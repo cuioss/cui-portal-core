@@ -19,6 +19,8 @@ The core functionality is the simplified configuration of checking the signature
 
 The central objects are:
 
+* link:src/main/java/de/cuioss/portal/authentication/token/TokenFactory.java[TokenFactory]
+
 * link:src/main/java/de/cuioss/portal/authentication/token/JwksAwareTokenParser.java[Configuration of the io.smallrye.jwt.auth.principal.JWTParser]
 
 * link:src/main/java/de/cuioss/portal/authentication/token/ParsedAccessToken.java[ParsedAccessToken]
