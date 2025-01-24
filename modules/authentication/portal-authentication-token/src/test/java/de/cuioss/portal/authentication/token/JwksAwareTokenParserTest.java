@@ -23,7 +23,6 @@ import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.MockWebServer;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPE
 import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableMockWebServer
@@ -60,7 +59,7 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
     void setupMockServer() {
         mockserverPort = mockWebServer.getPort();
         jwksEndpoint = "http://localhost:" + mockserverPort + jwksResolveDispatcher.getBaseUrl();
-        tokenParser = JwksAwareTokenParser.builder().jwksEndpoint(jwksEndpoint).jwksRefreshIntervall(JWKS_REFRESH_INTERVALL).jwksIssuer(TestTokenProducer.ISSUER).build();
+        tokenParser = getValidJWKSParserWithRemoteJWKS();
         jwksResolveDispatcher.setCallCounter(0);
     }
 
@@ -69,25 +68,29 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
     void shouldResolveFromRemote() {
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
 
-        JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
+        var jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
 
-        assertValidJsonWebToken(jsonWebToken, initialToken);
+        assertTrue(jsonWebToken.isPresent());
+        assertEquals(jsonWebToken.get().getRawToken(), initialToken);
     }
 
     @Test
     void shouldFailFromRemoteWithInvalidIssuer() {
         tokenParser = JwksAwareTokenParser.builder().jwksEndpoint(jwksEndpoint).jwksRefreshIntervall(JWKS_REFRESH_INTERVALL).jwksIssuer("Wrong Issuer").build();
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
-        JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
-        assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
+        var jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
+
+        assertFalse(jsonWebToken.isPresent());
+
     }
 
     @Test
     void shouldFailFromRemoteWithInvalidJWKS() {
         jwksResolveDispatcher.switchToOtherPublicKey();
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
-        JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
-        assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
+        var jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
+
+        assertFalse(jsonWebToken.isPresent());
     }
 
     @Test
@@ -95,16 +98,16 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
         jwksResolveDispatcher.assertCallsAnswered(0);
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
         for (int i = 0; i < 100; i++) {
-            JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER);
-            assertValidJsonWebToken(jsonWebToken, initialToken);
+            var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER);
+            assertTrue(jsonWebToken.isPresent());
         }
         // For some reason, there are always at least 2 calls, instead of expected one call. No
         // problem because as shown within this test, the number stays at 2
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
 
         for (int i = 0; i < 100; i++) {
-            JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
-            assertValidJsonWebToken(jsonWebToken, initialToken);
+            var jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER));
+            assertTrue(jsonWebToken.isPresent());
         }
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
     }
@@ -112,15 +115,28 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
     @Test
     void shouldConsumeJWKSDirectly() throws IOException {
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
-        tokenParser = JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
-                new FileInputStream(JwksResolveDispatcher.PUBLIC_KEY_JWKS))).jwksIssuer(TestTokenProducer.ISSUER).build();
-        var token = ParsedToken.jsonWebTokenFrom(initialToken, tokenParser, LOGGER);
-        assertValidJsonWebToken(token, initialToken);
+        var token = ParsedToken.jsonWebTokenFrom(initialToken, getValidJWKSParserWithLocalJWKS(), LOGGER);
+        assertTrue(token.isPresent());
+        assertEquals(token.get().getRawToken(), initialToken);
     }
 
-    private void assertValidJsonWebToken(JsonWebToken jsonWebToken, String initialTokenString) {
-        assertNotEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
-        assertEquals(initialTokenString, jsonWebToken.getRawToken());
+    static JwksAwareTokenParser getValidJWKSParserWithLocalJWKS() throws IOException {
+        return JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
+                new FileInputStream(JwksResolveDispatcher.PUBLIC_KEY_JWKS))).jwksIssuer(TestTokenProducer.ISSUER).build();
+    }
+
+    static JwksAwareTokenParser getInvalidJWKSParserWithWrongLocalJWKS() throws IOException {
+        return JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
+                new FileInputStream(TestTokenProducer.PUBLIC_KEY_OTHER))).jwksIssuer(TestTokenProducer.ISSUER).build();
+    }
+
+    static JwksAwareTokenParser getInvalidValidJWKSParserWithLocalJWKSAndWrongIssuer() throws IOException {
+        return JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
+                new FileInputStream(JwksResolveDispatcher.PUBLIC_KEY_JWKS))).jwksIssuer(TestTokenProducer.WRONG_ISSUER).build();
+    }
+
+    private JwksAwareTokenParser getValidJWKSParserWithRemoteJWKS() {
+        return JwksAwareTokenParser.builder().jwksEndpoint(jwksEndpoint).jwksRefreshIntervall(JWKS_REFRESH_INTERVALL).jwksIssuer(TestTokenProducer.ISSUER).build();
     }
 
 }

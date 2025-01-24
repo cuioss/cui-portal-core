@@ -32,6 +32,9 @@ public enum TokenType {
     private final String typeClaimName;
 
     public static TokenType fromTypClaim(String typeClaimName) {
+        if (typeClaimName == null) {
+            return UNKNOWN;
+        }
         for (TokenType tokenType : TokenType.values()) {
             if (tokenType.typeClaimName.equalsIgnoreCase(typeClaimName)) {
                 return tokenType;

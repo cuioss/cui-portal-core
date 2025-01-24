@@ -27,7 +27,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Set;
+import java.util.Optional;
 
 import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 
@@ -40,36 +40,6 @@ import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class ParsedToken {
 
-    protected static final String EMPTY_NAME = "EMPTY";
-
-    /**
-     * <code>null</code> token.
-     */
-    public static final JsonWebToken EMPTY_WEB_TOKEN = new JsonWebToken() {
-
-        @Override
-        public String getName() {
-            return EMPTY_NAME;
-        }
-
-        @Override
-        public Set<String> getClaimNames() {
-            return Set.of();
-        }
-
-        @Override
-        public <T> T getClaim(String claimName) {
-            return null;
-        }
-    };
-
-    /**
-     * @return true, if the token could not be parsed.
-     */
-    public boolean isEmpty() {
-        return EMPTY_NAME.equals(jsonWebToken.getName());
-    }
-
     /**
      * @return the token as encoded String.
      */
@@ -77,18 +47,18 @@ public abstract class ParsedToken {
         return jsonWebToken.getRawToken();
     }
 
-    protected static JsonWebToken jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger logger) {
+    protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger logger) {
         logger.trace("Parsing token '%s'", tokenString);
         if (MoreStrings.isEmpty(trimOrNull(tokenString))) {
             logger.warn(LogMessages.TOKEN_IS_EMPTY.format());
-            return EMPTY_WEB_TOKEN;
+            return Optional.empty();
         }
         try {
-            return tokenParser.parse(tokenString);
+            return Optional.ofNullable(tokenParser.parse(tokenString));
         } catch (ParseException e) {
             logger.warn(e, LogMessages.COULD_NOT_PARSE_TOKEN.format());
             logger.trace(() -> LogMessages.COULD_NOT_PARSE_TOKEN_TRACE.format(tokenString));
-            return EMPTY_WEB_TOKEN;
+            return Optional.empty();
         }
     }
 
@@ -103,10 +73,6 @@ public abstract class ParsedToken {
      */
     public boolean isExpired() {
         return willExpireInSeconds(0);
-    }
-
-    public boolean isValid() {
-        return !(isEmpty() || isExpired());
     }
 
     /**

@@ -18,6 +18,7 @@ package de.cuioss.portal.authentication.token;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ParsedIdTokenTest {
 
@@ -25,16 +26,19 @@ class ParsedIdTokenTest {
     void shouldHandleValidToken() {
         String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_ID_TOKEN);
 
-        ParsedIdToken parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
-        assertEquals(parsedIdToken.getTokenString(), initialTokenString);
+        var parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
+
+        assertTrue(parsedIdToken.isPresent());
+        assertEquals(parsedIdToken.get().getTokenString(), initialTokenString);
     }
 
     @Test
     void shouldHandleEmail() {
         String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_ID_TOKEN);
 
-        ParsedIdToken parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
-        assertEquals("hello@world.com", parsedIdToken.getEmail().get());
+        var parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
+        assertTrue(parsedIdToken.isPresent());
+        assertEquals("hello@world.com", parsedIdToken.get().getEmail().get());
     }
 
 }

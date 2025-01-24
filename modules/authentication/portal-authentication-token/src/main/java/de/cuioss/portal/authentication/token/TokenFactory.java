@@ -1,20 +1,20 @@
 package de.cuioss.portal.authentication.token;
 
-import io.smallrye.jwt.auth.principal.JWTParser;
-import jakarta.enterprise.context.ApplicationScoped;
+import de.cuioss.tools.base.Preconditions;
 import jakarta.inject.Inject;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 /**
- * Factory for creating different types of tokens.
+ * Factory for creating different types of tokens with support for multiple issuers.
  */
-@ApplicationScoped
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
 public class TokenFactory {
 
-    private final JWTParser tokenParser;
+    private final MultiIssuerTokenParser tokenParser;
 
     /**
      * Creates a new token factory using the given parser.
@@ -22,38 +22,53 @@ public class TokenFactory {
      * @param tokenParser The parser to use for token validation, must not be null
      * @return A new TokenFactory instance
      */
-    public static TokenFactory of(@NonNull JWTParser tokenParser) {
-        return new TokenFactory(tokenParser);
+    public static TokenFactory of(@NonNull JwksAwareTokenParser... tokenParser) {
+
+        Preconditions.checkArgument(tokenParser.length > 0, "tokenParser must be set");
+        var builder = MultiIssuerTokenParser.builder();
+        for (JwksAwareTokenParser jwksAwareTokenParser : tokenParser) {
+            builder.addParser(jwksAwareTokenParser);
+        }
+        return new TokenFactory(builder.build());
     }
 
     /**
      * Creates an access token from the given token string.
      *
      * @param tokenString The token string to parse, must not be null
-     * @return The parsed access token
+     * @return The parsed access token, which may be empty if the token is invalid or no parser is found
      */
-    public ParsedAccessToken createAccessToken(@NonNull String tokenString) {
-        return ParsedAccessToken.fromTokenString(tokenString, tokenParser);
+    public Optional<ParsedAccessToken> createAccessToken(@NonNull String tokenString) {
+        var parser = tokenParser.getParserForToken(tokenString);
+        if (parser.isPresent()) {
+            return ParsedAccessToken.fromTokenString(tokenString, parser.get());
+        }
+        return Optional.empty();
     }
 
     /**
      * Creates an ID token from the given token string.
      *
      * @param tokenString The token string to parse, must not be null
-     * @return The parsed ID token
+     * @return The parsed ID token, which may be empty if the token is invalid or no parser is found
      */
-    public ParsedIdToken createIdToken(@NonNull String tokenString) {
-        return ParsedIdToken.fromTokenString(tokenString, tokenParser);
+    public Optional<ParsedIdToken> createIdToken(@NonNull String tokenString) {
+        var parser = tokenParser.getParserForToken(tokenString);
+        if (parser.isPresent()) {
+            return ParsedIdToken.fromTokenString(tokenString, parser.get());
+        }
+        return Optional.empty();
     }
 
     /**
      * Creates a refresh token from the given token string.
      *
      * @param tokenString The token string to parse, must not be null
-     * @return The parsed refresh token
+     * @return The parsed refresh token, which may be empty if the token is invalid or no parser is found
      */
-    public ParsedRefreshToken createRefreshToken(@NonNull String tokenString) {
-        return ParsedRefreshToken.fromTokenString(tokenString);
-    }
+    public Optional<ParsedRefreshToken> createRefreshToken(@NonNull String tokenString) {
 
+        return tokenParser.getParserForToken(tokenString)
+                .map(parser -> ParsedRefreshToken.fromTokenString(tokenString));
+    }
 }
