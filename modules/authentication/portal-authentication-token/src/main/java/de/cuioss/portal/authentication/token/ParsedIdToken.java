@@ -40,10 +40,12 @@ public class ParsedIdToken extends ParsedToken {
      * @param tokenString to be passed
      * @param tokenParser to be passed
      * @return an {@link ParsedIdToken} if given Token can be parsed correctly,
-     * otherwise {@link ParsedAccessToken#EMPTY_WEB_TOKEN}}
+     * otherwise {@link Optional#empty()}
      */
-    public static ParsedIdToken fromTokenString(String tokenString, JWTParser tokenParser) {
-        return new ParsedIdToken(jsonWebTokenFrom(tokenString, tokenParser, LOGGER));
+    public static Optional<ParsedIdToken> fromTokenString(String tokenString, JWTParser tokenParser) {
+        Optional<JsonWebToken> rawToken = jsonWebTokenFrom(tokenString, tokenParser, LOGGER);
+
+        return rawToken.map(ParsedIdToken::new);
     }
 
     /**

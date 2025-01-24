@@ -15,8 +15,10 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import de.cuioss.test.generator.Generators;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,10 +31,10 @@ class TokenTypeTest {
         }
     }
 
-    @Test
-    void shouldDefaultToUnknown() {
-        assertEquals(TokenType.UNKNOWN, TokenType.fromTypClaim(""));
-        assertEquals(TokenType.UNKNOWN, TokenType.fromTypClaim(null));
-        assertEquals(TokenType.UNKNOWN, TokenType.fromTypClaim(Generators.letterStrings().next()));
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalid", "unknown", "not_a_token_type"})
+    void shouldDefaultToUnknown(String invalidType) {
+        assertEquals(TokenType.UNKNOWN, TokenType.fromTypClaim(invalidType));
     }
 }

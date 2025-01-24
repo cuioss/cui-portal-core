@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeSerializable;
 import org.junit.jupiter.api.Test;
 
 import static de.cuioss.portal.authentication.token.TestTokenProducer.REFRESH_TOKEN;
@@ -22,7 +23,7 @@ import static de.cuioss.portal.authentication.token.TestTokenProducer.validSigne
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class ParsedRefreshTokenTest {
+class ParsedRefreshTokenTest implements ShouldBeSerializable<ParsedRefreshToken> {
 
     @Test
     void shouldHandleHappyCase() {
@@ -33,6 +34,11 @@ class ParsedRefreshTokenTest {
         assertEquals(initialToken, parsedRefreshToken.getTokenString());
         assertFalse(parsedRefreshToken.isEmpty());
 
-        assertEquals(TokenType.REFRESH_TOKEN, parsedRefreshToken.getType() );
+        assertEquals(TokenType.REFRESH_TOKEN, parsedRefreshToken.getType());
+    }
+
+    @Override
+    public ParsedRefreshToken getUnderTest() {
+        return ParsedRefreshToken.fromTokenString(validSignedJWTWithClaims(REFRESH_TOKEN));
     }
 }

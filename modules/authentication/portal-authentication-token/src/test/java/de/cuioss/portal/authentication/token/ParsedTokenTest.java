@@ -20,8 +20,6 @@ import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -42,10 +40,9 @@ class ParsedTokenTest {
     @NullAndEmptySource
     @ValueSource(strings = "  ")
     void shouldProvideEmptyFallbackOnEmptyInput(String initialTokenString) {
-        JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
+        var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
                 TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
-
-        Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
+        assertFalse(jsonWebToken.isPresent());
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
                 LogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
     }
@@ -54,10 +51,10 @@ class ParsedTokenTest {
     void shouldProvideEmptyFallbackOnParseError() {
         String initialTokenString = Generators.letterStrings(10, 20).next();
 
-        JsonWebToken jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
+        var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
                 TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
 
-        Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
+        assertFalse(jsonWebToken.isPresent());
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
                 LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
@@ -66,10 +63,11 @@ class ParsedTokenTest {
     void shouldProvideEmptyFallbackOnInvalidIssuer() {
         String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
 
-        JsonWebToken jsonWebToken = ParsedToken
+        var jsonWebToken = ParsedToken
                 .jsonWebTokenFrom(initialTokenString, TestTokenProducer.WRONG_ISSUER_TOKEN_PARSER, LOGGER);
 
-        Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
+        assertFalse(jsonWebToken.isPresent());
+
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
                 LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
@@ -78,10 +76,10 @@ class ParsedTokenTest {
     void shouldProvideEmptyFallbackOnWrongPublicKey() {
         String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
 
-        JsonWebToken jsonWebToken = ParsedToken
+        var jsonWebToken = ParsedToken
                 .jsonWebTokenFrom(initialTokenString,
                         TestTokenProducer.WRONG_SIGNATURE_TOKEN_PARSER, LOGGER);
-        Assertions.assertEquals(ParsedToken.EMPTY_WEB_TOKEN, jsonWebToken);
+        assertFalse(jsonWebToken.isPresent());
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
                 LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
@@ -91,9 +89,9 @@ class ParsedTokenTest {
         String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
 
         var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
-
-        assertFalse(token.isExpired());
-        assertFalse(token.willExpireInSeconds(5));
-        assertTrue(token.willExpireInSeconds(500));
+        assertTrue(token.isPresent());
+        assertFalse(token.get().isExpired());
+        assertFalse(token.get().willExpireInSeconds(5));
+        assertTrue(token.get().willExpireInSeconds(500));
     }
 }

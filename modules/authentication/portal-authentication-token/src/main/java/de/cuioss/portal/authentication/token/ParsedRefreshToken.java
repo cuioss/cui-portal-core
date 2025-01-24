@@ -15,21 +15,33 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Variant of {@link ParsedToken} representing a refresh-token
+ * Variant of {@link ParsedToken} representing a refresh-token.
+ * <p>
  * <em>Caution:</em> This is only tested for keycloak.
  * The usage of JWTs for a refresh-token is not from the oauth spec.
+ * <p>
+ * This class provides a simple wrapper around refresh tokens with basic validation
+ * and type information.
+ * It is immutable and thread-safe.
  *
  * @author Oliver Wolff
  */
 @ToString
 public class ParsedRefreshToken implements Serializable {
+
+    private static final CuiLogger LOGGER = new CuiLogger(ParsedRefreshToken.class);
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Getter
     private final String tokenString;
@@ -39,23 +51,34 @@ public class ParsedRefreshToken implements Serializable {
     }
 
     /**
-     * @param tokenString to be passed
-     * @return an {@link ParsedRefreshToken} if given Token can be parsed correctly,
-     * otherwise {@link ParsedAccessToken#EMPTY_WEB_TOKEN}}
+     * Creates a new {@link ParsedRefreshToken} from the given token string.
+     * <p>
+     * Note: This method does not validate the token's signature or format.
+     * It only wraps the string for type-safety purposes.
+     *
+     * @param tokenString The raw refresh token string, may be null or empty
+     * @return a new {@link ParsedRefreshToken} instance wrapping the given token
      */
     public static ParsedRefreshToken fromTokenString(String tokenString) {
+        if (MoreStrings.isEmpty(tokenString)) {
+            LOGGER.debug("Creating empty refresh token");
+        }
         return new ParsedRefreshToken(tokenString);
     }
 
     /**
-     * Indicates, whether the token is (not) present
+     * Indicates whether the token is empty (null or blank string).
+     *
+     * @return {@code true} if the token is null or empty, {@code false} otherwise
      */
     public boolean isEmpty() {
         return MoreStrings.isEmpty(tokenString);
     }
 
     /**
-     * The type o contained token.
+     * Returns the type of this token.
+     *
+     * @return always {@link TokenType#REFRESH_TOKEN}
      */
     public TokenType getType() {
         return TokenType.REFRESH_TOKEN;

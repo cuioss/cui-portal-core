@@ -57,9 +57,9 @@ public class ParsedAccessToken extends ParsedToken {
      * @param tokenString to be parsed
      * @param tokenParser the actual parser to be used
      * @return an {@link ParsedAccessToken} if given Token can be parsed correctly,
-     * otherwise {@link ParsedAccessToken#EMPTY_WEB_TOKEN}
+     * {@code Optional#empty()} otherwise.
      */
-    public static ParsedAccessToken fromTokenString(String tokenString, @NonNull JWTParser tokenParser) {
+    public static Optional<ParsedAccessToken> fromTokenString(String tokenString, @NonNull JWTParser tokenParser) {
         return fromTokenString(tokenString, null, tokenParser);
     }
 
@@ -70,8 +70,10 @@ public class ParsedAccessToken extends ParsedToken {
      * @return an {@link ParsedAccessToken} if given Token can be parsed correctly,
      * {@code Optional#empty()} otherwise.
      */
-    public static ParsedAccessToken fromTokenString(String tokenString, String email, JWTParser tokenParser) {
-        return new ParsedAccessToken(jsonWebTokenFrom(tokenString, tokenParser, LOGGER), email);
+    public static Optional<ParsedAccessToken> fromTokenString(String tokenString, String email, JWTParser tokenParser) {
+        var rawToken = jsonWebTokenFrom(tokenString, tokenParser, LOGGER);
+
+        return rawToken.map(webToken -> new ParsedAccessToken(webToken, email));
     }
 
     private ParsedAccessToken(JsonWebToken jsonWebToken, String email) {

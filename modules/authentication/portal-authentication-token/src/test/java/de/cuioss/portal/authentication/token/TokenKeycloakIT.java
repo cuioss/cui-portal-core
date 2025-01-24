@@ -51,19 +51,25 @@ public class TokenKeycloakIT extends KeycloakITBase {
         var tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ACCESS);
 
         var parser = JwksAwareTokenParser.builder().jwksEndpoint(getJWKSUrl()).jwksRefreshIntervall(100).jwksIssuer(getIssuer()).tTlsCertificatePath(TestRealm.providedKeyStore.PUBLIC_CERT).build();
-        var accessToken = ParsedAccessToken.fromTokenString(tokenString, parser);
-        assertFalse(accessToken.isEmpty());
-        assertTrue(accessToken.isValid());
+        var factory = TokenFactory.of(parser);
+        var retrievedAccessToken = factory.createAccessToken(tokenString);
+        assertTrue(retrievedAccessToken.isPresent());
+
+        var accessToken = retrievedAccessToken.get();
+        assertFalse(accessToken.isExpired());
         assertTrue(accessToken.providesScopes(SCOPES_AS_LIST));
         assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
         assertEquals(TokenType.ACCESS_TOKEN, accessToken.getType());
 
         tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ID_TOKEN);
-        var idToken = ParsedIdToken.fromTokenString(tokenString, parser);
+
+        var idToken = factory.createIdToken(tokenString);
         assertFalse(idToken.isEmpty());
-        assertTrue(idToken.isValid());
+
+        assertFalse(idToken.get().isExpired());
         assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
-        assertEquals(TokenType.ID_TOKEN, idToken.getType());
+
+        assertEquals(TokenType.ID_TOKEN, idToken.get().getType());
 
         tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.REFRESH);
         var refreshToken = ParsedRefreshToken.fromTokenString(tokenString);
