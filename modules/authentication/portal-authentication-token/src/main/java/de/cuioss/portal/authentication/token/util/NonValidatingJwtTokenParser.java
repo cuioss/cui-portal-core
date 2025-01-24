@@ -15,7 +15,6 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -39,9 +38,9 @@ public class NonValidatingJwtTokenParser {
 
     /**
      * Maximum size of a JWT token in bytes to prevent overflow attacks.
-     * 8KB should be more than enough for any reasonable JWT token.
+     * 16KB should be more than enough for any reasonable JWT token.
      */
-    private static final int MAX_TOKEN_SIZE = 8 * 1024;
+    private static final int MAX_TOKEN_SIZE = 16 * 1024;
 
     /**
      * Maximum size of decoded JSON payload in bytes.
@@ -107,7 +106,7 @@ public class NonValidatingJwtTokenParser {
 
         @Override
         public String getName() {
-            return getStringClaim("name");
+            return getClaim("name");
         }
 
         @Override
@@ -115,7 +114,6 @@ public class NonValidatingJwtTokenParser {
             return claims.keySet();
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public <T> T getClaim(String claimName) {
             JsonValue value = claims.get(claimName);
@@ -126,27 +124,8 @@ public class NonValidatingJwtTokenParser {
             return (T) switch (value.getValueType()) {
                 case STRING -> ((JsonString) value).getString();
                 case NUMBER -> claims.getJsonNumber(claimName).longValue();
-                case ARRAY -> {
-                    Set<String> result = new HashSet<>();
-                    claims.getJsonArray(claimName).forEach(item -> {
-                        if (item instanceof JsonString) {
-                            result.add(((JsonString) item).getString());
-                        }
-                    });
-                    yield result;
-                }
                 default -> null;
             };
-        }
-
-        private String getStringClaim(String name) {
-            if (!claims.containsKey(name)) {
-                return null;
-            }
-            JsonValue value = claims.get(name);
-            return value.getValueType() == JsonValue.ValueType.STRING
-                    ? ((JsonString) value).getString()
-                    : null;
         }
 
         @Override
@@ -156,12 +135,12 @@ public class NonValidatingJwtTokenParser {
 
         @Override
         public String getIssuer() {
-            return getStringClaim("iss");
+            return getClaim("iss");
         }
 
         @Override
         public String getSubject() {
-            return getStringClaim("sub");
+            return getClaim("sub");
         }
 
         @Override
@@ -171,17 +150,25 @@ public class NonValidatingJwtTokenParser {
 
         @Override
         public long getExpirationTime() {
-            return claims.containsKey("exp") ? claims.getJsonNumber("exp").longValue() : 0;
+            Long exp = getClaim("exp");
+            if (exp == null) {
+                return 0;
+            }
+            return exp;
         }
 
         @Override
         public long getIssuedAtTime() {
-            return claims.containsKey("iat") ? claims.getJsonNumber("iat").longValue() : 0;
+            Long iat = getClaim("iat");
+            if (iat == null) {
+                return 0;
+            }
+            return iat;
         }
 
         @Override
         public String getTokenID() {
-            return getStringClaim("jti");
+            return getClaim("jti");
         }
 
         @Override

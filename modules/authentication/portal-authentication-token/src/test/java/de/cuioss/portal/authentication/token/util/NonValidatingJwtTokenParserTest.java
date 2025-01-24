@@ -48,9 +48,20 @@ class NonValidatingJwtTokenParserTest {
         assertTrue(jwt.getIssuedAtTime() > 0);
         assertTrue(jwt.getGroups().isEmpty());
         assertTrue(jwt.getAudience().isEmpty());
+        assertTrue(jwt.getClaimNames().size() > 5);
         assertNull(jwt.getRawToken());
         assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
         assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
+    }
+
+    @Test
+    void shouldHandleEmptyToken() {
+        var token = createTokenWithLargePayload(1);
+        var result = parser.unsecured(token);
+        assertTrue(result.isPresent());
+        var jwt = result.get();
+        assertEquals(0, jwt.getExpirationTime());
+        assertEquals(0, jwt.getIssuedAtTime());
     }
 
 
@@ -68,11 +79,11 @@ class NonValidatingJwtTokenParserTest {
 
     @ParameterizedTest(name = "Should handle invalid token format: {0}")
     @CsvSource({
-        "not.a.jwt, Failed to parse token",
-        "'', Token is empty or null",
-        "before.after, Invalid JWT token format: expected 3 parts but got 2",
-        "before.after.that.else, Invalid JWT token format: expected 3 parts but got 4",
-        "invalid, Invalid JWT token format: expected 3 parts but got 1"
+            "not.a.jwt, Failed to parse token",
+            "'', Token is empty or null",
+            "before.after, Invalid JWT token format: expected 3 parts but got 2",
+            "before.after.that.else, Invalid JWT token format: expected 3 parts but got 4",
+            "invalid, Invalid JWT token format: expected 3 parts but got 1"
     })
     void shouldHandleInvalidTokenFormat(String invalidToken, String expectedMessage) {
         var result = parser.unsecured(invalidToken);
