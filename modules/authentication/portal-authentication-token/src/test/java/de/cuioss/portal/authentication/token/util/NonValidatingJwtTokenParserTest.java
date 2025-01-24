@@ -1,5 +1,6 @@
 package de.cuioss.portal.authentication.token.util;
 
+import de.cuioss.portal.authentication.token.LogMessages;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +96,7 @@ class NonValidatingJwtTokenParserTest {
     void shouldHandleNullToken() {
         var result = parser.unsecured(null);
         assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.INFO, "Token is empty or null");
+        assertLogMessagePresentContaining(TestLogLevel.INFO, LogMessages.TOKEN_EMPTY.resolveIdentifierString());
     }
 
     @ParameterizedTest(name = "Should handle oversized token of size {0}KB")
@@ -104,7 +105,7 @@ class NonValidatingJwtTokenParserTest {
         String largeToken = createLargeToken(sizeInKb);
         var result = parser.unsecured(largeToken);
         assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.WARN, "Token exceeds maximum size limit");
+        assertLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
     }
 
     @ParameterizedTest(name = "Should handle oversized payload of size {0}KB")
@@ -113,7 +114,7 @@ class NonValidatingJwtTokenParserTest {
         String tokenWithLargePayload = createTokenWithLargePayload(sizeInKb);
         var result = parser.unsecured(tokenWithLargePayload);
         assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.WARN, "Token exceeds maximum size limit");
+        assertLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
     }
 
     private String createLargeToken(int sizeInKb) {
