@@ -51,10 +51,17 @@ public class NonValidatingJwtTokenParser {
 
     /**
      * Parses a JWT token without validating its signature and returns a JsonWebToken.
+     * <p>
+     * Security considerations:
+     * <ul>
+     *   <li>Does not validate signatures - use only for inspection</li>
+     *   <li>Implements size checks to prevent overflow attacks</li>
+     *   <li>Uses standard Java Base64 decoder</li>
+     * </ul>
      *
-     * @param token the JWT token string to parse
+     * @param token the JWT token string to parse, must not be null
      * @return an Optional containing the JsonWebToken if parsing is successful,
-     * or empty if the token is invalid or cannot be parsed
+     *         or empty if the token is invalid or cannot be parsed
      */
     public Optional<JsonWebToken> unsecured(String token) {
         if (MoreStrings.isEmpty(token)) {
@@ -66,6 +73,7 @@ public class NonValidatingJwtTokenParser {
             LOGGER.warn(LogMessages.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
             return Optional.empty();
         }
+
         var parts = Splitter.on('.').splitToList(token);
         if (parts.size() != 3) {
             LOGGER.info(LogMessages.INVALID_TOKEN_FORMAT.format(parts.size()));
@@ -77,7 +85,6 @@ public class NonValidatingJwtTokenParser {
             return Optional.of(new NotValidatedJsonWebToken(claims));
         } catch (Exception e) {
             LOGGER.info(e, LogMessages.TOKEN_PARSE_FAILED.format(e.getMessage()));
-            LOGGER.debug(e, "Detailed parse error");
             return Optional.empty();
         }
     }
