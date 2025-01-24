@@ -1,5 +1,6 @@
-package de.cuioss.portal.authentication.token;
+package de.cuioss.portal.authentication.token.util;
 
+import de.cuioss.portal.authentication.token.JwksAwareTokenParser;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class MultiIssuerTokenParser {
 
     private final Map<String, JWTParser> issuerToParser;
-    private final JwtTokenParser inspectionParser;
+    private final NonValidatingJwtTokenParser inspectionParser;
 
     /**
      * Constructor taking a map of issuer URLs to their corresponding parsers.
@@ -32,7 +33,7 @@ public class MultiIssuerTokenParser {
      */
     public MultiIssuerTokenParser(@NonNull Map<String, JWTParser> issuerToParser) {
         this.issuerToParser = new HashMap<>(issuerToParser);
-        this.inspectionParser = new JwtTokenParser();
+        this.inspectionParser = new NonValidatingJwtTokenParser();
     }
 
     /**
@@ -73,8 +74,7 @@ public class MultiIssuerTokenParser {
      * @return an Optional containing the parser if found, empty otherwise
      */
     public Optional<JWTParser> getParserForToken(@NonNull String token) {
-        return extractIssuer(token)
-                .flatMap(this::getParserForIssuer);
+        return extractIssuer(token).flatMap(this::getParserForIssuer);
     }
 
     /**

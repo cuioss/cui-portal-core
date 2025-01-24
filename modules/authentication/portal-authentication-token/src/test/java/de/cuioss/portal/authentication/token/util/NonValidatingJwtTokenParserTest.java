@@ -1,4 +1,4 @@
-package de.cuioss.portal.authentication.token;
+package de.cuioss.portal.authentication.token.util;
 
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -21,16 +21,17 @@ import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
-class JwtTokenParserTest {
+class NonValidatingJwtTokenParserTest {
 
-    private JwtTokenParser parser;
+    private NonValidatingJwtTokenParser parser;
 
     @BeforeEach
     void setUp() {
-        parser = new JwtTokenParser();
+        parser = new NonValidatingJwtTokenParser();
     }
 
     @Test
@@ -42,12 +43,14 @@ class JwtTokenParserTest {
         var jwt = result.get();
         assertEquals(ISSUER, jwt.getIssuer());
         assertNotNull(jwt.getSubject());
+        assertNotNull(jwt.getTokenID());
         assertTrue(jwt.getExpirationTime() > 0);
         assertTrue(jwt.getIssuedAtTime() > 0);
         assertTrue(jwt.getGroups().isEmpty());
         assertTrue(jwt.getAudience().isEmpty());
-        assertNoLogMessagePresent(TestLogLevel.WARN, JwtTokenParser.class);
-        assertNoLogMessagePresent(TestLogLevel.ERROR, JwtTokenParser.class);
+        assertNull(jwt.getRawToken());
+        assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
+        assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
     }
 
 
@@ -59,8 +62,8 @@ class JwtTokenParserTest {
         assertTrue(result.isPresent());
         var jwt = result.get();
         assertNotNull(jwt.getName());
-        assertNoLogMessagePresent(TestLogLevel.WARN, JwtTokenParser.class);
-        assertNoLogMessagePresent(TestLogLevel.ERROR, JwtTokenParser.class);
+        assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
+        assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
     }
 
     @ParameterizedTest(name = "Should handle invalid token format: {0}")

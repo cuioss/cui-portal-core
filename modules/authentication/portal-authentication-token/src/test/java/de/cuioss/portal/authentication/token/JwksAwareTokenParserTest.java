@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableMockWebServer
-class JwksAwareTokenParserTest implements MockWebServerHolder {
+public class JwksAwareTokenParserTest implements MockWebServerHolder {
 
     public static final int JWKS_REFRESH_INTERVALL = 60;
     private static final CuiLogger LOGGER = new CuiLogger(JwksAwareTokenParserTest.class);
@@ -120,7 +120,7 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
         assertEquals(token.get().getRawToken(), initialToken);
     }
 
-    static JwksAwareTokenParser getValidJWKSParserWithLocalJWKS() throws IOException {
+    public static JwksAwareTokenParser getValidJWKSParserWithLocalJWKS() throws IOException {
         return JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
                 new FileInputStream(JwksResolveDispatcher.PUBLIC_KEY_JWKS))).jwksIssuer(TestTokenProducer.ISSUER).build();
     }
@@ -130,7 +130,7 @@ class JwksAwareTokenParserTest implements MockWebServerHolder {
                 new FileInputStream(TestTokenProducer.PUBLIC_KEY_OTHER))).jwksIssuer(TestTokenProducer.ISSUER).build();
     }
 
-    static JwksAwareTokenParser getInvalidValidJWKSParserWithLocalJWKSAndWrongIssuer() throws IOException {
+    public static JwksAwareTokenParser getInvalidValidJWKSParserWithLocalJWKSAndWrongIssuer() throws IOException {
         return JwksAwareTokenParser.builder().jwksKeyContent(IOStreams.toString(
                 new FileInputStream(JwksResolveDispatcher.PUBLIC_KEY_JWKS))).jwksIssuer(TestTokenProducer.WRONG_ISSUER).build();
     }

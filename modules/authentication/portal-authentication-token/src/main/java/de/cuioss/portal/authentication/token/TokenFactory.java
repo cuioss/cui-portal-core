@@ -1,7 +1,7 @@
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.portal.authentication.token.util.MultiIssuerTokenParser;
 import de.cuioss.tools.base.Preconditions;
-import jakarta.inject.Inject;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Factory for creating different types of tokens with support for multiple issuers.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenFactory {
 
     private final MultiIssuerTokenParser tokenParser;

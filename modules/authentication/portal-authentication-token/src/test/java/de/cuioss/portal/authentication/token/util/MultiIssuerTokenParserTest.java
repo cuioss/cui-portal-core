@@ -1,5 +1,7 @@
-package de.cuioss.portal.authentication.token;
+package de.cuioss.portal.authentication.token.util;
 
+import de.cuioss.portal.authentication.token.JwksAwareTokenParser;
+import de.cuioss.portal.authentication.token.JwksAwareTokenParserTest;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

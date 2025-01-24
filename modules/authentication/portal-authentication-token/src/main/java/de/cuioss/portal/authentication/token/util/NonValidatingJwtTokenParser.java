@@ -1,4 +1,4 @@
-package de.cuioss.portal.authentication.token;
+package de.cuioss.portal.authentication.token.util;
 
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
@@ -33,9 +33,9 @@ import java.util.Set;
  */
 @ToString
 @EqualsAndHashCode
-public class JwtTokenParser {
+public class NonValidatingJwtTokenParser {
 
-    private static final CuiLogger LOGGER = new CuiLogger(JwtTokenParser.class);
+    private static final CuiLogger LOGGER = new CuiLogger(NonValidatingJwtTokenParser.class);
 
     /**
      * Maximum size of a JWT token in bytes to prevent overflow attacks.
@@ -74,7 +74,7 @@ public class JwtTokenParser {
 
         try {
             JsonObject claims = parsePayload(parts.get(1));
-            return Optional.of(new UnsecuredJsonWebToken(claims));
+            return Optional.of(new NotValidatedJsonWebToken(claims));
         } catch (Exception e) {
             LOGGER.info(e, "Failed to parse token: %s", e.getMessage());
             LOGGER.debug(e, "Detailed parse error");
@@ -98,10 +98,10 @@ public class JwtTokenParser {
     /**
      * Simple implementation of JsonWebToken that holds claims without validation.
      */
-    private static class UnsecuredJsonWebToken implements JsonWebToken {
+    private static class NotValidatedJsonWebToken implements JsonWebToken {
         private final JsonObject claims;
 
-        UnsecuredJsonWebToken(JsonObject claims) {
+        NotValidatedJsonWebToken(JsonObject claims) {
             this.claims = claims;
         }
 
