@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 class BasicAuthenticationFilterTest {
 
     @Test
-    void testNullValues() {
+    void nullValues() {
         assertThrows(NullPointerException.class, () -> new BasicAuthenticationFilter(null, null));
     }
 

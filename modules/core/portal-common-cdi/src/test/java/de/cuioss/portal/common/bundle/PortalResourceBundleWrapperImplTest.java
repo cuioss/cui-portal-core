@@ -107,7 +107,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
     }
 
     @Test
-    void testGetKeys() {
+    void getKeys() {
         final List<String> keys = Collections.list(underTest.getKeys());
         assertNotNull(keys);
         assertTrue(keys.size() > 60);

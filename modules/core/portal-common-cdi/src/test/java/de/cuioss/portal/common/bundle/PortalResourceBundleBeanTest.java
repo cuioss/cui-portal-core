@@ -70,7 +70,7 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
     Event<Locale> localeChangeEvent;
 
     @Test
-    void testGetMessage() {
+    void getMessage() {
         var underTest = getUnderTest();
         assertEquals("Internal server error", underTest.getString("page.error.title"));
         assertEquals("Internal server error", underTest.getString("page.error.srHeader"));

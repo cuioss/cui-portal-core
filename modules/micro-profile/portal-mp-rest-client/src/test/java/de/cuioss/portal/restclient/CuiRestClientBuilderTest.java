@@ -167,7 +167,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     }
 
     @Test
-    void testError() {
+    void error() {
         final var underTest = new CuiRestClientBuilder(LOG)
                 .url(mockWebServer.url("error").toString())
                 .basicAuth("user", "pass");
@@ -185,7 +185,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     }
 
     @Test
-    void testResponseError() {
+    void responseError() {
         service = new CuiRestClientBuilder(LOG)
                 .url(mockWebServer.url("error").toString())
                 .build(TestResource.class);
@@ -234,7 +234,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
     @Test
     @Disabled
-    void testCorrectHostname() {
+    void correctHostname() {
         final var handshakeCertificates = localhostCerts();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
         service = new CuiRestClientBuilder(LOG)
@@ -249,7 +249,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     }
 
     @Test
-    void testIncorrectHostname() throws Exception {
+    void incorrectHostname() throws Exception {
         final var hostname = InetAddress.getLocalHost().getCanonicalHostName();
 
         final var heldCertificate = new HeldCertificate.Builder().commonName(hostname).build();
@@ -272,7 +272,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
     }
 
     @Test
-    void testIpAddress() throws IOException {
+    void ipAddress() throws IOException {
         final var hostname = InetAddress.getLocalHost().getHostAddress();
 
         final var handshakeCertificates = localhost();

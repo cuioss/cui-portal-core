@@ -47,10 +47,21 @@
             <artifactId>parsson</artifactId>
             <scope>test</scope>
         </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
         <dependency>
             <groupId>de.cuioss.portal.test</groupId>
             <artifactId>portal-keycloak-integration-test</artifactId>
             <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
         </dependency>
         <!-- Simple implementation that is actually a bridge to juli logging. Used for test-containers slf4j -->
         <dependency>

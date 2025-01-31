@@ -61,7 +61,7 @@ class Oauth2DiscoveryConfigurationProducerTest
     }
 
     @Test
-    void testInit() {
+    void init() {
         dispatcher.configure(configuration, mockWebServer);
 
         var result = underTest.getConfiguration();

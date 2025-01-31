@@ -19,7 +19,7 @@ import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.TypedGenerator;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -70,7 +70,7 @@ class Oauth2ConfigurationImplTest {
         configBuilder.authorizeUri(nonEmptyLetterStringGenerator.next());
         configBuilder.logoutRedirectParamName(nonEmptyLetterStringGenerator.next());
         configBuilder.postLogoutRedirectUri(nonEmptyLetterStringGenerator.next());
-        configBuilder.roleMapperClaims(Collections.singletonList(nonEmptyLetterStringGenerator.next()));
+        configBuilder.roleMapperClaims(List.of(nonEmptyLetterStringGenerator.next()));
         configBuilder.tokenUri(nonEmptyLetterStringGenerator.next());
         configBuilder.externalContextPath(nonEmptyLetterStringGenerator.next());
         configBuilder.userInfoUri(nonEmptyLetterStringGenerator.next());

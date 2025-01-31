@@ -99,14 +99,14 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testTestLoginWithoutParams() {
+    void testLoginWithoutParams() {
         var result = underTest.testLogin(Collections.emptyList(), "scope");
         assertFalse(result.isAuthenticated());
         assertFalse(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
     }
 
     @Test
-    void testTestLoginWithParams() {
+    void testLoginWithParams() {
         underTest.sendRedirect("scope");
         dispatcher.assertAuthorizeURL(redirectorMock.getRedirectUrl());
         var result = underTest.testLogin(calculateUrlParameter(), "scope");
@@ -115,7 +115,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testTestLoginWithErrorFails() {
+    void testLoginWithErrorFails() {
         underTest.sendRedirect("scope");
         var stateParameter = getStateParameter();
         var urlParameter = new UrlParameter("error", "server_error");
@@ -144,13 +144,13 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveTokenWithoutSession() {
+    void retrieveTokenWithoutSession() {
         var result = underTest.retrieveToken("scope");
         assertTrue(MoreStrings.isEmpty(result));
     }
 
     @Test
-    void testRetrieveTokenWithSameScope() {
+    void retrieveTokenWithSameScope() {
         underTest.sendRedirect("scope");
         underTest.testLogin(calculateUrlParameter(), "scope");
         var result = underTest.retrieveToken("scope");
@@ -158,7 +158,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testInvalidateToken() {
+    void invalidateToken() {
         underTest.sendRedirect("scope");
         underTest.testLogin(calculateUrlParameter(), "scope");
         var result = underTest.retrieveToken("scope");
@@ -169,7 +169,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveTokenWithInvalidExpiresIn() {
+    void retrieveTokenWithInvalidExpiresIn() {
         underTest.sendRedirect("scope");
         var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("abc");
@@ -178,7 +178,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveTokenWithOldExpiresIn() {
+    void retrieveTokenWithOldExpiresIn() {
         underTest.sendRedirect("scope");
         var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
@@ -189,7 +189,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveTokenWithValidExpiresIn() {
+    void retrieveTokenWithValidExpiresIn() {
         underTest.sendRedirect("scope");
         var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("1000");
@@ -198,7 +198,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveTokenWithNewScope() {
+    void retrieveTokenWithNewScope() {
         underTest.sendRedirect("scope");
         underTest.testLogin(calculateUrlParameter(), "scope");
         var result = underTest.retrieveToken("scope new");
@@ -209,7 +209,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testLogout() {
+    void logout() {
         underTest.sendRedirect("scope");
         var result = underTest.testLogin(calculateUrlParameter(), "scope");
         assertTrue(result.isAuthenticated());
@@ -219,7 +219,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveOauth2RedirectUrlWithPKCEChallenge() throws NoSuchAlgorithmException {
+    void retrieveOauth2RedirectUrlWithPKCEChallenge() throws NoSuchAlgorithmException {
         var url = underTest.retrieveOauth2RedirectUrl("scope", null);
         dispatcher.assertAuthorizeURL(url,
                 "response_type=code&scope=scope&client_id=" + OIDCWellKnownDispatcher.CLIENT_ID + "&state=");
@@ -246,7 +246,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testPKCEChallenge() {
+    void pkceChallenge() {
         var pattern = Pattern.compile(".*&code_challenge=(.+?)&.*");
         var url1 = underTest.retrieveOauth2RedirectUrl("scope", null);
         var match1 = pattern.matcher(url1);
@@ -263,7 +263,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveOauth2RenewUrl() {
+    void retrieveOauth2RenewUrl() {
         underTest.sendRedirect("scope");
         var userInfo = underTest.testLogin(calculateUrlParameter(), "scope");
         ((Token) userInfo.getContextMap().get(OauthAuthenticatedUserInfo.TOKEN_KEY)).setExpires_in("100");
@@ -278,7 +278,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testRetrieveIdToken() {
+    void retrieveIdToken() {
         var token = new Token();
         token.setId_token(
                 """

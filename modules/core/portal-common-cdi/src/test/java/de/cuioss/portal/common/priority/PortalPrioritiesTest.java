@@ -32,7 +32,7 @@ import de.cuioss.portal.common.priority.support.SomeInterface;
 class PortalPrioritiesTest {
 
     @Test
-    void testSortByPriority() {
+    void sortByPriority() {
         final List<SomeInterface> elements = Arrays.asList(new HighPriorityClass(), new LowPriorityClass(),
                 new MediumPriorityClass(), new NoPriorityClass());
 
