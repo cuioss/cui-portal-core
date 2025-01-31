@@ -33,7 +33,11 @@ public class TestRealm {
      */
     public static final String REALM_NAME = "oauth_integration_tests";
 
-    public enum administrator {
+    /**
+     * Values for the realm-configured administrator
+     */
+    @UtilityClass
+    public static final class Administrator {
 
         /**
          * The name of the realm-configured test-user.
@@ -47,7 +51,11 @@ public class TestRealm {
         public static final String PASSWORD = "adminPass";
     }
 
-    public enum client {
+    /**
+     * Values for the OIDC-Client
+     */
+    @UtilityClass
+    public static final class Client {
 
         /**
          * The id of the OIDC-Client.
@@ -64,8 +72,8 @@ public class TestRealm {
     /**
      * Values for the realm-configured test-user
      */
-    public enum testUser {
-
+    @UtilityClass
+    public static final class TestUser {
 
         /**
          * The name of the realm-configured test-user.
@@ -97,13 +105,12 @@ public class TestRealm {
     /**
      * Constants for the TLS-Configuration provided by the testcontainers-keycloak
      */
-    public enum providedKeyStore {
+    @UtilityClass
+    public static final class ProvidedKeyStore {
 
         @SuppressWarnings("squid:S2068") // owolff: These credentials are for testing only
         public static final String PASSWORD = "changeit";
         public static final String KEYSTORE_PATH = "/tls.jks";
         public static final String PUBLIC_CERT = "/tls.crt";
     }
-
-
 }
