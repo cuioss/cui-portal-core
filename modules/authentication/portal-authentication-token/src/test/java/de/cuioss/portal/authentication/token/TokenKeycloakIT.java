@@ -40,7 +40,7 @@ public class TokenKeycloakIT extends KeycloakITBase {
     void initTls() {
         // Configure RestAssured to use the keystore used / provided by testcontainers-keycloak
         RestAssured.config = RestAssured.config().sslConfig(
-                SSLConfig.sslConfig().trustStore(TestRealm.providedKeyStore.KEYSTORE_PATH, TestRealm.providedKeyStore.PASSWORD)
+                SSLConfig.sslConfig().trustStore(TestRealm.ProvidedKeyStore.KEYSTORE_PATH, TestRealm.ProvidedKeyStore.PASSWORD)
         );
     }
 
@@ -48,7 +48,7 @@ public class TokenKeycloakIT extends KeycloakITBase {
     void shouldHandleValidKeycloakTokens() {
         var tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ACCESS);
 
-        var parser = JwksAwareTokenParser.builder().jwksEndpoint(getJWKSUrl()).jwksRefreshIntervall(100).jwksIssuer(getIssuer()).tTlsCertificatePath(TestRealm.providedKeyStore.PUBLIC_CERT).build();
+        var parser = JwksAwareTokenParser.builder().jwksEndpoint(getJWKSUrl()).jwksRefreshIntervall(100).jwksIssuer(getIssuer()).tTlsCertificatePath(TestRealm.ProvidedKeyStore.PUBLIC_CERT).build();
         var factory = TokenFactory.of(parser);
         var retrievedAccessToken = factory.createAccessToken(tokenString);
         assertTrue(retrievedAccessToken.isPresent());
@@ -56,7 +56,7 @@ public class TokenKeycloakIT extends KeycloakITBase {
         var accessToken = retrievedAccessToken.get();
         assertFalse(accessToken.isExpired());
         assertTrue(accessToken.providesScopes(SCOPES_AS_LIST));
-        assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
+        assertEquals(TestRealm.TestUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
         assertEquals(TokenType.ACCESS_TOKEN, accessToken.getType());
 
         tokenString = requestToken(parameterForScopedToken(SCOPES), TokenTypes.ID_TOKEN);
@@ -65,7 +65,7 @@ public class TokenKeycloakIT extends KeycloakITBase {
         assertFalse(idToken.isEmpty());
 
         assertFalse(idToken.get().isExpired());
-        assertEquals(TestRealm.testUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
+        assertEquals(TestRealm.TestUser.EMAIL.toLowerCase(), accessToken.getEmail().get());
 
         assertEquals(TokenType.ID_TOKEN, idToken.get().getType());
 
