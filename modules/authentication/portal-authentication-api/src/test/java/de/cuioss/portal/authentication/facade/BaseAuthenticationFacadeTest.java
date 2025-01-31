@@ -17,19 +17,17 @@ package de.cuioss.portal.authentication.facade;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import de.cuioss.tools.collect.CollectionLiterals;
 import jakarta.inject.Inject;
-
+import lombok.Getter;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
-import de.cuioss.tools.collect.CollectionLiterals;
-import lombok.Getter;
-
 @EnableAutoWeld
-@AddBeanClasses({ MockBaseAuthenticationFacade.class, MockPortalUserEnricher.class })
+@AddBeanClasses({MockBaseAuthenticationFacade.class, MockPortalUserEnricher.class})
 class BaseAuthenticationFacadeTest implements ShouldBeNotNull<MockBaseAuthenticationFacade> {
 
     @Inject

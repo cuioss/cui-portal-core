@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
+import de.cuioss.tools.io.FileLoader;
+import de.cuioss.tools.io.StructuredFilename;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.net.URL;
-
-import de.cuioss.tools.io.FileLoader;
-import de.cuioss.tools.io.StructuredFilename;
 
 public class ExplodingFileLoader implements FileLoader {
 

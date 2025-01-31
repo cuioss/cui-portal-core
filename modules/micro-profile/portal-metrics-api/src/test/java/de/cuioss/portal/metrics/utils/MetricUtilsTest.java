@@ -19,15 +19,13 @@ import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.cuioss.portal.configuration.MetricsConfigKeys;
+import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import jakarta.ws.rs.WebApplicationException;
-
 import org.eclipse.microprofile.metrics.Tag;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.configuration.MetricsConfigKeys;
-import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 
 import java.io.Serial;
 
@@ -61,7 +59,7 @@ class MetricUtilsTest {
         var metricId = MetricsUtils
                 .createMetricIdBuilder("name", new MetricUtilsTestException(),
                         immutableList(new Tag("tag1", "a-value"), new Tag("tag2", "b-value")), immutableList(
-                                throwable -> new Tag("mapper1", "value"), throwable -> new Tag("mapper2", "value")))
+                        throwable -> new Tag("mapper1", "value"), throwable -> new Tag("mapper2", "value")))
                 .build();
         assertTrue(metricId.getTags().containsKey("tag1"));
         assertTrue(metricId.getTags().containsKey("tag2"));

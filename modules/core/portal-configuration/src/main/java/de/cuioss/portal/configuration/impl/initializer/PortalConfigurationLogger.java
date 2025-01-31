@@ -18,19 +18,18 @@ package de.cuioss.portal.configuration.impl.initializer;
 import static de.cuioss.tools.string.MoreStrings.isEmpty;
 import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import jakarta.enterprise.context.Dependent;
-
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
+import jakarta.enterprise.context.Dependent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Helper class that will log the final configuration derived by all sources. It

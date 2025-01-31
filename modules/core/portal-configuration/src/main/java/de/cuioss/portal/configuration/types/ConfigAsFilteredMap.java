@@ -15,18 +15,15 @@
  */
 package de.cuioss.portal.configuration.types;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Map;
-
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
 
 /**
  * Injects a number of config-properties as an immutable {@link Map} of
@@ -35,7 +32,7 @@ import jakarta.inject.Qualifier;
  * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface ConfigAsFilteredMap {
 

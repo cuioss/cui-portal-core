@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Provides some convenient methods for tracing detecting file-changes.

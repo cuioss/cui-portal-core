@@ -18,15 +18,13 @@ package de.cuioss.portal.metrics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.concurrent.TimeUnit;
-
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import de.cuioss.portal.configuration.cache.CacheConfig;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.junit.jupiter.api.Test;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import de.cuioss.portal.configuration.cache.CacheConfig;
+import java.util.concurrent.TimeUnit;
 
 class CaffeineCacheMetricsTest {
 

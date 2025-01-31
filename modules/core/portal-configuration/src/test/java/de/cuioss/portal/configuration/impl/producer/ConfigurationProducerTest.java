@@ -15,10 +15,12 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
-import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.cache.CacheConfig;
+import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
+import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.types.*;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -34,8 +36,6 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal

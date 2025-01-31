@@ -25,7 +25,7 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 @SuppressWarnings("squid:S2068") // owolff: These are not hardcoded passwords but keys for the
-                                 // lookup
+// lookup
 public class ConnectionMetadataKeys {
 
     private static final String TRUSTSTORE_PREFIX = "truststore.";

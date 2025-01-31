@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
+import static de.cuioss.tools.string.MoreStrings.isBlank;
+
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
 import de.cuioss.portal.restclient.CuiRestClientBuilder;
@@ -34,12 +38,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_DISCOVER_PATH;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
-import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
-import static de.cuioss.tools.string.MoreStrings.isBlank;
 
 /**
  * Produces {@link Oauth2Configuration} using the new config params
@@ -139,7 +137,7 @@ public class Oauth2DiscoveryConfigurationProducer {
             }
         } else {
             LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback", OPEN_ID_SERVER_BASE_URL,
-                OPEN_ID_DISCOVER_PATH);
+                    OPEN_ID_DISCOVER_PATH);
         }
 
         LOGGER.debug("oauth config: {}", configuration);
@@ -161,7 +159,7 @@ public class Oauth2DiscoveryConfigurationProducer {
         logoutRedirectParameter.get().ifPresent(newConfiguration::setLogoutRedirectParamName);
         postLogoutRedirectUri.get().ifPresent(newConfiguration::setPostLogoutRedirectUri);
         Optional<List<String>> roleMapperClaims = roleMapperClaim.get();
-        if(roleMapperClaims.isPresent()) {
+        if (roleMapperClaims.isPresent()) {
             newConfiguration.setRoleMapperClaims(roleMapperClaims.get());
         } else {
             newConfiguration.setRoleMapperClaims(Collections.emptyList());

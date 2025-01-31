@@ -243,7 +243,7 @@ public class ConnectionMetadata implements Serializable {
             }
             return Optional.of(contextBuilder.build());
         } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
-                       | KeyManagementException e) {
+                | KeyManagementException e) {
             log.error(e, PORTAL_510, connectionId, e.getMessage());
             return Optional.empty();
         }
@@ -276,7 +276,7 @@ public class ConnectionMetadata implements Serializable {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_TOKEN);
         }
         if (!MoreStrings.isBlank(proxyHost) && (null == proxyPort || proxyPort <= 0)
-            || null != proxyPort && proxyPort > 0 && MoreStrings.isBlank(proxyHost)) {
+                || null != proxyPort && proxyPort > 0 && MoreStrings.isBlank(proxyHost)) {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_PROXY);
         }
     }

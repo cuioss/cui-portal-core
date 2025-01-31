@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
 import io.smallrye.config.inject.ConfigProducer;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
@@ -22,9 +25,6 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Using this annotation at type-level of a junit 5 test provides the basic

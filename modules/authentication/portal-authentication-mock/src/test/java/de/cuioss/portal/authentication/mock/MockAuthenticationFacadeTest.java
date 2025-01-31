@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.authentication.mock;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
@@ -28,9 +31,6 @@ import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -98,7 +98,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
         var name = letterStrings(3, 8).next();
         var password = letterStrings(3, 8).next();
         var result = underTest.login(servletRequest,
-            LoginCredentials.builder().username(name).password(password).build());
+                LoginCredentials.builder().username(name).password(password).build());
         assertEquals(ResultState.ERROR, result.getState());
         // Incomplete Credentials
         result = underTest.login(servletRequest, LoginCredentials.builder().username(name).build());

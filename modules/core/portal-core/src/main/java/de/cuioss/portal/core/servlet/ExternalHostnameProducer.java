@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.core.servlet;
 
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
@@ -22,8 +23,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
-
-import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * To retrieve the external hostname including port of the request

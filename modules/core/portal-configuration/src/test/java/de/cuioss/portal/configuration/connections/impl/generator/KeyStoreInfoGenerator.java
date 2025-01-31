@@ -17,12 +17,12 @@ package de.cuioss.portal.configuration.connections.impl.generator;
 
 import static de.cuioss.test.generator.Generators.fixedValues;
 
-import java.io.File;
-import java.nio.file.Path;
-
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.tools.net.ssl.KeyStoreProvider;
 import de.cuioss.tools.net.ssl.KeyStoreType;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public class KeyStoreInfoGenerator implements TypedGenerator<KeyStoreProvider> {
 

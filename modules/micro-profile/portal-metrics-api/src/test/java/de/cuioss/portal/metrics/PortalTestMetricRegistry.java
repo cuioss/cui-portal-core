@@ -16,8 +16,8 @@
 package de.cuioss.portal.metrics;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.*;
+import org.eclipse.microprofile.metrics.Timer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 public class PortalTestMetricRegistry implements MetricRegistry {
 
     private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException(
-        "Not implemented yet");
+            "Not implemented yet");
 
     private final Map<String, Metadata> metadataMap = new HashMap<>();
     private final Map<MetricID, Metric> metricMap = new ConcurrentHashMap<>();
@@ -48,7 +48,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      */
     public Optional<Metric> getMetric(final String name) {
         return metricMap.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).map(Map.Entry::getValue)
-            .findAny();
+                .findAny();
     }
 
     /**
@@ -221,7 +221,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
         metricMap.put(id, timer);
         metadataMap.put(name, new MetadataBuilder().withName(name)
-            .withUnit(MetricUnits.NANOSECONDS).build());
+                .withUnit(MetricUnits.NANOSECONDS).build());
         return timer;
     }
 

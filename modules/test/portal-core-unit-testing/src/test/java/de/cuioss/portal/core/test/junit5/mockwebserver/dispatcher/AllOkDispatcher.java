@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+
 import lombok.NonNull;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
 
 import java.util.Optional;
-
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 public class AllOkDispatcher implements ModuleDispatcherElement {
 

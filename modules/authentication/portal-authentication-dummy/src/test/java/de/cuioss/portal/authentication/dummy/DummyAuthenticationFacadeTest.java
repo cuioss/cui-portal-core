@@ -15,21 +15,16 @@
  */
 package de.cuioss.portal.authentication.dummy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-
-import org.easymock.EasyMock;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
+import org.easymock.EasyMock;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 @EnableAutoWeld
 class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticationFacade> {

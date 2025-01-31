@@ -17,18 +17,18 @@ package de.cuioss.portal.authentication.model;
 
 import static java.util.Objects.requireNonNull;
 
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * Base Implementation of {@link AuthenticatedUserInfo} suitable for most

@@ -15,18 +15,17 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import jakarta.enterprise.context.ApplicationScoped;
-
 import de.cuioss.portal.core.storage.PortalSessionStorage;
 import de.cuioss.portal.core.storage.SessionStorage;
 import de.cuioss.portal.core.storage.impl.MapStorageImpl;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Mock Variant of {@link PortalSessionStorage}

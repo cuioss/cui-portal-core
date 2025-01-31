@@ -16,34 +16,25 @@
 package de.cuioss.portal.core.servlet;
 
 import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresentContaining;
-import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
-import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-import static org.easymock.EasyMock.mock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.io.Serial;
-import java.util.Collections;
-
-import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.easymock.EasyMock;
-import org.jboss.weld.junit5.auto.EnableAlternatives;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
+import static jakarta.servlet.http.HttpServletResponse.*;
+import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.core.test.support.PortalUserProducerMock;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.collect.CollectionLiterals;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.easymock.EasyMock;
+import org.jboss.weld.junit5.auto.EnableAlternatives;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.Serial;
+import java.util.Collections;
 
 @EnableTestLogger
 @EnableAutoWeld

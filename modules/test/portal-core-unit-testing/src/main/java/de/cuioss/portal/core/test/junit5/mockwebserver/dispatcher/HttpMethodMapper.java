@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
-import java.util.Optional;
-
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
+
+import java.util.Optional;
 
 /**
  * Simplifies the mapping from Http-Method to the actual method.

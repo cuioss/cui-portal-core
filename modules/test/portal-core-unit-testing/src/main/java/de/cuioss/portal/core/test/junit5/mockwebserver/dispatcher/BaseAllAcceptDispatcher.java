@@ -6,15 +6,15 @@ package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSortedSet;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Base class returning sensible return positive values for all supported
@@ -81,20 +81,20 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
     public void setMethodToResult(MockResponse mockResponse, HttpMethodMapper... mapper) {
         for (HttpMethodMapper element : mapper) {
             switch (element) {
-            case GET:
-                getResult.setResponse(mockResponse);
-                break;
-            case POST:
-                postResult.setResponse(mockResponse);
-                break;
-            case PUT:
-                putResult.setResponse(mockResponse);
-                break;
-            case DELETE:
-                deleteResult.setResponse(mockResponse);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown method: " + Arrays.toString(mapper));
+                case GET:
+                    getResult.setResponse(mockResponse);
+                    break;
+                case POST:
+                    postResult.setResponse(mockResponse);
+                    break;
+                case PUT:
+                    putResult.setResponse(mockResponse);
+                    break;
+                case DELETE:
+                    deleteResult.setResponse(mockResponse);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown method: " + Arrays.toString(mapper));
             }
         }
     }

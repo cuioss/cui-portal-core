@@ -15,9 +15,8 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
 
 class MockBaseAuthenticationFacade extends BaseAuthenticationFacade {

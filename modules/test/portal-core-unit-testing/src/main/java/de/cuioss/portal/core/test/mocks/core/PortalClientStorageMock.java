@@ -15,11 +15,10 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import de.cuioss.portal.core.storage.ClientStorage;
 import de.cuioss.portal.core.storage.PortalClientStorage;
 import de.cuioss.portal.core.storage.impl.MapStorageImpl;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.ToString;
 
 import java.io.Serial;

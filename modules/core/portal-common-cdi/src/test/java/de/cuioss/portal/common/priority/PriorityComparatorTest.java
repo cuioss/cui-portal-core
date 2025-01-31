@@ -18,12 +18,6 @@ package de.cuioss.portal.common.priority;
 import static de.cuioss.test.generator.Generators.fixedValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.common.priority.support.HighPriorityClass;
 import de.cuioss.portal.common.priority.support.LowPriorityClass;
 import de.cuioss.portal.common.priority.support.MediumPriorityClass;
@@ -33,6 +27,11 @@ import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.object.ObjectTestContracts;
 import de.cuioss.test.valueobjects.api.object.VetoObjectTestContract;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @PropertyReflectionConfig(skip = true)
 @VetoObjectTestContract(ObjectTestContracts.SERIALIZABLE)

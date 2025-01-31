@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.ModuleDispatcherElement;
 import de.cuioss.tools.io.FileLoaderUtility;
 import lombok.Getter;
@@ -25,9 +28,6 @@ import mockwebserver3.RecordedRequest;
 import okhttp3.Headers;
 
 import java.util.Optional;
-
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Handles the Resolving of JWKS Files from the Mocked oauth-Server. In essence, it returns the file

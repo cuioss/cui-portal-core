@@ -17,9 +17,8 @@ package de.cuioss.portal.core.test.mocks.microprofile;
 
 import static de.cuioss.test.generator.Generators.letterStrings;
 
-import org.eclipse.microprofile.metrics.Tag;
-
 import de.cuioss.test.generator.TypedGenerator;
+import org.eclipse.microprofile.metrics.Tag;
 
 class MetricTagGenerator implements TypedGenerator<Tag> {
 

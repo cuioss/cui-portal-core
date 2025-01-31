@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import java.util.Optional;
-
 import de.cuioss.tools.net.UrlParameter;
 import lombok.experimental.UtilityClass;
+
+import java.util.Optional;
 
 /**
  * Logout parameter for the OIDC RP-Initiated Logout 1.0 Draft 2.

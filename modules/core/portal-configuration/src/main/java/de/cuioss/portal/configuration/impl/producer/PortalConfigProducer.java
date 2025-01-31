@@ -15,6 +15,15 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
+import static de.cuioss.portal.configuration.cache.CacheConfig.*;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
+import static de.cuioss.tools.string.MoreStrings.*;
+
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.types.*;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -35,15 +44,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
-import static de.cuioss.portal.configuration.cache.CacheConfig.*;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
-import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static de.cuioss.tools.string.MoreStrings.*;
 
 /**
  * Provides specific producer methods for elements not covered by the standard
@@ -283,7 +283,7 @@ public class PortalConfigProducer {
     }
 
     private static FileLoader checkFileLoader(final String pathProperty, final boolean failOnNotAccessible,
-                                              final String propertyName) {
+            final String propertyName) {
 
         final var path = nullToEmpty(pathProperty).trim();
         if (MoreStrings.isEmpty(path)) {

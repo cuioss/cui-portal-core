@@ -18,19 +18,17 @@ package de.cuioss.portal.metrics.utils;
 import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.function.Function;
-
-import jakarta.ws.rs.WebApplicationException;
-
-import org.eclipse.microprofile.metrics.MetricID;
-import org.eclipse.microprofile.metrics.Tag;
-
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.ws.rs.WebApplicationException;
 import lombok.experimental.UtilityClass;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.Tag;
+
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 /**
  * Provides some convenience methods for metric related data

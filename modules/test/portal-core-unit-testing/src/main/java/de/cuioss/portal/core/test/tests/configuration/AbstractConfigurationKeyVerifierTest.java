@@ -15,6 +15,11 @@
  */
 package de.cuioss.portal.core.test.tests.configuration;
 
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -25,11 +30,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Base test for testing the mapping of a set of configurationKeys to a specific
@@ -94,15 +94,15 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var resolvedKeyNames = resolveKeyNames();
 
         LOGGER.info("Checking resolvedKeyNames:{}against configurationKeys:{}",
-            System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
-                + System.lineSeparator(),
-            System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
+                System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
+                        + System.lineSeparator(),
+                System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
 
         final List<String> notFoundKeys = resolvedKeyNames.stream().filter(key -> !configurationKeys.contains(key))
-            .toList();
+                .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
-                + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
+                    + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
         }
     }
 
@@ -117,10 +117,10 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var resolvedKeysFromType = resolveKeyNames();
         LOGGER.info("Checking configurationKeys='{}' against resolvedKeysFromType='{}'", resolvedKeysFromType, configurationKeys);
         List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeysFromType.contains(key))
-            .toList();
+                .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
-                + ", you can use #getConfigurationKeysIgnoreList() to filter the keys to be checked");
+                    + ", you can use #getConfigurationKeysIgnoreList() to filter the keys to be checked");
         }
     }
 

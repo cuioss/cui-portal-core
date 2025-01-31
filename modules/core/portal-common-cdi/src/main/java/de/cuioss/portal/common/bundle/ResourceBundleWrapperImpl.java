@@ -17,31 +17,23 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
-import java.io.Serial;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
 import de.cuioss.uimodel.application.CuiProjectStage;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.EqualsAndHashCode;
 import lombok.Synchronized;
 import lombok.ToString;
+
+import java.io.Serial;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * It can do the following tricks:

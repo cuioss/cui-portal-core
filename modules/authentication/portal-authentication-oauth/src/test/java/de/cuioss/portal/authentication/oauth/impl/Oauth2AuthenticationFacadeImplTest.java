@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.LoginPagePath;
@@ -50,15 +54,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-import static org.junit.jupiter.api.Assertions.*;
-
 @EnableMockWebServer
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
-@AddBeanClasses({ Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
-        RedirectorMock.class })
+@AddBeanClasses({Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
+        RedirectorMock.class})
 @AddExtensions(ResteasyCdiExtension.class)
 class Oauth2AuthenticationFacadeImplTest
         implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl>, MockWebServerHolder {

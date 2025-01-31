@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -36,9 +39,6 @@ import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OIDCWellKnownDispatcher extends Dispatcher {
 
@@ -137,9 +137,9 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         return switch (request.getPath()) {
             case "/" + OIDC_DISCOVERY_PATH ->
-                    new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
-                            ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
-                            : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
+                new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
+                        ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
+                        : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
             case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
             case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
             default -> {

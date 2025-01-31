@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.common.cdi;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import static java.util.Objects.requireNonNull;
+
 import de.cuioss.portal.common.priority.PriorityComparator;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
@@ -24,9 +27,6 @@ import lombok.experimental.UtilityClass;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
-
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Utility classes for dealing with CDI-Beans. In essence, it contains some
@@ -50,7 +50,7 @@ public final class PortalBeanManager {
      */
     @SuppressWarnings("unchecked")
     private static <T, V extends Annotation> T getCDIBean(final BeanManager beanManager, final Class<T> beanClass,
-                                                          final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         requireNonNull(beanClass, "beanClass");
         requireNonNull(beanManager, "beanManager");
 
@@ -90,7 +90,7 @@ public final class PortalBeanManager {
      * @return the found bean, or {@link Optional#empty()} if none could be found
      */
     public static <T, V extends Annotation> Optional<T> resolveBean(final Class<T> beanClass,
-                                                                    final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass));
     }
 
@@ -106,7 +106,7 @@ public final class PortalBeanManager {
      * @return the found bean
      */
     public static <T, V extends Annotation> T resolveBeanOrThrowIllegalStateException(final Class<T> beanClass,
-                                                                                      final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass)).orElseThrow(
                 () -> new IllegalStateException("Portal-532: " + createErrorMessage(beanClass, annotationClass)));
     }
@@ -137,7 +137,7 @@ public final class PortalBeanManager {
      */
     @SuppressWarnings("squid:S1452") // owolff: Not able to avoid the wildcard call here
     public static <T, V extends Annotation> Set<Bean<?>> resolveBeanTypes(final BeanManager beanManager,
-                                                                          final Class<T> beanClass, final Class<V> annotationClass) {
+            final Class<T> beanClass, final Class<V> annotationClass) {
         Set<Bean<?>> beanTypes;
         if (null == annotationClass) {
             beanTypes = beanManager.getBeans(beanClass);
@@ -157,7 +157,7 @@ public final class PortalBeanManager {
      * @param <V>
      */
     private static <T, V extends Annotation> void checkBeanTypesFound(final Class<T> beanClass,
-                                                                      final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
+            final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
         if (beanTypes.isEmpty())
             throw new IllegalArgumentException(createErrorMessage(beanClass, annotationClass));
     }
@@ -170,7 +170,7 @@ public final class PortalBeanManager {
      * @return the created error-message
      */
     public static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
-                                                                      final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return "No bean of type " + beanClass + " and annotation "
                 + (null != annotationClass ? annotationClass.getName() : "(null)") + " could be found";
     }
@@ -186,7 +186,7 @@ public final class PortalBeanManager {
      * @return Portal-532 log message
      */
     public static <T, V extends Annotation> String createLogMessage(final Class<T> beanClass,
-                                                                    final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return "Portal-532: " + createErrorMessage(beanClass, annotationClass);
     }
 

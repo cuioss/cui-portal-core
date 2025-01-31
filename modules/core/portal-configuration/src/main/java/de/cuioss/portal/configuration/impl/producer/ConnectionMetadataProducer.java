@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.lang.Boolean.parseBoolean;
+import static java.util.Objects.requireNonNull;
+
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
 import de.cuioss.portal.configuration.connections.impl.*;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata.ConnectionMetadataBuilder;
@@ -34,10 +38,6 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.io.File;
 import java.util.Map;
 import java.util.Optional;
-
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.lang.Boolean.parseBoolean;
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@linkplain ConnectionMetadata} producer that defaults to the
@@ -107,7 +107,7 @@ public class ConnectionMetadataProducer {
      * @return the created {@link ConnectionMetadata}
      */
     public static ConnectionMetadata createConnectionMetadata(final String baseName,
-                                                              final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         log.trace("Creating ConnectionMetadata for '{}'", baseName);
         final var builder = ConnectionMetadata.builder();
         // Basename must be present
@@ -168,7 +168,7 @@ public class ConnectionMetadataProducer {
     @SuppressWarnings("squid:S1301") // We will use the switch soon, Delete this if the switch is
     // extended
     private static void handleAuthentication(final String baseName, final boolean failOnInvalidConfiguration,
-                                             final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
+            final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
         log.trace("Determining AuthenticationType for '{}'", baseName);
         // Determine Authentication
         final var authenticationType = AuthenticationType.resolveFrom(baseName, filteredProperties);
@@ -215,7 +215,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static void handleMissingProperty(final String propertyName, final String exceptionMessage,
-                                              final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         log.warn(MISSING_CONFIG_MSG, propertyName);
         if (failOnInvalidConfiguration) {
             throw new IllegalArgumentException(exceptionMessage);
@@ -286,7 +286,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<String> extractFirstKeyValue(final Map<String, String> filteredProperties,
-                                                         final String... keys) {
+            final String... keys) {
         for (final String key : keys) {
             final var value = filteredProperties.get(key);
             if (!MoreStrings.isEmpty(value)) {
@@ -306,7 +306,7 @@ public class ConnectionMetadataProducer {
      * @throws IllegalArgumentException if the value cannot be parsed
      */
     private static Optional<Long> getPositiveLong(final String key, final String value,
-                                                  final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         if (null != value) {
             try {
                 return Optional.of(Long.parseUnsignedLong(value.trim()));
@@ -321,7 +321,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<Integer> getPositiveInt(final String key, final String value,
-                                                    final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         if (null != value) {
             try {
                 return Optional.of(Integer.parseUnsignedInt(value.trim()));

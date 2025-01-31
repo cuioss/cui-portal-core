@@ -15,11 +15,10 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.impl.OauthAuthenticatedUserInfo;
 import de.cuioss.tools.net.UrlParameter;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Accessing the oauth2 services to handle login, token request, and accessing

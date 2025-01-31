@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.test.keycloakit.KeycloakITBase;
 import de.cuioss.portal.test.keycloakit.TestRealm;
 import de.cuioss.tools.logging.CuiLogger;
@@ -26,11 +29,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
-
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TokenKeycloakIT extends KeycloakITBase {
 

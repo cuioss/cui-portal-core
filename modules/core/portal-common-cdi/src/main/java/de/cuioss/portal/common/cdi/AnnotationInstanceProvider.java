@@ -104,9 +104,9 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     }
 
     private static synchronized <T extends Annotation> Annotation initAnnotation(Class<T> annotationClass,
-                                                                                 Map<String, ?> values) {
+            Map<String, ?> values) {
         return (Annotation) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[]{annotationClass},
-            new AnnotationInstanceProvider(annotationClass, values));
+                new AnnotationInstanceProvider(annotationClass, values));
     }
 
     /**
@@ -120,7 +120,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             }
             case "equals" -> {
                 if (Proxy.isProxyClass(args[0].getClass())
-                    && Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider) {
+                        && Proxy.getInvocationHandler(args[0]) instanceof AnnotationInstanceProvider) {
                     return equals(Proxy.getInvocationHandler(args[0]));
 
                 }
@@ -193,7 +193,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
                 for (Map.Entry<String, ?> entry : memberValues.entrySet()) {
                     try {
                         var oValue = annotationClass.getMethod(entry.getKey(), EMPTY_CLASS_ARRAY).invoke(o,
-                            EMPTY_OBJECT_ARRAY);
+                                EMPTY_OBJECT_ARRAY);
                         if (oValue == null || entry.getValue() == null || !oValue.equals(entry.getValue())) {
                             return false;
                         }

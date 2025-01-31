@@ -17,15 +17,7 @@ package de.cuioss.portal.configuration.connections.impl;
 
 import static de.cuioss.test.generator.Generators.nonEmptyStrings;
 import static de.cuioss.test.generator.Generators.strings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
@@ -42,10 +34,14 @@ import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
 import de.cuioss.tools.net.ssl.KeyStoreProvider;
 import de.cuioss.tools.net.ssl.KeyStoreType;
 import de.cuioss.uimodel.application.LoginCredentials;
+import org.junit.jupiter.api.Test;
 
-@PropertyReflectionConfig(exclude = { "loginCredentialsNecessary" })
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
+@PropertyReflectionConfig(exclude = {"loginCredentialsNecessary"})
 @ObjectTestConfig(equalsAndHashCodeBasicOnly = true)
-@PropertyGenerator({ KeyStoreInfoGenerator.class, TrustStoreInfoGenerator.class, ContextMapGenerator.class })
+@PropertyGenerator({KeyStoreInfoGenerator.class, TrustStoreInfoGenerator.class, ContextMapGenerator.class})
 @PropertyGeneratorHint(declaredType = TokenResolver.class, implementationType = StaticTokenResolver.class)
 @VerifyBuilder
 class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {

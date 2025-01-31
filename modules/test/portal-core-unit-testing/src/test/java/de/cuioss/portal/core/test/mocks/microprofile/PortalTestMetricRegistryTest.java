@@ -16,18 +16,13 @@
 package de.cuioss.portal.core.test.mocks.microprofile;
 
 import static de.cuioss.test.generator.Generators.letterStrings;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.concurrent.Callable;
-
+import de.cuioss.test.generator.TypedGenerator;
+import de.cuioss.test.generator.junit.EnableGeneratorController;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
-
+import lombok.Getter;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
@@ -35,10 +30,7 @@ import org.eclipse.microprofile.metrics.Tag;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.test.generator.TypedGenerator;
-import de.cuioss.test.generator.junit.EnableGeneratorController;
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
-import lombok.Getter;
+import java.util.concurrent.Callable;
 
 @EnableAutoWeld
 @EnableGeneratorController
@@ -123,7 +115,6 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         assertFalse(underTest.getTimers().isEmpty());
         assertTrue(underTest.getTimers((metricID, metric) -> true).isEmpty());
     }
-
 
 
     @Test

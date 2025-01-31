@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.core.listener;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.core.servlet.CuiContextPath;
@@ -34,8 +36,6 @@ import jakarta.servlet.annotation.WebListener;
 
 import java.util.Collections;
 import java.util.List;
-
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Central Listener for Application life-cycle events.
@@ -80,7 +80,7 @@ public class ServletLifecycleListener implements ServletContextListener {
         final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
         Collections.sort(initializers);
         LOGGER.debug("ServletLifecycleListener called for '{}', initializing with order: {}", contextPath,
-            initializers);
+                initializers);
         for (final ApplicationInitializer applicationInitializer : initializers) {
             LOGGER.debug("Initializing '{}' for '{}'", applicationInitializer, context);
             applicationInitializer.initialize();
@@ -105,8 +105,8 @@ public class ServletLifecycleListener implements ServletContextListener {
                 applicationInitializer.destroy();
             } catch (RuntimeException e) {
                 LOGGER.warn(
-                    "Runtime Exception occurred while trying to destroy '{}' for '{}'. message='{}', stacktrace will be available at DEBUG-level",
-                    applicationInitializer, contextPath, e.getMessage());
+                        "Runtime Exception occurred while trying to destroy '{}' for '{}'. message='{}', stacktrace will be available at DEBUG-level",
+                        applicationInitializer, contextPath, e.getMessage());
                 LOGGER.debug("Detailed exception", e);
             }
         }

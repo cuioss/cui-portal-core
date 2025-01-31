@@ -15,12 +15,12 @@
  */
 package de.cuioss.portal.common.priority;
 
+import jakarta.annotation.Priority;
+import lombok.experimental.UtilityClass;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import jakarta.annotation.Priority;
-import lombok.experimental.UtilityClass;
 
 /**
  * <p>

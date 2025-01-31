@@ -15,14 +15,14 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @AddBeanClasses(PortalTestUserProducer.class)

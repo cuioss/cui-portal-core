@@ -15,14 +15,14 @@
  */
 package de.cuioss.portal.core.test.tests.configuration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AbstractConfigurationKeyVerifierTestTest extends AbstractConfigurationKeyVerifierTest {
 

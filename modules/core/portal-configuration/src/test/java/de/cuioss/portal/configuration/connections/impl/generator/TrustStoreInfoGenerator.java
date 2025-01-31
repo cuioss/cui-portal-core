@@ -19,17 +19,17 @@ import static de.cuioss.portal.configuration.connections.impl.generator.KeyStore
 import static de.cuioss.portal.configuration.connections.impl.generator.KeyStoreInfoGenerator.PASSWORD;
 import static de.cuioss.test.generator.Generators.fixedValues;
 
-import java.io.File;
-
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.tools.net.ssl.KeyStoreProvider;
 import de.cuioss.tools.net.ssl.KeyStoreType;
 
+import java.io.File;
+
 public class TrustStoreInfoGenerator implements TypedGenerator<KeyStoreProvider> {
 
     private final TypedGenerator<File> trustStores = fixedValues(
-        BASE_PATH.resolve("truststore1.keystore").toFile(),
-        BASE_PATH.resolve("truststore2.keystore").toFile());
+            BASE_PATH.resolve("truststore1.keystore").toFile(),
+            BASE_PATH.resolve("truststore2.keystore").toFile());
 
     @Override
     public KeyStoreProvider next() {

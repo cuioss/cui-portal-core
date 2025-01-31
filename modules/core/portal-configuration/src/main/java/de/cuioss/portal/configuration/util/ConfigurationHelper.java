@@ -15,6 +15,12 @@
  */
 package de.cuioss.portal.configuration.util;
 
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.*;
+import static java.util.Objects.requireNonNull;
+
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.collect.MapBuilder;
 import de.cuioss.tools.logging.CuiLogger;
@@ -31,12 +37,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.*;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Provides some utilities for interacting with configuration elements

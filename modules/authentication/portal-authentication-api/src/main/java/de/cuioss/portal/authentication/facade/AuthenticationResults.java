@@ -92,7 +92,7 @@ public class AuthenticationResults {
      *         default result {@link #NOT_LOGGED_IN}
      */
     public static ResultObject<AuthenticatedUserInfo> invalidResult(final String reason, final String username,
-                                                                    final Throwable cause) {
+            final Throwable cause) {
         return new ResultObject.Builder<AuthenticatedUserInfo>()
                 .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN_MESSAGE).identifier(username)
                         .authenticated(false).build())
@@ -110,7 +110,7 @@ public class AuthenticationResults {
      *         default result {@link #NOT_LOGGED_IN}
      */
     public static ResultObject<AuthenticatedUserInfo> invalidResultKey(final String reasonKey,
-                                                                       final String username, final Throwable cause) {
+            final String username, final Throwable cause) {
         return new ResultObject.Builder<AuthenticatedUserInfo>()
                 .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN_MESSAGE).identifier(username)
                         .authenticated(false).build())

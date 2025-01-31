@@ -17,10 +17,10 @@ package de.cuioss.portal.core.test.tests.configuration;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
 import java.util.Map;
 import java.util.Set;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * Define {@code application.context.name} config property for junit tests.

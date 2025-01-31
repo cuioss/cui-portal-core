@@ -17,23 +17,22 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.tools.collect.CollectionBuilder;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-
-import de.cuioss.portal.common.priority.PortalPriorities;
-import de.cuioss.tools.collect.CollectionBuilder;
-import de.cuioss.tools.logging.CuiLogger;
-import jakarta.annotation.PostConstruct;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 
 /**
  * Registry for the ResourceBundleNames. The injected

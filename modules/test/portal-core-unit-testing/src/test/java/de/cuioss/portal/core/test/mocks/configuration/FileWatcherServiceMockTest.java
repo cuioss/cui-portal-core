@@ -18,16 +18,14 @@ package de.cuioss.portal.core.test.mocks.configuration;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
-
+import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
-
 import java.nio.file.Path;
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
-import lombok.Getter;
 
 @EnableAutoWeld
 class FileWatcherServiceMockTest implements ShouldBeNotNull<FileWatcherServiceMock> {

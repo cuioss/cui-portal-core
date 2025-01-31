@@ -17,17 +17,12 @@ package de.cuioss.portal.common.priority;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.cuioss.portal.common.priority.support.*;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.common.priority.support.HighPriorityClass;
-import de.cuioss.portal.common.priority.support.LowPriorityClass;
-import de.cuioss.portal.common.priority.support.MediumPriorityClass;
-import de.cuioss.portal.common.priority.support.NoPriorityClass;
-import de.cuioss.portal.common.priority.support.SomeInterface;
 
 class PortalPrioritiesTest {
 

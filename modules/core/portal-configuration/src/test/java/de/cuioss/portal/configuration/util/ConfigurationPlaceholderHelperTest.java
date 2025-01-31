@@ -16,23 +16,18 @@
 package de.cuioss.portal.configuration.util;
 
 import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.replacePlaceholders;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.TestLoggerFactory;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 @EnableTestLogger(debug = ConfigurationPlaceholderHelper.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
@@ -77,7 +72,7 @@ class ConfigurationPlaceholderHelperTest {
         var firstWarnMsg = warnMsgs.get(0).getMessage();
         switch (firstWarnMsg) {
             case "Portal-161: Missing config key/s: missing_1, missing_2",
-                 "Portal-161: Missing config key/s: missing_2, missing_1" -> {
+                "Portal-161: Missing config key/s: missing_2, missing_1" -> {
                 // test passed
             }
             default -> fail("Unexpected WARN log statement for Portal-161: " + firstWarnMsg);

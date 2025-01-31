@@ -18,13 +18,13 @@ package de.cuioss.portal.configuration.util;
 import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
 import static java.util.regex.Matcher.quoteReplacement;
 
+import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.Joiner;
+
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.string.Joiner;
 
 /**
  * Processes a map with configuration key/values. If a value contains a
@@ -46,15 +46,15 @@ class ConfigurationPlaceholderHelper {
      * "${key1:${key2}crap}".
      */
     static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{" + // find start of a config placeholder.
-                                                                          // escaped, because these are regexp special
-                                                                          // chars.
+            // escaped, because these are regexp special
+            // chars.
             "[^:]" + // ignore placeholder if it starts with a double-colon and therefore has no
-                     // config-key.
+            // config-key.
             ".*?" + // allow any character between curly braces. however,
             // we need to stop at the first sight of a placeholders suffix.
             // therefore, we use a lazy mode quantifier - the question mark.
             "}+" // find at least 1 suffix character, but as many as possible to account for
-                 // nested placeholders.
+    // nested placeholders.
     );
 
     private ConfigurationPlaceholderHelper() {

@@ -20,21 +20,20 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static de.cuioss.tools.lang.MoreObjects.requireType;
 import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 
-import java.io.Closeable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
-
+import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
+import de.cuioss.tools.base.Preconditions;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
-import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
-import de.cuioss.portal.configuration.util.ConfigurationHelper;
-import de.cuioss.tools.base.Preconditions;
-import de.cuioss.tools.logging.CuiLogger;
+import java.io.Closeable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Produces a {@link RestClientHolder} to the given service interface.

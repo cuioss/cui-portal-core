@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.restclient;
 
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
@@ -36,9 +39,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
 @EnableTestLogger(trace = RequestLoggerTest.class)
 class RequestLoggerTest {

@@ -15,18 +15,18 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.cdi.PortalBeanManager;
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import de.cuioss.portal.common.cdi.PortalBeanManager;
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * <p>

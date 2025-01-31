@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.net.URLEncoder.encode;
+import static java.util.Objects.requireNonNull;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
@@ -42,10 +46,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
-
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.net.URLEncoder.encode;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Default implementation of {@link Oauth2AuthenticationFacade}. Uses
@@ -153,7 +153,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     }
 
     private Optional<AuthenticatedUserInfo> triggerAuthenticate(final List<UrlParameter> parameters,
-                                                                final String scopes) {
+            final String scopes) {
         final var code = parameters.stream().filter(parameter -> "code" .equals(parameter.getName())).findAny();
         final var state = parameters.stream().filter(parameter -> "state" .equals(parameter.getName())).findAny();
         final var error = parameters.stream().filter(parameter -> "error" .equals(parameter.getName())).findAny();
@@ -179,7 +179,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @SuppressWarnings("squid:S3655") // already checked
     private Optional<AuthenticatedUserInfo> handleTriggerAuthenticate(final String scopes, final UrlParameter code,
-                                                                      final UrlParameter state) {
+            final UrlParameter state) {
         final var servletRequest = servletRequestProvider.get();
         LOGGER.debug("code and state parameter are present");
         final AuthenticatedUserInfo sessionUser;

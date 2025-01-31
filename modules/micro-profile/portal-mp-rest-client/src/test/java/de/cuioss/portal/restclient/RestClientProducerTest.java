@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.restclient;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
@@ -41,8 +43,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @EnableMockWebServer
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -67,7 +67,7 @@ class RestClientProducerTest implements MockWebServerHolder {
                 assert request.getPath() != null;
                 return switch (request.getPath()) {
                     case "/success/test" ->
-                            new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml", "ETag", "W/123"), "test");
+                        new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml", "ETag", "W/123"), "test");
                     case "/error/test" -> new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     default -> new MockResponse(HttpServletResponse.SC_NOT_FOUND);
                 };

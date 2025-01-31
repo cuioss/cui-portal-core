@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
@@ -42,13 +45,10 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.Random;
 
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static org.junit.jupiter.api.Assertions.*;
-
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @EnableMockWebServer
-@AddBeanClasses({ Oauth2DiscoveryConfigurationProducer.class })
+@AddBeanClasses({Oauth2DiscoveryConfigurationProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
 class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2ServiceImpl>, MockWebServerHolder {
 

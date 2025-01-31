@@ -18,20 +18,18 @@ package de.cuioss.portal.common.bundle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import jakarta.inject.Inject;
-
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
+import jakarta.inject.Inject;
 import lombok.Getter;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 @EnableAutoWeld
-@AddBeanClasses({ MediumPrioBundles.class, HighPrioBundles.class, MissingBundle.class })
+@AddBeanClasses({MediumPrioBundles.class, HighPrioBundles.class, MissingBundle.class})
 class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<ResourceBundleRegistry> {
 
     @Inject

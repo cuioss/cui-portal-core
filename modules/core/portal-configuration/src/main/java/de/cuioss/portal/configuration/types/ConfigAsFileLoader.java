@@ -15,19 +15,15 @@
  */
 package de.cuioss.portal.configuration.types;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
+import de.cuioss.tools.io.FileLoader;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.inject.Qualifier;
 
-import de.cuioss.tools.io.FileLoader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * Injects a config property as a {@link FileLoader}. In case the path is not
@@ -38,7 +34,7 @@ import de.cuioss.tools.io.FileLoader;
  * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface ConfigAsFileLoader {
 

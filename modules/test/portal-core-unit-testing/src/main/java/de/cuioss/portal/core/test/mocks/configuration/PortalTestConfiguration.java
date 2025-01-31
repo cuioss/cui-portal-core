@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static java.util.Collections.synchronizedMap;
+
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
@@ -30,9 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static java.util.Collections.synchronizedMap;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.

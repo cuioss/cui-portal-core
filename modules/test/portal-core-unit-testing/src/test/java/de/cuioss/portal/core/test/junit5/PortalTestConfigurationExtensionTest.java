@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "key1:value1:zzz")

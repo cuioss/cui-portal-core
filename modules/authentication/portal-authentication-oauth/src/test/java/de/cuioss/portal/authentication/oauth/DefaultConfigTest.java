@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+
 import de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import java.util.List;
-
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 

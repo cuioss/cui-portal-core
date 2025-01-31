@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.configuration.util;
 
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -30,10 +34,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnableTestLogger

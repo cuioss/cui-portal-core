@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import java.io.Serial;
-import java.util.Optional;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
+
+import java.io.Serial;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class OauthAuthenticatedUserInfo implements AuthenticatedUserInfo {

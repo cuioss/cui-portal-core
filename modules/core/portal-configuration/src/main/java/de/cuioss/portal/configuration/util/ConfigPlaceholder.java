@@ -17,12 +17,12 @@ package de.cuioss.portal.configuration.util;
 
 import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.PLACEHOLDER_PATTERN;
 
-import java.util.Optional;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+
+import java.util.Optional;
 
 /**
  * DTO representing a placeholder in our configuration system.

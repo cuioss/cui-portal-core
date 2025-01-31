@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.authentication.mock;
 
+import static java.util.Objects.requireNonNull;
+
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.*;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
@@ -35,8 +37,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Dummy implementation of the {@link AuthenticationFacade} interface.
@@ -143,7 +143,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
-                                                     final LoginCredentials loginCredentials) {
+            final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()

@@ -15,12 +15,12 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
-import mockwebserver3.RecordedRequest;
-import org.junit.jupiter.api.Test;
-
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandlerTest.assertMockResponse;
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.*;
 import static jakarta.servlet.http.HttpServletResponse.*;
+
+import mockwebserver3.RecordedRequest;
+import org.junit.jupiter.api.Test;
 
 class BaseAllAcceptDispatcherTest {
 

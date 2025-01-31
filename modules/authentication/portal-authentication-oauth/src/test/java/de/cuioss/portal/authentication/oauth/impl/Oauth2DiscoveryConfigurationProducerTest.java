@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
@@ -33,14 +35,12 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @EnableAutoWeld
 @EnablePortalConfiguration
 @EnableMockWebServer
 @AddExtensions(ResteasyCdiExtension.class)
 class Oauth2DiscoveryConfigurationProducerTest
-    implements ShouldHandleObjectContracts<Oauth2DiscoveryConfigurationProducer>, MockWebServerHolder {
+        implements ShouldHandleObjectContracts<Oauth2DiscoveryConfigurationProducer>, MockWebServerHolder {
 
     @Setter
     private MockWebServer mockWebServer;
@@ -79,8 +79,8 @@ class Oauth2DiscoveryConfigurationProducerTest
         var url1 = new URLGenerator().next().toString();
         var url2 = new URLGenerator().next().toString();
         configuration.update(
-            OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
-            OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, url2);
+                OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
+                OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, url2);
 
         var result = underTest.getConfiguration();
 

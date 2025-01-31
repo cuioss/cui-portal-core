@@ -17,16 +17,12 @@ package de.cuioss.portal.core.storage.impl;
 
 import static de.cuioss.test.generator.Generators.integers;
 import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.core.storage.MapStorage;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.ValueObjectTest;
+import org.junit.jupiter.api.Test;
 
 class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>> {
 

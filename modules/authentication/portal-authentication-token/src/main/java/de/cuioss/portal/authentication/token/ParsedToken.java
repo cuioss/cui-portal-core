@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import static de.cuioss.tools.string.MoreStrings.trimOrNull;
+
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -28,8 +30,6 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
-
-import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 
 /**
  * Wrapper around {@link JsonWebToken}

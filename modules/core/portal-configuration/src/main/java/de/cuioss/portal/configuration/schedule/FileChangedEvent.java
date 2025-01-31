@@ -15,17 +15,14 @@
  */
 package de.cuioss.portal.configuration.schedule;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.nio.file.Path;
-
-import jakarta.inject.Qualifier;
 
 /**
  * Defines events that will be fired from implementations of
@@ -36,7 +33,7 @@ import jakarta.inject.Qualifier;
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface FileChangedEvent {
 
 }

@@ -15,12 +15,11 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
 import java.io.Serial;
 import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import lombok.Data;
 
 /**
  * Oauth2 token.

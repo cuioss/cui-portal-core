@@ -15,19 +15,15 @@
  */
 package de.cuioss.portal.configuration.types;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
+import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.inject.Qualifier;
 
-import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * <p>
@@ -151,7 +147,7 @@ import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
  * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface ConfigAsConnectionMetadata {
 

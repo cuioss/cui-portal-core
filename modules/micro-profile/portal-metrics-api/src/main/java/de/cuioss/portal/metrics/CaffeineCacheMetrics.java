@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.metrics;
 
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.microprofile.metrics.MetricRegistry.name;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -24,10 +28,6 @@ import org.eclipse.microprofile.metrics.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.microprofile.metrics.MetricRegistry.name;
 
 /**
  * Provides a factory for programmatically creating and registering cache
@@ -77,7 +77,7 @@ public class CaffeineCacheMetrics {
      * @param tags        tags to be added to each metric
      */
     public CaffeineCacheMetrics(final String namePrefix, final Cache<?, ?> cache, final CacheConfig cacheConfig,
-                                final Iterable<Tag> tags) {
+            final Iterable<Tag> tags) {
         requireNonNull(emptyToNull(namePrefix));
         requireNonNull(cache);
         requireNonNull(cacheConfig);
@@ -107,7 +107,7 @@ public class CaffeineCacheMetrics {
 
         metrics.put(getMetadata("config.size"), (Gauge<Long>) cacheConfig::getSize);
         metrics.put(getMetadata("config.expiration"),
-            (Gauge<Long>) () -> cacheConfig.getTimeUnit().toMillis(cacheConfig.getExpiration()));
+                (Gauge<Long>) () -> cacheConfig.getTimeUnit().toMillis(cacheConfig.getExpiration()));
 
         return metrics;
     }

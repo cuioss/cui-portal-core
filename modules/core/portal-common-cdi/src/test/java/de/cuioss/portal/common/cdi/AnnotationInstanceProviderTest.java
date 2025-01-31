@@ -15,14 +15,10 @@
  */
 package de.cuioss.portal.common.cdi;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.tools.collect.CollectionLiterals;
+import org.junit.jupiter.api.Test;
 
 class AnnotationInstanceProviderTest {
 

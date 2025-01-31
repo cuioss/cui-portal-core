@@ -17,14 +17,14 @@ package de.cuioss.portal.configuration.impl.schedule;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * Provides some convenient methods for tracing detecting directory-changes.

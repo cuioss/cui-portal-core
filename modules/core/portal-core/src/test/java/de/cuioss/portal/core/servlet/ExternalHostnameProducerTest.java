@@ -17,16 +17,14 @@ package de.cuioss.portal.core.servlet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 
 @EnableAutoWeld
 @AddBeanClasses(ExternalHostnameProducer.class)

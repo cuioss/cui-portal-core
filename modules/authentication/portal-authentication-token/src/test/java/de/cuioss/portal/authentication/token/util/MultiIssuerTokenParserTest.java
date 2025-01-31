@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.authentication.token.util;
 
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.authentication.token.JwksAwareTokenParser;
 import de.cuioss.portal.authentication.token.JwksAwareTokenParserTest;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -22,13 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static de.cuioss.portal.authentication.token.TestTokenProducer.ISSUER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
 class MultiIssuerTokenParserTest {
@@ -40,7 +36,7 @@ class MultiIssuerTokenParserTest {
     void setUp() throws IOException {
         defaultParser = JwksAwareTokenParserTest.getValidJWKSParserWithLocalJWKS();
         JwksAwareTokenParser otherParser = JwksAwareTokenParserTest.getInvalidValidJWKSParserWithLocalJWKSAndWrongIssuer();
-        
+
         multiIssuerParser = MultiIssuerTokenParser.builder()
                 .addParser(defaultParser)
                 .addParser(otherParser)
@@ -51,7 +47,7 @@ class MultiIssuerTokenParserTest {
     void shouldExtractIssuerFromValidToken() {
         var token = validSignedJWTWithClaims(SOME_SCOPES);
         var extractedIssuer = multiIssuerParser.extractIssuer(token);
-        
+
         assertTrue(extractedIssuer.isPresent());
         assertEquals(ISSUER, extractedIssuer.get());
     }
@@ -65,7 +61,7 @@ class MultiIssuerTokenParserTest {
     @Test
     void shouldGetParserForKnownIssuer() {
         var parser = multiIssuerParser.getParserForIssuer(ISSUER);
-        
+
         assertTrue(parser.isPresent());
         assertEquals(defaultParser, parser.get());
     }
@@ -80,7 +76,7 @@ class MultiIssuerTokenParserTest {
     void shouldGetParserForValidToken() {
         var token = validSignedJWTWithClaims(SOME_SCOPES);
         var parser = multiIssuerParser.getParserForToken(token);
-        
+
         assertTrue(parser.isPresent());
         assertEquals(defaultParser, parser.get());
     }

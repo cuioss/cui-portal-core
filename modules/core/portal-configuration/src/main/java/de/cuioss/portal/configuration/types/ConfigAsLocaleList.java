@@ -15,21 +15,17 @@
  */
 package de.cuioss.portal.configuration.types;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Locale;
-
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
-
-import de.cuioss.portal.configuration.PortalConfigurationKeys;
 
 /**
  * Injects a config property as a {@link List} of {@link Locale}. The
@@ -38,7 +34,7 @@ import de.cuioss.portal.configuration.PortalConfigurationKeys;
  * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface ConfigAsLocaleList {
 

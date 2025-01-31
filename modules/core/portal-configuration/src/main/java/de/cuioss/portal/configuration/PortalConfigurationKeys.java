@@ -562,7 +562,7 @@ public class PortalConfigurationKeys {
      * timeout the request will be aborted.
      */
     public static final String PORTAL_LAZY_LOADING_REQUEST_RETRIEVE_TIMEOUT = LAZY_LOADING_BASE
-        + "request.retrieve.timeout";
+            + "request.retrieve.timeout";
 
     /**
      * Defines the timeout to handle a backend request in seconds. After this
@@ -650,5 +650,5 @@ public class PortalConfigurationKeys {
      * </p>
      */
     public static final String PORTAL_SERVLET_BASIC_AUTH_ALLOWED = PORTAL_BASE
-        + "authentication.servlet.allowBasicAuth";
+            + "authentication.servlet.allowBasicAuth";
 }

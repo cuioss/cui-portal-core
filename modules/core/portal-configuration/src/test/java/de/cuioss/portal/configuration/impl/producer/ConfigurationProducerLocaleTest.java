@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.types.ConfigAsLocale;
@@ -29,10 +33,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Locale;
-
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld
@@ -68,7 +68,7 @@ class ConfigurationProducerLocaleTest {
     @Test
     void shouldProduceLocaleList() {
         configuration.put(CONFIGURATION_KEY,
-            Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(), Locale.ENGLISH.toString()));
+                Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(), Locale.ENGLISH.toString()));
 
         configuration.fireEvent();
         assertEquals(2, injectedLocaleList.get().size());
@@ -77,7 +77,7 @@ class ConfigurationProducerLocaleTest {
     @Test
     void shouldIgnoreDuplicatesLocaleList() {
         configuration.put(CONFIGURATION_KEY, Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(),
-            Locale.ENGLISH.toString(), Locale.GERMANY.toString()));
+                Locale.ENGLISH.toString(), Locale.GERMANY.toString()));
 
         configuration.fireEvent();
         assertEquals(2, injectedLocaleList.get().size());

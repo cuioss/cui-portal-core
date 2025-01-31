@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.types.ConfigAsList;
@@ -30,8 +32,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Ensure we always get what we expect from the MicroProfile config

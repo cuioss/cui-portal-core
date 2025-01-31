@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.tools.logging.CuiLogger;
+
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * Used for configuring ResourceBundles. Implementations should provide a

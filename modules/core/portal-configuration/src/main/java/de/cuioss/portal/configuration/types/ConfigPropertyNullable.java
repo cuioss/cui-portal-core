@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.configuration.types;
 
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
 
 /**
  * <h1>Nullable ConfigProperty</h1>
@@ -53,7 +53,7 @@ import jakarta.inject.Qualifier;
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface ConfigPropertyNullable {
 
     /**

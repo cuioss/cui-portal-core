@@ -29,7 +29,7 @@ import java.util.Map;
 public class KeycloakITBase {
 
     public enum TokenTypes {
-        ;
+
         public static final String ACCESS = "access_token";
         public static final String REFRESH = "refresh_token";
         public static final String ID_TOKEN = "id_token";

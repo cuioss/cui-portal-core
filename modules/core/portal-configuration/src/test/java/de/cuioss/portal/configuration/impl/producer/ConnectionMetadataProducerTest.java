@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
@@ -37,8 +39,6 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal
@@ -382,7 +382,7 @@ class ConnectionMetadataProducerTest {
     void shouldHandleConfigProperties() {
         defaultConfig();
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE,
-            AuthenticationType.NONE.name());
+                AuthenticationType.NONE.name());
         configuration.fireEvent();
         assertTrue(metadataProvider.get().getContextMap().isEmpty());
 
@@ -461,16 +461,16 @@ class ConnectionMetadataProducerTest {
     private void certificateConfig() {
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION,
-            truststoreLocation);
+                truststoreLocation);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD,
-            TRUSTSTORE_PASSWORD);
+                TRUSTSTORE_PASSWORD);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION,
-            keystoreLocation);
+                keystoreLocation);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
-            KEYSTORE_PASSWORD);
+                KEYSTORE_PASSWORD);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD, PASSWORD3);
 

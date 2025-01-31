@@ -18,13 +18,12 @@ package de.cuioss.portal.common.bundle;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.InvalidBundlePath;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
+import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
 
 class ResourceBundleLocatorTest {
 

@@ -17,21 +17,20 @@ package de.cuioss.portal.core.test.mocks.configuration;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
+import de.cuioss.portal.configuration.schedule.FileChangedEvent;
+import de.cuioss.portal.configuration.schedule.FileWatcherService;
+import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.inject.Inject;
+import lombok.ToString;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.inject.Alternative;
-import jakarta.inject.Inject;
-
-import de.cuioss.portal.configuration.schedule.FileChangedEvent;
-import de.cuioss.portal.configuration.schedule.FileWatcherService;
-import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
-import lombok.ToString;
 
 /**
  * Mock implementation of {@link FileWatcherService} that is solely capable of

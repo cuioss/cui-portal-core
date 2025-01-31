@@ -15,20 +15,19 @@
  */
 package de.cuioss.portal.restclient;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
+import de.cuioss.tools.io.IOStreams;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientResponseFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.ReaderInterceptorContext;
 
-import de.cuioss.tools.io.IOStreams;
-import de.cuioss.tools.logging.CuiLogger;
-import jakarta.annotation.Priority;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * <p>

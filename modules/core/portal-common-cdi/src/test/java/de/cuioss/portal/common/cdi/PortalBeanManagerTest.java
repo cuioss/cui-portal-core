@@ -18,26 +18,18 @@ package de.cuioss.portal.common.cdi;
 import static de.cuioss.portal.common.cdi.PortalBeanManager.resolveBean;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Optional;
-
+import de.cuioss.portal.common.cdi.support.*;
 import jakarta.enterprise.context.RequestScoped;
-
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.common.cdi.support.DependentTestBeanWithoutQualifier;
-import de.cuioss.portal.common.cdi.support.TestAnnotation;
-import de.cuioss.portal.common.cdi.support.TestBeanWithQualifier;
-import de.cuioss.portal.common.cdi.support.TestBeanWithQualifierAndPriority10;
-import de.cuioss.portal.common.cdi.support.TestBeanWithQualifierAndPriority20;
-import de.cuioss.portal.common.cdi.support.TestBeanWithoutQualifier;
-import de.cuioss.portal.common.cdi.support.TestInterface;
+import java.util.Optional;
 
 @EnableAutoWeld
-@AddBeanClasses({ TestBeanWithQualifier.class, TestBeanWithoutQualifier.class, DependentTestBeanWithoutQualifier.class,
-        TestBeanWithQualifierAndPriority10.class, TestBeanWithQualifierAndPriority20.class })
+@AddBeanClasses({TestBeanWithQualifier.class, TestBeanWithoutQualifier.class, DependentTestBeanWithoutQualifier.class,
+        TestBeanWithQualifierAndPriority10.class, TestBeanWithQualifierAndPriority20.class})
 @ActivateScopes(RequestScoped.class)
 class PortalBeanManagerTest {
 
@@ -72,7 +64,7 @@ class PortalBeanManagerTest {
     @Test
     void shouldThrowExceptionOnZeroBeansFound() {
         assertThrows(IllegalArgumentException.class, () ->
-            resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class));
+                resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class));
     }
 
     @Test

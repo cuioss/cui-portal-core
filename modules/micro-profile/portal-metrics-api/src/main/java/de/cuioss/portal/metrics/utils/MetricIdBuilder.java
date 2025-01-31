@@ -17,16 +17,15 @@ package de.cuioss.portal.metrics.utils;
 
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 
+import de.cuioss.tools.string.MoreStrings;
+import lombok.Getter;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.Tag;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-
-import org.eclipse.microprofile.metrics.MetricID;
-import org.eclipse.microprofile.metrics.Tag;
-
-import de.cuioss.tools.string.MoreStrings;
-import lombok.Getter;
 
 /**
  * Builder for MicroProfile {@link MetricID}.
