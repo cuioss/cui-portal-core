@@ -16,6 +16,7 @@
 package de.cuioss.portal.test.keycloakit;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
+import lombok.experimental.UtilityClass;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
