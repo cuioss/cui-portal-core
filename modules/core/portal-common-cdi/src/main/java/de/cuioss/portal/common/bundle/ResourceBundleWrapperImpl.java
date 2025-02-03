@@ -76,23 +76,23 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
     /** {@inheritDoc} */
     @Override
     public String getString(final String key) {
+        final String lookupKey = key == null ? "null" : key;
 
         for (final ResourceBundle bundle : getResolvedBundles()) {
-            if (bundle.containsKey(key)) {
-                return bundle.getString(key);
+            if (bundle.containsKey(lookupKey)) {
+                return bundle.getString(lookupKey);
             }
         }
 
-        final var errMsg = "Portal-003 : No key '" + key + "' defined within any of the configured bundles: "
+        final var errMsg = "Portal-003 : No key '" + lookupKey + "' defined within any of the configured bundles: "
                 + resourceBundleRegistry.getResolvedPaths();
 
         if (projectStage.get().isDevelopment()) {
-            throw new MissingResourceException(errMsg, "ResourceBundleWrapperImpl", key);
+            throw new MissingResourceException(errMsg, "ResourceBundleWrapperImpl", lookupKey);
         }
 
         LOGGER.warn(errMsg);
-        return "??" + key + "??";
-
+        return "??" + lookupKey + "??";
     }
 
     /**
