@@ -28,7 +28,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class PortalCommonCDILogMessages {
 
-    /** Module prefix for all log messages */
+    /**
+     * Module prefix for all log messages
+     */
     public static final String PREFIX = "PortalCommonCDI";
 
     /**
@@ -69,51 +71,4 @@ public final class PortalCommonCDILogMessages {
             .identifier(3)
             .build();
 
-    /**
-     * Debug level message when adding a new bundle
-     * Message: PortalCommonCDI-004: Adding '%s'
-     * Parameters:
-     * 1. Bundle path
-     */
-    public static final LogRecord ADDING_BUNDLE = LogRecordModel.builder()
-            .template("Adding '%s'")
-            .prefix(PREFIX)
-            .identifier(4)
-            .build();
-
-    /**
-     * Debug level message when ignoring a bundle
-     * Message: PortalCommonCDI-005: Ignoring '%s'
-     * Parameters:
-     * 1. Bundle path
-     */
-    public static final LogRecord IGNORING_BUNDLE = LogRecordModel.builder()
-            .template("Ignoring '%s'")
-            .prefix(PREFIX)
-            .identifier(5)
-            .build();
-
-    /**
-     * Debug level message showing the resulting bundles
-     * Message: PortalCommonCDI-006: Resulting in %s
-     * Parameters:
-     * 1. List of bundles
-     */
-    public static final LogRecord RESULTING_BUNDLES = LogRecordModel.builder()
-            .template("Resulting in %s")
-            .prefix(PREFIX)
-            .identifier(6)
-            .build();
-
-    /**
-     * Warning level message when a duplicate ResourceBundle path is found
-     * Message: PortalCommonCDI-506: Duplicate ResourceBundlePath found for '%s'
-     * Parameters:
-     * 1. Bundle path
-     */
-    public static final LogRecord DUPLICATE_RESOURCE_PATH = LogRecordModel.builder()
-            .template("Duplicate ResourceBundlePath found for '%s'")
-            .prefix(PREFIX)
-            .identifier(506)
-            .build();
 }
