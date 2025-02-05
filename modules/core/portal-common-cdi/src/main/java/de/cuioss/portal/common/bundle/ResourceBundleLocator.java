@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 
 import java.io.Serializable;
@@ -57,16 +58,16 @@ public interface ResourceBundleLocator extends Serializable {
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();
         if (bundlePath.isEmpty()) {
-            LOGGER.debug(LogMessages.BUNDLE_PATH_NOT_DEFINED.format(getClass().getName()));
+            LOGGER.debug(PortalCommonCDILogMessages.BUNDLE_PATH_NOT_DEFINED.format(getClass().getName()));
             return Optional.empty();
         }
 
         try {
             var rb = ResourceBundle.getBundle(bundlePath.get(), locale);
-            LOGGER.debug(LogMessages.BUNDLE_LOADED.format(getClass().getName(), bundlePath.get(), locale));
+            LOGGER.debug(PortalCommonCDILogMessages.BUNDLE_LOADED.format(getClass().getName(), bundlePath.get(), locale));
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.debug(e, LogMessages.BUNDLE_LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
+            LOGGER.debug(e, PortalCommonCDILogMessages.BUNDLE_LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
             return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
         }
     }
@@ -83,10 +84,10 @@ public interface ResourceBundleLocator extends Serializable {
     private Optional<ResourceBundle> getBundleViaCurrentThreadContextClassLoader(String bundlePath, Locale locale) {
         try {
             var rb = ResourceBundle.getBundle(bundlePath, locale, Thread.currentThread().getContextClassLoader());
-            LOGGER.debug(LogMessages.BUNDLE_LOADED.format(getClass().getName(), bundlePath, locale));
+            LOGGER.debug(PortalCommonCDILogMessages.BUNDLE_LOADED.format(getClass().getName(), bundlePath, locale));
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn(e, LogMessages.BUNDLE_LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
+            LOGGER.warn(e, PortalCommonCDILogMessages.BUNDLE_LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
             return Optional.empty();
         }
     }

@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.common.bundle;
+package de.cuioss.portal.common;
 
 import de.cuioss.tools.logging.LogRecord;
 import de.cuioss.tools.logging.LogRecordModel;
+import lombok.experimental.UtilityClass;
 
 /**
  * Centralized log messages for the portal-common-cdi module.
- * All messages follow the format: Portal-[identifier]: [message]
+ * All messages follow the format: PortalCommonCDI-[identifier]: [message]
  * Debug level messages use 1-500 range
  * Warn level messages use 501-999 range
  */
-public final class LogMessages {
-
-    private LogMessages() {
-        // Hidden constructor
-    }
+@UtilityClass
+public final class PortalCommonCDILogMessages {
 
     /** Module prefix for all log messages */
-    public static final String PREFIX = "Portal";
+    public static final String PREFIX = "PortalCommonCDI";
 
     /**
      * Debug level message when a ResourceBundle path is not defined for a class
@@ -45,7 +43,7 @@ public final class LogMessages {
 
     /**
      * Debug level message when a ResourceBundle is successfully loaded
-     * Message: Portal-002: Successfully loaded %s '%s' for locale '%s'
+     * Message: PortalCommonCDI-002: Successfully loaded %s '%s' for locale '%s'
      * Parameters:
      * 1. Class name
      * 2. Bundle path
@@ -59,7 +57,7 @@ public final class LogMessages {
 
     /**
      * Debug level message when a ResourceBundle fails to load
-     * Message: Portal-003: Unable to load %s '%s' for locale '%s'
+     * Message: PortalCommonCDI-003: Unable to load %s '%s' for locale '%s'
      * Parameters:
      * 1. Class name
      * 2. Bundle path
@@ -73,7 +71,7 @@ public final class LogMessages {
 
     /**
      * Debug level message when adding a new bundle
-     * Message: Portal-004: Adding '%s'
+     * Message: PortalCommonCDI-004: Adding '%s'
      * Parameters:
      * 1. Bundle path
      */
@@ -85,7 +83,7 @@ public final class LogMessages {
 
     /**
      * Debug level message when ignoring a bundle
-     * Message: Portal-005: Ignoring '%s'
+     * Message: PortalCommonCDI-005: Ignoring '%s'
      * Parameters:
      * 1. Bundle path
      */
@@ -97,7 +95,7 @@ public final class LogMessages {
 
     /**
      * Debug level message showing the resulting bundles
-     * Message: Portal-006: Resulting in %s
+     * Message: PortalCommonCDI-006: Resulting in %s
      * Parameters:
      * 1. List of bundles
      */
@@ -109,7 +107,7 @@ public final class LogMessages {
 
     /**
      * Warning level message when a duplicate ResourceBundle path is found
-     * Message: Portal-506: Duplicate ResourceBundlePath found for '%s'
+     * Message: PortalCommonCDI-506: Duplicate ResourceBundlePath found for '%s'
      * Parameters:
      * 1. Bundle path
      */
