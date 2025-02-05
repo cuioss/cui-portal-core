@@ -37,6 +37,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -78,80 +79,101 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
         locale = Locale.ENGLISH;
     }
 
-    @Test
-    @DisplayName("Should return correct messages from different bundles")
-    void shouldReturnCorrectMessage() {
-        // portal_messages
-        assertEquals("Logout", underTest.getString("page.logout.srHeader"), 
-            "Should return correct portal message");
-        // vendor_messages
-        assertEquals(PORTAL_TITLE, underTest.getString("portal.title"),
-            "Should return correct vendor message");
+    @Nested
+    @DisplayName("Basic Message Resolution Tests")
+    class MessageResolutionTests {
+        @Test
+        @DisplayName("Should return correct messages from different bundles")
+        void shouldReturnCorrectMessage() {
+            assertAll("Message resolution from different bundles",
+                () -> assertEquals("Logout", underTest.getString("page.logout.srHeader"), 
+                    "Should return correct portal message"),
+                () -> assertEquals(PORTAL_TITLE, underTest.getString("portal.title"),
+                    "Should return correct vendor message")
+            );
+        }
+
+        @Test
+        @DisplayName("Should switch message bundle when locale changes")
+        void shouldSwitchMessageBundleOnLocaleChange() {
+            assertAll("Locale change handling",
+                () -> assertEquals("Internal server error", underTest.getString("page.error.title"),
+                    "Should return English message initially"),
+                () -> {
+                    locale = Locale.GERMAN;
+                    localeChangeEvent.fire(Locale.GERMAN);
+                    assertEquals("Interner Server Fehler", underTest.getString("page.error.title"),
+                        "Should return German message after locale change");
+                }
+            );
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "page.logout.srHeader, Logout",
+            "portal.title, CUI Oss Portal",
+            "page.error.title, Internal server error"
+        })
+        @DisplayName("Should return correct messages for various keys")
+        void shouldReturnCorrectMessages(String key, String expected) {
+            assertEquals(expected, underTest.getString(key),
+                () -> "Should return correct message for key: " + key);
+        }
     }
 
-    @Test
-    @DisplayName("Should switch message bundle when locale changes")
-    void shouldSwitchMessageBundleOnLocaleChange() {
-        assertEquals("Internal server error", underTest.getString("page.error.title"),
-            "Should return English message initially");
-        locale = Locale.GERMAN;
-        localeChangeEvent.fire(Locale.GERMAN);
+    @Nested
+    @DisplayName("Error Handling Tests")
+    class ErrorHandlingTests {
+        @Test
+        @DisplayName("Should throw MissingResourceException for invalid key in development")
+        void shouldFailOnInvalidKey() {
+            projectStage = ProjectStage.DEVELOPMENT;
+            var exception = assertThrows(MissingResourceException.class, 
+                () -> underTest.getString("not.there"),
+                "Should throw MissingResourceException for invalid key in development mode");
+            assertTrue(exception.getMessage().contains("Portal-003"), 
+                "Should contain error code");
+        }
 
-        assertEquals("Interner Server Fehler", underTest.getString("page.error.title"),
-            "Should return German message after locale change");
-    }
+        @Test
+        @DisplayName("Should log on invalid key in production")
+        void shouldLogOnInvalidKey() {
+            projectStage = ProjectStage.PRODUCTION;
+            var result = underTest.getString("not.there");
+            assertAll("Invalid key handling in production",
+                () -> assertEquals("??not.there??", result, "Should wrap invalid key with ??"),
+                () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, 
+                    "Portal-003 : No key 'not.there'")
+            );
+        }
 
-    @Test
-    @DisplayName("Should throw MissingResourceException for invalid key in development")
-    void shouldFailOnInvalidKey() {
-        projectStage = ProjectStage.DEVELOPMENT;
-        var exception = assertThrows(MissingResourceException.class, 
-            () -> underTest.getString("not.there"),
-            "Should throw MissingResourceException for invalid key in development mode");
-        assertTrue(exception.getMessage().contains("Portal-003"), "Should contain error code");
-    }
-
-    @Test
-    @DisplayName("Should log on invalid key in production")
-    void shouldLogOnInvalidKey() {
-        projectStage = ProjectStage.PRODUCTION;
-        var result = underTest.getString("not.there");
-        assertEquals("??not.there??", result, "Should wrap invalid key with ??");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-003 : No key 'not.there'");
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "page.logout.srHeader, Logout",
-        "portal.title, CUI Oss Portal",
-        "page.error.title, Internal server error"
-    })
-    @DisplayName("Should return correct messages for various keys")
-    void shouldReturnCorrectMessages(String key, String expected) {
-        assertEquals(expected, underTest.getString(key),
-            () -> "Should return correct message for key: " + key);
-    }
-
-    @ParameterizedTest
-    @DisplayName("Should handle invalid input gracefully in production")
-    @NullAndEmptySource
-    @ValueSource(strings = {" ", "\t", "\n"})
-    void shouldHandleInvalidInput(String invalidKey) {
-        projectStage = ProjectStage.PRODUCTION;
-        var result = underTest.getString(invalidKey);
-        var expectedKey = invalidKey == null ? "null" : invalidKey;
-        assertEquals("??" + expectedKey + "??", result, "Should wrap invalid key with ??");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-003 : No key '" + expectedKey + "'");
+        @ParameterizedTest
+        @DisplayName("Should handle invalid input gracefully in production")
+        @NullAndEmptySource
+        @ValueSource(strings = {" ", "\t", "\n"})
+        void shouldHandleInvalidInput(String invalidKey) {
+            projectStage = ProjectStage.PRODUCTION;
+            var result = underTest.getString(invalidKey);
+            var expectedKey = invalidKey == null ? "null" : invalidKey;
+            assertAll("Invalid input handling",
+                () -> assertEquals("??" + expectedKey + "??", result, 
+                    "Should wrap invalid key with ??"),
+                () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, 
+                    "Portal-003 : No key '" + expectedKey + "'")
+            );
+        }
     }
 
     @Test
     @DisplayName("Should return all available keys")
     void getKeys() {
         final List<String> keys = Collections.list(underTest.getKeys());
-        assertNotNull(keys, "Keys list should not be null");
-        assertTrue(keys.size() > 60, "Should have more than 60 keys");
-        assertFalse(keys.contains(null), "Should not contain null keys");
-        assertTrue(keys.stream().allMatch(k -> k != null && !k.isBlank()),
-            "All keys should be non-null and non-blank");
+        assertAll("Key list validation",
+            () -> assertNotNull(keys, "Keys list should not be null"),
+            () -> assertTrue(keys.size() > 60, "Should have more than 60 keys"),
+            () -> assertFalse(keys.contains(null), "Should not contain null keys"),
+            () -> assertTrue(keys.stream().allMatch(k -> k != null && !k.isBlank()),
+                "All keys should be non-null and non-blank")
+        );
     }
 }

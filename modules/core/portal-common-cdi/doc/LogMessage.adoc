@@ -1,0 +1,50 @@
+# Log Messages for Portal Common CDI Module
+
+## INFO Messages (001-099)
+
+[cols="1,2,2"]
+|===
+|Identifier |Message |Description
+
+|Portal-001
+|ResourceBundle path not defined for class: {0}
+|Indicates that a ResourceBundleLocator implementation has not defined a bundle path. This is logged at debug level as it may be intentional.
+
+|Portal-002
+|Successfully loaded {0} '{1}' for locale '{2}'
+|Confirms successful loading of a resource bundle for a specific locale. Logged at debug level for tracking bundle resolution.
+
+|Portal-004
+|Adding '{0}'
+|Indicates that a ResourceBundleLocator is being added to the registry. Logged at debug level to track bundle registration.
+
+|Portal-006
+|Resulting in {0}
+|Shows the final list of resolved resource bundles in the registry. Logged at debug level for configuration verification.
+|===
+
+## WARN Messages (100-199)
+
+[cols="1,2,2"]
+|===
+|Identifier |Message |Description
+
+|Portal-003
+|Unable to load {0} '{1}' for locale '{2}'
+|Indicates a failure to load a resource bundle. This could be due to missing files or classpath issues.
+
+|Portal-005
+|Ignoring '{0}'
+|A ResourceBundleLocator is being ignored because it could not be resolved or loaded.
+|===
+
+## ERROR Messages (500-599)
+
+[cols="1,2,2"]
+|===
+|Identifier |Message |Description
+
+|Portal-506
+|Duplicate ResourceBundlePath found for '{0}'
+|A duplicate resource bundle path was detected. This could lead to unexpected behavior as only one bundle per path is allowed.
+|===

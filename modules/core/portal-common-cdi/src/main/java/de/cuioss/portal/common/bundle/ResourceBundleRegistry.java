@@ -17,9 +17,18 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.logging.LogRecordModel;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
@@ -28,17 +37,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 /**
- * Registry for the ResourceBundleNames. The injected
- * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator}s must have unique paths and define an existing
- * {@link java.util.ResourceBundle}. In addition, they should be annotated with the
- * corresponding {@link jakarta.annotation.Priority}
+ * Registry for all available {@link ResourceBundleLocator}s.
+ * The injected {@link ResourceBundleLocator}s must have unique paths and define an existing
+ * resource bundle. The registry will sort them according to their {@link jakarta.annotation.Priority}
+ * annotation.
  *
  * @author Oliver Wolff
  */
@@ -50,10 +53,7 @@ public class ResourceBundleRegistry implements Serializable {
     @Serial
     private static final long serialVersionUID = 2611987921899581695L;
 
-    private static final CuiLogger log = new CuiLogger(ResourceBundleRegistry.class);
-
-    /** "Portal-506: Duplicate ResourceBundlePath found for '{}'" */
-    public static final String ERR_DUPLICATE_RESOURCE_PATH = "Portal-506: Duplicate ResourceBundlePath found for '{}'";
+    private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleRegistry.class);
 
     @Inject
     Instance<ResourceBundleLocator> locatorList;
@@ -79,19 +79,26 @@ public class ResourceBundleRegistry implements Serializable {
             if (resolvedBundle.isPresent() && descriptor.getBundlePath().isPresent()) {
                 // Check whether path is unique
                 if (foundPaths.contains(descriptor.getBundlePath().get())) {
-                    log.warn(ERR_DUPLICATE_RESOURCE_PATH, descriptor);
+                    LOGGER.warn(LogMessages.DUPLICATE_RESOURCE_PATH.format(descriptor.getClass().getName()));
                 } else {
-                    log.debug("Adding '%s'", descriptor);
+                    LOGGER.debug(LogMessages.ADDING_BUNDLE.format(descriptor.getBundlePath().get()));
                     finalPaths.add(descriptor);
                     foundPaths.add(descriptor.getBundlePath().get());
                 }
             } else {
-                log.warn("Ignoring '%s'", descriptor);
+                LOGGER.warn(LogMessages.IGNORING_BUNDLE.format(descriptor.getClass().getName()));
             }
         }
         resolvedPaths = finalPaths.toImmutableList();
-        log.debug("Resulting in %s", resolvedPaths);
-
+        LOGGER.debug(LogMessages.RESULTING_BUNDLES.format(resolvedPaths.stream()
+            .map(loc -> loc.getBundlePath().orElse("undefined"))
+            .collect(Collectors.joining(", "))));
     }
 
+    private static class LogMessages {
+        public static final String DUPLICATE_RESOURCE_PATH = "Portal-004: Duplicate resource path found for class '%s'";
+        public static final String ADDING_BUNDLE = "Portal-002: Adding bundle '%s' from class '%s'";
+        public static final String IGNORING_BUNDLE = "Portal-005: Ignoring bundle, reason='%s', class='%s'";
+        public static final String RESULTING_BUNDLES = "Portal-006: Resulting bundles: %s";
+    }
 }

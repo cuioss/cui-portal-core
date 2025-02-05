@@ -57,16 +57,16 @@ public interface ResourceBundleLocator extends Serializable {
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();
         if (bundlePath.isEmpty()) {
-            LOGGER.debug("ResourceBundle path not defined for class: %s", getClass().getName());
+            LOGGER.debug(LogMessages.BUNDLE_PATH_NOT_DEFINED.format(getClass().getName()));
             return Optional.empty();
         }
 
         try {
             var rb = ResourceBundle.getBundle(bundlePath.get(), locale);
-            LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath.get(), locale);
+            LOGGER.debug(LogMessages.BUNDLE_LOADED.format(getClass().getName(), bundlePath.get(), locale));
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.debug("Unable to load %s '%s' for locale '%s'".formatted(getClass().getName(), bundlePath, locale), e);
+            LOGGER.debug(e, LogMessages.BUNDLE_LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
             return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
         }
     }
@@ -75,14 +75,18 @@ public interface ResourceBundleLocator extends Serializable {
      * This is needed in the context of a Quarkus module. Otherwise, the
      * {@link ResourceBundle} can not be found. The difference to the default
      * implementation is passing {@code Thread.currentThread().getContextClassLoader()}.
+     *
+     * @param bundlePath must not be null
+     * @param locale must not be null
+     * @return an {@link Optional} {@link ResourceBundle}
      */
     private Optional<ResourceBundle> getBundleViaCurrentThreadContextClassLoader(String bundlePath, Locale locale) {
         try {
             var rb = ResourceBundle.getBundle(bundlePath, locale, Thread.currentThread().getContextClassLoader());
-            LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath, locale);
+            LOGGER.debug(LogMessages.BUNDLE_LOADED.format(getClass().getName(), bundlePath, locale));
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn("Unable to load %s '%s' for locale '%s'".formatted(getClass().getName(), bundlePath, locale), e);
+            LOGGER.warn(e, LogMessages.BUNDLE_LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
             return Optional.empty();
         }
     }
