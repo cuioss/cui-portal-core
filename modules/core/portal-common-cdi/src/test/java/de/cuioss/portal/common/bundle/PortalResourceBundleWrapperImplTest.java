@@ -17,6 +17,7 @@ package de.cuioss.portal.common.bundle;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.bundle.support.PortalMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
@@ -131,7 +132,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             var exception = assertThrows(MissingResourceException.class, 
                 () -> underTest.getString("not.there"),
                 "Should throw MissingResourceException for invalid key in development mode");
-            assertTrue(exception.getMessage().contains("Portal-003"), 
+            assertTrue(exception.getMessage().contains(PortalCommonCDILogMessages.PREFIX + "-505"), 
                 "Should contain error code");
         }
 
@@ -143,7 +144,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             assertAll("Invalid key handling in production",
                 () -> assertEquals("??not.there??", result, "Should wrap invalid key with ??"),
                 () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, 
-                    "Portal-003 : No key 'not.there'")
+                    PortalCommonCDILogMessages.PREFIX + "-505: No key 'not.there'")
             );
         }
 
@@ -159,7 +160,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
                 () -> assertEquals("??" + expectedKey + "??", result, 
                     "Should wrap invalid key with ??"),
                 () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, 
-                    "Portal-003 : No key '" + expectedKey + "'")
+                    PortalCommonCDILogMessages.PREFIX + "-505: No key '" + expectedKey + "'")
             );
         }
     }
