@@ -65,10 +65,10 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     private ResourceBundleWrapper resourceBundleWrapper;
 
-    private String allBundleNames;
-
     /**
      * {@inheritDoc}
+     * 
+     * @throws NullPointerException if the given key is {@code null}
      */
     @Override
     protected Object handleGetObject(@Nonnull final String key) {
@@ -77,6 +77,8 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * {@inheritDoc}
+     * 
+     * @return a non-null enumeration of the keys in this resource bundle
      */
     @Override
     @Nonnull
@@ -86,6 +88,8 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * {@inheritDoc}
+     * 
+     * @return a non-null set of the keys in this resource bundle
      */
     @Override
     @Nonnull
@@ -93,6 +97,12 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
         return getResourceBundleWrapper().keySet();
     }
 
+    /**
+     * Retrieves the wrapped ResourceBundleWrapper instance, creating it if necessary.
+     * 
+     * @return the non-null ResourceBundleWrapper instance
+     */
+    @Nonnull
     private ResourceBundleWrapper getResourceBundleWrapper() {
         if (null == resourceBundleWrapper) {
             LOGGER.debug(PortalCommonCDILogMessages.RESOLVING_BUNDLE_BEAN.format());
@@ -100,5 +110,4 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
         }
         return resourceBundleWrapper;
     }
-
 }
