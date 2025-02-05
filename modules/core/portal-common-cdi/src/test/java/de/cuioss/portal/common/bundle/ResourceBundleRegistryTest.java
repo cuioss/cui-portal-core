@@ -17,34 +17,67 @@ package de.cuioss.portal.common.bundle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
+import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @EnableAutoWeld
+@EnableTestLogger(debug = {ResourceBundleRegistry.class, ResourceBundleLocator.class, ResourceBundleRegistryTest.class})
 @AddBeanClasses({MediumPrioBundles.class, HighPrioBundles.class, MissingBundle.class})
+@DisplayName("Tests the ResourceBundleRegistry functionality")
 class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<ResourceBundleRegistry> {
 
     @Inject
     @Getter
     private ResourceBundleRegistry underTest;
 
-    @Test
-    void shouldInitPortalResourceBundles() {
-        assertNotNull(underTest);
-        assertNotNull(underTest.getResolvedPaths());
-        assertEquals(2, underTest.getResolvedPaths().size());
-        assertEquals(HighPrioBundles.HIGH_1, underTest.getResolvedPaths().get(0).getBundlePath().get());
-        assertEquals(MediumPrioBundles.MEDIUM_1, underTest.getResolvedPaths().get(1).getBundlePath().get());
+    @Nested
+    @DisplayName("Bundle Resolution Tests")
+    class BundleResolutionTests {
+        
+        @Test
+        @DisplayName("Should initialize and sort portal resource bundles")
+        void shouldInitPortalResourceBundles() {
+            assertAll("Bundle initialization verification",
+                () -> assertNotNull(underTest, "Registry should not be null"),
+                () -> assertNotNull(underTest.getResolvedPaths(), "Resolved paths should not be null"),
+                () -> assertEquals(2, underTest.getResolvedPaths().size(),
+                    "Should resolve exactly two bundles"),
+                () -> assertEquals(HighPrioBundles.HIGH_1, 
+                    underTest.getResolvedPaths().get(0).getBundlePath().get(),
+                    "First bundle should be high priority"),
+                () -> assertEquals(MediumPrioBundles.MEDIUM_1,
+                    underTest.getResolvedPaths().get(1).getBundlePath().get(),
+                    "Second bundle should be medium priority")
+            );
+        }
     }
 
-    // TODO : verify log error msgs
+    @Nested
+    @DisplayName("Error Handling Tests")
+    class ErrorHandlingTests {
 
+        @Test
+        @DisplayName("Should log warning for missing bundle")
+        void shouldLogWarningForMissingBundle() {
+            // The MissingBundle class is already added to the context
+            // This will trigger warning logging during initialization
+            underTest.initBean();
+            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
+                "Ignoring 'MissingBundle()'");
+        }
+    }
 }
