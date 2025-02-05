@@ -192,4 +192,13 @@ public final class PortalCommonCDILogMessages {
             .identifier(11)
             .build();
 
+    /**
+     * Warning level message when no valid bundles are found
+     * Message: PortalCommonCDI-504: No valid resource bundles found
+     */
+    public static final LogRecord NO_VALID_BUNDLES = LogRecordModel.builder()
+            .template("No valid resource bundles found")
+            .prefix(PREFIX)
+            .identifier(504)
+            .build();
 }

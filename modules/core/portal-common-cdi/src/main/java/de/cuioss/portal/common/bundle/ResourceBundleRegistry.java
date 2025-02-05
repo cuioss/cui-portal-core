@@ -25,6 +25,7 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 
 import java.io.Serial;
@@ -42,6 +43,15 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  * resource bundle. The registry will sort them according to their {@link jakarta.annotation.Priority}
  * annotation.
  *
+ * <p>During initialization, the registry:
+ * <ol>
+ *   <li>Sorts all locators by their priority</li>
+ *   <li>Validates each locator for bundle and path presence</li>
+ *   <li>Ensures path uniqueness</li>
+ *   <li>Creates an immutable list of valid locators</li>
+ * </ol>
+ * </p>
+ *
  * @author Oliver Wolff
  */
 @ApplicationScoped
@@ -58,44 +68,59 @@ public class ResourceBundleRegistry implements Serializable {
     Instance<ResourceBundleLocator> locatorList;
 
     /**
-     * The computed / resolved names in the correct order
+     * The computed / resolved locators in priority order. This list is immutable and
+     * contains only valid locators with unique paths.
      */
     @Getter
+    @NonNull
     private List<ResourceBundleLocator> resolvedPaths;
 
     /**
-     * Initializes the bean. See class documentation for expected result.
+     * Initializes the bean by processing all injected {@link ResourceBundleLocator}s.
+     * The initialization process:
+     * <ul>
+     *   <li>Sorts locators by priority</li>
+     *   <li>Validates each locator's bundle and path</li>
+     *   <li>Ensures path uniqueness</li>
+     *   <li>Creates an immutable list of valid locators</li>
+     * </ul>
+     *
+     * @throws IllegalStateException if no valid resource bundles are found
      */
     @PostConstruct
-    @SuppressWarnings("java:S3655")
-    // owolff: false positive isPresent is checked
+    @SuppressWarnings("java:S3655") // owolff: false positive - isPresent is checked
     void initBean() {
-        final var finalPaths = new CollectionBuilder<ResourceBundleLocator>();
-        // Sort according to ResourceBundleDescriptor#order
-        final List<ResourceBundleLocator> sortedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
-        final var foundPaths = new ArrayList<String>();
-        for (final ResourceBundleLocator descriptor : sortedLocators) {
-            var resolvedBundle = descriptor.getBundle(Locale.getDefault());
-            if (resolvedBundle.isPresent() && descriptor.getBundlePath().isPresent()) {
-                // Check whether the path is unique
-                if (foundPaths.contains(descriptor.getBundlePath().get())) {
+        final var validLocators = new CollectionBuilder<ResourceBundleLocator>();
+        final var prioritizedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
+        final var registeredPaths = new ArrayList<String>();
+
+        for (final ResourceBundleLocator locator : prioritizedLocators) {
+            var resolvedBundle = locator.getBundle(Locale.getDefault());
+            if (resolvedBundle.isPresent() && locator.getBundlePath().isPresent()) {
+                var bundlePath = locator.getBundlePath().get();
+                if (registeredPaths.contains(bundlePath)) {
                     LOGGER.warn(PortalCommonCDILogMessages.DUPLICATE_RESOURCE_PATH.format(
-                            descriptor.getClass().getName()));
+                            locator.getClass().getName()));
                 } else {
-                    LOGGER.debug(PortalCommonCDILogMessages.ADDING_BUNDLE.format(
-                            descriptor.getBundlePath().get()));
-                    finalPaths.add(descriptor);
-                    foundPaths.add(descriptor.getBundlePath().get());
+                    LOGGER.debug(PortalCommonCDILogMessages.ADDING_BUNDLE.format(bundlePath));
+                    validLocators.add(locator);
+                    registeredPaths.add(bundlePath);
                 }
             } else {
                 LOGGER.warn(PortalCommonCDILogMessages.IGNORING_BUNDLE.format(
-                        descriptor.getClass().getName()));
+                        locator.getClass().getName()));
             }
         }
-        resolvedPaths = finalPaths.toImmutableList();
-        LOGGER.debug(PortalCommonCDILogMessages.RESULTING_BUNDLES.format(
-                resolvedPaths.stream()
-                        .map(loc -> loc.getBundlePath().orElse("undefined"))
-                        .collect(Collectors.joining(", "))));
+
+        resolvedPaths = validLocators.toImmutableList();
+        
+        if (resolvedPaths.isEmpty()) {
+            LOGGER.warn(PortalCommonCDILogMessages.NO_VALID_BUNDLES.format());
+        } else {
+            LOGGER.debug(PortalCommonCDILogMessages.RESULTING_BUNDLES.format(
+                    resolvedPaths.stream()
+                            .map(loc -> loc.getBundlePath().orElse("undefined"))
+                            .collect(Collectors.joining(", "))));
+        }
     }
 }
