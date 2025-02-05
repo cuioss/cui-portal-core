@@ -18,6 +18,7 @@ package de.cuioss.portal.common.bundle;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -68,7 +69,7 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
 
             // Verify successful bundle initialization
             LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                    "de.cuioss.portal.common.bundle.support.MissingBundle");
+                    PortalCommonCDILogMessages.PREFIX + "-503");
             // Verify no errors during initialization
             LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleRegistry.class);
         }
