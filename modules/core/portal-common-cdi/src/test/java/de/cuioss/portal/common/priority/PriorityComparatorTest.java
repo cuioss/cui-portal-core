@@ -17,6 +17,7 @@ package de.cuioss.portal.common.priority;
 
 import static de.cuioss.test.generator.Generators.fixedValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import de.cuioss.portal.common.priority.support.HighPriorityClass;
 import de.cuioss.portal.common.priority.support.LowPriorityClass;
@@ -27,6 +28,8 @@ import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.object.ObjectTestContracts;
 import de.cuioss.test.valueobjects.api.object.VetoObjectTestContract;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -35,46 +38,57 @@ import java.util.List;
 
 @PropertyReflectionConfig(skip = true)
 @VetoObjectTestContract(ObjectTestContracts.SERIALIZABLE)
+@DisplayName("Tests the PriorityComparator implementation")
 class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
 
     private final PriorityComparator noPriorityClassComparator = new PriorityComparator(new NoPriorityClass());
-
     private final PriorityComparator mediumClassComparator = new PriorityComparator(new MediumPriorityClass());
-
     private final PriorityComparator lowClassComparator = new PriorityComparator(new LowPriorityClass());
-
     private final PriorityComparator highClassComparator = new PriorityComparator(new HighPriorityClass());
 
     private final TypedGenerator<PriorityComparator> comparatorGenerator = fixedValues(mediumClassComparator,
             lowClassComparator, highClassComparator);
 
-    @Test
-    void shouldCreateConfiguredOrdering() {
-        assertEquals(Integer.valueOf(PortalPriorities.DEFAULT_LEVEL), noPriorityClassComparator.getOrder());
+    @Nested
+    @DisplayName("Priority Order Tests")
+    class PriorityOrderTests {
+        
+        @Test
+        @DisplayName("Should create configured priority ordering")
+        void shouldCreateConfiguredOrdering() {
+            assertEquals(PortalPriorities.DEFAULT_LEVEL, noPriorityClassComparator.getOrder(),
+                    "No priority class should have default level");
+            assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, lowClassComparator.getOrder(),
+                    "Low priority class should have core level");
+            assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, mediumClassComparator.getOrder(),
+                    "Medium priority class should have module level");
+            assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, highClassComparator.getOrder(),
+                    "High priority class should have assembly level");
+        }
 
-        assertEquals(Integer.valueOf(PortalPriorities.PORTAL_CORE_LEVEL), lowClassComparator.getOrder());
-
-        assertEquals(Integer.valueOf(PortalPriorities.PORTAL_MODULE_LEVEL), mediumClassComparator.getOrder());
-
-        assertEquals(Integer.valueOf(PortalPriorities.PORTAL_ASSEMBLY_LEVEL), highClassComparator.getOrder());
-    }
-
-    @Test
-    void shouldSortCorrectly() {
-
-        final List<PriorityComparator> sortList = Arrays.asList(noPriorityClassComparator, lowClassComparator,
-                mediumClassComparator, highClassComparator);
-        Collections.shuffle(sortList);
-        Collections.sort(sortList);
-        assertEquals(Integer.valueOf(PortalPriorities.PORTAL_ASSEMBLY_LEVEL), sortList.get(0).getOrder());
-        assertEquals(Integer.valueOf(PortalPriorities.PORTAL_MODULE_LEVEL), sortList.get(1).getOrder());
-        assertEquals(Integer.valueOf(PortalPriorities.PORTAL_CORE_LEVEL), sortList.get(2).getOrder());
-        assertEquals(Integer.valueOf(PortalPriorities.DEFAULT_LEVEL), sortList.get(3).getOrder());
+        @Test
+        @DisplayName("Should sort elements in correct priority order")
+        void shouldSortCorrectly() {
+            final List<PriorityComparator> sortList = Arrays.asList(noPriorityClassComparator, lowClassComparator,
+                    mediumClassComparator, highClassComparator);
+            Collections.shuffle(sortList);
+            Collections.sort(sortList);
+            
+            assertAll("Priority order verification",
+                () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.get(0).getOrder(),
+                        "Highest priority should be first"),
+                () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, sortList.get(1).getOrder(),
+                        "Medium priority should be second"),
+                () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, sortList.get(2).getOrder(),
+                        "Low priority should be third"),
+                () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, sortList.get(3).getOrder(),
+                        "Default priority should be last")
+            );
+        }
     }
 
     @Override
     protected PriorityComparator anyValueObject() {
         return comparatorGenerator.next();
     }
-
 }
