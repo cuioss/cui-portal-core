@@ -15,7 +15,17 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
+import de.cuioss.portal.common.priority.PortalPriorities;
+import de.cuioss.tools.collect.CollectionBuilder;
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -24,19 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
-import de.cuioss.portal.common.priority.PortalPriorities;
-import de.cuioss.tools.collect.CollectionBuilder;
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.logging.LogRecordModel;
-
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Registry for all available {@link ResourceBundleLocator}s.
@@ -66,46 +64,38 @@ public class ResourceBundleRegistry implements Serializable {
     private List<ResourceBundleLocator> resolvedPaths;
 
     /**
-     * Returns the list of resolved paths in priority order
-     *
-     * @return List of resolved paths, never null
-     */
-    public List<ResourceBundleLocator> getResolvedPaths() {
-        return resolvedPaths;
-    }
-
-    /**
      * Initializes the bean. See class documentation for expected result.
      */
     @PostConstruct
-    @SuppressWarnings("java:S3655") // owolff: false positive isPresent is checked
+    @SuppressWarnings("java:S3655")
+    // owolff: false positive isPresent is checked
     void initBean() {
         final var finalPaths = new CollectionBuilder<ResourceBundleLocator>();
-        // Sort according to ResourceBundleDescripor#order
+        // Sort according to ResourceBundleDescriptor#order
         final List<ResourceBundleLocator> sortedLocators = PortalPriorities.sortByPriority(mutableList(locatorList));
         final var foundPaths = new ArrayList<String>();
         for (final ResourceBundleLocator descriptor : sortedLocators) {
             var resolvedBundle = descriptor.getBundle(Locale.getDefault());
             if (resolvedBundle.isPresent() && descriptor.getBundlePath().isPresent()) {
-                // Check whether path is unique
+                // Check whether the path is unique
                 if (foundPaths.contains(descriptor.getBundlePath().get())) {
                     LOGGER.warn(PortalCommonCDILogMessages.DUPLICATE_RESOURCE_PATH.format(
-                        descriptor.getClass().getName()));
+                            descriptor.getClass().getName()));
                 } else {
                     LOGGER.debug(PortalCommonCDILogMessages.ADDING_BUNDLE.format(
-                        descriptor.getBundlePath().get()));
+                            descriptor.getBundlePath().get()));
                     finalPaths.add(descriptor);
                     foundPaths.add(descriptor.getBundlePath().get());
                 }
             } else {
                 LOGGER.warn(PortalCommonCDILogMessages.IGNORING_BUNDLE.format(
-                    descriptor.getClass().getName()));
+                        descriptor.getClass().getName()));
             }
         }
         resolvedPaths = finalPaths.toImmutableList();
         LOGGER.debug(PortalCommonCDILogMessages.RESULTING_BUNDLES.format(
-            resolvedPaths.stream()
-                .map(loc -> loc.getBundlePath().orElse("undefined"))
-                .collect(Collectors.joining(", "))));
+                resolvedPaths.stream()
+                        .map(loc -> loc.getBundlePath().orElse("undefined"))
+                        .collect(Collectors.joining(", "))));
     }
 }

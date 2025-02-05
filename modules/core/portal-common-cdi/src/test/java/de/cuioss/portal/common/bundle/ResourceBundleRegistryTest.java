@@ -75,8 +75,4 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
         }
     }
 
-    @Override
-    public ResourceBundleRegistry getUnderTest() {
-        return underTest;
-    }
 }

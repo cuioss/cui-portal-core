@@ -182,4 +182,14 @@ public final class PortalCommonCDILogMessages {
             .identifier(10)
             .build();
 
+    /**
+     * Debug message when resolving PortalResourceBundleBean
+     * Message: PortalCommonCDI-011: Resolving PortalResourceBundleBean from CDI-Context
+     */
+    public static final LogRecord RESOLVING_BUNDLE_BEAN = LogRecordModel.builder()
+            .template("Resolving PortalResourceBundleBean from CDI-Context")
+            .prefix(PREFIX)
+            .identifier(11)
+            .build();
+
 }

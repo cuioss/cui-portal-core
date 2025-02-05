@@ -15,10 +15,11 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.cdi.PortalBeanManager;
 import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serial;
@@ -34,9 +35,11 @@ import java.util.Set;
  * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} that does the actual heavy lifting.
  * </p>
  * <p>
- * It usage is for cases where there is technically a {@link java.util.ResourceBundle}
- * needed. Sadly there is no corresponding interface, solely an Abstract-Class
- * that can not be proxied by CDI. Currently it's sole use is the context of the
+ * Its usage is for cases where there is technically a {@link java.util.ResourceBundle}
+ * needed.
+ * Sadly, there is no corresponding interface, solely an Abstract-Class
+ * that cannot be proxied by CDI.
+ * Currently, its sole use is the context of the
  * PortalApplication, that it exposes it on
  * {@link jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
  * with the name "msgs"
@@ -46,51 +49,56 @@ import java.util.Set;
  *
  * @author Oliver Wolff
  */
-@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class PortalResourceBundleBean extends ResourceBundle implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3953649686127640297L;
+    private static final long serialVersionUID = -4996798647652125L;
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalResourceBundleBean.class);
 
-    /** Lookup name for el-expression within views: "msgs" */
+    /**
+     * Lookup name for el-expression within views: "msgs"
+     */
     public static final String BUNDLE_NAME = "msgs";
 
-    private final ResourceBundleWrapper resourceBundleWrapper;
+    private ResourceBundleWrapper resourceBundleWrapper;
 
     private String allBundleNames;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected Object handleGetObject(final String key) {
-        return resourceBundleWrapper.getString(key);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Enumeration<String> getKeys() {
-        return Collections.enumeration(keySet());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> keySet() {
-        return resourceBundleWrapper.keySet();
+    protected Object handleGetObject(@Nonnull final String key) {
+        return getResourceBundleWrapper().getString(key);
     }
 
     /**
-     * Factory Method creating a new instance with loading the contained
-     * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper}, {@link jakarta.enterprise.context.SessionScoped} from the CDR-COntext
-     *
-     * @return a {@link de.cuioss.portal.common.bundle.PortalResourceBundleBean} object
+     * {@inheritDoc}
      */
-    public static PortalResourceBundleBean resolveFromCDIContext() {
-        LOGGER.debug("Resolving PortalResourceBundleBean from CDI-Context");
-        var resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
-        return new PortalResourceBundleBean(resourceBundleWrapper);
+    @Override
+    @Nonnull
+    public Enumeration<String> getKeys() {
+        return Collections.enumeration(getResourceBundleWrapper().keySet());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Set<String> keySet() {
+        return getResourceBundleWrapper().keySet();
+    }
+
+    private ResourceBundleWrapper getResourceBundleWrapper() {
+        if (null == resourceBundleWrapper) {
+            LOGGER.debug(PortalCommonCDILogMessages.RESOLVING_BUNDLE_BEAN.format());
+            resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
+        }
+        return resourceBundleWrapper;
     }
 
 }

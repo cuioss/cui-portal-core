@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.common.bundle.support.PortalMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
@@ -39,13 +37,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @EnableAutoWeld
 @AddBeanClasses({PortalMessages.class, ResourceBundleRegistry.class, ResourceBundleWrapperImpl.class})
 @ActivateScopes({RequestScoped.class, SessionScoped.class})
 class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<PortalResourceBundleBean> {
-
-    @Inject
-    private ResourceBundleWrapper wrapper;
 
     @Produces
     private CuiProjectStage projectStage;
@@ -93,18 +93,12 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
     void shouldReturnKeys() {
         final List<String> keys = Collections.list(getUnderTest().getKeys());
         assertNotNull(keys);
-        assertTrue(keys.size() > 60, "Found: " + keys.size());
-    }
-
-    @Test
-    void shouldLoadFromFactoryMethod() {
-        var underTest = PortalResourceBundleBean.resolveFromCDIContext();
-        assertEquals("Internal server error", underTest.getString("page.error.title"));
-        assertEquals(PortalResourceBundleWrapperImplTest.PORTAL_TITLE, underTest.getString("portal.title"));
+        assertTrue(keys.contains("page.error.title"), "Should contain page.error.title");
+        assertTrue(keys.contains("portal.title"), "Should contain portal.title");
     }
 
     @Override
     public PortalResourceBundleBean getUnderTest() {
-        return new PortalResourceBundleBean(wrapper);
+        return new PortalResourceBundleBean();
     }
 }

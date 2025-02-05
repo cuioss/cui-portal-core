@@ -19,6 +19,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
@@ -84,14 +85,15 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
             }
         }
 
-        final var errMsg = "Portal-003 : No key '" + lookupKey + "' defined within any of the configured bundles: "
-                + resourceBundleRegistry.getResolvedPaths();
-
         if (projectStage.get().isDevelopment()) {
-            throw new MissingResourceException(errMsg, "ResourceBundleWrapperImpl", lookupKey);
+            throw new MissingResourceException(
+                PortalCommonCDILogMessages.BUNDLE_KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
+                getClass().getName(),
+                lookupKey);
         }
 
-        LOGGER.warn(errMsg);
+        LOGGER.warn(PortalCommonCDILogMessages.BUNDLE_KEY_NOT_FOUND.format(
+            lookupKey, resourceBundleRegistry.getResolvedPaths()));
         return "??" + lookupKey + "??";
     }
 
@@ -103,17 +105,21 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
      * @param newLocale
      */
     void actOnLocaleChangeEven(@Observes @LocaleChangeEvent final Locale newLocale) {
+        LOGGER.debug(PortalCommonCDILogMessages.LOCALE_CHANGED.format(newLocale));
         resolvedBundles = null;
     }
 
     private List<ResourceBundle> getResolvedBundles() {
         if (null == resolvedBundles) {
             var builder = new CollectionBuilder<ResourceBundle>();
+            var currentLocale = localeProvider.get();
 
             for (final ResourceBundleLocator path : resourceBundleRegistry.getResolvedPaths()) {
-                path.getBundle(localeProvider.get()).ifPresent(builder::add);
+                path.getBundle(currentLocale).ifPresent(builder::add);
             }
             resolvedBundles = builder.toImmutableList();
+            LOGGER.debug(PortalCommonCDILogMessages.BUNDLES_RESOLVED.format(
+                resolvedBundles.size(), currentLocale));
         }
         return resolvedBundles;
     }
