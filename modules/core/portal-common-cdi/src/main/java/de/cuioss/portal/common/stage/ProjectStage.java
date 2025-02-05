@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.stage;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
 
@@ -34,10 +35,7 @@ public enum ProjectStage implements CuiProjectStage {
     /***/
     PRODUCTION;
 
-    private static final String PROJECT_STAGE_CONFIGURATION_ERROR = """
-        Portal-500: Unknown project stage '{}' detected! \
-        Set the property 'portal.configuration.stage' to one of: development, test, configuration, production\
-        """;
+    private static final CuiLogger LOGGER = new CuiLogger(ProjectStage.class);
 
     /**
      * Try to find the corresponding portal project stage from string.
@@ -54,7 +52,7 @@ public enum ProjectStage implements CuiProjectStage {
             }
         }
 
-        new CuiLogger(ProjectStage.class).error(PROJECT_STAGE_CONFIGURATION_ERROR, stage);
+        LOGGER.error(PortalCommonCDILogMessages.UNKNOWN_PROJECT_STAGE.format(stage));
         return ProjectStage.PRODUCTION;
     }
 

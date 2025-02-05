@@ -58,17 +58,128 @@ public final class PortalCommonCDILogMessages {
             .build();
 
     /**
-     * Debug level message when a ResourceBundle fails to load
-     * Message: PortalCommonCDI-003: Unable to load %s '%s' for locale '%s'
+     * Debug level message when adding a bundle
+     * Message: PortalCommonCDI-003: Adding bundle %s
+     * Parameters:
+     * 1. Bundle path
+     */
+    public static final LogRecord ADDING_BUNDLE = LogRecordModel.builder()
+            .template("Adding bundle %s")
+            .prefix(PREFIX)
+            .identifier(3)
+            .build();
+
+    /**
+     * Debug level message showing resulting bundles
+     * Message: PortalCommonCDI-004: Resulting bundles: %s
+     * Parameters:
+     * 1. Comma-separated list of bundle paths
+     */
+    public static final LogRecord RESULTING_BUNDLES = LogRecordModel.builder()
+            .template("Resulting bundles: %s")
+            .prefix(PREFIX)
+            .identifier(4)
+            .build();
+
+    /**
+     * Warn level message when a key is not found in any bundle
+     * Message: PortalCommonCDI-505: No key '%s' defined within any of the configured bundles: %s
+     * Parameters:
+     * 1. Key
+     * 2. Bundle paths
+     */
+    public static final LogRecord BUNDLE_KEY_NOT_FOUND = LogRecordModel.builder()
+            .template("No key '%s' defined within any of the configured bundles: %s")
+            .prefix(PREFIX)
+            .identifier(505)
+            .build();
+
+    /**
+     * Debug level message when locale changes
+     * Message: PortalCommonCDI-006: Locale changed to '%s', clearing bundle cache
+     * Parameters:
+     * 1. New locale
+     */
+    public static final LogRecord LOCALE_CHANGED = LogRecordModel.builder()
+            .template("Locale changed to '%s', clearing bundle cache")
+            .prefix(PREFIX)
+            .identifier(6)
+            .build();
+
+    /**
+     * Debug level message when resolving bundles
+     * Message: PortalCommonCDI-007: Resolved %d resource bundles for locale '%s'
+     * Parameters:
+     * 1. Number of bundles
+     * 2. Locale
+     */
+    public static final LogRecord BUNDLES_RESOLVED = LogRecordModel.builder()
+            .template("Resolved %d resource bundles for locale '%s'")
+            .prefix(PREFIX)
+            .identifier(7)
+            .build();
+
+    /**
+     * Warning level message when a bundle fails to load
+     * Message: PortalCommonCDI-501: Failed to load bundle %s '%s' for locale '%s'
      * Parameters:
      * 1. Class name
      * 2. Bundle path
      * 3. Locale
      */
     public static final LogRecord BUNDLE_LOAD_FAILED = LogRecordModel.builder()
-            .template("Unable to load %s '%s' for locale '%s'")
+            .template("Failed to load bundle %s '%s' for locale '%s'")
             .prefix(PREFIX)
-            .identifier(3)
+            .identifier(501)
+            .build();
+
+    /**
+     * Warning level message when a duplicate resource path is detected
+     * Message: PortalCommonCDI-502: Duplicate resource path detected for %s
+     * Parameters:
+     * 1. Class name
+     */
+    public static final LogRecord DUPLICATE_RESOURCE_PATH = LogRecordModel.builder()
+            .template("Duplicate resource path detected for %s")
+            .prefix(PREFIX)
+            .identifier(502)
+            .build();
+
+    /**
+     * Warning level message when ignoring a bundle due to missing path
+     * Message: PortalCommonCDI-503: Ignoring bundle %s due to missing path
+     * Parameters:
+     * 1. Class name
+     */
+    public static final LogRecord IGNORING_BUNDLE = LogRecordModel.builder()
+            .template("Ignoring bundle %s due to missing path")
+            .prefix(PREFIX)
+            .identifier(503)
+            .build();
+
+    /**
+     * Error message for unknown project stage configuration
+     * Message: PortalCommonCDI-500: Unknown project stage '%s' detected! Set the property 'portal.configuration.stage' to one of: development, test, configuration, production
+     * Parameters:
+     * 1. Stage name
+     */
+    public static final LogRecord UNKNOWN_PROJECT_STAGE = LogRecordModel.builder()
+            .template("Unknown project stage '%s' detected! Set the property 'portal.configuration.stage' to one of: development, test, configuration, production")
+            .prefix(PREFIX)
+            .identifier(500)
+            .build();
+
+    /**
+     * Debug message when falling back to context classloader
+     * Message: PortalCommonCDI-010: Simple class loading for resource '%s' and type '%s' did not work, using context-classloader
+     * Parameters:
+     * 1. Resource path
+     * 2. Class name
+     */
+    public static final LogRecord RESOURCE_LOADER_FALLBACK = LogRecordModel.builder()
+            .template("Simple class loading for resource '%s' and type '%s' did not work, using context-classloader")
+            .prefix(PREFIX)
+            .identifier(10)
             .build();
 
 }

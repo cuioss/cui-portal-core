@@ -6,6 +6,7 @@ package de.cuioss.portal.common.util;
 import static de.cuioss.tools.collect.MoreCollections.requireNotEmpty;
 import static java.util.Objects.requireNonNull;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.experimental.UtilityClass;
 
@@ -33,8 +34,8 @@ public class PortalResourceLoader {
         requireNonNull(callingClass);
         var result = Optional.ofNullable(callingClass.getResource(resourcePath));
         if (result.isEmpty()) {
-            LOGGER.debug("Simple class loading for resource '%s' and type '%s' did not work, using context-classloader",
-                    resourcePath, callingClass);
+            LOGGER.debug(PortalCommonCDILogMessages.RESOURCE_LOADER_FALLBACK.format(
+                    resourcePath, callingClass));
             result = Optional.ofNullable(Thread.currentThread().getContextClassLoader().getResource(resourcePath));
         }
         return result;
