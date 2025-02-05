@@ -36,7 +36,9 @@ import java.util.ResourceBundle;
  */
 public interface ResourceBundleLocator extends Serializable {
 
-    /** Constant <code>LOGGER</code> */
+    /**
+     * Logger for this class
+     */
     CuiLogger LOGGER = new CuiLogger(ResourceBundleLocator.class);
 
     /**

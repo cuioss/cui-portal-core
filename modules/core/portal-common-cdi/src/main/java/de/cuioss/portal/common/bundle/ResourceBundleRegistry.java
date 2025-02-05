@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
@@ -65,6 +66,15 @@ public class ResourceBundleRegistry implements Serializable {
     private List<ResourceBundleLocator> resolvedPaths;
 
     /**
+     * Returns the list of resolved paths in priority order
+     *
+     * @return List of resolved paths, never null
+     */
+    public List<ResourceBundleLocator> getResolvedPaths() {
+        return resolvedPaths;
+    }
+
+    /**
      * Initializes the bean. See class documentation for expected result.
      */
     @PostConstruct
@@ -79,26 +89,23 @@ public class ResourceBundleRegistry implements Serializable {
             if (resolvedBundle.isPresent() && descriptor.getBundlePath().isPresent()) {
                 // Check whether path is unique
                 if (foundPaths.contains(descriptor.getBundlePath().get())) {
-                    LOGGER.warn(LogMessages.DUPLICATE_RESOURCE_PATH.format(descriptor.getClass().getName()));
+                    LOGGER.warn(PortalCommonCDILogMessages.DUPLICATE_RESOURCE_PATH.format(
+                        descriptor.getClass().getName()));
                 } else {
-                    LOGGER.debug(LogMessages.ADDING_BUNDLE.format(descriptor.getBundlePath().get()));
+                    LOGGER.debug(PortalCommonCDILogMessages.ADDING_BUNDLE.format(
+                        descriptor.getBundlePath().get()));
                     finalPaths.add(descriptor);
                     foundPaths.add(descriptor.getBundlePath().get());
                 }
             } else {
-                LOGGER.warn(LogMessages.IGNORING_BUNDLE.format(descriptor.getClass().getName()));
+                LOGGER.warn(PortalCommonCDILogMessages.IGNORING_BUNDLE.format(
+                    descriptor.getClass().getName()));
             }
         }
         resolvedPaths = finalPaths.toImmutableList();
-        LOGGER.debug(LogMessages.RESULTING_BUNDLES.format(resolvedPaths.stream()
-            .map(loc -> loc.getBundlePath().orElse("undefined"))
-            .collect(Collectors.joining(", "))));
-    }
-
-    private static class LogMessages {
-        public static final String DUPLICATE_RESOURCE_PATH = "Portal-004: Duplicate resource path found for class '%s'";
-        public static final String ADDING_BUNDLE = "Portal-002: Adding bundle '%s' from class '%s'";
-        public static final String IGNORING_BUNDLE = "Portal-005: Ignoring bundle, reason='%s', class='%s'";
-        public static final String RESULTING_BUNDLES = "Portal-006: Resulting bundles: %s";
+        LOGGER.debug(PortalCommonCDILogMessages.RESULTING_BUNDLES.format(
+            resolvedPaths.stream()
+                .map(loc -> loc.getBundlePath().orElse("undefined"))
+                .collect(Collectors.joining(", "))));
     }
 }
