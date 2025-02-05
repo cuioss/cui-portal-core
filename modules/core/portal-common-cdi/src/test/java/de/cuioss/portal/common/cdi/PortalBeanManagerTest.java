@@ -23,6 +23,8 @@ import jakarta.enterprise.context.RequestScoped;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -31,47 +33,103 @@ import java.util.Optional;
 @AddBeanClasses({TestBeanWithQualifier.class, TestBeanWithoutQualifier.class, DependentTestBeanWithoutQualifier.class,
         TestBeanWithQualifierAndPriority10.class, TestBeanWithQualifierAndPriority20.class})
 @ActivateScopes(RequestScoped.class)
+@DisplayName("Tests the PortalBeanManager functionality")
 class PortalBeanManagerTest {
 
-    @Test
-    void shouldReturnNormalScopedBeanWithQualifier() {
-        final Optional<TestBeanWithQualifier> check = resolveBean(TestBeanWithQualifier.class, TestAnnotation.class);
-        assertTrue(check.isPresent());
-        assertEquals(TestBeanWithQualifier.MESSAGE, check.get().getInitMessage());
+    @Nested
+    @DisplayName("Bean Resolution with Qualifier Tests")
+    class QualifierTests {
+        
+        @Test
+        @DisplayName("Should resolve normal scoped bean with qualifier")
+        void shouldReturnNormalScopedBeanWithQualifier() {
+            final Optional<TestBeanWithQualifier> resolved = 
+                resolveBean(TestBeanWithQualifier.class, TestAnnotation.class);
+            
+            assertAll("Bean resolution verification",
+                () -> assertTrue(resolved.isPresent(), "Bean should be resolved"),
+                () -> assertEquals(TestBeanWithQualifier.MESSAGE, resolved.get().getInitMessage(),
+                    "Should have correct initialization message")
+            );
+        }
+
+        @Test
+        @DisplayName("Should resolve bean with qualifier and highest priority via interface")
+        void shouldReturnNormalScopedBeanWithQualifierAndHighestPriorityViaInterface() {
+            final Optional<TestInterface> resolved = resolveBean(TestInterface.class, TestAnnotation.class);
+            
+            assertAll("Priority bean resolution verification",
+                () -> assertTrue(resolved.isPresent(), "Bean should be resolved"),
+                () -> assertInstanceOf(TestBeanWithQualifierAndPriority20.class, resolved.get(),
+                    "Should resolve to highest priority implementation")
+            );
+        }
+
+        @Test
+        @DisplayName("Should resolve normal scoped bean with qualifier without BeanManager")
+        void shouldReturnNormalScopedBeanWithQualifierWOBeanManager() {
+            final Optional<TestBeanWithQualifier> resolved = 
+                resolveBean(TestBeanWithQualifier.class, TestAnnotation.class);
+            
+            assertAll("Bean resolution without BeanManager verification",
+                () -> assertTrue(resolved.isPresent(), "Bean should be resolved"),
+                () -> assertEquals(TestBeanWithQualifier.MESSAGE, resolved.get().getInitMessage(),
+                    "Should have correct initialization message")
+            );
+        }
     }
 
-    @Test
-    void shouldReturnNormalScopedBeanWithQualifierAndHighestPriorityViaInterface() {
-        final Optional<TestInterface> check = resolveBean(TestInterface.class, TestAnnotation.class);
-        assertTrue(check.isPresent());
-        assertInstanceOf(TestBeanWithQualifierAndPriority20.class, check.get());
+    @Nested
+    @DisplayName("Bean Resolution without Qualifier Tests")
+    class NoQualifierTests {
+        
+        @Test
+        @DisplayName("Should resolve normal scoped bean without qualifier")
+        void shouldReturnNormalScopedBeanWithoutQualifier() {
+            final Optional<TestBeanWithoutQualifier> resolved = 
+                resolveBean(TestBeanWithoutQualifier.class, null);
+            
+            assertAll("Bean without qualifier verification",
+                () -> assertTrue(resolved.isPresent(), "Bean should be resolved"),
+                () -> assertEquals(TestBeanWithQualifier.MESSAGE, resolved.get().getInitMessage(),
+                    "Should have correct initialization message")
+            );
+        }
+
+        @Test
+        @DisplayName("Should resolve required bean without qualifier")
+        void shouldReturnSimpleRequiredWithoutQualifier() {
+            final var resolved = PortalBeanManager.resolveRequiredBean(TestBeanWithoutQualifier.class);
+            
+            assertAll("Required bean resolution verification",
+                () -> assertNotNull(resolved, "Required bean should not be null"),
+                () -> assertEquals(TestBeanWithQualifier.MESSAGE, resolved.getInitMessage(),
+                    "Should have correct initialization message")
+            );
+        }
     }
 
-    @Test
-    void shouldReturnNormalScopedBeanWithQualifierWOBeanManager() {
-        final Optional<TestBeanWithQualifier> check = resolveBean(TestBeanWithQualifier.class, TestAnnotation.class);
-        assertTrue(check.isPresent());
-        assertEquals(TestBeanWithQualifier.MESSAGE, check.get().getInitMessage());
-    }
+    @Nested
+    @DisplayName("Error Handling Tests")
+    class ErrorHandlingTests {
+        
+        @Test
+        @DisplayName("Should throw exception when no beans found")
+        void shouldThrowExceptionOnZeroBeansFound() {
+            var thrown = assertThrows(IllegalArgumentException.class,
+                () -> resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class),
+                "Should throw IllegalArgumentException when no beans found");
+            
+            assertTrue(thrown.getMessage().contains("No bean of type"),
+                "Exception message should indicate no bean was found");
+        }
 
-    @Test
-    void shouldReturnNormalScopedBeanWithoutQualifier() {
-        final Optional<TestBeanWithoutQualifier> check = resolveBean(TestBeanWithoutQualifier.class, null);
-        assertTrue(check.isPresent());
-        assertEquals(TestBeanWithQualifier.MESSAGE, check.get().getInitMessage());
+        @Test
+        @DisplayName("Should throw exception for null bean class")
+        void shouldThrowExceptionOnNullBeanClass() {
+            assertThrows(NullPointerException.class,
+                () -> resolveBean(null, TestAnnotation.class),
+                "Should throw NullPointerException for null bean class");
+        }
     }
-
-    @Test
-    void shouldThrowExceptionOnZeroBeansFound() {
-        assertThrows(IllegalArgumentException.class, () ->
-                resolveBean(TestBeanWithoutQualifier.class, TestAnnotation.class));
-    }
-
-    @Test
-    void shouldReturnSimpleRequiredWithoutQualifier() {
-        final var check = PortalBeanManager.resolveRequiredBean(TestBeanWithoutQualifier.class);
-        assertNotNull(check);
-        assertEquals(TestBeanWithQualifier.MESSAGE, check.getInitMessage());
-    }
-
 }
