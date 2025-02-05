@@ -80,4 +80,9 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
                 "Ignoring 'MissingBundle()'");
         }
     }
+
+    @Override
+    public ResourceBundleRegistry getUnderTest() {
+        return underTest;
+    }
 }
