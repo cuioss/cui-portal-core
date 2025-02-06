@@ -1,7 +1,7 @@
 = portal-configuration
 
 == What is it?
-Provides some portal-specific extensions to microprofile-config. In addition it provides some default configuration.
+Provides portal-specific extensions to microprofile-config. In addition it provides some default configuration.
 
 == Maven Coordinates
 
@@ -17,10 +17,19 @@ Provides some portal-specific extensions to microprofile-config. In addition it 
 * link:src/main/java/de/cuioss/portal/configuration/types/[Additional configuration-types]
 * link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[Simplifies the programmatic lookup up configuration-properties]
 
-
 Constant Key classes for:
 
 * link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[Portal-Configuration-Core]
 * link:src/main/java/de/cuioss/portal/configuration/HealthCheckConfigKeys.java[Health-Check]
 * link:src/main/java/de/cuioss/portal/configuration/MetricsConfigKeys.java[Metrics]
 * link:src/main/java/de/cuioss/portal/configuration/TracingConfigKeys.java[Tracing]
+
+== Documentation
+For detailed configuration guidelines and best practices, see:
+
+* link:docs/CONFIGURATION.adoc[Configuration Best Practices]
+
+== Thread Safety
+All configuration types and utilities in this module are designed to be thread-safe.
+Configuration values are immutable once loaded, and any dynamic reloading is handled
+in a thread-safe manner.
