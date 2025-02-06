@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.util;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -22,14 +23,13 @@ import org.junit.jupiter.api.Test;
 class PortalResourceLoaderTest {
 
     @Test
-    void shouldLoadExisitingResource() {
-        assertTrue(PortalResourceLoader.getRessource("/de/cuioss/portal/l18n/messages/high1.properties", getClass())
-                .isPresent());
+    void shouldHandleExistingResource() {
+        assertTrue(PortalResourceLoader.getResource("/META-INF/beans.xml", getClass()).isPresent());
     }
 
     @Test
-    void shouldHAndleNotExisitingResource() {
-        assertTrue(PortalResourceLoader.getRessource("/not/ther", getClass()).isEmpty());
+    void shouldHandleNonExistingResource() {
+        assertFalse(PortalResourceLoader.getResource("/not/present", getClass()).isPresent());
     }
 
 }
