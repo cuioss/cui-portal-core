@@ -292,6 +292,42 @@ Status: Complete
      * Proper linking
      * Consistent terminology
 
+#### Portal Core Module
+- [ ] Module Structure:
+  * Location: modules/core/portal-core
+  * Maven coordinates: de.cuioss.portal.core:portal-core
+  * Purpose: Provides core portal functionality and Jakarta EE integration
+
+- [ ] Key Components:
+  1. Core Infrastructure
+     * Portal configuration management
+     * Request/Response handling
+     * Session management
+     * Security integration
+
+  2. Jakarta EE Integration
+     * CDI extensions
+     * Servlet support
+     * Context and dependency management
+     * Resource handling
+
+  3. Portal Services
+     * Authentication and authorization
+     * Resource management
+     * Configuration services
+     * Event handling
+
+  4. Implementation Details
+     * Core portal beans
+     * Service providers
+     * Extension points
+     * Utility classes
+
+Next Steps:
+1. Analyze portal core structure
+2. Review core components
+3. Examine integration points
+
 #### Portal Servlet Core Module
 - [ ] Module Structure:
   * Location: modules/core/portal-servlet-core
