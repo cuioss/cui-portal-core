@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -34,8 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Registry for all available {@link ResourceBundleLocator}s.
@@ -113,7 +113,7 @@ public class ResourceBundleRegistry implements Serializable {
         }
 
         resolvedPaths = validLocators.toImmutableList();
-        
+
         if (resolvedPaths.isEmpty()) {
             LOGGER.warn(PortalCommonCDILogMessages.NO_VALID_BUNDLES.format());
         } else {

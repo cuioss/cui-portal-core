@@ -15,10 +15,7 @@
  */
 package de.cuioss.portal.common.priority;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.common.priority.support.*;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +32,7 @@ class PortalPrioritiesTest {
     @Nested
     @DisplayName("Priority Sorting Tests")
     class PrioritySortingTests {
-        
+
         @Test
         @DisplayName("Should sort elements by priority in correct order")
         void sortByPriority() {
@@ -47,14 +44,14 @@ class PortalPrioritiesTest {
             final List<SomeInterface> sorted = PortalPriorities.sortByPriority(elements);
 
             assertAll("Priority sorting verification",
-                () -> assertEquals(HighPriorityClass.class, sorted.get(0).getClass(),
-                        "High priority class should be first"),
-                () -> assertEquals(MediumPriorityClass.class, sorted.get(1).getClass(),
-                        "Medium priority class should be second"),
-                () -> assertEquals(LowPriorityClass.class, sorted.get(2).getClass(),
-                        "Low priority class should be third"),
-                () -> assertEquals(NoPriorityClass.class, sorted.get(3).getClass(),
-                        "No priority class should be last")
+                    () -> assertEquals(HighPriorityClass.class, sorted.get(0).getClass(),
+                            "High priority class should be first"),
+                    () -> assertEquals(MediumPriorityClass.class, sorted.get(1).getClass(),
+                            "Medium priority class should be second"),
+                    () -> assertEquals(LowPriorityClass.class, sorted.get(2).getClass(),
+                            "Low priority class should be third"),
+                    () -> assertEquals(NoPriorityClass.class, sorted.get(3).getClass(),
+                            "No priority class should be last")
             );
         }
 
@@ -70,15 +67,15 @@ class PortalPrioritiesTest {
         @DisplayName("Should reject null elements with NullPointerException")
         void shouldRejectNullElements() {
             final List<SomeInterface> elements = Arrays.asList(null, new HighPriorityClass());
-            
+
             NullPointerException thrown = assertThrows(
-                NullPointerException.class,
-                () -> PortalPriorities.sortByPriority(elements),
-                "Should throw NullPointerException for null elements"
+                    NullPointerException.class,
+                    () -> PortalPriorities.sortByPriority(elements),
+                    "Should throw NullPointerException for null elements"
             );
-            
-            assertEquals("wrappedObject", thrown.getMessage(), 
-                "Should indicate that wrapped object cannot be null");
+
+            assertEquals("wrappedObject", thrown.getMessage(),
+                    "Should indicate that wrapped object cannot be null");
         }
     }
 }

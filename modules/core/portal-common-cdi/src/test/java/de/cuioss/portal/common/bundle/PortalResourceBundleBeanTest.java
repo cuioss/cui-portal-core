@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.common.bundle.support.PortalMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
@@ -36,11 +38,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @AddBeanClasses({PortalMessages.class, ResourceBundleRegistry.class, ResourceBundleWrapperImpl.class})

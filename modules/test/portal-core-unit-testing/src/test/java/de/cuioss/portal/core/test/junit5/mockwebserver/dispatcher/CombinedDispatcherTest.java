@@ -19,12 +19,12 @@ import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.Combine
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_TEAPOT;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import mockwebserver3.RecordedRequest;
 import okhttp3.Headers;
 import okio.Buffer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.Socket;
@@ -73,7 +73,7 @@ class CombinedDispatcherTest {
     private void assertDispatchWithCode(CombinedDispatcher dispatcher, int httpCode, String urlPart) {
         for (HttpMethodMapper mapper : HttpMethodMapper.values()) {
             var request = createRequestFor(mapper, dispatcher, urlPart);
-            Assertions.assertDoesNotThrow(() -> {
+            assertDoesNotThrow(() -> {
                 var result = dispatcher.dispatch(request);
                 assertTrue(result.getStatus().contains(String.valueOf(httpCode)),
                         "Status was '" + result.getStatus() + "', expected was: " + httpCode);

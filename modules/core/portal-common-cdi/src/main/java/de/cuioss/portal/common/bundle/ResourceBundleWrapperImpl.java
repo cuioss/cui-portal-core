@@ -17,9 +17,9 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
@@ -87,13 +87,13 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
         if (projectStage.get().isDevelopment()) {
             throw new MissingResourceException(
-                PortalCommonCDILogMessages.BUNDLE_KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
-                getClass().getName(),
-                lookupKey);
+                    PortalCommonCDILogMessages.BUNDLE_KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
+                    getClass().getName(),
+                    lookupKey);
         }
 
         LOGGER.warn(PortalCommonCDILogMessages.BUNDLE_KEY_NOT_FOUND.format(
-            lookupKey, resourceBundleRegistry.getResolvedPaths()));
+                lookupKey, resourceBundleRegistry.getResolvedPaths()));
         return "??" + lookupKey + "??";
     }
 
@@ -119,7 +119,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
             }
             resolvedBundles = builder.toImmutableList();
             LOGGER.debug(PortalCommonCDILogMessages.BUNDLES_RESOLVED.format(
-                resolvedBundles.size(), currentLocale));
+                    resolvedBundles.size(), currentLocale));
         }
         return resolvedBundles;
     }

@@ -99,14 +99,14 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testLoginWithoutParams() {
+    void loginWithoutParams() {
         var result = underTest.testLogin(Collections.emptyList(), "scope");
         assertFalse(result.isAuthenticated());
         assertFalse(underTest.retrieveCurrentAuthenticationContext(servletRequest).isAuthenticated());
     }
 
     @Test
-    void testLoginWithParams() {
+    void loginWithParams() {
         underTest.sendRedirect("scope");
         dispatcher.assertAuthorizeURL(redirectorMock.getRedirectUrl());
         var result = underTest.testLogin(calculateUrlParameter(), "scope");
@@ -115,7 +115,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void testLoginWithErrorFails() {
+    void loginWithErrorFails() {
         underTest.sendRedirect("scope");
         var stateParameter = getStateParameter();
         var urlParameter = new UrlParameter("error", "server_error");

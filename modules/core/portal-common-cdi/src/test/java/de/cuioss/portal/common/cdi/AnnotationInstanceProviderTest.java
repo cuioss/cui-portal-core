@@ -18,9 +18,9 @@ package de.cuioss.portal.common.cdi;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.tools.collect.CollectionLiterals;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("Tests the AnnotationInstanceProvider utility")
 class AnnotationInstanceProviderTest {
@@ -28,19 +28,19 @@ class AnnotationInstanceProviderTest {
     @Nested
     @DisplayName("Basic Annotation Creation Tests")
     class BasicAnnotationTests {
-        
+
         @Test
         @DisplayName("Should create basic annotation instances")
         void shouldHandleBasicAnnotations() {
             var literal = AnnotationInstanceProvider.of(SuppressWarnings.class);
-            
+
             assertAll("Basic annotation verification",
-                () -> assertNotNull(literal.toString(), "toString should not be null"),
-                () -> assertEquals(AnnotationInstanceProvider.of(SuppressWarnings.class), literal,
-                        "Same annotation class should create equal instances"),
-                () -> assertEquals(0, literal.hashCode(), "Empty annotation should have hashCode 0"),
-                () -> assertEquals(SuppressWarnings.class, literal.annotationType(),
-                        "Should return correct annotation type")
+                    () -> assertNotNull(literal.toString(), "toString should not be null"),
+                    () -> assertEquals(AnnotationInstanceProvider.of(SuppressWarnings.class), literal,
+                            "Same annotation class should create equal instances"),
+                    () -> assertEquals(0, literal.hashCode(), "Empty annotation should have hashCode 0"),
+                    () -> assertEquals(SuppressWarnings.class, literal.annotationType(),
+                            "Should return correct annotation type")
             );
         }
 
@@ -48,12 +48,12 @@ class AnnotationInstanceProviderTest {
         @DisplayName("Should create different annotation types")
         void shouldHandleDifferentAnnotationTypes() {
             assertAll("Different annotation types verification",
-                () -> assertInstanceOf(Deprecated.class, 
-                    AnnotationInstanceProvider.of(Deprecated.class),
-                    "Should create Deprecated annotation instance"),
-                () -> assertInstanceOf(SuppressWarnings.class, 
-                    AnnotationInstanceProvider.of(SuppressWarnings.class),
-                    "Should create SuppressWarnings annotation instance")
+                    () -> assertInstanceOf(Deprecated.class,
+                            AnnotationInstanceProvider.of(Deprecated.class),
+                            "Should create Deprecated annotation instance"),
+                    () -> assertInstanceOf(SuppressWarnings.class,
+                            AnnotationInstanceProvider.of(SuppressWarnings.class),
+                            "Should create SuppressWarnings annotation instance")
             );
         }
     }
@@ -61,40 +61,40 @@ class AnnotationInstanceProviderTest {
     @Nested
     @DisplayName("Annotation With Attributes Tests")
     class AnnotationWithAttributesTests {
-        
+
         @Test
         @DisplayName("Should create annotation with attributes")
         void shouldHandleAnnotationWithAttributes() {
             var attributes = CollectionLiterals.immutableMap("value", "test");
             var literal = AnnotationInstanceProvider.of(SuppressWarnings.class, attributes);
-            
+
             assertAll("Annotation with attributes verification",
-                () -> assertNotNull(literal.toString(), "toString should not be null"),
-                () -> assertEquals(
-                    AnnotationInstanceProvider.of(SuppressWarnings.class, attributes),
-                    literal,
-                    "Same annotation with same attributes should be equal"),
-                () -> assertNotEquals(0, literal.hashCode(),
-                    "Annotation with attributes should have non-zero hashCode"),
-                () -> assertEquals(SuppressWarnings.class, literal.annotationType(),
-                    "Should maintain correct annotation type with attributes")
+                    () -> assertNotNull(literal.toString(), "toString should not be null"),
+                    () -> assertEquals(
+                            AnnotationInstanceProvider.of(SuppressWarnings.class, attributes),
+                            literal,
+                            "Same annotation with same attributes should be equal"),
+                    () -> assertNotEquals(0, literal.hashCode(),
+                            "Annotation with attributes should have non-zero hashCode"),
+                    () -> assertEquals(SuppressWarnings.class, literal.annotationType(),
+                            "Should maintain correct annotation type with attributes")
             );
         }
 
         @Test
         @DisplayName("Should handle empty attributes map")
         void shouldHandleEmptyAttributes() {
-            var literal = AnnotationInstanceProvider.of(SuppressWarnings.class, 
-                CollectionLiterals.immutableMap());
-            
+            var literal = AnnotationInstanceProvider.of(SuppressWarnings.class,
+                    CollectionLiterals.immutableMap());
+
             assertAll("Empty attributes verification",
-                () -> assertNotNull(literal, "Should create instance with empty attributes"),
-                () -> assertEquals(0, literal.hashCode(),
-                    "Empty attributes should result in hashCode 0"),
-                () -> assertEquals(
-                    AnnotationInstanceProvider.of(SuppressWarnings.class),
-                    literal,
-                    "Should equal instance created without attributes")
+                    () -> assertNotNull(literal, "Should create instance with empty attributes"),
+                    () -> assertEquals(0, literal.hashCode(),
+                            "Empty attributes should result in hashCode 0"),
+                    () -> assertEquals(
+                            AnnotationInstanceProvider.of(SuppressWarnings.class),
+                            literal,
+                            "Should equal instance created without attributes")
             );
         }
     }
@@ -102,24 +102,24 @@ class AnnotationInstanceProviderTest {
     @Nested
     @DisplayName("Error Handling Tests")
     class ErrorHandlingTests {
-        
+
         @Test
         @DisplayName("Should reject null annotation class")
         void shouldRejectNullAnnotationClass() {
             assertThrows(NullPointerException.class,
-                () -> AnnotationInstanceProvider.of(null),
-                "Should throw NullPointerException for null annotation class");
+                    () -> AnnotationInstanceProvider.of(null),
+                    "Should throw NullPointerException for null annotation class");
         }
 
         @Test
         @DisplayName("Should reject null attributes map")
         void shouldRejectNullAttributesMap() {
             IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
-                () -> AnnotationInstanceProvider.of(SuppressWarnings.class, null),
-                "Should throw IllegalArgumentException for null attributes map");
-            
+                    () -> AnnotationInstanceProvider.of(SuppressWarnings.class, null),
+                    "Should throw IllegalArgumentException for null attributes map");
+
             assertEquals("Map of values must not be null", thrown.getMessage(),
-                "Should indicate that values map cannot be null");
+                    "Should indicate that values map cannot be null");
         }
     }
 }

@@ -15,10 +15,12 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -30,10 +32,6 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnableAutoWeld
 @EnableTestLogger(debug = {ResourceBundleRegistry.class, ResourceBundleLocator.class, ResourceBundleRegistryTest.class})

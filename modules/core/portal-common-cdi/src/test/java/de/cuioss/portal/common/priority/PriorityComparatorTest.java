@@ -16,8 +16,8 @@
 package de.cuioss.portal.common.priority;
 
 import static de.cuioss.test.generator.Generators.fixedValues;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.cuioss.portal.common.priority.support.HighPriorityClass;
 import de.cuioss.portal.common.priority.support.LowPriorityClass;
@@ -52,7 +52,7 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
     @Nested
     @DisplayName("Priority Order Tests")
     class PriorityOrderTests {
-        
+
         @Test
         @DisplayName("Should create configured priority ordering")
         void shouldCreateConfiguredOrdering() {
@@ -73,16 +73,16 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
                     mediumClassComparator, highClassComparator);
             Collections.shuffle(sortList);
             Collections.sort(sortList);
-            
+
             assertAll("Priority order verification",
-                () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.get(0).getOrder(),
-                        "Highest priority should be first"),
-                () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, sortList.get(1).getOrder(),
-                        "Medium priority should be second"),
-                () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, sortList.get(2).getOrder(),
-                        "Low priority should be third"),
-                () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, sortList.get(3).getOrder(),
-                        "Default priority should be last")
+                    () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.get(0).getOrder(),
+                            "Highest priority should be first"),
+                    () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, sortList.get(1).getOrder(),
+                            "Medium priority should be second"),
+                    () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, sortList.get(2).getOrder(),
+                            "Low priority should be third"),
+                    () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, sortList.get(3).getOrder(),
+                            "Default priority should be last")
             );
         }
     }
