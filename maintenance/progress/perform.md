@@ -316,35 +316,81 @@ Status: Complete
      * PortalUserProducer - User context management
      * Storage implementations - Runtime data handling
 
-- [ ] Key Components:
+- [x] Key Components:
   1. Core Infrastructure
-     * Portal configuration management
-     * Request/Response handling
-     * Session management
-     * Security integration
+     * ServletLifecycleListener
+       - Application lifecycle management
+       - Ordered configuration initialization
+       - Event handling for context lifecycle
+       - Integration with ApplicationInitializer
+
+     * PortalUserProducer
+       - User context management
+       - Authentication state handling
+       - Request-scoped user information
+       - CDI integration for user access
+
+     * Storage Framework
+       - Abstraction over session storage
+       - Type-safe data access
+       - Session state management
+       - Clean API for data persistence
 
   2. Jakarta EE Integration
-     * CDI extensions
-     * Servlet support
-     * Context and dependency management
-     * Resource handling
+     * CDI Integration
+       - Scoped beans (@ApplicationScoped, @RequestScoped)
+       - Event handling (@Observes)
+       - Producer methods
+       - Dependency injection
+
+     * Servlet Integration
+       - Context listeners
+       - Request/Response handling
+       - Session management
+       - Web application lifecycle
+
+     * Security Integration
+       - User authentication
+       - Session management
+       - Security context
+       - Access control
 
   3. Portal Services
-     * Authentication and authorization
-     * Resource management
-     * Configuration services
-     * Event handling
+     * User Management
+       - Authentication facade
+       - User context production
+       - User change events
+       - Session tracking
 
-  4. Implementation Details
-     * Core portal beans
-     * Service providers
-     * Extension points
-     * Utility classes
+     * Storage Services
+       - Session abstraction
+       - Data persistence
+       - State management
+       - Type-safe access
+
+     * Lifecycle Services
+       - Application initialization
+       - Context management
+       - Event coordination
+       - Resource cleanup
+
+- [ ] Test Coverage:
+  1. Unit Tests
+     * Core component tests
+     * Integration tests
+     * Security tests
+     * Storage tests
+
+  2. Test Areas
+     * Lifecycle management
+     * User context handling
+     * Storage operations
+     * Event processing
 
 Next Steps:
-1. Review core components in detail
-2. Analyze test coverage
-3. Verify documentation completeness
+1. Analyze test coverage
+2. Review security implementation
+3. Document integration points
 
 #### Portal Servlet Core Module
 - [ ] Module Structure:
