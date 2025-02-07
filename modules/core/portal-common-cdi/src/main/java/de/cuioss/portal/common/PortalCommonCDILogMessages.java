@@ -132,13 +132,13 @@ public final class PortalCommonCDILogMessages {
             public static final LogRecord LOADER_FALLBACK = LogRecordModel.builder()
                     .template("Resource '%s' not found using class '%s', falling back to context class loader")
                     .prefix(PREFIX)
-                    .identifier(501)
+                    .identifier(510)
                     .build();
 
             public static final LogRecord RESOLVING_BUNDLE_BEAN = LogRecordModel.builder()
                     .template("Resolving ResourceBundleWrapper")
                     .prefix(PREFIX)
-                    .identifier(502)
+                    .identifier(511)
                     .build();
         }
     }

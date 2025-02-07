@@ -1,50 +1,93 @@
 # Log Messages for Portal Common CDI Module
 
-## INFO Messages (001-099)
+All messages follow the format: PortalCommonCDI-[identifier]: [message]
 
-[cols="1,2,2"]
+[cols="1,2,3,2"]
 |===
-|Identifier |Message |Description
+|Identifier |Package |Message |Description
 
-|Portal-001
-|ResourceBundle path not defined for class: {0}
-|Indicates that a ResourceBundleLocator implementation has not defined a bundle path. This is logged at debug level as it may be intentional.
+## BUNDLE Package Messages
 
-|Portal-002
-|Successfully loaded {0} '{1}' for locale '{2}'
-|Confirms successful loading of a resource bundle for a specific locale. Logged at debug level for tracking bundle resolution.
+### DEBUG Messages (500-599)
 
-|Portal-004
-|Adding '{0}'
-|Indicates that a ResourceBundleLocator is being added to the registry. Logged at debug level to track bundle registration.
+|PortalCommonCDI-500
+|BUNDLE
+|ResourceBundle path not defined for class: %s
+|Indicates that a ResourceBundleLocator implementation has not defined a bundle path.
 
-|Portal-006
-|Resulting in {0}
-|Shows the final list of resolved resource bundles in the registry. Logged at debug level for configuration verification.
-|===
+|PortalCommonCDI-501
+|BUNDLE
+|Successfully loaded %s '%s' for locale '%s'
+|Confirms successful loading of a resource bundle for a specific locale.
 
-## WARN Messages (100-199)
+|PortalCommonCDI-502
+|BUNDLE
+|Adding bundle %s
+|Indicates that a ResourceBundleLocator is being added to the registry.
 
-[cols="1,2,2"]
-|===
-|Identifier |Message |Description
+|PortalCommonCDI-503
+|BUNDLE
+|Resulting bundles: %s
+|Shows the final list of resolved resource bundles in the registry.
 
-|Portal-003
-|Unable to load {0} '{1}' for locale '{2}'
-|Indicates a failure to load a resource bundle. This could be due to missing files or classpath issues.
+|PortalCommonCDI-504
+|BUNDLE
+|Locale changed to '%s', clearing bundle cache
+|Indicates that the locale has changed and the bundle cache is being cleared.
 
-|Portal-005
-|Ignoring '{0}'
-|A ResourceBundleLocator is being ignored because it could not be resolved or loaded.
-|===
+|PortalCommonCDI-505
+|BUNDLE
+|Resolved %d resource bundles for locale '%s'
+|Shows the number of resource bundles resolved for a specific locale.
 
-## ERROR Messages (500-599)
+### WARN Messages (100-199)
 
-[cols="1,2,2"]
-|===
-|Identifier |Message |Description
+|PortalCommonCDI-100
+|BUNDLE
+|No key '%s' defined within any of the configured bundles: %s
+|A requested resource key could not be found in any of the configured bundles.
 
-|Portal-506
-|Duplicate ResourceBundlePath found for '{0}'
-|A duplicate resource bundle path was detected. This could lead to unexpected behavior as only one bundle per path is allowed.
+|PortalCommonCDI-101
+|BUNDLE
+|Unable to load bundle '%s' for locale '%s': %s
+|Indicates a failure to load a resource bundle.
+
+|PortalCommonCDI-102
+|BUNDLE
+|Duplicate resource path detected for %s
+|A duplicate resource bundle path was detected.
+
+|PortalCommonCDI-103
+|BUNDLE
+|Ignoring bundle %s due to missing path
+|A bundle is being ignored because its path is missing.
+
+|PortalCommonCDI-104
+|BUNDLE
+|No valid resource bundles found
+|No valid resource bundles could be found in the system.
+
+## STAGE Package Messages
+
+### ERROR Messages (200-299)
+
+|PortalCommonCDI-200
+|STAGE
+|Invalid stage name '%s', falling back to %s
+|An invalid project stage name was provided, system is falling back to default.
+
+## RESOURCE Package Messages
+
+### DEBUG Messages (500-599)
+
+|PortalCommonCDI-510
+|RESOURCE
+|Resource '%s' not found using class '%s', falling back to context class loader
+|Resource loading falls back to context class loader when not found using specific class.
+
+|PortalCommonCDI-511
+|RESOURCE
+|Resolving ResourceBundleWrapper
+|System is in the process of resolving a ResourceBundleWrapper.
+
 |===
