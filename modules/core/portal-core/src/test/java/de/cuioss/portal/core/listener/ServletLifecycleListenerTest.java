@@ -15,9 +15,8 @@
  */
 package de.cuioss.portal.core.listener;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
+import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.portal.core.servlet.CuiContextPath;
 import de.cuioss.test.jsf.mocks.CuiMockServletContext;
 import de.cuioss.test.juli.LogAsserts;
@@ -34,6 +33,10 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnableTestLogger
@@ -61,7 +64,7 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
     }
 
     @Test
-    void shoudinitialize() {
+    void shouldInitialize() {
         assertFalse(mockInitializer.isInitializeCalled());
         assertFalse(mockInitializer.isDestroyCalled());
 
@@ -76,13 +79,13 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
     }
 
     @Test
-    void shouldHandleExeptionOnDestroy() {
+    void shouldHandleExceptionOnDestroy() {
         mockInitializer.setExplodeOnDestroy(true);
 
         underTest.applicationDestroyListener();
         assertTrue(mockInitializer.isDestroyCalled());
 
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Runtime Exception occurred while");
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, PortalCoreLogMessages.LIFECYCLE_DESTROY_ERROR.resolveIdentifierString());
     }
 
     @Test

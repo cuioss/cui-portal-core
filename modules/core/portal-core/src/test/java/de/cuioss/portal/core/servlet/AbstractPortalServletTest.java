@@ -15,11 +15,7 @@
  */
 package de.cuioss.portal.core.servlet;
 
-import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresentContaining;
-import static jakarta.servlet.http.HttpServletResponse.*;
-import static org.easymock.EasyMock.*;
-import static org.junit.jupiter.api.Assertions.*;
-
+import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.portal.core.test.support.PortalUserProducerMock;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -35,6 +31,18 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.Serial;
 import java.util.Collections;
+
+import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresentContaining;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
 @EnableAutoWeld
@@ -65,13 +73,10 @@ class AbstractPortalServletTest {
     @Test
     void shouldHandleAuthenticationRequired() throws Exception {
         underTest.setEnabled(true);
-        underTest.setLoggedInUserRequired(false);
-        verifyCallOk();
-
         underTest.setLoggedInUserRequired(true);
         userProducer.authenticated(false);
         verifyErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Portal-523");
+        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, PortalCoreLogMessages.SERVLET_USER_NOT_LOGGED_IN.resolveIdentifierString());
     }
 
     @Test
@@ -94,7 +99,7 @@ class AbstractPortalServletTest {
         userProducer.roles(CollectionLiterals.immutableList(ROLE1));
         underTest.getRequiredRoles().add(ROLE2);
         verifyErrorCode(SC_FORBIDDEN);
-        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, "Portal-523");
+        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, PortalCoreLogMessages.SERVLET_USER_MISSING_ROLES.resolveIdentifierString());
     }
 
     @Test
@@ -112,7 +117,7 @@ class AbstractPortalServletTest {
         underTest.setEnabled(true);
         underTest.setThrowMe(new IOException("boom"));
         verifyErrorCode(SC_INTERNAL_SERVER_ERROR);
-        assertSingleLogMessagePresentContaining(TestLogLevel.ERROR, "Portal-523");
+        assertSingleLogMessagePresentContaining(TestLogLevel.ERROR, PortalCoreLogMessages.SERVLET_REQUEST_PROCESSING_ERROR.resolveIdentifierString());
     }
 
     @Test

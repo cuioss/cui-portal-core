@@ -16,6 +16,7 @@
 package de.cuioss.portal.core.servlet;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -51,18 +52,10 @@ import java.util.HashSet;
  */
 public abstract class AbstractPortalServlet extends HttpServlet {
 
-    /**
-     * Portal-523: Could not process Request, due to {}.
-     */
-    public static final String PORTAL_523 = "Portal-523: Could not process Request, due to {}";
-
-    private static final String NOT_LOGGED_IN = "Portal-523: Could not process Request, because the user must be logged in for this request";
-    private static final String USER = "Portal-523: Could not process Request, because of the condition '{}' is not met for user '{}'";
-
     @Serial
     private static final long serialVersionUID = 5418492528395532112L;
 
-    private final CuiLogger log = new CuiLogger(getClass());
+    private static final CuiLogger LOGGER = new CuiLogger(AbstractPortalServlet.class);
 
     @Inject
     Provider<AuthenticatedUserInfo> userInfoProvider;
@@ -75,7 +68,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         try {
             executeDoGet(req, resp);
         } catch (RuntimeException | IOException e) {
-            log.error(e, PORTAL_523, "Runtime Exception");
+            LOGGER.error(e, PortalCoreLogMessages.SERVLET_REQUEST_PROCESSING_ERROR.format("Runtime Exception"));
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -90,26 +83,27 @@ public abstract class AbstractPortalServlet extends HttpServlet {
      * @return boolean indicating whether all checks are passed or not.
      */
     public boolean checkAccess(HttpServletResponse resp) {
-        log.trace("Checking call preconditions");
+        LOGGER.trace(PortalCoreLogMessages.SERVLET_CHECKING_PRECONDITIONS.format());
         if (!isEnabled()) {
-            log.debug(PORTAL_523, "Disabled by configuration");
+            LOGGER.debug(PortalCoreLogMessages.SERVLET_DISABLED_BY_CONFIGURATION.format());
             resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return false;
         }
         var user = getUserInfo();
 
         if (isLoggedInUserRequired() && !user.isAuthenticated()) {
-            log.warn(NOT_LOGGED_IN);
+            LOGGER.warn(PortalCoreLogMessages.SERVLET_USER_NOT_LOGGED_IN.format());
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         var requiredRoles = getRequiredRoles();
         if (!requiredRoles.isEmpty() && !new HashSet<>(user.getRoles()).containsAll(requiredRoles)) {
-            log.warn(USER, "User should provide the roles " + requiredRoles, user);
+            LOGGER.warn(PortalCoreLogMessages.SERVLET_USER_MISSING_ROLES.format(
+                    "User should provide the roles " + requiredRoles, user));
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
-        log.trace("All preconditions are ok, generating payload");
+        LOGGER.trace(PortalCoreLogMessages.SERVLET_PRECONDITIONS_OK.format());
         return true;
     }
 
