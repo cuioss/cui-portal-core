@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static de.cuioss.portal.core.PortalCoreLogMessages.HOSTNAME;
+import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -101,7 +101,7 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match request server name and port");
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, HOSTNAME.DEBUG.RESOLVED.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, SERVLET.DEBUG.HOSTNAME_RESOLVED.resolveIdentifierString());
     }
 
     @Test
@@ -111,6 +111,6 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match X-Forwarded host and port");
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, HOSTNAME.DEBUG.RESOLVED.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, SERVLET.DEBUG.HOSTNAME_RESOLVED.resolveIdentifierString());
     }
 }
