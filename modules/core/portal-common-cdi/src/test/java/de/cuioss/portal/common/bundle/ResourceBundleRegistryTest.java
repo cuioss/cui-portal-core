@@ -66,8 +66,8 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
             );
 
             // Verify successful bundle initialization
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalCommonCDILogMessages.PREFIX + "-503");
+            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
+                    PortalCommonCDILogMessages.BUNDLE.DEBUG.RESULTING.resolveIdentifierString());
             // Verify no errors during initialization
             LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleRegistry.class);
         }

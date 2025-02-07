@@ -99,15 +99,15 @@ public class ResourceBundleRegistry implements Serializable {
             if (resolvedBundle.isPresent() && locator.getBundlePath().isPresent()) {
                 var bundlePath = locator.getBundlePath().get();
                 if (registeredPaths.contains(bundlePath)) {
-                    LOGGER.warn(PortalCommonCDILogMessages.DUPLICATE_RESOURCE_PATH.format(
-                            locator.getClass().getName()));
+                    LOGGER.warn(PortalCommonCDILogMessages.BUNDLE.WARN.DUPLICATE_PATH.format(
+                            bundlePath));
                 } else {
-                    LOGGER.debug(PortalCommonCDILogMessages.ADDING_BUNDLE.format(bundlePath));
+                    LOGGER.debug(PortalCommonCDILogMessages.BUNDLE.DEBUG.ADDING.format(bundlePath));
                     validLocators.add(locator);
                     registeredPaths.add(bundlePath);
                 }
             } else {
-                LOGGER.warn(PortalCommonCDILogMessages.IGNORING_BUNDLE.format(
+                LOGGER.warn(PortalCommonCDILogMessages.BUNDLE.WARN.IGNORING.format(
                         locator.getClass().getName()));
             }
         }
@@ -115,9 +115,9 @@ public class ResourceBundleRegistry implements Serializable {
         resolvedPaths = validLocators.toImmutableList();
 
         if (resolvedPaths.isEmpty()) {
-            LOGGER.warn(PortalCommonCDILogMessages.NO_VALID_BUNDLES.format());
+            LOGGER.warn(PortalCommonCDILogMessages.BUNDLE.WARN.NO_VALID_BUNDLES.format());
         } else {
-            LOGGER.debug(PortalCommonCDILogMessages.RESULTING_BUNDLES.format(
+            LOGGER.debug(PortalCommonCDILogMessages.BUNDLE.DEBUG.RESULTING.format(
                     resolvedPaths.stream()
                             .map(loc -> loc.getBundlePath().orElse("undefined"))
                             .collect(Collectors.joining(", "))));
