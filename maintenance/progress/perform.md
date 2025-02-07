@@ -318,23 +318,10 @@ Status: Complete
 
 - [x] Key Components:
   1. Core Infrastructure
-     * ServletLifecycleListener
-       - Application lifecycle management
-       - Ordered configuration initialization
-       - Event handling for context lifecycle
-       - Integration with ApplicationInitializer
-
-     * PortalUserProducer
-       - User context management
-       - Authentication state handling
-       - Request-scoped user information
-       - CDI integration for user access
-
-     * Storage Framework
-       - Abstraction over session storage
-       - Type-safe data access
-       - Session state management
-       - Clean API for data persistence
+     * ServletLifecycleListener - Improved lifecycle handling and dependency injection
+     * PortalUserProducer - User context management
+     * Storage Framework - Abstraction over session storage
+     * ExternalHostnameProducer - Enhanced request scoping and hostname resolution
 
   2. Jakarta EE Integration
      * CDI Integration
