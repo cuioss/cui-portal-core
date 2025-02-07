@@ -27,6 +27,7 @@ import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
+import de.cuioss.tools.logging.CuiLogger;
 
 @VerifyBuilder(required = {"action"})
 @EnableTestLogger
@@ -78,5 +79,20 @@ class LoginEventTest extends ValueObjectTest<LoginEvent> {
 
         // then
         assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGOUT.format(username));
+    }
+
+    @Test
+    void shouldHandleNullUsername() {
+        // given
+        var event = LoginEvent.builder()
+                .action(LoginEvent.Action.LOGIN_SUCCESS)
+                .username(null)
+                .build();
+
+        // when
+        event.logEvent();
+
+        // then
+        assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format("null"));
     }
 }

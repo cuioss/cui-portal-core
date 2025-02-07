@@ -32,8 +32,6 @@ import java.io.Serializable;
 @Builder
 public class LoginEvent implements Serializable {
 
-    private static final CuiLogger log = new CuiLogger(LoginEvent.class);
-
     @Serial
     private static final long serialVersionUID = -2436530653889693514L;
 
@@ -62,19 +60,21 @@ public class LoginEvent implements Serializable {
     @NonNull
     Action action;
 
+    private static final CuiLogger LOGGER = new CuiLogger(LoginEvent.class);
+
     /**
      * Logs the login event based on the action type.
      */
     public void logEvent() {
         switch (action) {
             case LOGIN_SUCCESS:
-                log.info(AUTH.INFO.LOGIN_SUCCESS.format(username));
+                LOGGER.info(AUTH.INFO.LOGIN_SUCCESS.format(username));
                 break;
             case LOGIN_FAILED:
-                log.warn(AUTH.WARN.LOGIN_FAILED.format(username));
+                LOGGER.warn(AUTH.WARN.LOGIN_FAILED.format(username));
                 break;
             case LOGOUT:
-                log.info(AUTH.INFO.LOGOUT.format(username));
+                LOGGER.info(AUTH.INFO.LOGOUT.format(username));
                 break;
             default:
                 throw new IllegalStateException("Unknown action: " + action);

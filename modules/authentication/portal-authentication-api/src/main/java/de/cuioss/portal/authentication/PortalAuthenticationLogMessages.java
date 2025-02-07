@@ -10,15 +10,15 @@ import lombok.experimental.UtilityClass;
  * 
  * Message Identifiers by Package:
  * AUTH:
- *   - INFO:  001-009 (Login/Logout events)
- *   - WARN:  100-109 (Authentication warnings)
- *   - ERROR: 200-209 (Authentication failures)
- *   - DEBUG: 500-509 (Detailed auth flow information)
+ *   - INFO:  001-099 (Login/Logout events)
+ *   - WARN:  100-199 (Authentication warnings)
+ *   - ERROR: 200-299 (Authentication failures)
+ *   - DEBUG: 500-599 (Detailed auth flow information)
  */
 @UtilityClass
 public final class PortalAuthenticationLogMessages {
 
-    private static final String PREFIX = "PortalAuth";
+    public static final String PREFIX = "PortalAuth";
 
     @UtilityClass
     public static final class AUTH {
