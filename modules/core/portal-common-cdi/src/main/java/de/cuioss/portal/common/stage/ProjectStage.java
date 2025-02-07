@@ -15,9 +15,9 @@
  */
 package de.cuioss.portal.common.stage;
 
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.STAGE;
 
 /**
  * Portal project stage.
@@ -52,7 +52,7 @@ public enum ProjectStage implements CuiProjectStage {
             }
         }
 
-        LOGGER.error(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.STAGE.ERROR.INVALID_STAGE.format(stage));
+        LOGGER.error(STAGE.ERROR.INVALID_STAGE.format(stage));
         return ProjectStage.PRODUCTION;
     }
 

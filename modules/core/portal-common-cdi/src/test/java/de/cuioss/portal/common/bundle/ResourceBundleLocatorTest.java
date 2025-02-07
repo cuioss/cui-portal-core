@@ -17,8 +17,8 @@ package de.cuioss.portal.common.bundle;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.InvalidBundlePath;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
@@ -41,7 +41,7 @@ class ResourceBundleLocatorTest {
 
         // Verify successful bundle loading
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
-                PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.LOADED.resolveIdentifierString());
+                BUNDLE.DEBUG.LOADED.resolveIdentifierString());
         // Verify no warnings or errors in happy path
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.WARN, ResourceBundleLocator.class);
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleLocator.class);
@@ -62,7 +62,7 @@ class ResourceBundleLocatorTest {
 
         // Verify error message
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.LOAD_FAILED.resolveIdentifierString());
+                BUNDLE.WARN.LOAD_FAILED.resolveIdentifierString());
         // Verify no success messages in error case
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.INFO, ResourceBundleLocator.class);
     }

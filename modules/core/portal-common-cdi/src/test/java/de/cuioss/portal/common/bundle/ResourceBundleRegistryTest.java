@@ -15,9 +15,10 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
@@ -67,7 +68,7 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
 
             // Verify successful bundle initialization
             LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
-                    PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.RESULTING.resolveIdentifierString());
+                    BUNDLE.DEBUG.RESULTING.resolveIdentifierString());
             // Verify no errors during initialization
             LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleRegistry.class);
         }

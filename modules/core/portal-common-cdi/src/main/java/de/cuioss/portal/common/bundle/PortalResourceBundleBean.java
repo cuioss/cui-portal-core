@@ -29,6 +29,8 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.RESOURCE;
+
 /**
  * <p>
  * Portal variant of {@link java.util.ResourceBundle}. It delegates to
@@ -105,7 +107,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
     @NonNull
     private ResourceBundleWrapper getResourceBundleWrapper() {
         if (null == resourceBundleWrapper) {
-            LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.RESOURCE.DEBUG.RESOLVING_BUNDLE_BEAN.format());
+            LOGGER.debug(RESOURCE.DEBUG.RESOLVING_BUNDLE_BEAN.format());
             resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
         }
         return resourceBundleWrapper;

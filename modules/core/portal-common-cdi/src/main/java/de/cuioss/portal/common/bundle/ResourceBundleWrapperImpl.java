@@ -15,9 +15,9 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -87,12 +87,12 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
         if (projectStage.get().isDevelopment()) {
             throw new MissingResourceException(
-                    PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
+                    BUNDLE.WARN.KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
                     getClass().getName(),
                     lookupKey);
         }
 
-        LOGGER.warn(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.format(
+        LOGGER.warn(BUNDLE.WARN.KEY_NOT_FOUND.format(
                 lookupKey, resourceBundleRegistry.getResolvedPaths()));
         return "??" + lookupKey + "??";
     }
@@ -105,7 +105,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
      * @param newLocale
      */
     void actOnLocaleChangeEven(@Observes @LocaleChangeEvent final Locale newLocale) {
-        LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.LOCALE_CHANGED.format(newLocale));
+        LOGGER.debug(BUNDLE.DEBUG.LOCALE_CHANGED.format(newLocale));
         resolvedBundles = null;
     }
 
@@ -118,7 +118,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
                 path.getBundle(currentLocale).ifPresent(builder::add);
             }
             resolvedBundles = builder.toImmutableList();
-            LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.RESOLVED.format(
+            LOGGER.debug(BUNDLE.DEBUG.RESOLVED.format(
                     resolvedBundles.size(), currentLocale));
         }
         return resolvedBundles;

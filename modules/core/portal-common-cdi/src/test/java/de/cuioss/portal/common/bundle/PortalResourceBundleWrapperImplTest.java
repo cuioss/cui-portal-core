@@ -15,8 +15,7 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.bundle.support.PortalMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
@@ -48,6 +47,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnableTestLogger(trace = PortalResourceBundleWrapperImplTest.class)
@@ -131,7 +137,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             var exception = assertThrows(MissingResourceException.class,
                     () -> underTest.getString("not.there"),
                     "Should throw MissingResourceException for invalid key in development mode");
-            assertTrue(exception.getMessage().contains(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString()),
+            assertTrue(exception.getMessage().contains(BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString()),
                     "Should contain error code");
         }
 
@@ -143,7 +149,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             assertAll("Invalid key handling in production",
                     () -> assertEquals("??not.there??", result, "Should wrap invalid key with ??"),
                     () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                            PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
+                            BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
             );
         }
 
@@ -159,7 +165,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
                     () -> assertEquals("??" + expectedKey + "??", result,
                             "Should wrap invalid key with ??"),
                     () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                            PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
+                            BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
             );
         }
     }

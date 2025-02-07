@@ -3,6 +3,7 @@
  */
 package de.cuioss.portal.common.util;
 
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.RESOURCE;
 import static de.cuioss.tools.collect.MoreCollections.requireNotEmpty;
 import static java.util.Objects.requireNonNull;
 
@@ -47,7 +48,7 @@ public class PortalResourceLoader {
         requireNonNull(callingClass);
         var result = Optional.ofNullable(callingClass.getResource(resourcePath));
         if (result.isEmpty()) {
-            LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.RESOURCE.DEBUG.LOADER_FALLBACK.format(
+            LOGGER.debug(RESOURCE.DEBUG.LOADER_FALLBACK.format(
                     resourcePath, callingClass));
             result = Optional.ofNullable(Thread.currentThread().getContextClassLoader().getResource(resourcePath));
         }
