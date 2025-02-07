@@ -87,12 +87,12 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
         if (projectStage.get().isDevelopment()) {
             throw new MissingResourceException(
-                    PortalCommonCDILogMessages.BUNDLE.WARN.KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
+                    PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
                     getClass().getName(),
                     lookupKey);
         }
 
-        LOGGER.warn(PortalCommonCDILogMessages.BUNDLE.WARN.KEY_NOT_FOUND.format(
+        LOGGER.warn(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.format(
                 lookupKey, resourceBundleRegistry.getResolvedPaths()));
         return "??" + lookupKey + "??";
     }
@@ -105,7 +105,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
      * @param newLocale
      */
     void actOnLocaleChangeEven(@Observes @LocaleChangeEvent final Locale newLocale) {
-        LOGGER.debug(PortalCommonCDILogMessages.BUNDLE.DEBUG.LOCALE_CHANGED.format(newLocale));
+        LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.LOCALE_CHANGED.format(newLocale));
         resolvedBundles = null;
     }
 
@@ -118,7 +118,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
                 path.getBundle(currentLocale).ifPresent(builder::add);
             }
             resolvedBundles = builder.toImmutableList();
-            LOGGER.debug(PortalCommonCDILogMessages.BUNDLE.DEBUG.RESOLVED.format(
+            LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.RESOLVED.format(
                     resolvedBundles.size(), currentLocale));
         }
         return resolvedBundles;

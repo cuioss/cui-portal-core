@@ -41,7 +41,7 @@ class ResourceBundleLocatorTest {
 
         // Verify successful bundle loading
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
-                PortalCommonCDILogMessages.BUNDLE.DEBUG.LOADED.resolveIdentifierString());
+                PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.DEBUG.LOADED.resolveIdentifierString());
         // Verify no warnings or errors in happy path
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.WARN, ResourceBundleLocator.class);
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleLocator.class);
@@ -62,7 +62,7 @@ class ResourceBundleLocatorTest {
 
         // Verify error message
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                PortalCommonCDILogMessages.BUNDLE.WARN.LOAD_FAILED.resolveIdentifierString());
+                PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.LOAD_FAILED.resolveIdentifierString());
         // Verify no success messages in error case
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.INFO, ResourceBundleLocator.class);
     }

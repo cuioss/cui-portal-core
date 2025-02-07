@@ -105,7 +105,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
     @NonNull
     private ResourceBundleWrapper getResourceBundleWrapper() {
         if (null == resourceBundleWrapper) {
-            LOGGER.debug(PortalCommonCDILogMessages.RESOURCE.DEBUG.RESOLVING_BUNDLE_BEAN.format());
+            LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.RESOURCE.DEBUG.RESOLVING_BUNDLE_BEAN.format());
             resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
         }
         return resourceBundleWrapper;

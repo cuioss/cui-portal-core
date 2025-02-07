@@ -131,7 +131,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             var exception = assertThrows(MissingResourceException.class,
                     () -> underTest.getString("not.there"),
                     "Should throw MissingResourceException for invalid key in development mode");
-            assertTrue(exception.getMessage().contains(PortalCommonCDILogMessages.PREFIX + "-100"),
+            assertTrue(exception.getMessage().contains(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString()),
                     "Should contain error code");
         }
 
@@ -143,7 +143,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             assertAll("Invalid key handling in production",
                     () -> assertEquals("??not.there??", result, "Should wrap invalid key with ??"),
                     () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                            PortalCommonCDILogMessages.PREFIX + "-100: No key 'not.there'")
+                            PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
             );
         }
 
@@ -159,7 +159,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
                     () -> assertEquals("??" + expectedKey + "??", result,
                             "Should wrap invalid key with ??"),
                     () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                            PortalCommonCDILogMessages.PREFIX + "-100: No key '" + expectedKey + "'")
+                            PortalCommonCDILogMessages.PORTAL_COMMON_CDI.BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
             );
         }
     }

@@ -47,7 +47,7 @@ public class PortalResourceLoader {
         requireNonNull(callingClass);
         var result = Optional.ofNullable(callingClass.getResource(resourcePath));
         if (result.isEmpty()) {
-            LOGGER.debug(PortalCommonCDILogMessages.RESOURCE.DEBUG.LOADER_FALLBACK.format(
+            LOGGER.debug(PortalCommonCDILogMessages.PORTAL_COMMON_CDI.RESOURCE.DEBUG.LOADER_FALLBACK.format(
                     resourcePath, callingClass));
             result = Optional.ofNullable(Thread.currentThread().getContextClassLoader().getResource(resourcePath));
         }
