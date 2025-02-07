@@ -1,17 +1,14 @@
 package de.cuioss.portal.core.servlet;
 
-import static java.util.Optional.ofNullable;
-
-import java.util.Optional;
-
 import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Optional;
 
 /**
  * Produces the external hostname for the portal. The hostname is resolved by
@@ -45,7 +42,7 @@ public class ExternalHostnameProducer {
         String serverPort = Optional.ofNullable(request.getHeader(X_FORWARDED_PORT)).orElse(String.valueOf(request.getServerPort()));
 
         String hostWithPort = serverName + ":" + serverPort;
-        LOGGER.debug(PortalCoreLogMessages.HOSTNAME_RESOLVED.format(hostWithPort));
+        LOGGER.debug(PortalCoreLogMessages.HOSTNAME.DEBUG.RESOLVED.format(hostWithPort));
         return hostWithPort;
     }
 }

@@ -16,7 +16,6 @@
 package de.cuioss.portal.core.listener;
 
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
-import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.portal.core.servlet.CuiContextPath;
 import de.cuioss.test.jsf.mocks.CuiMockServletContext;
 import de.cuioss.test.juli.LogAsserts;
@@ -34,6 +33,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -85,7 +85,7 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
         underTest.applicationDestroyListener();
         assertTrue(mockInitializer.isDestroyCalled());
 
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, PortalCoreLogMessages.LIFECYCLE_DESTROY_ERROR.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, LIFECYCLE.WARN.DESTROY_ERROR.resolveIdentifierString());
     }
 
     @Test

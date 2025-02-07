@@ -16,7 +16,6 @@
 package de.cuioss.portal.core.servlet;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -31,6 +30,8 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
 
 /**
  * Provides a minimal layer for modeling {@link Servlet}s that can be enabled by
@@ -68,7 +69,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         try {
             executeDoGet(req, resp);
         } catch (RuntimeException | IOException e) {
-            LOGGER.error(e, PortalCoreLogMessages.SERVLET_REQUEST_PROCESSING_ERROR.format("Runtime Exception"));
+            LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR.format(e.getMessage()));
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -83,27 +84,27 @@ public abstract class AbstractPortalServlet extends HttpServlet {
      * @return boolean indicating whether all checks are passed or not.
      */
     public boolean checkAccess(HttpServletResponse resp) {
-        LOGGER.trace(PortalCoreLogMessages.SERVLET_CHECKING_PRECONDITIONS.format());
+        LOGGER.trace(SERVLET.TRACE.CHECKING_PRECONDITIONS.format());
         if (!isEnabled()) {
-            LOGGER.debug(PortalCoreLogMessages.SERVLET_DISABLED_BY_CONFIGURATION.format());
+            LOGGER.debug(SERVLET.DEBUG.DISABLED_BY_CONFIGURATION.format());
             resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return false;
         }
         var user = getUserInfo();
 
         if (isLoggedInUserRequired() && !user.isAuthenticated()) {
-            LOGGER.warn(PortalCoreLogMessages.SERVLET_USER_NOT_LOGGED_IN.format());
+            LOGGER.warn(SERVLET.WARN.USER_NOT_LOGGED_IN.format());
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         var requiredRoles = getRequiredRoles();
         if (!requiredRoles.isEmpty() && !new HashSet<>(user.getRoles()).containsAll(requiredRoles)) {
-            LOGGER.warn(PortalCoreLogMessages.SERVLET_USER_MISSING_ROLES.format(
+            LOGGER.warn(SERVLET.WARN.USER_MISSING_ROLES.format(
                     "User should provide the roles " + requiredRoles, user));
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
-        LOGGER.trace(PortalCoreLogMessages.SERVLET_PRECONDITIONS_OK.format());
+        LOGGER.trace(SERVLET.TRACE.PRECONDITIONS_OK.format());
         return true;
     }
 

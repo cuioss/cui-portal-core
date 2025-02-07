@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.core.servlet;
 
-import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.portal.core.test.support.PortalUserProducerMock;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -32,6 +31,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Collections;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
 import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresentContaining;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -76,7 +76,7 @@ class AbstractPortalServletTest {
         underTest.setLoggedInUserRequired(true);
         userProducer.authenticated(false);
         verifyErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, PortalCoreLogMessages.SERVLET_USER_NOT_LOGGED_IN.resolveIdentifierString());
+        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, SERVLET.WARN.USER_NOT_LOGGED_IN.resolveIdentifierString());
     }
 
     @Test
@@ -99,7 +99,7 @@ class AbstractPortalServletTest {
         userProducer.roles(CollectionLiterals.immutableList(ROLE1));
         underTest.getRequiredRoles().add(ROLE2);
         verifyErrorCode(SC_FORBIDDEN);
-        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, PortalCoreLogMessages.SERVLET_USER_MISSING_ROLES.resolveIdentifierString());
+        assertSingleLogMessagePresentContaining(TestLogLevel.WARN, SERVLET.WARN.USER_MISSING_ROLES.resolveIdentifierString());
     }
 
     @Test
@@ -117,7 +117,7 @@ class AbstractPortalServletTest {
         underTest.setEnabled(true);
         underTest.setThrowMe(new IOException("boom"));
         verifyErrorCode(SC_INTERNAL_SERVER_ERROR);
-        assertSingleLogMessagePresentContaining(TestLogLevel.ERROR, PortalCoreLogMessages.SERVLET_REQUEST_PROCESSING_ERROR.resolveIdentifierString());
+        assertSingleLogMessagePresentContaining(TestLogLevel.ERROR, SERVLET.ERROR.REQUEST_PROCESSING_ERROR.resolveIdentifierString());
     }
 
     @Test
@@ -154,5 +154,4 @@ class AbstractPortalServletTest {
         underTest.doGet(mock(HttpServletRequest.class), response);
         verify(response);
     }
-
 }
