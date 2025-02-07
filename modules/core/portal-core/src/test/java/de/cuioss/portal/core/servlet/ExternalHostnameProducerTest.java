@@ -17,6 +17,8 @@ package de.cuioss.portal.core.servlet;
 
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.LogAsserts;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -29,6 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.HOSTNAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -98,15 +101,16 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match request server name and port");
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, HOSTNAME.DEBUG.RESOLVED.resolveIdentifierString());
     }
 
     @Test
-    @DisplayName("Should inject external hostname from request")
-    void shouldInjectExternalHostnameForXForward() {
+    @DisplayName("Should inject external hostname from X-Forwarded headers")
+    void shouldInjectExternalHostnameFromXForward() {
         verifyAgainstXForward = true;
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
-        assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match request server name and port");
+        assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match X-Forwarded host and port");
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, HOSTNAME.DEBUG.RESOLVED.resolveIdentifierString());
     }
-
 }
