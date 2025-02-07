@@ -15,10 +15,9 @@
  */
 package de.cuioss.portal.core.listener;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
+import de.cuioss.portal.core.PortalCoreLogMessages;
 import de.cuioss.portal.core.servlet.CuiContextPath;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.PreDestroy;
@@ -36,6 +35,8 @@ import jakarta.servlet.annotation.WebListener;
 
 import java.util.Collections;
 import java.util.List;
+
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Central Listener for Application life-cycle events.
@@ -66,7 +67,7 @@ public class ServletLifecycleListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         contextPath = sce.getServletContext().getContextPath();
-        LOGGER.info("Initializing Context for {}", contextPath);
+        LOGGER.info(PortalCoreLogMessages.LIFECYCLE_CONTEXT_INITIALIZING.format(contextPath));
         applicationInitializerListener(sce.getServletContext());
     }
 
@@ -79,13 +80,12 @@ public class ServletLifecycleListener implements ServletContextListener {
     private void applicationInitializerListener(final ServletContext context) {
         final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
         Collections.sort(initializers);
-        LOGGER.debug("ServletLifecycleListener called for '{}', initializing with order: {}", contextPath,
-                initializers);
+        LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_INITIALIZER_DEBUG.format(contextPath, initializers));
         for (final ApplicationInitializer applicationInitializer : initializers) {
-            LOGGER.debug("Initializing '{}' for '{}'", applicationInitializer, context);
+            LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_INITIALIZING_COMPONENT.format(applicationInitializer, context));
             applicationInitializer.initialize();
         }
-        LOGGER.debug("Initialize successfully called for all elements for '{}'", contextPath);
+        LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_INITIALIZE_COMPLETE.format(contextPath));
     }
 
     /**
@@ -94,23 +94,21 @@ public class ServletLifecycleListener implements ServletContextListener {
      */
     @PreDestroy
     public void applicationDestroyListener() {
-        LOGGER.debug("Executing applicationDestroyListener");
-        LOGGER.info("Portal-008: Shutting down '{}'", contextPath);
+        LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_DESTROYING.format(contextPath));
+        LOGGER.info(PortalCoreLogMessages.LIFECYCLE_CONTEXT_SHUTDOWN.format(contextPath));
         final List<ApplicationInitializer> finalizer = mutableList(applicationInitializers);
         finalizer.sort(Collections.reverseOrder());
-        LOGGER.debug("ServletLifecycleListener called for '{}', finalizing with order: {}", contextPath, finalizer);
+        LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_FINALIZER_DEBUG.format(contextPath, finalizer));
         for (final ApplicationInitializer applicationInitializer : finalizer) {
-            LOGGER.debug("Destroying '{}' for '{}'", applicationInitializer, contextPath);
+            LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_DESTROYING_COMPONENT.format(applicationInitializer, contextPath));
             try {
                 applicationInitializer.destroy();
             } catch (RuntimeException e) {
-                LOGGER.warn(
-                        "Runtime Exception occurred while trying to destroy '{}' for '{}'. message='{}', stacktrace will be available at DEBUG-level",
-                        applicationInitializer, contextPath, e.getMessage());
-                LOGGER.debug("Detailed exception", e);
+                LOGGER.warn(PortalCoreLogMessages.LIFECYCLE_DESTROY_ERROR.format(applicationInitializer, contextPath, e.getMessage()));
+                LOGGER.debug(e, "Detailed exception");
             }
         }
-        LOGGER.debug("Finalize successfully called for all elements for '{}'", contextPath);
+        LOGGER.debug(PortalCoreLogMessages.LIFECYCLE_FINALIZE_COMPLETE.format(contextPath));
     }
 
 }
