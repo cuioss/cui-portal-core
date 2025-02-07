@@ -19,7 +19,7 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;
 import jakarta.annotation.Priority;
 
-@Priority(200)
+@Priority(200) // Lower priority (higher number) to run second
 class MockPortalUserEnricher implements PortalUserEnricher {
 
     @Override

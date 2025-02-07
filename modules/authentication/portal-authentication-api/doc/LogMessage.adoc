@@ -1,0 +1,60 @@
+# Log Messages for Portal Authentication API Module
+
+All messages follow the format: PortalAuth-[identifier]: [message]
+
+[cols="1,2,2,3,2"]
+|===
+|Identifier |Module |Package |Message |Description
+
+## AUTH Package Messages
+
+### INFO Messages (001-009)
+
+|PortalAuth-001
+|PortalAuth
+|AUTH
+|User '%s' successfully logged in
+|Records successful user authentication
+
+|PortalAuth-002
+|PortalAuth
+|AUTH
+|User '%s' logged out
+|Records user logout event
+
+### WARN Messages (100-109)
+
+|PortalAuth-100
+|PortalAuth
+|AUTH
+|Login failed for user '%s'
+|Records failed login attempt
+
+|PortalAuth-101
+|PortalAuth
+|AUTH
+|Invalid credentials provided for user '%s'
+|Indicates invalid credentials were provided during login
+
+### ERROR Messages (200-209)
+
+|PortalAuth-200
+|PortalAuth
+|AUTH
+|Authentication error occurred: %s
+|Records system-level authentication errors with details
+
+### DEBUG Messages (500-509)
+
+|PortalAuth-500
+|PortalAuth
+|AUTH
+|User info updated for '%s'
+|Tracks updates to user information
+
+|PortalAuth-501
+|PortalAuth
+|AUTH
+|Enriching user info for '%s' with '%s'
+|Details about user info enrichment process
+|===

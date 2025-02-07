@@ -15,10 +15,68 @@
  */
 package de.cuioss.portal.authentication;
 
+import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresent;
+import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresent;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
+import de.cuioss.test.generator.Generators;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
 
 @VerifyBuilder(required = {"action"})
+@EnableTestLogger
 class LoginEventTest extends ValueObjectTest<LoginEvent> {
 
+    @Test
+    void shouldLogLoginSuccess() {
+        // given
+        var username = Generators.nonEmptyStrings().next();
+        var event = LoginEvent.builder()
+                .action(LoginEvent.Action.LOGIN_SUCCESS)
+                .username(username)
+                .build();
+
+        // when
+        event.logEvent();
+
+        // then
+        assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format(username));
+    }
+
+    @Test
+    void shouldLogLoginFailed() {
+        // given
+        var username = Generators.nonEmptyStrings().next();
+        var event = LoginEvent.builder()
+                .action(LoginEvent.Action.LOGIN_FAILED)
+                .username(username)
+                .build();
+
+        // when
+        event.logEvent();
+
+        // then
+        assertSingleLogMessagePresent(TestLogLevel.WARN, AUTH.WARN.LOGIN_FAILED.format(username));
+    }
+
+    @Test
+    void shouldLogLogout() {
+        // given
+        var username = Generators.nonEmptyStrings().next();
+        var event = LoginEvent.builder()
+                .action(LoginEvent.Action.LOGOUT)
+                .username(username)
+                .build();
+
+        // when
+        event.logEvent();
+
+        // then
+        assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGOUT.format(username));
+    }
 }
