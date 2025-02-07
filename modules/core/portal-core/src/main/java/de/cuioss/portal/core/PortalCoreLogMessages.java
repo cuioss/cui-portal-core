@@ -10,9 +10,20 @@ import lombok.experimental.UtilityClass;
  * Messages are organized by package, then by log level, making them easily discoverable
  * and maintainable.
  * 
- * Usage example:
- * PortalCoreLogMessages.SERVLET.INFO.REQUEST_PROCESSING_ERROR.format(error)
- * PortalCoreLogMessages.LIFECYCLE.DEBUG.CONTEXT_INITIALIZING.format(contextPath)
+ * Message Identifiers by Package:
+ * SERVLET:
+ *   - DEBUG: 500-509
+ *   - WARN:  100-109
+ *   - ERROR: 200-209
+ *   - TRACE: 600-609
+ * 
+ * LIFECYCLE:
+ *   - INFO:  001-009
+ *   - DEBUG: 510-519
+ *   - WARN:  110-119
+ * 
+ * HOSTNAME:
+ *   - DEBUG: 520-529
  */
 @UtilityClass
 public final class PortalCoreLogMessages {
@@ -92,43 +103,43 @@ public final class PortalCoreLogMessages {
             public static final LogRecord INITIALIZER_DEBUG = LogRecordModel.builder()
                     .template("ServletLifecycleListener called for '%s', initializing with order: %s")
                     .prefix(PREFIX)
-                    .identifier(500)
+                    .identifier(510)
                     .build();
 
             public static final LogRecord INITIALIZING_COMPONENT = LogRecordModel.builder()
                     .template("Initializing '%s' for '%s'")
                     .prefix(PREFIX)
-                    .identifier(501)
+                    .identifier(511)
                     .build();
 
             public static final LogRecord INITIALIZE_COMPLETE = LogRecordModel.builder()
                     .template("Initialize successfully called for all elements for '%s'")
                     .prefix(PREFIX)
-                    .identifier(502)
+                    .identifier(512)
                     .build();
 
             public static final LogRecord DESTROYING = LogRecordModel.builder()
                     .template("Executing applicationDestroyListener for '%s'")
                     .prefix(PREFIX)
-                    .identifier(503)
+                    .identifier(513)
                     .build();
 
             public static final LogRecord FINALIZER_DEBUG = LogRecordModel.builder()
                     .template("ServletLifecycleListener called for '%s', finalizing with order: %s")
                     .prefix(PREFIX)
-                    .identifier(504)
+                    .identifier(514)
                     .build();
 
             public static final LogRecord DESTROYING_COMPONENT = LogRecordModel.builder()
                     .template("Destroying '%s' for '%s'")
                     .prefix(PREFIX)
-                    .identifier(505)
+                    .identifier(515)
                     .build();
 
             public static final LogRecord FINALIZE_COMPLETE = LogRecordModel.builder()
                     .template("Finalize successfully called for all elements for '%s'")
                     .prefix(PREFIX)
-                    .identifier(506)
+                    .identifier(516)
                     .build();
         }
 
@@ -137,7 +148,7 @@ public final class PortalCoreLogMessages {
             public static final LogRecord DESTROY_ERROR = LogRecordModel.builder()
                     .template("Error while destroying '%s' for '%s': %s")
                     .prefix(PREFIX)
-                    .identifier(100)
+                    .identifier(110)
                     .build();
         }
     }
@@ -149,7 +160,7 @@ public final class PortalCoreLogMessages {
             public static final LogRecord RESOLVED = LogRecordModel.builder()
                     .template("Resolved hostname: %s")
                     .prefix(PREFIX)
-                    .identifier(507)
+                    .identifier(520)
                     .build();
         }
     }
