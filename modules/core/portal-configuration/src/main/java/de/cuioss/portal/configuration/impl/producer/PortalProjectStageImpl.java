@@ -17,6 +17,8 @@ package de.cuioss.portal.configuration.impl.producer;
 
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.*;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import jakarta.annotation.PostConstruct;
@@ -58,13 +60,6 @@ public class PortalProjectStageImpl implements Serializable {
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalProjectStageImpl.class);
 
-    private static final String PROJECT_STAGE_XY_DETECTED = """
-        Portal-101: Project stage '{}' detected. \
-        Set the property '\
-        """ + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.";
-
-    private static final String PROJECT_STAGE_PRODUCTION_DETECTED = "Portal-001: Running in Production-Mode";
-
     /**
      * Bean name for looking up instances.
      */
@@ -90,14 +85,14 @@ public class PortalProjectStageImpl implements Serializable {
 
         switch (configuredProjectStage) {
             case DEVELOPMENT:
-                LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "development");
+                LOGGER.warn(WARN.PROJECT_STAGE_DEVELOPMENT_DETECTED.getTemplate());
                 break;
             case TEST:
-                LOGGER.warn(PROJECT_STAGE_XY_DETECTED, "test");
+                LOGGER.warn(WARN.PROJECT_STAGE_TEST_DETECTED.getTemplate());
                 break;
             case PRODUCTION:
             default:
-                LOGGER.info(PROJECT_STAGE_PRODUCTION_DETECTED);
+                LOGGER.info(INFO.PROJECT_STAGE_PRODUCTION_DETECTED.getTemplate());
                 break;
         }
     }

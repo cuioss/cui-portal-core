@@ -18,6 +18,7 @@ package de.cuioss.portal.configuration.impl.producer;
 import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
 import static de.cuioss.portal.configuration.cache.CacheConfig.*;
 import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.*;
 import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
@@ -58,11 +59,9 @@ public class PortalConfigProducer {
 
     static final String UNUSED = "unused";
 
-    private static final String INVALID_CONTENT_FOR_LONG = "Portal-526: Invalid content for '{}{}', expected a number but was '{}'";
-
-    private static final String INVALID_CONTENT_FOR_TIME_UNIT = "Portal-527: Invalid content for '{}{}', expected one of {} but was '{}'";
-
-    private static final String INVALID_CONTENT_FOR_BOOLEAN = "Portal-527: Invalid content for '{}{}', expected a boolean but was '{}'";
+    private static final String INVALID_CONTENT_FOR_LONG = ERROR.INVALID_CONTENT_FOR_LONG.getTemplate();
+    private static final String INVALID_CONTENT_FOR_TIME_UNIT = ERROR.INVALID_CONTENT_FOR_TIME_UNIT.getTemplate();
+    private static final String INVALID_CONTENT_FOR_BOOLEAN = ERROR.INVALID_CONTENT_FOR_BOOLEAN.getTemplate();
 
     @Inject
     @ConfigProperty(name = PORTAL_METRICS_ENABLED, defaultValue = "false")
@@ -82,7 +81,7 @@ public class PortalConfigProducer {
         try {
             return resolveConfigProperty(key).orElse(emptyToNull(metaData.defaultValue()));
         } catch (final NoSuchElementException e) {
-            LOGGER.debug(e, "Could not resolve config value for key {}", key);
+            LOGGER.debug(e, DEBUG.CONFIG_VALUE_NOT_FOUND.getTemplate(), key);
         }
         return null;
     }
@@ -221,7 +220,7 @@ public class PortalConfigProducer {
         var timeUnit = meta.defaultTimeUnit();
         var recordStats = meta.recordStatistics();
 
-        LOGGER.trace("configProperties (%s): %s", configKeyPrefix, configProperties);
+        LOGGER.trace(TRACE.CONFIG_PROPERTIES.getTemplate(), configKeyPrefix, configProperties);
 
         if (configProperties.containsKey(EXPIRATION_KEY)) {
             try {
@@ -244,8 +243,8 @@ public class PortalConfigProducer {
             try {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT, configKeyPrefix, SIZE_KEY, TimeUnit.values(),
-                        configProperties.get(SIZE_KEY));
+                LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT, configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
+                        configProperties.get(EXPIRATION_UNIT_KEY));
             }
         }
 
@@ -253,16 +252,16 @@ public class PortalConfigProducer {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
                 LOGGER.error(INVALID_CONTENT_FOR_BOOLEAN, configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
-                        configValue);
+                        configProperties.get(CacheConfig.RECORD_STATISTICS_KEY));
                 recordStats = false;
             } else {
                 recordStats = Boolean.parseBoolean(configValue);
             }
-            LOGGER.trace("recordStats: {}", recordStats);
+            LOGGER.trace(TRACE.RECORD_STATS.getTemplate(), recordStats);
         }
 
         final var cacheConfig = new CacheConfig(expiration, timeUnit, size, recordStats && portalMetricsEnabled.get());
-        LOGGER.trace("CacheConfig: {}", cacheConfig);
+        LOGGER.trace(TRACE.CACHE_CONFIG.getTemplate(), cacheConfig);
         return cacheConfig;
     }
 
@@ -271,7 +270,7 @@ public class PortalConfigProducer {
         try {
             locale = LocaleUtils.toLocale(localeAsString);
         } catch (final IllegalArgumentException e) {
-            LOGGER.warn("Portal-132: Invalid configuration found for Locale: " + localeAsString, e);
+            LOGGER.warn(WARN.INVALID_LOCALE.getTemplate(), localeAsString, e);
         }
         if (null != locale) {
             return locale;
