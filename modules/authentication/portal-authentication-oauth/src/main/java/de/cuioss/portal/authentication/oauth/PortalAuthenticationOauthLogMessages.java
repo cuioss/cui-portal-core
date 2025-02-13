@@ -79,6 +79,30 @@ public class PortalAuthenticationOauthLogMessages {
                 .prefix(PREFIX)
                 .identifier(109)
                 .build();
+
+        public static final LogRecord REDIRECT_FAILED = LogRecordModel.builder()
+                .template("Failed to redirect")
+                .prefix(PREFIX)
+                .identifier(110)
+                .build();
+
+        public static final LogRecord INVALID_SCOPE = LogRecordModel.builder()
+                .template("Invalid scope: %s")
+                .prefix(PREFIX)
+                .identifier(111)
+                .build();
+
+        public static final LogRecord LOGIN_ERROR = LogRecordModel.builder()
+                .template("OAuth login error: %s")
+                .prefix(PREFIX)
+                .identifier(112)
+                .build();
+
+        public static final LogRecord UNKNOWN_STATE = LogRecordModel.builder()
+                .template("Unknown state: %s")
+                .prefix(PREFIX)
+                .identifier(113)
+                .build();
     }
 
     @UtilityClass
@@ -373,6 +397,12 @@ public class PortalAuthenticationOauthLogMessages {
                 .prefix(PREFIX)
                 .identifier(537)
                 .build();
+
+        public static final LogRecord NO_TOKEN_RECEIVED = LogRecordModel.builder()
+                .template("No token received")
+                .prefix(PREFIX)
+                .identifier(538)
+                .build();
     }
 
     @UtilityClass
@@ -411,6 +441,42 @@ public class PortalAuthenticationOauthLogMessages {
                 .template("New token content: %s")
                 .prefix(PREFIX)
                 .identifier(605)
+                .build();
+
+        public static final LogRecord CODE_VERIFIER = LogRecordModel.builder()
+                .template("Code verifier: %s")
+                .prefix(PREFIX)
+                .identifier(606)
+                .build();
+
+        public static final LogRecord NEW_CODE = LogRecordModel.builder()
+                .template("New code generated")
+                .prefix(PREFIX)
+                .identifier(607)
+                .build();
+
+        public static final LogRecord CODE = LogRecordModel.builder()
+                .template("Code: %s")
+                .prefix(PREFIX)
+                .identifier(608)
+                .build();
+
+        public static final LogRecord CODE_CHALLENGE = LogRecordModel.builder()
+                .template("Code challenge: %s")
+                .prefix(PREFIX)
+                .identifier(609)
+                .build();
+
+        public static final LogRecord RETRIEVE_TOKEN_FOR_SCOPES = LogRecordModel.builder()
+                .template("Retrieving token for scopes: %s")
+                .prefix(PREFIX)
+                .identifier(610)
+                .build();
+
+        public static final LogRecord USING_ID_TOKEN = LogRecordModel.builder()
+                .template("Using ID token: %s")
+                .prefix(PREFIX)
+                .identifier(611)
                 .build();
     }
 }
