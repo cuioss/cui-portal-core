@@ -16,12 +16,24 @@ public class PortalAuthenticationOauthLogMessages {
                 .prefix(PREFIX)
                 .identifier(1)
                 .build();
+
+        public static final LogRecord ID_TOKEN_SPLIT_FAILED = LogRecordModel.builder()
+                .template("idToken can not be splitted: %s")
+                .prefix(PREFIX)
+                .identifier(10)
+                .build();
+
+        public static final LogRecord ID_TOKEN_PARSE_FAILED = LogRecordModel.builder()
+                .template("idToken %s can not be parsed")
+                .prefix(PREFIX)
+                .identifier(11)
+                .build();
     }
 
     @UtilityClass
     public static final class WARN {
         public static final LogRecord NO_LOGOUT_URI = LogRecordModel.builder()
-                .template("No logout URI configured")
+                .template("Missing config for logout URI. Check the end_session_endpoint property from userinfo endpoint.")
                 .prefix(PREFIX)
                 .identifier(100)
                 .build();
@@ -103,6 +115,12 @@ public class PortalAuthenticationOauthLogMessages {
                 .prefix(PREFIX)
                 .identifier(113)
                 .build();
+
+        public static final LogRecord NO_ID_TOKEN = LogRecordModel.builder()
+                .template("could not get id-token. no user context available.")
+                .prefix(PREFIX)
+                .identifier(114)
+                .build();
     }
 
     @UtilityClass
@@ -119,8 +137,20 @@ public class PortalAuthenticationOauthLogMessages {
                 .identifier(201)
                 .build();
 
+        public static final LogRecord CODE_CHALLENGE_GENERATION_FAILED = LogRecordModel.builder()
+                .template("Cannot generate code_challenge")
+                .prefix(PREFIX)
+                .identifier(201)
+                .build();
+
         public static final LogRecord LOGOUT_FAILED = LogRecordModel.builder()
                 .template("Failed to redirect to logout URL %s")
+                .prefix(PREFIX)
+                .identifier(202)
+                .build();
+
+        public static final LogRecord TOKEN_EXPIRES_IN_INVALID = LogRecordModel.builder()
+                .template("Portal-149: Oauth2 token.expires_in not a valid number")
                 .prefix(PREFIX)
                 .identifier(202)
                 .build();
@@ -402,6 +432,18 @@ public class PortalAuthenticationOauthLogMessages {
                 .template("No token received")
                 .prefix(PREFIX)
                 .identifier(538)
+                .build();
+
+        public static final LogRecord TOKEN_EXPIRES_IN_INVALID_DEBUG = LogRecordModel.builder()
+                .template("token.expires_in not a valid number")
+                .prefix(PREFIX)
+                .identifier(539)
+                .build();
+
+        public static final LogRecord ADDING_ID_TOKEN_HINT = LogRecordModel.builder()
+                .template("Adding id-token-hint as recommended by spec")
+                .prefix(PREFIX)
+                .identifier(540)
                 .build();
     }
 
