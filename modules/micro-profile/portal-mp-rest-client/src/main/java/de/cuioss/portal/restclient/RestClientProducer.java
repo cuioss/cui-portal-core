@@ -61,7 +61,7 @@ public class RestClientProducer {
         // Basename must be present
         final var baseName = suffixNameWithDot(requireNotEmpty(annotationMetaData.baseName(), MISSING_BASENAME_MSG));
 
-        log.debug("Producing DsmlClient for baseName ='{}'", baseName);
+        log.debug(RestClientLogMessages.DEBUG.PRODUCING_CLIENT.format(baseName));
 
         final var failOnInvalidConfiguration = annotationMetaData.failOnInvalidConfiguration();
         try {
@@ -70,7 +70,7 @@ public class RestClientProducer {
             return new RestClientHolder<>(new CuiRestClientBuilder(resolveCuiLogger(injectionPoint, serviceInterface))
                     .connectionMetadata(connectionMetadata).build(serviceInterface));
         } catch (IllegalArgumentException e) {
-            log.error("Initialization of RestClientHolder failed", e);
+            log.error(e, RestClientLogMessages.ERROR.INITIALIZATION_FAILED.format());
             return new RestClientHolder<>(null);
         }
     }
@@ -89,7 +89,7 @@ public class RestClientProducer {
             // works only due to @Dependent scope injection point!
             final Class<?> clazz = ip.getMember().getDeclaringClass();
             if (clazz.getName().contains("$Proxy$")) { // checking for the sake of a peaceful mind
-                log.debug("not using class {} as it seems to be a Weld CDI proxy", clazz.getName());
+                log.debug(RestClientLogMessages.DEBUG.SKIP_PROXY_CLASS.format(clazz.getName()));
                 return Optional.empty();
             }
             return Optional.of(clazz);
@@ -99,7 +99,7 @@ public class RestClientProducer {
 
     private CuiLogger resolveCuiLogger(InjectionPoint ip, Class<?> fallback) {
         final var clazz = resolveCallerClass(ip).orElse(fallback);
-        log.debug("Using logger class: {}", clazz.getName());
+        log.debug(RestClientLogMessages.DEBUG.USING_LOGGER_CLASS.format(clazz.getName()));
         return new CuiLogger(clazz);
     }
 }

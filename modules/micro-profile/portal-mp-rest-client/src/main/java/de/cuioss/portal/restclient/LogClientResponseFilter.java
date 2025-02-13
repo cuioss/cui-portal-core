@@ -36,24 +36,7 @@ import java.io.IOException;
 @Priority(Integer.MIN_VALUE)
 abstract class LogClientResponseFilter implements ClientResponseFilter {
 
-    private static final String PATTERN = """
-            -- Client response filter %s--
-            Status: %s
-            StatusInfo: %s
-            Allowed Methods: %s
-            EntityTag: %s
-            Cookies: %s
-            Date: %s
-            Headers: %s
-            Language: %s
-            LastModified: %s
-            Links: %s
-            Location: %s
-            MediaType: %s
-            """;
-
     private final CuiLogger log;
-
     private final String name;
 
     protected LogClientResponseFilter(final CuiLogger logger) {
@@ -69,12 +52,13 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
     public void filter(final ClientRequestContext clientRequestContext,
                        final ClientResponseContext clientResponseContext) throws IOException {
         try {
-            log.info(PATTERN, name, clientResponseContext.getStatus(), clientResponseContext.getStatusInfo(),
-                    clientResponseContext.getAllowedMethods(), clientResponseContext.getEntityTag(),
-                    clientResponseContext.getCookies(), clientResponseContext.getDate(),
-                    clientResponseContext.getHeaders(), clientResponseContext.getLanguage(),
-                    clientResponseContext.getLastModified(), clientResponseContext.getLinks(),
-                    clientResponseContext.getLocation(), clientResponseContext.getMediaType());
+            log.info(RestClientLogMessages.INFO.RESPONSE_INFO.format(name, clientResponseContext.getStatus(),
+                    clientResponseContext.getStatusInfo(), clientResponseContext.getAllowedMethods(),
+                    clientResponseContext.getEntityTag(), clientResponseContext.getCookies(),
+                    clientResponseContext.getDate(), clientResponseContext.getHeaders(),
+                    clientResponseContext.getLanguage(), clientResponseContext.getLastModified(),
+                    clientResponseContext.getLinks(), clientResponseContext.getLocation(),
+                    clientResponseContext.getMediaType()));
         } catch (final Exception e) {
             log.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
         }
