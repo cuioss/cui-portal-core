@@ -16,6 +16,7 @@
 package de.cuioss.portal.authentication.oauth.impl;
 
 import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.*;
 import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
 import static de.cuioss.tools.string.MoreStrings.isBlank;
 
@@ -127,20 +128,19 @@ public class Oauth2DiscoveryConfigurationProducer {
         if (!isBlank(settingServerBaseUrl) && !isBlank(settingOauth2discoveryUri)) {
             final var builder = new CuiRestClientBuilder(LOGGER);
             final var discoveryURI = addTrailingSlashToUrl(settingServerBaseUrl) + settingOauth2discoveryUri;
-            LOGGER.debug("Using discoveryURI {}", discoveryURI);
+            LOGGER.debug(DEBUG.USING_DISCOVERY_URI.format(discoveryURI));
             builder.url(discoveryURI);
             try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
                 final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
             } catch (final Exception e) {
-                LOGGER.error(e, "Auto discovery of oauth config failed, using URI: {}", discoveryURI);
+                LOGGER.error(e, ERROR.DISCOVERY_FAILED.format(discoveryURI));
             }
         } else {
-            LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback", OPEN_ID_SERVER_BASE_URL,
-                    OPEN_ID_DISCOVER_PATH);
+            LOGGER.warn(WARN.CONFIG_KEYS_NOT_SET.format(OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH));
         }
 
-        LOGGER.debug("oauth config: {}", configuration);
+        LOGGER.debug(INFO.CONFIG_CREATED.format(configuration));
 
         if (null != configuration && configValidationEnabled.get()) {
             configuration.validate();
@@ -189,11 +189,11 @@ public class Oauth2DiscoveryConfigurationProducer {
         // overwrite well-known config, if present
 
         internalTokenUrl.get().ifPresent(url -> {
-            LOGGER.debug("overwrite well-known token-url '{}' with: {}", newConfiguration.getTokenUri(), url);
+            LOGGER.debug(DEBUG.OVERWRITE_TOKEN_URL.format(newConfiguration.getTokenUri(), url));
             newConfiguration.setTokenUri(url);
         });
         internalUserInfoUrl.get().ifPresent(url -> {
-            LOGGER.debug("overwrite well-known userinfo-url '{}' with: {}", newConfiguration.getUserInfoUri(), url);
+            LOGGER.debug(DEBUG.OVERWRITE_USERINFO_URL.format(newConfiguration.getUserInfoUri(), url));
             newConfiguration.setUserInfoUri(url);
         });
 
