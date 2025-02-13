@@ -87,24 +87,11 @@ public class CuiRestClientBuilder {
      * @param givenLogger must not be null
      */
     public static void debugResponse(final Response response, final CuiLogger givenLogger) {
-        givenLogger.debug("""
-                        -- Client response filter --
-                        Status: %s
-                        StatusInfo: %s
-                        Allowed Methods: %s
-                        EntityTag: %s
-                        Cookies: %s
-                        Date: %s
-                        Headers: %s
-                        Language: %s
-                        LastModified: %s
-                        Links: %s
-                        Location: %s
-                        MediaType: %s
-                        """, response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
+        givenLogger.debug(RestClientLogMessages.DEBUG.DEBUG_RESPONSE.format(
+                response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
                 response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
                 response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
-                response.getMediaType());
+                response.getMediaType()));
     }
 
     /**
@@ -222,7 +209,7 @@ public class CuiRestClientBuilder {
             register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();
         } catch (final Exception e) {
-            LOGGER.error(e, "Could not load Default exception Handler, tried: %s", RESPONSE_EXCEPTION_MAPPER);
+            LOGGER.error(e, RestClientLogMessages.ERROR.DEFAULT_HANDLER_LOAD_ERROR.format(RESPONSE_EXCEPTION_MAPPER));
         }
         return this;
     }

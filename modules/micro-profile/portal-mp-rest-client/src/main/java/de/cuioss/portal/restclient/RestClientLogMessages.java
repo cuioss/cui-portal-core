@@ -78,6 +78,15 @@ public final class RestClientLogMessages {
                 .prefix(PREFIX)
                 .identifier(201)
                 .build();
+
+        /**
+         * Logged when the default exception handler could not be loaded.
+         */
+        public static final LogRecord DEFAULT_HANDLER_LOAD_ERROR = LogRecordModel.builder()
+                .template("Could not load Default exception Handler, tried: %s")
+                .prefix(PREFIX)
+                .identifier(202)
+                .build();
     }
 
     @UtilityClass
@@ -107,6 +116,46 @@ public final class RestClientLogMessages {
                 .template("Using logger class: %s")
                 .prefix(PREFIX)
                 .identifier(502)
+                .build();
+
+        /**
+         * Logged when debugging a response.
+         */
+        public static final LogRecord DEBUG_RESPONSE = LogRecordModel.builder()
+                .template("""
+                        -- Client response filter --
+                        Status: %s
+                        StatusInfo: %s
+                        Allowed Methods: %s
+                        EntityTag: %s
+                        Cookies: %s
+                        Date: %s
+                        Headers: %s
+                        Language: %s
+                        LastModified: %s
+                        Links: %s
+                        Location: %s
+                        MediaType: %s""")
+                .prefix(PREFIX)
+                .identifier(503)
+                .build();
+
+        /**
+         * Logged when a CuiRestClientBuilder is created.
+         */
+        public static final LogRecord CUI_REST_CLIENT_BUILDER_CREATED = LogRecordModel.builder()
+                .template("CuiRestClientBuilder created")
+                .prefix(PREFIX)
+                .identifier(504)
+                .build();
+
+        /**
+         * Logged when a CuiRestClientBuilder is used to build a client.
+         */
+        public static final LogRecord CUI_REST_CLIENT_BUILDER_USED = LogRecordModel.builder()
+                .template("CuiRestClientBuilder used to build client")
+                .prefix(PREFIX)
+                .identifier(505)
                 .build();
     }
 
