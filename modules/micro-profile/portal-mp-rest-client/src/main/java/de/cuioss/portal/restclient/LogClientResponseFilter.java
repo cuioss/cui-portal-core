@@ -37,19 +37,19 @@ import java.io.IOException;
 abstract class LogClientResponseFilter implements ClientResponseFilter {
 
     private static final String PATTERN = """
-            -- Client response filter {}--
-            Status: {}
-            StatusInfo: {}
-            Allowed Methods: {}
-            EntityTag: {}
-            Cookies: {}
-            Date: {}
-            Headers: {}
-            Language: {}
-            LastModified: {}
-            Links: {}
-            Location: {}
-            MediaType: {}
+            -- Client response filter %s--
+            Status: %s
+            StatusInfo: %s
+            Allowed Methods: %s
+            EntityTag: %s
+            Cookies: %s
+            Date: %s
+            Headers: %s
+            Language: %s
+            LastModified: %s
+            Links: %s
+            Location: %s
+            MediaType: %s
             """;
 
     private final CuiLogger log;
@@ -67,7 +67,7 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
 
     @Override
     public void filter(final ClientRequestContext clientRequestContext,
-            final ClientResponseContext clientResponseContext) throws IOException {
+                       final ClientResponseContext clientResponseContext) throws IOException {
         try {
             log.info(PATTERN, name, clientResponseContext.getStatus(), clientResponseContext.getStatusInfo(),
                     clientResponseContext.getAllowedMethods(), clientResponseContext.getEntityTag(),
@@ -76,7 +76,7 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
                     clientResponseContext.getLastModified(), clientResponseContext.getLinks(),
                     clientResponseContext.getLocation(), clientResponseContext.getMediaType());
         } catch (final Exception e) {
-            log.error("Portal-529: Could not trace-log response data", e);
+            log.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
         }
     }
 }

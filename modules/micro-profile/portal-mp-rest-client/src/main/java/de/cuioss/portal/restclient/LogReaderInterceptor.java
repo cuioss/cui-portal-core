@@ -57,10 +57,10 @@ class LogReaderInterceptor implements ReaderInterceptor {
 
     private static final String LINE_BREAK = "\n";
 
-    private final CuiLogger log;
+    private final CuiLogger givenLogger;
 
-    public LogReaderInterceptor(final CuiLogger logger) {
-        this.log = logger;
+    public LogReaderInterceptor(final CuiLogger givenLogger) {
+        this.givenLogger = givenLogger;
     }
 
     @Override
@@ -71,13 +71,13 @@ class LogReaderInterceptor implements ReaderInterceptor {
             logMsg.append("-- Client response info --").append(LINE_BREAK);
             logMsg.append("MediaType: ").append(context.getMediaType()).append(LINE_BREAK);
             logMsg.append("GenericType: ").append(context.getGenericType()).append(LINE_BREAK);
-            logProperties(logMsg, context);
-            logHeaders(logMsg, context);
+            appendProperties(logMsg, context);
+            appendHeaders(logMsg, context);
             logBody(logMsg, context);
 
-            log.info(logMsg.toString());
+            givenLogger.info(logMsg.toString());
         } catch (final Exception e) {
-            log.error("Portal-529: Could not trace-log response data", e);
+            givenLogger.error("Portal-529: Could not trace-log response data", e);
         }
         return context.proceed();
     }
@@ -94,16 +94,16 @@ class LogReaderInterceptor implements ReaderInterceptor {
         context.setInputStream(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
     }
 
-    private void logHeaders(StringBuilder logMsg, final ReaderInterceptorContext context) {
+    private void appendHeaders(StringBuilder logMsg, final ReaderInterceptorContext context) {
         logMsg.append("Headers:").append(LINE_BREAK);
-        context.getHeaders().forEach((key, value) -> logHeader(logMsg, key, value));
+        context.getHeaders().forEach((key, value) -> appendHeader(logMsg, key, value));
     }
 
-    private void logHeader(StringBuilder logMsg, final String key, final List<String> value) {
+    private void appendHeader(StringBuilder logMsg, final String key, final List<String> value) {
         logMsg.append(key).append(": ").append(value).append(LINE_BREAK);
     }
 
-    private void logProperties(StringBuilder logMsg, final ReaderInterceptorContext context) {
+    private void appendProperties(StringBuilder logMsg, final ReaderInterceptorContext context) {
         logMsg.append("Properties:").append(LINE_BREAK);
         for (final String name : context.getPropertyNames()) {
             logMsg.append(name).append(": ").append(context.getProperty(name)).append(LINE_BREAK);

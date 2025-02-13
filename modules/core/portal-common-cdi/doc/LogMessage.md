@@ -1,4 +1,4 @@
-# Log Messages for Portal Common CDI Module
+c# Log Messages for Portal Common CDI Module
 
 All messages follow the format: PortalCommonCDI-[identifier]: [message]
 

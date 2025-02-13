@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
@@ -39,13 +36,18 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 
+import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @EnableAutoWeld
 @EnableMockWebServer
 @EnablePortalConfiguration(configuration = PORTAL_TRACING_ENABLED + ":false")
 @AddExtensions(ResteasyCdiExtension.class)
 class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
-    private static final CuiLogger log = new CuiLogger(BearerTokenAuthFilterTest.class);
+    private static final CuiLogger LOGGER = new CuiLogger(BearerTokenAuthFilterTest.class);
 
     public interface TestResource extends Closeable {
 
@@ -64,7 +66,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
             @Override
             public @NotNull MockResponse dispatch(final @NonNull @NotNull RecordedRequest request) {
-                if ("/success/test" .equals(request.getPath())) {
+                if ("/success/test".equals(request.getPath())) {
                     return new MockResponse(HttpServletResponse.SC_OK);
                 }
                 return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
@@ -74,7 +76,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
     @Test
     void shouldProviderAuthorizationHeader() throws InterruptedException {
-        final var underTest = new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString())
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("success").toString())
                 .bearerAuthToken("abcToken");
         underTest.build(CuiRestClientBuilderTest.TestResource.class).test();
         var request = mockWebServer.takeRequest();
@@ -85,12 +87,12 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
     @Test
     void shouldProviderAuthorizationHeaderWithInvalidValues() throws InterruptedException {
-        new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken(null)
+        new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("success").toString()).bearerAuthToken(null)
                 .build(CuiRestClientBuilderTest.TestResource.class).test();
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
         assertTrue(authHeader.isEmpty());
-        new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken("123\ntest: test2")
+        new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("success").toString()).bearerAuthToken("123\ntest: test2")
                 .build(CuiRestClientBuilderTest.TestResource.class).test();
         request = mockWebServer.takeRequest();
         authHeader = request.getHeaders().values("Authorization");

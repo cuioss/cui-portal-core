@@ -43,7 +43,7 @@ import java.util.*;
 @EnableTestLogger(trace = RequestLoggerTest.class)
 class RequestLoggerTest {
 
-    private static final CuiLogger log = new CuiLogger(RequestLoggerTest.class);
+    private static final CuiLogger LOGGER = new CuiLogger(RequestLoggerTest.class);
 
     private static final String URI = "https://cuioss.de";
 
@@ -56,9 +56,9 @@ class RequestLoggerTest {
     void requestLoggingTest() throws IOException {
         final var testPojo = new TestPojo(STRING, INT);
 
-        log.info("Testing with string={}, int={}, method={}, pojo={}", STRING, INT, METHOD, testPojo);
+        LOGGER.info("Testing with string={}, int={}, method={}, pojo={}", STRING, INT, METHOD, testPojo);
 
-        new LogClientRequestFilter(log).filter(new ClientRequestContext() {
+        new LogClientRequestFilter(LOGGER).filter(new ClientRequestContext() {
 
             @Override
             public Object getProperty(String name) {

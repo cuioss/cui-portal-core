@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.test.juli.TestLogLevel.INFO;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -41,13 +36,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
 
+import static de.cuioss.test.juli.TestLogLevel.INFO;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * @author Sven Haag
  */
 @EnableTestLogger(trace = ResponseLoggerTest.class)
 class ResponseLoggerTest {
 
-    private static final CuiLogger log = new CuiLogger(ResponseLoggerTest.class);
+    private static final CuiLogger LOGGER = new CuiLogger(ResponseLoggerTest.class);
 
     private static final String STRING = Generators.nonEmptyStrings().next();
     private static final boolean HAS_BODY = Generators.booleans().next();
@@ -60,10 +62,10 @@ class ResponseLoggerTest {
     void responseLoggerTest() throws IOException {
         inputStreamSet = false;
 
-        new LogReaderInterceptor(log).aroundReadFrom(new ReaderInterceptorContext() {
+        new LogReaderInterceptor(LOGGER).aroundReadFrom(new ReaderInterceptorContext() {
 
             @Override
-            public Object proceed() throws IOException, WebApplicationException {
+            public Object proceed() throws WebApplicationException {
                 proceedExecuted = true;
                 return null;
             }
@@ -78,9 +80,7 @@ class ResponseLoggerTest {
             public void setInputStream(final InputStream is) {
                 assertNotNull(is, "InputStream must not be null after logging");
                 if (HAS_BODY) {
-                    assertDoesNotThrow(() -> {
-                        assertTrue(is.available() > 0, "InputStream has no data");
-                    }, "Could not read response input stream after logging");
+                    assertDoesNotThrow(() -> assertTrue(is.available() > 0, "InputStream has no data"), "Could not read response input stream after logging");
                 }
                 inputStreamSet = true;
             }

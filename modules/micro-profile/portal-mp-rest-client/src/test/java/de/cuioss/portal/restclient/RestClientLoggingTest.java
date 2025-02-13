@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.generator.Generators;
@@ -48,11 +45,13 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.logging.LogRecord;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @EnableAutoWeld
 @EnableMockWebServer
-// FIXME only works with root level TRACE since Java 11 compile level
-@EnableTestLogger(rootLevel = TestLogLevel.TRACE, trace = {RestClientLoggingTest.class, LogClientRequestFilter.class,
-        LogClientRequestFilter42.class, LogReaderInterceptor.class, LogClientResponseFilter.class})
+@EnableTestLogger(info = {RestClientLoggingTest.class, LogClientRequestFilter.class,
+        LogReaderInterceptor.class, LogClientResponseFilter.class}, trace = LogClientRequestFilter42.class)
 @AddExtensions(ResteasyCdiExtension.class)
 class RestClientLoggingTest implements MockWebServerHolder {
 
@@ -80,7 +79,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
 
             @Override
             public @NotNull MockResponse dispatch(final @NotNull RecordedRequest request) {
-                if ("/something" .equals(request.getPath())) {
+                if ("/something".equals(request.getPath())) {
                     if (HttpMethod.GET.equals(request.getMethod())) {
                         return new MockResponse(HttpServletResponse.SC_OK, Headers.of("x-header-key", "x-header-value"), TEXT);
                     }
@@ -95,23 +94,48 @@ class RestClientLoggingTest implements MockWebServerHolder {
 
     @Test
     void shouldLogGetRequestsAndResponses() {
-        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString())
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString()).traceLogEnabled(true)
+                .enableDefaultExceptionHandler().register(new LogClientRequestFilter42());
+        final var service = underTest.build(TestService.class);
+
+        assertEquals(TEXT, service.getSomething());
+
+        var allMessages = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.INFO);
+
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "First ClientResponseFilter]");
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "[Last ClientResponseFilter]");
+
+        assertTrue(allMessages.stream().anyMatch(msg -> msg.getMessage().contains("[First ClientResponseFilter]")));
+        assertTrue(allMessages.stream().anyMatch(msg -> msg.getMessage().contains("[Last ClientResponseFilter]")));
+
+        assertClientResponseFilter(allMessages);
+
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.TRACE, "-- LogClientRequestFilter42 --");
+        assertLogMessageBeforeOther(LogClientRequestFilter42.class, LogClientRequestFilter.class,
+                "LogClientRequestFilter42 runs before LogClientRequestFilter because it has a lower prio");
+    }
+
+    @Test
+    void shouldLogClientRequestInfo() {
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString()).traceLogEnabled(true)
                 .enableDefaultExceptionHandler().register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
         assertEquals(TEXT, service.getSomething());
 
-        var allMsgs = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.INFO);
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Client request info");
+        var allMessages = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.INFO);
 
-        final var clientRequestInfoLog = allMsgs.stream().map(LogRecord::getMessage)
-                .filter(msg -> msg.startsWith("-- Client request info --")).findFirst()
+        final var clientRequestInfoLog = allMessages.stream().map(LogRecord::getMessage)
+                .filter(msg -> msg.contains("-- Client request info --")).findFirst()
                 .orElseThrow(() -> new AssertionError("client request info not logged"));
+
         assertTrue(clientRequestInfoLog.contains("Request URI: " + mockWebServer.url("something")));
         assertTrue(clientRequestInfoLog.contains("Method: GET"));
         assertTrue(clientRequestInfoLog.contains("Headers:"));
         assertTrue(clientRequestInfoLog.contains("Accept: [application/json]"));
 
-        final var clientResponseInfoLog = allMsgs.stream().map(LogRecord::getMessage)
-                .filter(msg -> msg.startsWith("-- Client response info --")).findFirst()
+        final var clientResponseInfoLog = allMessages.stream().map(LogRecord::getMessage)
+                .filter(msg -> msg.contains("-- Client response info --")).findFirst()
                 .orElseThrow(() -> new AssertionError("client response info not logged"));
         assertTrue(clientResponseInfoLog.contains("MediaType: application/octet-stream"));
         assertTrue(clientResponseInfoLog.contains("GenericType: class java.lang.String"));
@@ -124,19 +148,10 @@ class RestClientLoggingTest implements MockWebServerHolder {
         assertTrue(clientResponseInfoLog.contains("x-header-key: [x-header-value]"));
         assertTrue(clientResponseInfoLog.contains("Body:"));
         assertTrue(clientResponseInfoLog.contains(TEXT));
-
-        assertTrue(allMsgs.stream().anyMatch(msg -> msg.getMessage().contains("[First ClientResponseFilter]")));
-        assertTrue(allMsgs.stream().anyMatch(msg -> msg.getMessage().contains("[Last ClientResponseFilter]")));
-
-        assertClientResponseFIlter(allMsgs);
-
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.TRACE, "-- LogClientRequestFilter42 --");
-        assertLogMessageBeforeOther(LogClientRequestFilter42.class, LogClientRequestFilter.class,
-                "LogClientRequestFilter42 runs before LogClientRequestFilter because it has a lower prio");
     }
 
-    private void assertClientResponseFIlter(List<LogRecord> allMsgs) throws AssertionError {
-        final var lastClientResponseFilter = allMsgs.stream().map(LogRecord::getMessage)
+    private void assertClientResponseFilter(List<LogRecord> allMessages) throws AssertionError {
+        final var lastClientResponseFilter = allMessages.stream().map(LogRecord::getMessage)
                 .filter(msg -> msg.contains("[Last ClientResponseFilter]")).findFirst()
                 .orElseThrow(() -> new AssertionError("client response info not logged"));
         assertTrue(lastClientResponseFilter.contains("Status: 200"));
@@ -156,7 +171,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
 
     @Test
     void shouldLogPostRequestsAndResponses() {
-        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString());
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString()).traceLogEnabled(true);
         underTest.register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
         service.postSomething();
@@ -191,7 +206,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
                 "LogClientRequestFilter42 runs before LogClientRequestFilter because it has a lower prio");
     }
 
-    void assertLogMessageBeforeOther(final Class firstClazz, final Class secondClazz, final String errorMsg) {
+    void assertLogMessageBeforeOther(final Class<?> firstClazz, final Class<?> secondClazz, final String errorMsg) {
         var posCurrentLog = 0;
         var posFirstClazzLog = -1;
         var posSecondClazzLog = -1;
