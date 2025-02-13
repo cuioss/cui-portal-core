@@ -60,7 +60,7 @@ public class OAuthConfigKeys {
      * {@value #OPEN_ID_ROLE_MAPPER_CLAIM}
      * <p>
      * Defines the name of the claim / attribute that is used for mapping the roles
-     * to the user, multiple values are allowed, separated by comma. Defaults to
+     * to the user; multiple values are allowed, separated by comma. Defaults to
      * 'ehealth-suite-roles'
      * </p>
      */
@@ -165,7 +165,7 @@ public class OAuthConfigKeys {
     public static final String OPEN_ID_DISCOVER_PATH = OPEN_ID_SERVER_BASE + "discovery_path";
 
     /**
-     * Ensure that the final config is valid, i.e. required attributes are present.
+     * Ensure that the final config is valid, i.e., required attributes are present.
      */
     public static final String CONFIG_VALIDATION_ENABLED = OPEN_ID_BASE + "validation.enabled";
 }
