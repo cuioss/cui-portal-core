@@ -5,9 +5,9 @@ import de.cuioss.tools.logging.LogRecordModel;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class PortalAuthenticationOauthLogMessages {
+public class PortalAuthenticationOauthLogMessages {
 
-    public static final String PREFIX = "PORTAL_AUTH_OAUTH";
+    public static final String PREFIX = "PORTAL_OAUTH";
 
     @UtilityClass
     public static final class INFO {
@@ -167,219 +167,212 @@ public final class PortalAuthenticationOauthLogMessages {
         public static final LogRecord USER_AUTHENTICATED = LogRecordModel.builder()
                 .template("User successfully authenticated")
                 .prefix(PREFIX)
-                .identifier(502)
+                .identifier(503)
                 .build();
 
         public static final LogRecord AUTHENTICATION_RESULT = LogRecordModel.builder()
                 .template("Authentication result: %s")
                 .prefix(PREFIX)
-                .identifier(503)
+                .identifier(504)
                 .build();
 
         public static final LogRecord USERINFO_RETRIEVED = LogRecordModel.builder()
                 .template("User info retrieved from OAuth provider")
                 .prefix(PREFIX)
-                .identifier(503)
+                .identifier(505)
                 .build();
 
         public static final LogRecord ERROR_PARAMETER = LogRecordModel.builder()
                 .template("Error parameter present: %s")
                 .prefix(PREFIX)
-                .identifier(504)
+                .identifier(506)
                 .build();
 
         public static final LogRecord NEW_TOKEN_RETRIEVED = LogRecordModel.builder()
                 .template("New token retrieved from OAuth provider")
                 .prefix(PREFIX)
-                .identifier(504)
+                .identifier(507)
                 .build();
 
         public static final LogRecord CODE_AND_STATE_PARAMETER = LogRecordModel.builder()
                 .template("Code and state parameters are present")
                 .prefix(PREFIX)
-                .identifier(505)
+                .identifier(508)
                 .build();
 
         public static final LogRecord OVERWRITE_TOKEN_URL = LogRecordModel.builder()
                 .template("Overwriting token URL with: %s")
                 .prefix(PREFIX)
-                .identifier(505)
+                .identifier(509)
                 .build();
 
         public static final LogRecord STATE_PARAMETER_MATCHES = LogRecordModel.builder()
                 .template("State parameter matches stored value")
                 .prefix(PREFIX)
-                .identifier(506)
+                .identifier(510)
                 .build();
 
         public static final LogRecord OVERWRITE_USERINFO_URL = LogRecordModel.builder()
                 .template("Overwriting userinfo URL with: %s")
                 .prefix(PREFIX)
-                .identifier(506)
+                .identifier(511)
                 .build();
 
         public static final LogRecord STATE_PARAMETER_DIFFERS = LogRecordModel.builder()
                 .template("State parameter %s differs from stored value %s")
                 .prefix(PREFIX)
-                .identifier(507)
+                .identifier(512)
                 .build();
 
         public static final LogRecord CODE_VERIFIER = LogRecordModel.builder()
                 .template("Code verifier: %s")
                 .prefix(PREFIX)
-                .identifier(508)
+                .identifier(513)
                 .build();
 
         public static final LogRecord AUTHENTICATED_OAUTH_USER_INFO = LogRecordModel.builder()
                 .template("Authenticated oauth user info was retrieved: %s")
                 .prefix(PREFIX)
-                .identifier(509)
+                .identifier(514)
                 .build();
 
         public static final LogRecord INVALIDATE_SESSION = LogRecordModel.builder()
                 .template("Session user missing or not authenticated, invalidating session")
                 .prefix(PREFIX)
-                .identifier(510)
+                .identifier(515)
                 .build();
 
         public static final LogRecord ADD_OAUTH_USER_TO_SESSION = LogRecordModel.builder()
                 .template("Adding oauth user to session")
                 .prefix(PREFIX)
-                .identifier(511)
+                .identifier(516)
                 .build();
 
         public static final LogRecord UNABLE_TO_RETRIEVE_AUTHENTICATED_USER_INFO = LogRecordModel.builder()
                 .template("Unable to retrieve authenticated user info")
                 .prefix(PREFIX)
-                .identifier(512)
+                .identifier(517)
                 .build();
 
         public static final LogRecord GET_ATTRIBUTE_FAILED = LogRecordModel.builder()
                 .template("Failed to get attribute from session")
                 .prefix(PREFIX)
-                .identifier(513)
+                .identifier(518)
                 .build();
 
         public static final LogRecord NEW_CODE = LogRecordModel.builder()
                 .template("Generated new code")
                 .prefix(PREFIX)
-                .identifier(514)
+                .identifier(519)
                 .build();
 
         public static final LogRecord CODE = LogRecordModel.builder()
                 .template("Code: %s")
                 .prefix(PREFIX)
-                .identifier(515)
+                .identifier(520)
                 .build();
 
         public static final LogRecord CODE_CHALLENGE = LogRecordModel.builder()
                 .template("Code challenge: %s")
                 .prefix(PREFIX)
-                .identifier(516)
+                .identifier(521)
                 .build();
 
         public static final LogRecord REDIRECT_URL = LogRecordModel.builder()
                 .template("Redirect URL: %s")
                 .prefix(PREFIX)
-                .identifier(517)
+                .identifier(522)
                 .build();
 
         public static final LogRecord RETRIEVE_TOKEN_FOR_SCOPES = LogRecordModel.builder()
                 .template("Retrieving token for scopes: %s")
                 .prefix(PREFIX)
-                .identifier(518)
+                .identifier(523)
                 .build();
 
         public static final LogRecord USER_PRESENT = LogRecordModel.builder()
                 .template("User is present")
                 .prefix(PREFIX)
-                .identifier(519)
+                .identifier(524)
                 .build();
 
         public static final LogRecord ACCESS_TOKEN_PRESENT = LogRecordModel.builder()
                 .template("Access token present: %s")
                 .prefix(PREFIX)
-                .identifier(520)
+                .identifier(525)
                 .build();
 
         public static final LogRecord CUI_TOKEN_PRESENT = LogRecordModel.builder()
                 .template("CUI Token present")
                 .prefix(PREFIX)
-                .identifier(521)
+                .identifier(526)
                 .build();
 
         public static final LogRecord NO_CUI_TOKEN_AVAILABLE = LogRecordModel.builder()
                 .template("No CUI Token available")
                 .prefix(PREFIX)
-                .identifier(522)
+                .identifier(527)
                 .build();
 
         public static final LogRecord ACCESS_TOKEN_NOT_PRESENT = LogRecordModel.builder()
                 .template("Access token not present, redirecting to oauth server using idToken=%s")
                 .prefix(PREFIX)
-                .identifier(523)
+                .identifier(528)
                 .build();
 
         public static final LogRecord USING_ID_TOKEN = LogRecordModel.builder()
                 .template("Using ID token: %s")
                 .prefix(PREFIX)
-                .identifier(524)
+                .identifier(529)
                 .build();
 
         public static final LogRecord ID_TOKEN_CANNOT_BE_SPLIT = LogRecordModel.builder()
                 .template("ID token cannot be split: %s")
                 .prefix(PREFIX)
-                .identifier(525)
+                .identifier(530)
                 .build();
 
         public static final LogRecord ID_TOKEN_CANNOT_BE_PARSED = LogRecordModel.builder()
                 .template("ID token cannot be parsed: %s")
                 .prefix(PREFIX)
-                .identifier(526)
+                .identifier(531)
                 .build();
 
         public static final LogRecord TOKEN_IS_VALID = LogRecordModel.builder()
                 .template("Token is valid")
                 .prefix(PREFIX)
-                .identifier(527)
+                .identifier(532)
                 .build();
 
         public static final LogRecord MISSING_SCOPE = LogRecordModel.builder()
                 .template("Missing scope: %s")
                 .prefix(PREFIX)
-                .identifier(528)
+                .identifier(533)
                 .build();
 
         public static final LogRecord ACCESS_TOKEN_EXPIRED = LogRecordModel.builder()
                 .template("Access token expired, but refresh token present; trying to use it to get a new access token")
                 .prefix(PREFIX)
-                .identifier(529)
+                .identifier(534)
                 .build();
 
         public static final LogRecord TOKEN_HAS_NO_EXPIRATION = LogRecordModel.builder()
                 .template("Token has no expiration, token is valid")
                 .prefix(PREFIX)
-                .identifier(530)
+                .identifier(535)
                 .build();
 
         public static final LogRecord CHECKED_EXPIRE_TIME = LogRecordModel.builder()
                 .template("Checked expire time, token valid: %s")
                 .prefix(PREFIX)
-                .identifier(531)
+                .identifier(536)
                 .build();
 
         public static final LogRecord CREATING_AUTH_USER_INFO = LogRecordModel.builder()
                 .template("Creating authenticated user info with scopes: %s, tokenUri: %s, redirectUri: %s")
                 .prefix(PREFIX)
-                .identifier(532)
+                .identifier(537)
                 .build();
-
-        public static final LogRecord NO_TOKEN_RECEIVED = LogRecordModel.builder()
-                .template("No token received from OAuth provider")
-                .prefix(PREFIX)
-                .identifier(533)
-                .build();
-
     }
 
     @UtilityClass
