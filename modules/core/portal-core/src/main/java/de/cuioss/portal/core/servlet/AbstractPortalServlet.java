@@ -69,7 +69,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         try {
             executeDoGet(req, resp);
         } catch (RuntimeException | IOException e) {
-            LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR.format(e.getMessage()));
+            LOGGER.error(e, SERVLET.ERROR.PORTAL_CORE_200.format(e.getMessage()));
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -84,9 +84,9 @@ public abstract class AbstractPortalServlet extends HttpServlet {
      * @return boolean indicating whether all checks are passed or not.
      */
     public boolean checkAccess(HttpServletResponse resp) {
-        LOGGER.trace(SERVLET.TRACE.CHECKING_PRECONDITIONS.format());
+        LOGGER.trace("Checking call preconditions");
         if (!isEnabled()) {
-            LOGGER.debug(SERVLET.DEBUG.DISABLED_BY_CONFIGURATION.format());
+            LOGGER.debug("Could not process Request, disabled by configuration");
             resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return false;
         }
@@ -104,7 +104,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
-        LOGGER.trace(SERVLET.TRACE.PRECONDITIONS_OK.format());
+        LOGGER.trace("All preconditions are ok, generating payload");
         return true;
     }
 

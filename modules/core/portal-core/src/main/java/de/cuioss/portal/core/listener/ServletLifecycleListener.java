@@ -80,12 +80,12 @@ public class ServletLifecycleListener implements ServletContextListener {
     private void applicationInitializerListener(final ServletContext context) {
         final List<ApplicationInitializer> initializers = mutableList(applicationInitializers);
         Collections.sort(initializers);
-        LOGGER.debug(LIFECYCLE.DEBUG.INITIALIZER_DEBUG.format(contextPath, initializers));
+        LOGGER.debug("ServletLifecycleListener called for '%s', initializing with order: %s", contextPath, initializers);
         for (final ApplicationInitializer applicationInitializer : initializers) {
-            LOGGER.debug(LIFECYCLE.DEBUG.INITIALIZING_COMPONENT.format(applicationInitializer, context));
+            LOGGER.debug("Initializing '%s' for '%s'", applicationInitializer, context);
             applicationInitializer.initialize();
         }
-        LOGGER.debug(LIFECYCLE.DEBUG.INITIALIZE_COMPLETE.format(contextPath));
+        LOGGER.debug("Initialize successfully called for all elements for '%s'", contextPath);
     }
 
     /**
@@ -94,21 +94,21 @@ public class ServletLifecycleListener implements ServletContextListener {
      */
     @PreDestroy
     public void applicationDestroyListener() {
-        LOGGER.debug(LIFECYCLE.DEBUG.DESTROYING.format(contextPath));
+        LOGGER.debug("Executing applicationDestroyListener for '%s'", contextPath);
         LOGGER.info(LIFECYCLE.INFO.CONTEXT_SHUTDOWN.format(contextPath));
         final List<ApplicationInitializer> finalizer = mutableList(applicationInitializers);
         finalizer.sort(Collections.reverseOrder());
-        LOGGER.debug(LIFECYCLE.DEBUG.INITIALIZER_DEBUG.format(contextPath, finalizer));
+        LOGGER.debug("ServletLifecycleListener called for '%s', finalizing with order: %s", contextPath, finalizer);
         for (final ApplicationInitializer applicationInitializer : finalizer) {
-            LOGGER.debug(LIFECYCLE.DEBUG.DESTROYING_COMPONENT.format(applicationInitializer, contextPath));
+            LOGGER.debug("Destroying '%s' for '%s'", applicationInitializer, contextPath);
             try {
                 applicationInitializer.destroy();
             } catch (RuntimeException e) {
-                LOGGER.warn(LIFECYCLE.WARN.DESTROY_ERROR.format(applicationInitializer, contextPath, e.getMessage()));
-                LOGGER.debug(e, "Detailed exception");
+                LOGGER.warn(LIFECYCLE.WARN.PORTAL_CORE_110.format(applicationInitializer, contextPath, e.getMessage()));
+                LOGGER.debug("Detailed exception: %s", e.getMessage());
             }
         }
-        LOGGER.debug(LIFECYCLE.DEBUG.FINALIZE_COMPLETE.format(contextPath));
+        LOGGER.debug("Finalize successfully called for all elements for '%s'", contextPath);
     }
 
 }
