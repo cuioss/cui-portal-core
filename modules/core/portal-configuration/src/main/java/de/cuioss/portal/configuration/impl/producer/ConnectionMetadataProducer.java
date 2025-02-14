@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
 import static java.lang.Boolean.parseBoolean;
 import static java.util.Objects.requireNonNull;
@@ -312,9 +313,9 @@ public class ConnectionMetadataProducer {
                 return Optional.of(Long.parseUnsignedLong(value.trim()));
             } catch (final NumberFormatException e) {
                 if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
+                    throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
                 }
-                log.error(e, INVALID_NUMBER_VALUE, key, value);
+                log.error(e, ERROR.INVALID_NUMBER.format(key, value));
             }
         }
         return Optional.empty();
@@ -327,9 +328,9 @@ public class ConnectionMetadataProducer {
                 return Optional.of(Integer.parseUnsignedInt(value.trim()));
             } catch (final NumberFormatException e) {
                 if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
+                    throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
                 }
-                log.error(e, INVALID_NUMBER_VALUE, key, value);
+                log.error(e, ERROR.INVALID_NUMBER.format(key, value));
             }
         }
         return Optional.empty();

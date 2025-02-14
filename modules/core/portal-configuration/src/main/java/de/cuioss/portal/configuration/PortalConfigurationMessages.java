@@ -43,6 +43,12 @@ public class PortalConfigurationMessages {
             .identifier(102)
             .template("Invalid configuration found for Locale: %s")
             .build();
+
+        public static final LogRecord INVALID_WATCH_KEY = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(103)
+            .template("Invalid element found, watchKey='%s', ignoring")
+            .build();
     }
 
     @UtilityClass
@@ -63,6 +69,48 @@ public class PortalConfigurationMessages {
             .prefix(PREFIX)
             .identifier(202)
             .template("Invalid content for '%s%s', expected a boolean but was '%s'")
+            .build();
+
+        public static final LogRecord FILE_SYSTEM_ACCESS_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(203)
+            .template("Unable to access File-system for detecting changes, due to '%s', use the configuration property '%s' to disable this feature")
+            .build();
+
+        public static final LogRecord FILE_SYSTEM_POLLING_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(204)
+            .template("Error while polling / accessing the file-system")
+            .build();
+
+        public static final LogRecord FILE_EVENT_HANDLING_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(205)
+            .template("Handling fileChangedEvent failed for file %s")
+            .build();
+
+        public static final LogRecord INVALID_NUMBER = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(206)
+            .template("Invalid content for '%s', expected a number but was '%s'")
+            .build();
+
+        public static final LogRecord CONNECTION_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(207)
+            .template("Error while connecting to %s")
+            .build();
+
+        public static final LogRecord CONNECTION_TIMEOUT_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(208)
+            .template("Timeout while connecting to %s")
+            .build();
+
+        public static final LogRecord CONNECTION_REFUSED_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(209)
+            .template("Connection to %s refused")
             .build();
     }
 

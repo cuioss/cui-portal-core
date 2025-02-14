@@ -16,8 +16,11 @@
 package de.cuioss.portal.configuration.impl.schedule;
 
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
@@ -101,8 +104,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 try {
                     watcherService = FileSystems.getDefault().newWatchService();
                 } catch (IOException | UnsupportedOperationException e) {
-                    log.error(e, "Portal-515: Unable to access File-system for detecting changes, due to '%s', use the configuration property '%s' to disable this feature",
-                            e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED);
+                    log.error(e, ERROR.FILE_SYSTEM_ACCESS_ERROR.format(e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED));
                     upAndRunning = false;
                     return;
                 }
@@ -211,7 +213,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     // Hm, feels a little clumsy. Should consider correct Interruption handling
                     log.debug("Shutdown while waiting");
                 } catch (Exception e) {
-                    log.error("Portal-515: Error while polling / accessing the file-system", e);
+                    log.error(e, ERROR.FILE_SYSTEM_POLLING_ERROR::format);
                 } finally {
                     if (null != watchKey) {
                         watchKey.reset();
@@ -224,7 +226,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     private void handleChangedWatchKey(WatchKey watchKey) {
         var events = watchKey.pollEvents();
         if (events.isEmpty()) {
-            log.warn("Portal-515: Invalid element found, watchKey='%s', ignoring", watchKey);
+            log.warn(WARN.INVALID_WATCH_KEY.format(watchKey));
             return;
         }
         if (log.isTraceEnabled()) {
@@ -245,7 +247,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 // may fail due to IO errors), it should at least not crash the service at all.
                 fileChangeEvent.fire(element.getPath());
             } catch (Exception e) {
-                log.error(e, "Portal-533: Handling fileChangedEvent failed for file %s", element.getPath().toString());
+                log.error(e, ERROR.FILE_EVENT_HANDLING_ERROR.format(element.getPath().toString()));
             }
             element.update();
         }
