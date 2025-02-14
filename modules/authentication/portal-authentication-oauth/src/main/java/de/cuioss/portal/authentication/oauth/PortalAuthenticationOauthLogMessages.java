@@ -18,7 +18,7 @@ public class PortalAuthenticationOauthLogMessages {
                 .build();
 
         public static final LogRecord ID_TOKEN_SPLIT_FAILED = LogRecordModel.builder()
-                .template("idToken can not be splitted: %s")
+                .template("idToken can not be split: %s")
                 .prefix(PREFIX)
                 .identifier(10)
                 .build();
@@ -150,7 +150,7 @@ public class PortalAuthenticationOauthLogMessages {
                 .build();
 
         public static final LogRecord TOKEN_EXPIRES_IN_INVALID = LogRecordModel.builder()
-                .template("Portal-149: Oauth2 token.expires_in not a valid number")
+                .template("Oauth2 token.expires_in not a valid number")
                 .prefix(PREFIX)
                 .identifier(202)
                 .build();
