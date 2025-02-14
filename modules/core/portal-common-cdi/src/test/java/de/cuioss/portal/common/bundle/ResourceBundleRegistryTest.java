@@ -65,10 +65,6 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
                             underTest.getResolvedPaths().get(1).getBundlePath().get(),
                             "Second bundle should be medium priority")
             );
-
-            // Verify successful bundle initialization
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
-                    BUNDLE.DEBUG.RESULTING.resolveIdentifierString());
             // Verify no errors during initialization
             LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleRegistry.class);
         }

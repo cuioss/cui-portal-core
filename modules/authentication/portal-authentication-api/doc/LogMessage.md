@@ -21,10 +21,3 @@ All messages follow the format: PortalAuth-[identifier]: [message]
 | ID             | Component | Message | Description |
 |----------------|-----------|---------|-------------|
 | PortalAuth-200 | AUTH | Authentication error occurred: %s | Logged when a system-level authentication error occurs |
-
-## DEBUG Level (500-599)
-
-| ID             | Component | Message | Description |
-|----------------|-----------|---------|-------------|
-| PortalAuth-500 | AUTH | User info updated for '%s' | Logged when user information is updated |
-| PortalAuth-501 | AUTH | User info enriched with '%s' with '%s' | Logged when user information is being enriched with additional data |

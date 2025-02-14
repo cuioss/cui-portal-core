@@ -13,7 +13,6 @@ import lombok.experimental.UtilityClass;
  *   - INFO:  001-099 (Login/Logout events)
  *   - WARN:  100-199 (Authentication warnings)
  *   - ERROR: 200-299 (Authentication failures)
- *   - DEBUG: 500-599 (Detailed auth flow information)
  */
 @UtilityClass
 public final class PortalAuthenticationLogMessages {
@@ -59,21 +58,6 @@ public final class PortalAuthenticationLogMessages {
                     .template("Authentication error occurred: %s")
                     .prefix(PREFIX)
                     .identifier(200)
-                    .build();
-        }
-
-        @UtilityClass
-        public static final class DEBUG {
-            public static final LogRecord USER_INFO_UPDATED = LogRecordModel.builder()
-                    .template("User info updated for '%s'")
-                    .prefix(PREFIX)
-                    .identifier(500)
-                    .build();
-
-            public static final LogRecord USER_ENRICHMENT = LogRecordModel.builder()
-                    .template("Enriching user info for '%s' with '%s'")
-                    .prefix(PREFIX)
-                    .identifier(501)
                     .build();
         }
     }

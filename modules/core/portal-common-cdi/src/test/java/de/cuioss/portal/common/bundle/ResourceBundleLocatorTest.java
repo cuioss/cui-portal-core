@@ -41,7 +41,7 @@ class ResourceBundleLocatorTest {
 
         // Verify successful bundle loading
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
-                BUNDLE.DEBUG.LOADED.resolveIdentifierString());
+                "Successfully loaded ");
         // Verify no warnings or errors in happy path
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.WARN, ResourceBundleLocator.class);
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleLocator.class);
