@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
 import de.cuioss.portal.common.cdi.PortalBeanManager;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
@@ -28,8 +27,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.RESOURCE;
 
 /**
  * <p>
@@ -107,7 +104,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
     @NonNull
     private ResourceBundleWrapper getResourceBundleWrapper() {
         if (null == resourceBundleWrapper) {
-            LOGGER.debug(RESOURCE.DEBUG.RESOLVING_BUNDLE_BEAN.format());
+            LOGGER.debug("Resolving ResourceBundleWrapper");
             resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
         }
         return resourceBundleWrapper;

@@ -44,15 +44,18 @@ public enum ProjectStage implements CuiProjectStage {
      * @return the corresponding stage or PRODUCTION if stage is unknown.
      */
     public static ProjectStage fromString(final String stage) {
-        if (null != stage) {
-            for (ProjectStage ps : ProjectStage.values()) {
-                if (ps.name().equalsIgnoreCase(stage)) {
-                    return ps;
-                }
+        if (null == stage) {
+            LOGGER.error(STAGE.ERROR.INVALID_STAGE.format(stage));
+            return ProjectStage.PRODUCTION;
+        }
+
+        for (ProjectStage ps : ProjectStage.values()) {
+            if (ps.name().equalsIgnoreCase(stage)) {
+                return ps;
             }
         }
 
-        LOGGER.error(() -> STAGE.ERROR.INVALID_STAGE.format(stage));
+        LOGGER.error(STAGE.ERROR.INVALID_STAGE.format(stage));
         return ProjectStage.PRODUCTION;
     }
 

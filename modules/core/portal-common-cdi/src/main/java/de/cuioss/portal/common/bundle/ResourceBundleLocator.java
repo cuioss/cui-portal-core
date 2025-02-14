@@ -62,17 +62,17 @@ public interface ResourceBundleLocator extends Serializable {
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();
         if (bundlePath.isEmpty()) {
-            LOGGER.debug(() -> BUNDLE.DEBUG.PATH_NOT_DEFINED.format(getClass().getName()));
+            LOGGER.debug("ResourceBundle path not defined for class: %s", getClass().getName());
             return Optional.empty();
         }
 
         try {
             var rb = ResourceBundle.getBundle(bundlePath.get(), locale);
-            LOGGER.debug(() -> BUNDLE.DEBUG.LOADED.format(getClass().getName(), bundlePath.get(), locale));
+            LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath.get(), locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.debug(e, () -> BUNDLE.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
-            return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
+            LOGGER.warn(BUNDLE.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
+            return Optional.empty();
         }
     }
 
@@ -88,7 +88,7 @@ public interface ResourceBundleLocator extends Serializable {
     private Optional<ResourceBundle> getBundleViaCurrentThreadContextClassLoader(String bundlePath, Locale locale) {
         try {
             var rb = ResourceBundle.getBundle(bundlePath, locale, Thread.currentThread().getContextClassLoader());
-            LOGGER.debug(() -> BUNDLE.DEBUG.LOADED.format(getClass().getName(), bundlePath, locale));
+            LOGGER.debug("Loaded bundle for %s, path=%s, locale=%s", getClass().getName(), bundlePath, locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
             LOGGER.warn(e, () -> BUNDLE.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath, locale));

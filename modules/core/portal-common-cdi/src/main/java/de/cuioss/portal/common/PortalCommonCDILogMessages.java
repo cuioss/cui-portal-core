@@ -39,45 +39,6 @@ public final class PortalCommonCDILogMessages {
     public static final class BUNDLE {
 
         @UtilityClass
-        public static final class DEBUG {
-            public static final LogRecord PATH_NOT_DEFINED = LogRecordModel.builder()
-                    .template("ResourceBundle path not defined for class: %s")
-                    .prefix(PREFIX)
-                    .identifier(500)
-                    .build();
-
-            public static final LogRecord LOADED = LogRecordModel.builder()
-                    .template("Successfully loaded %s '%s' for locale '%s'")
-                    .prefix(PREFIX)
-                    .identifier(501)
-                    .build();
-
-            public static final LogRecord ADDING = LogRecordModel.builder()
-                    .template("Adding bundle %s")
-                    .prefix(PREFIX)
-                    .identifier(502)
-                    .build();
-
-            public static final LogRecord RESULTING = LogRecordModel.builder()
-                    .template("Resulting bundles: %s")
-                    .prefix(PREFIX)
-                    .identifier(503)
-                    .build();
-
-            public static final LogRecord LOCALE_CHANGED = LogRecordModel.builder()
-                    .template("Locale changed to '%s', clearing bundle cache")
-                    .prefix(PREFIX)
-                    .identifier(504)
-                    .build();
-
-            public static final LogRecord RESOLVED = LogRecordModel.builder()
-                    .template("Resolved %d resource bundles for locale '%s'")
-                    .prefix(PREFIX)
-                    .identifier(505)
-                    .build();
-        }
-
-        @UtilityClass
         public static final class WARN {
             public static final LogRecord KEY_NOT_FOUND = LogRecordModel.builder()
                     .template("No key '%s' defined within any of the configured bundles: %s")
@@ -120,25 +81,6 @@ public final class PortalCommonCDILogMessages {
                     .template("Invalid stage name '%s', falling back to %s")
                     .prefix(PREFIX)
                     .identifier(200)
-                    .build();
-        }
-    }
-
-    @UtilityClass
-    public static final class RESOURCE {
-
-        @UtilityClass
-        public static final class DEBUG {
-            public static final LogRecord LOADER_FALLBACK = LogRecordModel.builder()
-                    .template("Resource '%s' not found using class '%s', falling back to context class loader")
-                    .prefix(PREFIX)
-                    .identifier(510)
-                    .build();
-
-            public static final LogRecord RESOLVING_BUNDLE_BEAN = LogRecordModel.builder()
-                    .template("Resolving ResourceBundleWrapper")
-                    .prefix(PREFIX)
-                    .identifier(511)
                     .build();
         }
     }
