@@ -198,7 +198,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private Optional<AuthenticatedUserInfo> handleTriggerAuthenticate(final String scopes, final UrlParameter code,
                                                                       final UrlParameter state) {
         final var servletRequest = servletRequestProvider.get();
-        LOGGER.debug(DEBUG.CODE_AND_STATE_PARAMETER.format());
+        LOGGER.debug(DEBUG.CODE_AND_STATE_PARAMETER::format);
         final AuthenticatedUserInfo sessionUser;
         synchronized (codeLock) {
             if (null == servletRequest.getSession().getAttribute(STATE_KEY)) {
@@ -206,7 +206,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 return Optional.empty();
             }
             if (state.getValue().equals(servletRequest.getSession().getAttribute(STATE_KEY))) {
-                LOGGER.debug(DEBUG.STATE_PARAMETER_MATCHES.format());
+                LOGGER.debug(DEBUG.STATE_PARAMETER_MATCHES::format);
                 sessionUser = (AuthenticatedUserInfo) servletRequest.getSession()
                         .getAttribute(AUTHENTICATED_USER_INFO_KEY);
             } else {
@@ -232,15 +232,15 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         if (null != oauthUser) {
             LOGGER.debug(DEBUG.AUTHENTICATED_OAUTH_USER_INFO.format(oauthUser));
             if (null == sessionUser || !sessionUser.isAuthenticated()) {
-                LOGGER.debug(DEBUG.INVALIDATE_SESSION.format());
+                LOGGER.debug(DEBUG.INVALIDATE_SESSION::format);
                 servletRequest.getSession().invalidate();
             }
             oauthUser = enrich(oauthUser);
-            LOGGER.debug(DEBUG.ADD_OAUTH_USER_TO_SESSION.format());
+            LOGGER.debug(DEBUG.ADD_OAUTH_USER_TO_SESSION::format);
             servletRequest.getSession().setAttribute(AUTHENTICATED_USER_INFO_KEY, oauthUser);
             return Optional.of(oauthUser);
         }
-        LOGGER.debug(DEBUG.UNABLE_TO_RETRIEVE_AUTHENTICATED_USER_INFO.format());
+        LOGGER.debug(DEBUG.UNABLE_TO_RETRIEVE_AUTHENTICATED_USER_INFO::format);
         throw new OauthAuthenticationException("system.exception.oauth.login");
     }
 
@@ -261,7 +261,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         synchronized (codeLock) {
             if (null == servletRequest.getSession().getAttribute(PKCE_CODE_KEY)) {
                 servletRequest.getSession().setAttribute(PKCE_CODE_KEY, new BigInteger(260, random).toString(32));
-                LOGGER.trace(TRACE.NEW_CODE.format());
+                LOGGER.trace(TRACE.NEW_CODE::format);
             }
         }
 
@@ -271,7 +271,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE.format());
+            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE::format);
             throw new IllegalStateException(e);
         }
 
@@ -327,7 +327,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         String idToken = null;
 
         if (currentUser.isPresent()) {
-            LOGGER.debug(DEBUG.USER_PRESENT.format());
+            LOGGER.debug(DEBUG.USER_PRESENT::format);
 
             final var accessToken = checkAndRetrieveToken(currentUser.get(), scopes);
             if (null != accessToken) {
@@ -337,10 +337,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
             final var token = currentUser.get().getToken();
             if (token != null) {
-                LOGGER.debug(DEBUG.CUI_TOKEN_PRESENT.format());
+                LOGGER.debug(DEBUG.CUI_TOKEN_PRESENT::format);
                 idToken = token.getId_token();
             } else {
-                LOGGER.debug(DEBUG.NO_CUI_TOKEN_AVAILABLE.format());
+                LOGGER.debug(DEBUG.NO_CUI_TOKEN_AVAILABLE::format);
             }
         }
 
@@ -393,7 +393,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 return Optional.ofNullable(OauthAuthenticatedUserInfo
                         .createOf((AuthenticatedUserInfo) session.getAttribute(AUTHENTICATED_USER_INFO_KEY)));
             } catch (final IllegalStateException e) {
-                LOGGER.debug(e, DEBUG.GET_ATTRIBUTE_FAILED.format());
+                LOGGER.debug(e, DEBUG.GET_ATTRIBUTE_FAILED::format);
             }
         }
         return Optional.empty();
@@ -437,7 +437,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         var config = configurationProvider.get();
 
         if (MoreStrings.isEmpty(config.getLogoutUri())) {
-            LOGGER.warn(WARN.NO_LOGOUT_URI.format());
+            LOGGER.warn(WARN.NO_LOGOUT_URI::format);
             throw new IllegalStateException((WARN.NO_LOGOUT_URI.format()));
         }
 
@@ -446,7 +446,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         if (config.isLogoutWithIdTokenHintEnabled() && queryParams.stream().map(UrlParameter::getName)
                 .noneMatch(OidcRpInitiatedLogoutParams.ID_TOKEN_HINT::equals)) {
 
-            LOGGER.debug(DEBUG.ADDING_ID_TOKEN_HINT.format());
+            LOGGER.debug(DEBUG.ADDING_ID_TOKEN_HINT::format);
             getIdTokenFromCurrentUser().map(OidcRpInitiatedLogoutParams::getIdTokenHintUrlParam)
                     .ifPresent(queryParams::add);
         }
@@ -463,14 +463,14 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         if (currentUser.isPresent()) {
             return currentUser.get().getIdToken();
         }
-        LOGGER.warn(WARN.NO_ID_TOKEN.format());
+        LOGGER.warn(WARN.NO_ID_TOKEN::format);
         return Optional.empty();
     }
 
     private String checkAndRetrieveToken(final OauthAuthenticatedUserInfo currentUser, final String scopes) {
         final var token = currentUser.getToken();
         if (checkToken(token, currentUser.getTokenTimestamp())) {
-            LOGGER.debug(DEBUG.TOKEN_IS_VALID.format());
+            LOGGER.debug(DEBUG.TOKEN_IS_VALID::format);
             var allFound = true;
             final var existing = Splitter.on(' ').omitEmptyStrings().splitToList(currentUser.getScopes());
             for (final String requested : Splitter.on(' ').omitEmptyStrings().splitToList(scopes)) {
@@ -484,7 +484,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 return token.getAccess_token();
             }
         } else if (!MoreStrings.isEmpty(token.getRefresh_token())) {
-            LOGGER.debug(DEBUG.ACCESS_TOKEN_EXPIRED.format());
+            LOGGER.debug(DEBUG.ACCESS_TOKEN_EXPIRED::format);
             return oauth2ServiceImpl.refreshToken(currentUser);
         }
         return null;
@@ -504,7 +504,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             LOGGER.trace("checked expire time. token valid?: %s", valid);
             return valid;
         } catch (final NumberFormatException e) {
-            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER.format());
+            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER::format);
             return false;
         }
     }
