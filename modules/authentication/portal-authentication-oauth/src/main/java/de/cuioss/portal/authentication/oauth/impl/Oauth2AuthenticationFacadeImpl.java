@@ -162,10 +162,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private void sendRedirect(final String scopes, final String idToken) {
         try {
             var retrieveUrl = retrieveOauth2RedirectUrl(scopes, idToken);
-            LOGGER.debug(DEBUG.CALLING_REDIRECT.format(retrieveUrl));
+            LOGGER.debug(() -> DEBUG.CALLING_REDIRECT.format(retrieveUrl));
             oauthRedirector.get().sendRedirect(retrieveUrl);
         } catch (final IllegalStateException e) {
-            LOGGER.warn(e, WARN.REDIRECT_FAILED.format());
+            LOGGER.warn(e, WARN.REDIRECT_FAILED::format);
         }
     }
 
@@ -179,15 +179,15 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 return handleTriggerAuthenticate(scopes, code.get(), state.get());
             }
             if (error.isPresent()) {
-                LOGGER.debug(DEBUG.ERROR_PARAMETER.format(error.get().getValue()));
+                LOGGER.debug(() -> DEBUG.ERROR_PARAMETER.format(error.get().getValue()));
                 if (ERROR_ACCESS_DENIED.equals(error.get().getValue())) {
                     throw new OauthAuthenticationException("system.exception.oauth.consent");
                 }
                 if (ERROR_INVALID_SCOPE.equals(error.get().getValue())) {
-                    LOGGER.warn(WARN.INVALID_SCOPE.format(parameters));
+                    LOGGER.warn(() -> WARN.INVALID_SCOPE.format(parameters));
                     throw new OauthAuthenticationException("system.exception.oauth.invalidScope");
                 }
-                LOGGER.warn(WARN.LOGIN_ERROR.format(parameters));
+                LOGGER.warn(() -> WARN.LOGIN_ERROR.format(parameters));
                 throw new OauthAuthenticationException("system.exception.oauth.login");
             }
         }
@@ -202,7 +202,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         final AuthenticatedUserInfo sessionUser;
         synchronized (codeLock) {
             if (null == servletRequest.getSession().getAttribute(STATE_KEY)) {
-                LOGGER.warn(WARN.UNKNOWN_STATE.format(state.getValue()));
+                LOGGER.warn(() -> WARN.UNKNOWN_STATE.format(state.getValue()));
                 return Optional.empty();
             }
             if (state.getValue().equals(servletRequest.getSession().getAttribute(STATE_KEY))) {
@@ -210,7 +210,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 sessionUser = (AuthenticatedUserInfo) servletRequest.getSession()
                         .getAttribute(AUTHENTICATED_USER_INFO_KEY);
             } else {
-                LOGGER.debug(DEBUG.STATE_PARAMETER_DIFFERS.format(state.getValue(),
+                LOGGER.debug(() -> DEBUG.STATE_PARAMETER_DIFFERS.format(state.getValue(),
                         servletRequest.getSession().getAttribute(STATE_KEY)));
                 sessionUser = null;
             }
@@ -225,12 +225,13 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             codeVerifier = (String) servletRequest.getSession().getAttribute(PKCE_CODE_KEY);
             servletRequest.getSession().removeAttribute(PKCE_CODE_KEY);
         }
-        LOGGER.trace(TRACE.CODE_VERIFIER.format(codeVerifier));
+        LOGGER.trace(() -> TRACE.CODE_VERIFIER.format(codeVerifier));
         var oauthUser = oauth2ServiceImpl.createAuthenticatedUserInfo(servletRequest, code, state, retrievedScoped,
                 codeVerifier);
 
         if (null != oauthUser) {
-            LOGGER.debug(DEBUG.AUTHENTICATED_OAUTH_USER_INFO.format(oauthUser));
+            final var finalOauthUser = oauthUser;
+            LOGGER.debug(() -> DEBUG.AUTHENTICATED_OAUTH_USER_INFO.format(finalOauthUser));
             if (null == sessionUser || !sessionUser.isAuthenticated()) {
                 LOGGER.debug(DEBUG.INVALIDATE_SESSION::format);
                 servletRequest.getSession().invalidate();
@@ -266,7 +267,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         }
 
         var code = (String) servletRequest.getSession().getAttribute(PKCE_CODE_KEY);
-        LOGGER.trace(TRACE.CODE.format(code));
+        LOGGER.trace(() -> TRACE.CODE.format(code));
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -277,7 +278,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
         final var code_challenge = Base64.getUrlEncoder().withoutPadding()
                 .encodeToString(digest.digest(code.getBytes(StandardCharsets.US_ASCII)));
-        LOGGER.trace(TRACE.CODE_CHALLENGE.format(code_challenge));
+        LOGGER.trace(() -> TRACE.CODE_CHALLENGE.format(code_challenge));
 
         final var scopesParameter = encode(scopes, StandardCharsets.UTF_8);
         final var configuration = configurationProvider.get();
@@ -293,7 +294,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                         oauth2ServiceImpl.calcEncodedRedirectUrl(servletRequest.getContextPath() + loginUrl.get()),
                         false));
 
-        LOGGER.debug(DEBUG.REDIRECT_URL.format(url));
+        LOGGER.debug(() -> DEBUG.REDIRECT_URL.format(url));
         return url;
     }
 
@@ -322,16 +323,16 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     public String retrieveToken(final String scopes) {
         requireNonNull(emptyToNull(loginUrl.get()));
         requireNonNull(emptyToNull(scopes));
-        LOGGER.trace(TRACE.RETRIEVE_TOKEN_FOR_SCOPES.format(scopes));
+        LOGGER.trace(() -> TRACE.RETRIEVE_TOKEN_FOR_SCOPES.format(scopes));
         final var currentUser = retrieveCurrentUserIfPresent(servletRequestProvider.get());
-        String idToken = null;
+        String idToken;
 
         if (currentUser.isPresent()) {
             LOGGER.debug(DEBUG.USER_PRESENT::format);
 
             final var accessToken = checkAndRetrieveToken(currentUser.get(), scopes);
             if (null != accessToken) {
-                LOGGER.debug(DEBUG.ACCESS_TOKEN_PRESENT.format(accessToken));
+                LOGGER.debug(() -> DEBUG.ACCESS_TOKEN_PRESENT.format(accessToken));
                 return accessToken;
             }
 
@@ -340,12 +341,15 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 LOGGER.debug(DEBUG.CUI_TOKEN_PRESENT::format);
                 idToken = token.getId_token();
             } else {
+                idToken = null;
                 LOGGER.debug(DEBUG.NO_CUI_TOKEN_AVAILABLE::format);
             }
+        } else {
+            idToken = null;
         }
 
-        LOGGER.debug(DEBUG.ACCESS_TOKEN_NOT_PRESENT.format(null != idToken));
-        LOGGER.trace(TRACE.USING_ID_TOKEN.format(idToken));
+        LOGGER.debug(() -> DEBUG.ACCESS_TOKEN_NOT_PRESENT.format(null != idToken));
+        LOGGER.trace(() -> TRACE.USING_ID_TOKEN.format(idToken));
         sendRedirect(scopes, idToken);
         return null;
     }
@@ -371,7 +375,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         }
         final var tokenParts = token.getId_token().split("\\.");
         if (tokenParts.length != 3) {
-            LOGGER.info(INFO.ID_TOKEN_SPLIT_FAILED.format(token.getId_token()));
+            LOGGER.info(() -> INFO.ID_TOKEN_SPLIT_FAILED.format(token.getId_token()));
             return Collections.emptyMap();
         }
         var objectReader = new ObjectMapper().reader().forType(new TypeReference<Map<String, Object>>() {
@@ -380,7 +384,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             return objectReader.readValue(Base64.getDecoder().decode(tokenParts[1]));
         } catch (IOException e) {
-            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
+            LOGGER.info(e, () -> INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
             return Collections.emptyMap();
         }
     }
@@ -476,7 +480,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             for (final String requested : Splitter.on(' ').omitEmptyStrings().splitToList(scopes)) {
                 if (!existing.contains(requested)) {
                     allFound = false;
-                    LOGGER.debug(DEBUG.MISSING_SCOPE.format(requested));
+                    LOGGER.debug(() -> DEBUG.MISSING_SCOPE.format(requested));
                     break;
                 }
             }
