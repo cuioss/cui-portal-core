@@ -132,7 +132,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         if (null == request.getPath()) {
             LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-            new MockResponse(HttpServletResponse.SC_NOT_FOUND);
+            return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
         }
 
         return switch (request.getPath()) {
