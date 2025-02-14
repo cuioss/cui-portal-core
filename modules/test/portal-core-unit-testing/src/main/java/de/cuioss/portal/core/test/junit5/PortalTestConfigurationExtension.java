@@ -45,7 +45,7 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
     public void beforeEach(ExtensionContext context) {
         Class<?> testClass = context.getTestClass()
                 .orElseThrow(() -> new IllegalStateException("Unable to determine Test-class"));
-        LOGGER.debug(() -> "Processing test-class " + testClass);
+        LOGGER.debug("Processing test-class %s", testClass);
 
         CDI<Object> cdi;
         try {
@@ -58,21 +58,21 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
         }
 
         var configuration = cdi.select(PortalTestConfiguration.class).get();
-        LOGGER.debug(() -> "Resolved " + configuration);
+        LOGGER.debug("Resolved %s", configuration);
 
         configuration.clear();
 
         var annotation = AnnotationSupport.findAnnotation(testClass, EnablePortalConfiguration.class);
         if (annotation.isPresent()) {
-            LOGGER.debug(() -> "Resolved annotation " + annotation.get());
+            LOGGER.debug("Resolved annotation %s", annotation.get());
             for (String element : annotation.get().configuration()) {
                 var splitted = Splitter.on(':').splitToList(element);
                 checkArgument(2 <= splitted.size(), "Expected element in the form key:value, but was " + element);
-                LOGGER.debug(() -> "Adding configuration entry: " + element);
+                LOGGER.debug("Adding configuration entry: %s", element);
                 configuration.update(splitted.get(0), element.substring(element.indexOf(':') + 1));
             }
         }
 
-        LOGGER.debug(() -> "Finished processing instance " + testClass);
+        LOGGER.debug("Finished processing instance %s", testClass);
     }
 }

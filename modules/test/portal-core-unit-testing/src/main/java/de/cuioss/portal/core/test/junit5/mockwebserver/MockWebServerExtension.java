@@ -58,7 +58,7 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
         if (extractAnnotation(testInstance.getClass()).map(annotation -> !annotation.manualStart())
                 .orElse(Boolean.FALSE)) {
             mockWebServer.start();
-            LOGGER.info(() -> "Started MockWebServer at " + mockWebServer.url("/"));
+            LOGGER.info("Started MockWebServer at %s", mockWebServer.url("/"));
         }
         put(mockWebServer, context);
     }
@@ -67,10 +67,10 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
     public void afterEach(ExtensionContext context) throws Exception {
         var server = get(context);
         if (server.isPresent()) {
-            LOGGER.info(() -> "Shutting down MockWebServer at " + server.get().url("/"));
+            LOGGER.info("Shutting down MockWebServer at %s", server.get().url("/"));
             server.get().shutdown();
         } else {
-            LOGGER.error(() -> "Server not present, therefore can not be shutdown");
+            LOGGER.error("Server not present, therefore can not be shutdown");
         }
 
     }
