@@ -33,17 +33,3 @@ All messages follow the format: PortalConfig-[identifier]: [message]
 | PortalConfig-208 | CONN | Timeout while connecting to %s | Indicates a connection timeout error |
 | PortalConfig-209 | CONN | Connection to %s refused | Indicates a connection was refused |
 | PortalConfig-517 | FILE | Unable to schedule given Path for tracking for changes, due to '%s' | Indicates failure to schedule path for file watching |
-
-## DEBUG Level (500-599)
-
-| ID               | Component | Message | Description |
-|-----------------|-----------|---------|-------------|
-| PortalConfig-500 | CONFIG | Could not resolve config value for key %s | Indicates a failure to resolve a configuration key |
-
-## TRACE Level (600-699)
-
-| ID               | Component | Message | Description |
-|-----------------|-----------|---------|-------------|
-| PortalConfig-600 | CONFIG | configProperties (%s): %s | Shows configuration properties for debugging |
-| PortalConfig-601 | CONFIG | recordStats: %s | Shows cache statistics recording configuration |
-| PortalConfig-602 | CONFIG | CacheConfig: %s | Shows complete cache configuration |

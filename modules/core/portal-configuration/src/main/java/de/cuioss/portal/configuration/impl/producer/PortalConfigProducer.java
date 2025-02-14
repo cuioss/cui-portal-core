@@ -81,7 +81,7 @@ public class PortalConfigProducer {
         try {
             return resolveConfigProperty(key).orElse(emptyToNull(metaData.defaultValue()));
         } catch (final NoSuchElementException e) {
-            LOGGER.debug(e, DEBUG.CONFIG_VALUE_NOT_FOUND.getTemplate(), key);
+            LOGGER.debug("Could not resolve config value for key %s", key);
         }
         return null;
     }
@@ -220,7 +220,7 @@ public class PortalConfigProducer {
         var timeUnit = meta.defaultTimeUnit();
         var recordStats = meta.recordStatistics();
 
-        LOGGER.trace(TRACE.CONFIG_PROPERTIES.getTemplate(), configKeyPrefix, configProperties);
+        LOGGER.trace("configProperties (%s): %s", configKeyPrefix, configProperties);
 
         if (configProperties.containsKey(EXPIRATION_KEY)) {
             try {
@@ -257,11 +257,11 @@ public class PortalConfigProducer {
             } else {
                 recordStats = Boolean.parseBoolean(configValue);
             }
-            LOGGER.trace(TRACE.RECORD_STATS.getTemplate(), recordStats);
+            LOGGER.trace("recordStats: %s", recordStats);
         }
 
         final var cacheConfig = new CacheConfig(expiration, timeUnit, size, recordStats && portalMetricsEnabled.get());
-        LOGGER.trace(TRACE.CACHE_CONFIG.getTemplate(), cacheConfig);
+        LOGGER.trace("CacheConfig: %s", cacheConfig);
         return cacheConfig;
     }
 

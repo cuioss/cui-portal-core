@@ -52,8 +52,6 @@ import java.util.Optional;
 @ApplicationScoped
 public class ConnectionMetadataProducer {
 
-    private static final String RETURNING_EMPTY_VALUE = "No '%s' is present, returning empty-value";
-
     private static final CuiLogger LOGGER = new CuiLogger(ConnectionMetadataProducer.class);
 
     private static final String UNABLE_TO_CONSTRUCT_MSG = "Portal-116: Unable to construct ConnectionMetadata, due to ";
@@ -232,10 +230,10 @@ public class ConnectionMetadataProducer {
         if (null == truststoreLocation || truststorePassword.isEmpty()) {
             if (LOGGER.isDebugEnabled()) {
                 if (MoreStrings.isEmpty(truststoreLocation)) {
-                    LOGGER.debug(RETURNING_EMPTY_VALUE, "trust-store-location");
+                    LOGGER.debug("No value present for 'trust-store-location', returning empty-value");
                 }
                 if (truststorePassword.isEmpty()) {
-                    LOGGER.debug(RETURNING_EMPTY_VALUE, "trust-store-password");
+                    LOGGER.debug("No value present for 'trust-store-password', returning empty-value");
                 }
             }
             return Optional.empty();
@@ -259,10 +257,10 @@ public class ConnectionMetadataProducer {
         if (keystoreLocation.isEmpty() || keystorePassword.isEmpty()) {
             if (LOGGER.isDebugEnabled()) {
                 if (keystoreLocation.isEmpty()) {
-                    LOGGER.debug(RETURNING_EMPTY_VALUE, "key-store-location");
+                    LOGGER.debug("No value present for 'key-store-location', returning empty-value");
                 }
                 if (keystorePassword.isEmpty()) {
-                    LOGGER.debug(RETURNING_EMPTY_VALUE, "key-store-password");
+                    LOGGER.debug("No value present for 'key-store-password', returning empty-value");
                 }
             }
             return Optional.empty();
@@ -308,30 +306,34 @@ public class ConnectionMetadataProducer {
      */
     private static Optional<Long> getPositiveLong(final String key, final String value,
             final boolean failOnInvalidConfiguration) {
-        if (null != value) {
-            try {
-                return Optional.of(Long.parseUnsignedLong(value.trim()));
-            } catch (final NumberFormatException e) {
-                if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
-                }
-                LOGGER.error(e, ERROR.INVALID_NUMBER.format(key, value));
+        if (MoreStrings.isEmpty(value)) {
+            LOGGER.trace("No value present for '%s', returning empty-value", key);
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(Long.parseUnsignedLong(value.trim()));
+        } catch (final NumberFormatException e) {
+            if (failOnInvalidConfiguration) {
+                throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
             }
+            LOGGER.error(e, ERROR.INVALID_NUMBER.format(key, value));
         }
         return Optional.empty();
     }
 
     private static Optional<Integer> getPositiveInt(final String key, final String value,
             final boolean failOnInvalidConfiguration) {
-        if (null != value) {
-            try {
-                return Optional.of(Integer.parseUnsignedInt(value.trim()));
-            } catch (final NumberFormatException e) {
-                if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
-                }
-                LOGGER.error(e, ERROR.INVALID_NUMBER.format(key, value));
+        if (MoreStrings.isEmpty(value)) {
+            LOGGER.trace("No value present for '%s', returning empty-value", key);
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(Integer.parseUnsignedInt(value.trim()));
+        } catch (final NumberFormatException e) {
+            if (failOnInvalidConfiguration) {
+                throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
             }
+            LOGGER.error(e, ERROR.INVALID_NUMBER.format(key, value));
         }
         return Optional.empty();
     }

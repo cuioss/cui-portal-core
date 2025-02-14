@@ -73,6 +73,36 @@ public class PortalConfigurationMessages {
             .identifier(144)
             .template("Directory %s could not be read")
             .build();
+
+        public static final LogRecord UNABLE_TO_CONSTRUCT = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(116)
+            .template("Unable to construct ConnectionMetadata, due to %s")
+            .build();
+
+        public static final LogRecord MISSING_BASENAME = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(117)
+            .template("Configuration setting for baseName is missing.")
+            .build();
+
+        public static final LogRecord MISSING_CONFIG = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(119)
+            .template("Missing configuration for %s detected.")
+            .build();
+
+        public static final LogRecord MISSING_BASIC_AUTH_CONFIG = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(120)
+            .template("Configuration for basic authentication is incomplete. Missing: %s")
+            .build();
+
+        public static final LogRecord MISSING_TOKEN_CONFIG = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(121)
+            .template("Configuration for token based authentication is incomplete. Missing: %s")
+            .build();
     }
 
     @UtilityClass
@@ -142,35 +172,23 @@ public class PortalConfigurationMessages {
             .identifier(209)
             .template("Connection to %s refused")
             .build();
-    }
 
-    @UtilityClass
-    public static final class DEBUG {
-        public static final LogRecord CONFIG_VALUE_NOT_FOUND = LogRecordModel.builder()
+        public static final LogRecord INVALID_NUMBER_VALUE = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(500)
-            .template("Could not resolve config value for key %s")
-            .build();
-    }
-
-    @UtilityClass
-    public static final class TRACE {
-        public static final LogRecord CONFIG_PROPERTIES = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(600)
-            .template("configProperties (%s): %s")
+            .identifier(526)
+            .template("Invalid content for '%s', expected a number but was '%s'")
             .build();
 
-        public static final LogRecord RECORD_STATS = LogRecordModel.builder()
+        public static final LogRecord MISSING_CONNECTION_METADATA = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(601)
-            .template("recordStats: %s")
+            .identifier(210)
+            .template("Missing connection metadata for %s")
             .build();
 
-        public static final LogRecord CACHE_CONFIG = LogRecordModel.builder()
+        public static final LogRecord INVALID_CONNECTION_METADATA = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(602)
-            .template("CacheConfig: %s")
+            .identifier(211)
+            .template("Invalid connection metadata for %s")
             .build();
     }
 }
