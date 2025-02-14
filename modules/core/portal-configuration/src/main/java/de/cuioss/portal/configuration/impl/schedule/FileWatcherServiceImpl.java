@@ -101,10 +101,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 try {
                     watcherService = FileSystems.getDefault().newWatchService();
                 } catch (IOException | UnsupportedOperationException e) {
-                    log.error("""
-                            Portal-515: Unable to access File-system for detecting changes, due to '{}', use the \
-                            configuration property '{}' to disable this feature\
-                            """, e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED, e);
+                    log.error(e, "Portal-515: Unable to access File-system for detecting changes, due to '%s', use the configuration property '%s' to disable this feature",
+                            e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED);
                     upAndRunning = false;
                     return;
                 }
@@ -118,7 +116,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             handleScheduling();
             log.debug("FileWatcherService initialized, files are scheduled");
         } else {
-            log.debug("Ignoring initialization call, due to configuration of '{}'", SCHEDULER_FILE_SCAN_ENABLED);
+            log.debug("Ignoring initialization call, due to configuration of '%s'", SCHEDULER_FILE_SCAN_ENABLED);
             upAndRunning = false;
             if (null != executor) {
                 executor.shutdown();
@@ -155,15 +153,15 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     public void register(Path... paths) {
 
         for (Path path : paths) {
-            log.trace("Register called for {}", path);
+            log.trace("Register called for %s", path);
             var created = AbstractFileDescriptor.create(path);
             if (created.isPresent()) {
                 var absolute = created.get().getPath();
                 if (!registeredPaths.containsKey(absolute)) {
-                    log.debug("Adding Path '{}' to registeredPaths", absolute);
+                    log.debug("Adding Path '%s' to registeredPaths", absolute);
                     registeredPaths.put(absolute, created.get());
                 } else {
-                    log.debug("Path '{}' already registered, ignoring", absolute);
+                    log.debug("Path '%s' already registered, ignoring", absolute);
                 }
             }
         }
@@ -179,12 +177,12 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     @Override
     public void unregister(Path... paths) {
         for (Path path : paths) {
-            log.trace("Unregister called for {}", path);
+            log.trace("Unregister called for %s", path);
             var absolute = MorePaths.getRealPathSafely(path);
             if (null != registeredPaths.remove(absolute)) {
-                log.debug("Unregistered path '{}' from fileWatch", absolute);
+                log.debug("Unregistered path '%s' from fileWatch", absolute);
             } else if (isUpAndRunning()) {
-                log.debug("Path '{}' not found within watchedPaths, can therefore not be removed.", absolute);
+                log.debug("Path '%s' not found within watchedPaths, can therefore not be removed.", absolute);
             }
         }
     }
@@ -192,7 +190,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     @Override
     public List<Path> getRegisteredPaths() {
         List<Path> paths = registeredPaths.values().stream().map(AbstractFileDescriptor::getPath).toList();
-        log.trace("getRegisteredPaths called, returning {}", paths);
+        log.trace("getRegisteredPaths called, returning %s", paths);
         return paths;
     }
 
@@ -226,20 +224,20 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     private void handleChangedWatchKey(WatchKey watchKey) {
         var events = watchKey.pollEvents();
         if (events.isEmpty()) {
-            log.warn("Portal-515: Invalid element found, watchKey='{}', ignoring", watchKey);
+            log.warn("Portal-515: Invalid element found, watchKey='%s', ignoring", watchKey);
             return;
         }
         if (log.isTraceEnabled()) {
-            log.trace("Handling WatchKey-Events {}", events.stream().map(w -> w.context() + "-" + w.kind()).toList());
+            log.trace("Handling WatchKey-Events %s", events.stream().map(w -> w.context() + "-" + w.kind()).toList());
         }
         List<AbstractFileDescriptor> changed = registeredPaths.values().stream()
                 .filter(AbstractFileDescriptor::isUpdated).toList();
 
         if (changed.isEmpty()) {
-            log.debug("No actual changes found for path-change WatchKey-Events {}", events);
+            log.debug("No actual changes found for path-change WatchKey-Events %s", events);
         }
         for (AbstractFileDescriptor element : changed) {
-            log.debug("Delivering notification for path changes of: '{}'", element.getPath());
+            log.debug("Delivering notification for path changes of: '%s'", element.getPath());
             try {
                 // Handling the event should not throw an exception.
                 // This will break the iteration over all event listeners - however,
@@ -247,8 +245,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 // may fail due to IO errors), it should at least not crash the service at all.
                 fileChangeEvent.fire(element.getPath());
             } catch (Exception e) {
-                log.error("Portal-533: Handling fileChangedEvent failed for file {}: ", e,
-                        element.getPath().toString());
+                log.error(e, "Portal-533: Handling fileChangedEvent failed for file %s", element.getPath().toString());
             }
             element.update();
         }
@@ -269,7 +266,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             try {
                 watcherService.close();
             } catch (IOException e) {
-                log.debug("Unable to close Watch-Service, due to '{}'", e.getMessage(), e);
+                log.debug("Unable to close Watch-Service, due to '%s'", e.getMessage(), e);
             }
         }
     }
