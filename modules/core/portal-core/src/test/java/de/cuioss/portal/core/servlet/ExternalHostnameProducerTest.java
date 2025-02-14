@@ -101,7 +101,7 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match request server name and port");
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, SERVLET.DEBUG.HOSTNAME_RESOLVED.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining( TestLogLevel.DEBUG, "Resolved hostname: ");
     }
 
     @Test
@@ -111,6 +111,6 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match X-Forwarded host and port");
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, SERVLET.DEBUG.HOSTNAME_RESOLVED.resolveIdentifierString());
+        LogAsserts.assertSingleLogMessagePresentContaining( TestLogLevel.DEBUG, "Resolved hostname: ");
     }
 }

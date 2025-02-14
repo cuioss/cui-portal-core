@@ -69,7 +69,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         try {
             executeDoGet(req, resp);
         } catch (RuntimeException | IOException e) {
-            LOGGER.error(e, SERVLET.ERROR.PORTAL_CORE_200.format(e.getMessage()));
+            LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR.format(e.getMessage()));
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

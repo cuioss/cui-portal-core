@@ -104,7 +104,7 @@ public class ServletLifecycleListener implements ServletContextListener {
             try {
                 applicationInitializer.destroy();
             } catch (RuntimeException e) {
-                LOGGER.warn(LIFECYCLE.WARN.PORTAL_CORE_110.format(applicationInitializer, contextPath, e.getMessage()));
+                LOGGER.warn(LIFECYCLE.WARN.DESTROY_ERROR.format(applicationInitializer, contextPath, e.getMessage()));
                 LOGGER.debug("Detailed exception: %s", e.getMessage());
             }
         }

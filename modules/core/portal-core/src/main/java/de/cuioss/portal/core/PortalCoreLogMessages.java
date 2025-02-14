@@ -33,16 +33,11 @@ public final class PortalCoreLogMessages {
     public static final class SERVLET {
         @UtilityClass
         public static final class ERROR {
-            public static final LogRecord PORTAL_CORE_200 = LogRecordModel.builder()
-                    .template("Could not process Request, due to %s")
-                    .prefix(PREFIX)
-                    .identifier(200)
-                    .build();
 
             public static final LogRecord REQUEST_PROCESSING_ERROR = LogRecordModel.builder()
                     .template("Could not process Request, due to %s")
                     .prefix(PREFIX)
-                    .identifier(201)
+                    .identifier(200)
                     .build();
         }
 
@@ -93,16 +88,11 @@ public final class PortalCoreLogMessages {
 
         @UtilityClass
         public static final class WARN {
-            public static final LogRecord PORTAL_CORE_110 = LogRecordModel.builder()
-                    .template("Error while destroying '%s' for '%s': %s")
-                    .prefix(PREFIX)
-                    .identifier(110)
-                    .build();
 
             public static final LogRecord DESTROY_ERROR = LogRecordModel.builder()
                     .template("Error during servlet context destroy")
                     .prefix(PREFIX)
-                    .identifier(111)
+                    .identifier(110)
                     .build();
         }
     }

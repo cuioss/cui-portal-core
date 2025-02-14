@@ -42,7 +42,7 @@ public class ExternalHostnameProducer {
         String serverPort = Optional.ofNullable(request.getHeader(X_FORWARDED_PORT)).orElse(String.valueOf(request.getServerPort()));
 
         String hostWithPort = serverName + ":" + serverPort;
-        LOGGER.debug(PortalCoreLogMessages.SERVLET.DEBUG.HOSTNAME_RESOLVED.format(hostWithPort));
+        LOGGER.debug("Resolved hostname: %s",hostWithPort);
         return hostWithPort;
     }
 }

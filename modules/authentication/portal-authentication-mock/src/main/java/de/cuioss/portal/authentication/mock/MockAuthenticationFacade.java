@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.mock;
 
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.*;
 import static java.util.Objects.requireNonNull;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
@@ -25,6 +26,7 @@ import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.portal.configuration.types.ConfigAsList;
 import de.cuioss.uimodel.application.LoginCredentials;
 import de.cuioss.uimodel.result.ResultObject;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -109,6 +111,8 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private List<UserStore> availableUserStores;
 
+    private static final CuiLogger LOGGER = new CuiLogger(MockAuthenticationFacade.class);
+
     @ConfigProperty(name = CONFIGURATION_KEY_AUTHENTICATED, defaultValue = "true")
     @Inject
     private Provider<Boolean> defaultLoggedIn;
@@ -156,17 +160,22 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
                     .identifier(loginCredentials.getUsername()).qualifiedIdentifier(loginCredentials.getUsername())
                     .displayName(loginCredentials.getUsername()).build();
             servletRequest.getSession(true).setAttribute(USER_INFO_KEY, currentAuthenticationUserInfo);
+            LOGGER.info(INFO.USER_LOGIN.format(loginCredentials.getUsername()));
             return AuthenticationResults.validResult(currentAuthenticationUserInfo);
         }
+        LOGGER.warn(WARN.INVALID_LOGIN.format(loginCredentials.getUsername()));
         return AuthenticationResults.invalidResult(
                 "This is a mocked login, enter username with the same password, saying admin/admin, user/user,..",
                 "testuser", null);
     }
 
     private BaseAuthenticatedUserInfoBuilder createDefaultUserInfoBuilder() {
+        var roles = defaultUserRoles.get().stream().map(String::trim).toList();
+        var groups = defaultUserGroups.get().stream().map(String::trim).toList();
+        LOGGER.debug(DEBUG.DEFAULT_USER_INFO.format(roles, groups));
         var builder = BaseAuthenticatedUserInfo.builder().authenticated(true)
-                .groups(defaultUserGroups.get().stream().map(String::trim).toList())
-                .roles(defaultUserRoles.get().stream().map(String::trim).toList())
+                .groups(groups)
+                .roles(roles)
                 .system(defaultSystem);
         for (String entry : defaultContextMapEntries.get()) {
             builder.contextMapElement(entry.split(":")[0].trim(), entry.split(":")[1].trim());
@@ -177,12 +186,16 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     @Override
     public boolean logout(final HttpServletRequest servletRequest) {
         var oldSession = servletRequest.getSession();
+        var userInfo = (AuthenticatedUserInfo) oldSession.getAttribute(USER_INFO_KEY);
         if (null != oldSession) {
             oldSession.invalidate();
         }
         var newSession = servletRequest.getSession(true);
         newSession.setAttribute(USER_INFO_KEY, NOT_LOGGED_IN);
         newSession.setAttribute(USER_INFO_LOGOUT_KEY, USER_INFO_LOGOUT_KEY);
+        if (userInfo != null && userInfo.isAuthenticated()) {
+            LOGGER.info(INFO.USER_LOGOUT.format(userInfo.getDisplayName()));
+        }
         return true;
     }
 
@@ -197,6 +210,9 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
             } else {
                 userInfo = NOT_LOGGED_IN;
             }
+        }
+        if (userInfo.isAuthenticated()) {
+            LOGGER.info(INFO.RETRIEVED_CONTEXT.format(userInfo.getDisplayName()));
         }
         return userInfo;
     }
