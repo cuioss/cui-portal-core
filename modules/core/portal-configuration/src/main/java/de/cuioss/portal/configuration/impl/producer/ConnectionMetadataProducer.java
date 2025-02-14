@@ -52,7 +52,7 @@ import java.util.Optional;
 @ApplicationScoped
 public class ConnectionMetadataProducer {
 
-    private static final String RETURNING_EMPTY_VALUE = "No '{}' is present, returning empty-value";
+    private static final String RETURNING_EMPTY_VALUE = "No '%s' is present, returning empty-value";
 
     private static final CuiLogger log = new CuiLogger(ConnectionMetadataProducer.class);
 
@@ -62,9 +62,9 @@ public class ConnectionMetadataProducer {
      * "Portal-117: Configuration setting for baseName is missing."
      */
     public static final String MISSING_BASENAME_MSG = "Portal-117: Configuration setting for baseName is missing.";
-    private static final String MISSING_CONFIG_MSG = "Portal-119: Missing configuration for {} detected.";
-    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: ";
-    private static final String MISSING_TOKEN_CONFIG_MSG = "Portal-120: Configuration for token based authentication is incomplete. Missing: ";
+    private static final String MISSING_CONFIG_MSG = "Portal-119: Missing configuration for %s detected.";
+    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: %s";
+    private static final String MISSING_TOKEN_CONFIG_MSG = "Portal-120: Configuration for token based authentication is incomplete. Missing: %s";
     private static final String INVALID_NUMBER_VALUE = "Portal-526: Invalid content for '%s', expected a number but was '%s'";
 
     /**

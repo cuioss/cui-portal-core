@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 import de.cuioss.tools.logging.CuiLogger;
@@ -36,7 +37,7 @@ import java.util.List;
 @ToString
 final class DirectoryDescriptor extends AbstractFileDescriptor {
 
-    private static final CuiLogger log = new CuiLogger(DirectoryDescriptor.class);
+    private static final CuiLogger LOGGER = new CuiLogger(DirectoryDescriptor.class);
 
     private List<String> content;
 
@@ -60,7 +61,7 @@ final class DirectoryDescriptor extends AbstractFileDescriptor {
                 }
             }
         } catch (IOException ex) {
-            log.warn(ex, "Directory %s could not be read", directory);
+            LOGGER.warn(ex, WARN.UNABLE_TO_READ_DIRECTORY.format(directory));
         }
         return fileNames;
     }

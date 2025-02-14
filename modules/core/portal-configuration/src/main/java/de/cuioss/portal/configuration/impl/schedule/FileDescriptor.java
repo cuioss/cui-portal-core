@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+
 /**
  * Provides some convenient methods for tracing detecting file-changes.
  *
@@ -32,7 +34,7 @@ import java.nio.file.Path;
 @ToString
 final class FileDescriptor extends AbstractFileDescriptor {
 
-    private static final CuiLogger log = new CuiLogger(FileDescriptor.class);
+    private static final CuiLogger LOGGER = new CuiLogger(FileDescriptor.class);
 
     private long modificationDate;
 
@@ -48,7 +50,7 @@ final class FileDescriptor extends AbstractFileDescriptor {
         try {
             modificationDate = retrieveModificationDate();
         } catch (final IOException e) {
-            log.warn(e, "Unable to read metadata for file %s", getPath());
+            LOGGER.warn(e, WARN.UNABLE_TO_READ_FILE.format(getPath()));
         }
     }
 
@@ -58,7 +60,7 @@ final class FileDescriptor extends AbstractFileDescriptor {
         try {
             newdate = retrieveModificationDate();
         } catch (final IOException e) {
-            log.warn(e, "Unable to read metadata for file %s", getPath());
+            LOGGER.warn(e, WARN.UNABLE_TO_READ_FILE.format(getPath()));
         }
 
         return newdate > modificationDate;

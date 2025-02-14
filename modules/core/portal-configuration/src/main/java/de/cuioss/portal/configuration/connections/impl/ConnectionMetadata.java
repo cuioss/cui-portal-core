@@ -49,7 +49,7 @@ public class ConnectionMetadata implements Serializable {
 
     private static final CuiLogger log = new CuiLogger(ConnectionMetadata.class);
 
-    private static final String PORTAL_510 = "Portal-510: Unable to create SSLContext for connection '{}', due to '{}', defaulting to default ssl configuration";
+    private static final String PORTAL_510 = "Portal-510: Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration";
 
     @Serial
     private static final long serialVersionUID = -8168073688801716947L;
@@ -219,26 +219,26 @@ public class ConnectionMetadata implements Serializable {
      * @return the created {@link SSLContext}
      */
     public Optional<SSLContext> resolveOptionalSSLContext() {
-        log.debug("Resolving optional SSLContext for connection '{}'", getConnectionId());
+        log.debug("Resolving optional SSLContext for connection '%s'", getConnectionId());
         if (null == getTrustStoreInfo() && null == getKeyStoreInfo()) {
             log.debug("SslTrustStoreInfo is null, using platform-default");
             return Optional.empty();
         }
-        log.debug("Create custom SSLContext for connection '{}'", getConnectionId());
+        log.debug("Create custom SSLContext for connection '%s'", getConnectionId());
         try {
             final var contextBuilder = SSLContexts.custom();
             if (null != getTrustStoreInfo()) {
                 var trustStore = getTrustStoreInfo().resolveKeyStore();
                 if (trustStore.isPresent()) {
                     contextBuilder.loadTrustMaterial(trustStore.get(), null);
-                    log.debug("truststore '{}' set for connection: {}", getTrustStoreInfo(), getConnectionId());
+                    log.debug("truststore '%s' set for connection: %s", getTrustStoreInfo(), getConnectionId());
                 }
             }
             if (null != getKeyStoreInfo()) {
                 var keyStore = getKeyStoreInfo().resolveKeyStore();
                 if (keyStore.isPresent()) {
                     contextBuilder.loadKeyMaterial(keyStore.get(), getKeyStoreInfo().getKeyOrStorePassword());
-                    log.debug("keystore {} set for connection: {}", getKeyStoreInfo().getLocation(), getConnectionId());
+                    log.debug("keystore %s set for connection: %s", getKeyStoreInfo().getLocation(), getConnectionId());
                 }
             }
             return Optional.of(contextBuilder.build());

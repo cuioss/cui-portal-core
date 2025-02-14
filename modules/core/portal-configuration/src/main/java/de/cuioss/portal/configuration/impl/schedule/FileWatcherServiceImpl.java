@@ -206,7 +206,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     TimeUnit.MILLISECONDS.sleep(EVENT_TIMEOUT);
                     handleChangedWatchKey(watchKey);
                 } catch (InterruptedException ie) {
-                    log.debug("Interrupted, exiting loop", ie);
+                    log.debug(ie, "Interrupted, exiting loop", ie);
                     Thread.currentThread().interrupt();
                     break;
                 } catch (ClosedWatchServiceException e) {
@@ -268,7 +268,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             try {
                 watcherService.close();
             } catch (IOException e) {
-                log.debug("Unable to close Watch-Service, due to '%s'", e.getMessage(), e);
+                log.debug(e, "Unable to close Watch-Service, due to %s", e.getMessage());
             }
         }
     }

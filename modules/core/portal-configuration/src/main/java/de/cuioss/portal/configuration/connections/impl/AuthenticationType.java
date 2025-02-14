@@ -95,21 +95,21 @@ public enum AuthenticationType {
      */
     public static AuthenticationType resolveFrom(String basename, Map<String, String> configuration) {
         if (null == configuration || configuration.isEmpty()) {
-            log.trace("No Properties given connection='{}', returning AuthenticationType.NONE", basename);
+            log.trace("No Properties given connection='%s', returning AuthenticationType.NONE", basename);
             return AuthenticationType.NONE;
         }
-        log.trace("Determining AuthenticationType for connection='{}' from properties {}", basename, configuration);
+        log.trace("Determining AuthenticationType for connection='%s' from properties %s", basename, configuration);
         var names = ConfigurationHelper.getFilteredPropertyMap(configuration, "authentication.", true);
         Set<String> elements = new TreeSet<>();
         for (String key : names.keySet()) {
             var lowerCaseKey = key.toLowerCase();
             if (lowerCaseKey.startsWith(TOKEN_APPLICATION.keyName)) {
-                log.trace("Determined AuthenticationType={}", TOKEN_APPLICATION);
+                log.trace("Determined AuthenticationType=%s", TOKEN_APPLICATION);
                 return AuthenticationType.TOKEN_APPLICATION;
             }
             if (lowerCaseKey.startsWith(TOKEN_FROM_USER.keyName)) {
-                log.trace("Determined AuthenticationType={}", TOKEN_FROM_USER);
-                return TOKEN_FROM_USER;
+                log.trace("Determined AuthenticationType=%s", TOKEN_FROM_USER);
+                return AuthenticationType.TOKEN_FROM_USER;
             }
             if (lowerCaseKey.contains(".")) {
                 // This filtering is needed to catch elements that are part of a longer key,
@@ -128,15 +128,15 @@ public enum AuthenticationType {
             elements.add(
                     configuration.getOrDefault("authentication", AuthenticationType.NONE.name()).trim().toLowerCase());
         }
-        log.debug("Connection='{}' extracted names {}", basename, elements);
+        log.debug("Connection='%s' extracted names %s", basename, elements);
         for (AuthenticationType type : AuthenticationType.values()) {
             if (elements.contains(type.keyName)) {
-                log.debug("Determined Authentication-Type '{}' for connection '{}'", type, basename);
+                log.debug("Determined Authentication-Type '%s' for connection '%s'", type, basename);
                 return type;
             }
         }
         log.warn("""
-                Portal-131: Unable to determine AuthenticationType for connection='{}' and properties, returning \
+                Portal-131: Unable to determine AuthenticationType for connection='%s' and properties, returning \
                 AuthenticationType.NONE\
                 """, basename, configuration);
         return AuthenticationType.NONE;

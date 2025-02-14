@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.util.Objects.requireNonNull;
@@ -42,7 +45,7 @@ import java.util.Optional;
 @ToString
 abstract class AbstractFileDescriptor {
 
-    private static final CuiLogger log = new CuiLogger(AbstractFileDescriptor.class);
+    private static final CuiLogger LOGGER = new CuiLogger(AbstractFileDescriptor.class);
 
     /**
      * The factory-method create() will always return a real-path for this field.
@@ -81,15 +84,14 @@ abstract class AbstractFileDescriptor {
         }
         var absolute = toBeWatched.toAbsolutePath();
         if (watchedPaths.containsValue(absolute)) {
-            log.debug("Path '{}' already registered, ignoring", absolute);
+            LOGGER.debug("Path '%s' already registered, ignoring", absolute);
             return;
         }
         try {
             watchedPaths.put(absolute.register(watcherService, ENTRY_MODIFY, ENTRY_DELETE, ENTRY_DELETE), absolute);
-            log.info("Portal-010: Watching for file changes at path: {}", absolute);
+            LOGGER.info(INFO.FILE_WATCH_STARTED.format(absolute));
         } catch (IOException e) {
-            log.error("Portal-517: Unable to schedule given Path for tracking for changes, due to '{}'", e.getMessage(),
-                    e);
+            LOGGER.error(e, ERROR.UNABLE_TO_SCHEDULE_PATH.format(e.getMessage()));
         }
     }
 
@@ -102,25 +104,23 @@ abstract class AbstractFileDescriptor {
      */
     static Optional<AbstractFileDescriptor> create(Path path) {
         if (null == path) {
-            log.warn("Portal-142: Path is null, therefore it can not be watched");
+            LOGGER.warn(WARN.PATH_INVALID.format("null", "is null"));
             return Optional.empty();
         }
         final var pathFile = MorePaths.getRealPathSafely(path).toFile();
         if (!pathFile.exists()) {
-            log.warn("Portal-142: Path '{}' does not exist, therefore it can not be watched",
-                    pathFile.getAbsolutePath());
+            LOGGER.warn(WARN.PATH_INVALID.format(pathFile.getAbsolutePath(), "does not exist"));
             return Optional.empty();
         }
         if (!pathFile.canRead()) {
-            log.warn("Portal-142: Path '{}' can not be read, therefore it can not be watched",
-                    pathFile.getAbsolutePath());
+            LOGGER.warn(WARN.PATH_INVALID.format(pathFile.getAbsolutePath(), "can not be read"));
             return Optional.empty();
         }
         if (pathFile.isDirectory()) {
-            log.debug("Found valid directory, wrapping '{}'", pathFile.getAbsolutePath());
+            LOGGER.debug("Found valid directory, wrapping '%s'", pathFile.getAbsolutePath());
             return Optional.of(new DirectoryDescriptor(pathFile.toPath()));
         }
-        log.debug("Found valid file, wrapping '{}'", pathFile.toPath());
+        LOGGER.debug("Found valid file, wrapping '%s'", pathFile.toPath());
         return Optional.of(new FileDescriptor(pathFile.toPath()));
     }
 }

@@ -22,6 +22,12 @@ public class PortalConfigurationMessages {
             .identifier(1)
             .template("Running in Production-Mode")
             .build();
+
+        public static final LogRecord FILE_WATCH_STARTED = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(10)  // Portal-010
+            .template("Watching for file changes at path: %s")
+            .build();
     }
 
     @UtilityClass
@@ -49,6 +55,24 @@ public class PortalConfigurationMessages {
             .identifier(103)
             .template("Invalid element found, watchKey='%s', ignoring")
             .build();
+
+        public static final LogRecord PATH_INVALID = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(142)  // Portal-142
+            .template("Path '%s' %s, therefore it can not be watched")
+            .build();
+
+        public static final LogRecord UNABLE_TO_READ_FILE = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(143)
+            .template("Unable to read metadata for file %s")
+            .build();
+
+        public static final LogRecord UNABLE_TO_READ_DIRECTORY = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(144)
+            .template("Directory %s could not be read")
+            .build();
     }
 
     @UtilityClass
@@ -71,6 +95,18 @@ public class PortalConfigurationMessages {
             .template("Invalid content for '%s%s', expected a boolean but was '%s'")
             .build();
 
+        public static final LogRecord INVALID_NUMBER = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(206)
+            .template("Invalid content for '%s', expected a number but was '%s'")
+            .build();
+
+        public static final LogRecord UNABLE_TO_SCHEDULE_PATH = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(517)  // Portal-517
+            .template("Unable to schedule given Path for tracking for changes, due to '%s'")
+            .build();
+
         public static final LogRecord FILE_SYSTEM_ACCESS_ERROR = LogRecordModel.builder()
             .prefix(PREFIX)
             .identifier(203)
@@ -87,12 +123,6 @@ public class PortalConfigurationMessages {
             .prefix(PREFIX)
             .identifier(205)
             .template("Handling fileChangedEvent failed for file %s")
-            .build();
-
-        public static final LogRecord INVALID_NUMBER = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(206)
-            .template("Invalid content for '%s', expected a number but was '%s'")
             .build();
 
         public static final LogRecord CONNECTION_ERROR = LogRecordModel.builder()
