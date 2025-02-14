@@ -89,7 +89,7 @@ public class ConnectionMetadataProducer {
     ConnectionMetadata produceConnectionMetadata(final InjectionPoint injectionPoint) {
         final var metaData = ConfigurationHelper.resolveAnnotation(injectionPoint, ConfigAsConnectionMetadata.class)
                 .orElseThrow(() -> new IllegalStateException("Invalid usage"));
-        log.trace("Producing configuration for '{}'", metaData.baseName());
+        log.trace("Producing configuration for '%s'", metaData.baseName());
         final var failOnInvalidConfiguration = metaData.failOnInvalidConfiguration();
         return createConnectionMetadata(metaData.baseName(), failOnInvalidConfiguration);
     }
@@ -108,7 +108,7 @@ public class ConnectionMetadataProducer {
      */
     public static ConnectionMetadata createConnectionMetadata(final String baseName,
             final boolean failOnInvalidConfiguration) {
-        log.trace("Creating ConnectionMetadata for '{}'", baseName);
+        log.trace("Creating ConnectionMetadata for '%s'", baseName);
         final var builder = ConnectionMetadata.builder();
         // Basename must be present
         final var name = suffixNameWithDot(requireNonNull(emptyToNull(baseName), MISSING_BASENAME_MSG));
@@ -144,7 +144,7 @@ public class ConnectionMetadataProducer {
         final var meta = builder.build();
         meta.getContextMap().putAll(ConfigurationHelper.getFilteredPropertyMap(properties,
                 suffixNameWithDot(ConnectionMetadataKeys.CONFIG_KEY), true));
-        log.debug("Created Connection Metadata '{}'", meta);
+        log.debug("Created Connection Metadata '%s'", meta);
         if (!failOnInvalidConfiguration) {
             return meta;
         }
@@ -169,11 +169,11 @@ public class ConnectionMetadataProducer {
     // extended
     private static void handleAuthentication(final String baseName, final boolean failOnInvalidConfiguration,
             final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
-        log.trace("Determining AuthenticationType for '{}'", baseName);
+        log.trace("Determining AuthenticationType for '%s'", baseName);
         // Determine Authentication
         final var authenticationType = AuthenticationType.resolveFrom(baseName, filteredProperties);
         builder.authenticationType(authenticationType);
-        log.debug("Detected AuthenticationType '{}' for baseName '{}'", authenticationType, baseName);
+        log.debug("Detected AuthenticationType '%s' for baseName '%s'", authenticationType, baseName);
         switch (authenticationType) {
             case BASIC:
                 final var userName = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);

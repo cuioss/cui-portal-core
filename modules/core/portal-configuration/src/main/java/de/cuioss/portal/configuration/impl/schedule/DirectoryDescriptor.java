@@ -60,7 +60,7 @@ final class DirectoryDescriptor extends AbstractFileDescriptor {
                 }
             }
         } catch (IOException ex) {
-            log.warn("Directory " + directory + " could not be read", ex);
+            log.warn(ex, "Directory %s could not be read", directory);
         }
         return fileNames;
     }
