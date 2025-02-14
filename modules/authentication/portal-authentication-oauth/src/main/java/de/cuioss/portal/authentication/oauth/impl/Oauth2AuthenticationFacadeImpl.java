@@ -165,7 +165,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             LOGGER.debug(DEBUG.CALLING_REDIRECT.format(retrieveUrl));
             oauthRedirector.get().sendRedirect(retrieveUrl);
         } catch (final IllegalStateException e) {
-            LOGGER.warn(WARN.REDIRECT_FAILED.format(), e);
+            LOGGER.warn(e, WARN.REDIRECT_FAILED.format());
         }
     }
 
@@ -271,7 +271,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(ERROR.CANNOT_GENERATE_CODE_CHALLENGE.format(), e);
+            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE.format());
             throw new IllegalStateException(e);
         }
 
@@ -380,7 +380,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             return objectReader.readValue(Base64.getDecoder().decode(tokenParts[1]));
         } catch (IOException e) {
-            LOGGER.info(INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]), e);
+            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
             return Collections.emptyMap();
         }
     }
@@ -393,7 +393,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                 return Optional.ofNullable(OauthAuthenticatedUserInfo
                         .createOf((AuthenticatedUserInfo) session.getAttribute(AUTHENTICATED_USER_INFO_KEY)));
             } catch (final IllegalStateException e) {
-                LOGGER.debug(DEBUG.GET_ATTRIBUTE_FAILED.format(), e);
+                LOGGER.debug(e, DEBUG.GET_ATTRIBUTE_FAILED.format());
             }
         }
         return Optional.empty();
@@ -408,7 +408,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                         + Integer.parseInt(currentUser.get().getToken().getExpires_in()) - 10;
                 return String.valueOf(interval);
             } catch (final NumberFormatException e) {
-                LOGGER.debug("token.expires_in not a valid number", e);
+                LOGGER.debug(e, "token.expires_in not a valid number");
             }
         }
         return null;
@@ -453,7 +453,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
         final var logoutUrl = config.getLogoutUri()
                 + UrlParameter.createParameterString(queryParams.toArray(UrlParameter.class));
-        LOGGER.trace("logoutUrl: {}", logoutUrl);
+        LOGGER.trace("logoutUrl: %s", logoutUrl);
 
         return logoutUrl;
     }
@@ -501,10 +501,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             final var expires = timestamp + Integer.parseInt(token.getExpires_in()) - 10;
             final boolean valid = expires > (int) (System.currentTimeMillis() / 1000L);
-            LOGGER.trace("checked expire time. token valid?: {}", valid);
+            LOGGER.trace("checked expire time. token valid?: %s", valid);
             return valid;
         } catch (final NumberFormatException e) {
-            LOGGER.error(ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER.format(), e);
+            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER.format());
             return false;
         }
     }
