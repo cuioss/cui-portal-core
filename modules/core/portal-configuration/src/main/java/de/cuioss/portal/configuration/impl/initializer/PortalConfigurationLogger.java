@@ -42,20 +42,20 @@ import java.util.Map.Entry;
 @PortalInitializer
 public class PortalConfigurationLogger implements ApplicationInitializer {
 
-    private static final CuiLogger log = new CuiLogger(PortalConfigurationLogger.class);
+    private static final CuiLogger LOGGER = new CuiLogger(PortalConfigurationLogger.class);
 
     @SuppressWarnings("squid:S2068") // False positive: This is no password
     private static final String FILTERED_PASSWORD = "FILTERED_PASSWORD";
 
     @Override
     public void initialize() {
-        if (!log.isInfoEnabled()) {
+        if (!LOGGER.isInfoEnabled()) {
             return;
         }
 
-        log.info("JVM Configuration:\n" + Joiner.on('\n').join(extractSystemProperties()));
-        log.info("Environment Configuration:\n" + Joiner.on('\n').join(extractProperties(System.getenv())));
-        log.info("Portal Configuration:\n"
+        LOGGER.info("JVM Configuration:\n" + Joiner.on('\n').join(extractSystemProperties()));
+        LOGGER.info("Environment Configuration:\n" + Joiner.on('\n').join(extractProperties(System.getenv())));
+        LOGGER.info("Portal Configuration:\n"
                 + Joiner.on('\n').join(extractProperties(ConfigurationHelper.resolveConfigProperties())));
     }
 

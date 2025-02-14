@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 @Builder(toBuilder = true)
 public class ConnectionMetadata implements Serializable {
 
-    private static final CuiLogger log = new CuiLogger(ConnectionMetadata.class);
+    private static final CuiLogger LOGGER = new CuiLogger(ConnectionMetadata.class);
 
     private static final String PORTAL_510 = "Portal-510: Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration";
 
@@ -219,32 +219,32 @@ public class ConnectionMetadata implements Serializable {
      * @return the created {@link SSLContext}
      */
     public Optional<SSLContext> resolveOptionalSSLContext() {
-        log.debug("Resolving optional SSLContext for connection '%s'", getConnectionId());
+        LOGGER.debug("Resolving optional SSLContext for connection '%s'", getConnectionId());
         if (null == getTrustStoreInfo() && null == getKeyStoreInfo()) {
-            log.debug("SslTrustStoreInfo is null, using platform-default");
+            LOGGER.debug("SslTrustStoreInfo is null, using platform-default");
             return Optional.empty();
         }
-        log.debug("Create custom SSLContext for connection '%s'", getConnectionId());
+        LOGGER.debug("Create custom SSLContext for connection '%s'", getConnectionId());
         try {
             final var contextBuilder = SSLContexts.custom();
             if (null != getTrustStoreInfo()) {
                 var trustStore = getTrustStoreInfo().resolveKeyStore();
                 if (trustStore.isPresent()) {
                     contextBuilder.loadTrustMaterial(trustStore.get(), null);
-                    log.debug("truststore '%s' set for connection: %s", getTrustStoreInfo(), getConnectionId());
+                    LOGGER.debug("truststore '%s' set for connection: %s", getTrustStoreInfo(), getConnectionId());
                 }
             }
             if (null != getKeyStoreInfo()) {
                 var keyStore = getKeyStoreInfo().resolveKeyStore();
                 if (keyStore.isPresent()) {
                     contextBuilder.loadKeyMaterial(keyStore.get(), getKeyStoreInfo().getKeyOrStorePassword());
-                    log.debug("keystore %s set for connection: %s", getKeyStoreInfo().getLocation(), getConnectionId());
+                    LOGGER.debug("keystore %s set for connection: %s", getKeyStoreInfo().getLocation(), getConnectionId());
                 }
             }
             return Optional.of(contextBuilder.build());
         } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
                 | KeyManagementException e) {
-            log.error(e, PORTAL_510, connectionId, e.getMessage());
+            LOGGER.error(e, PORTAL_510, connectionId, e.getMessage());
             return Optional.empty();
         }
     }

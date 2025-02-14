@@ -69,7 +69,7 @@ public enum AuthenticationType {
     @Getter
     private final boolean tokenType;
 
-    private static final CuiLogger log = new CuiLogger(AuthenticationType.class);
+    private static final CuiLogger LOGGER = new CuiLogger(AuthenticationType.class);
 
     /**
      * Determines the authentication-type from a given map with connection related
@@ -95,20 +95,20 @@ public enum AuthenticationType {
      */
     public static AuthenticationType resolveFrom(String basename, Map<String, String> configuration) {
         if (null == configuration || configuration.isEmpty()) {
-            log.trace("No Properties given connection='%s', returning AuthenticationType.NONE", basename);
+            LOGGER.trace("No Properties given connection='%s', returning AuthenticationType.NONE", basename);
             return AuthenticationType.NONE;
         }
-        log.trace("Determining AuthenticationType for connection='%s' from properties %s", basename, configuration);
+        LOGGER.trace("Determining AuthenticationType for connection='%s' from properties %s", basename, configuration);
         var names = ConfigurationHelper.getFilteredPropertyMap(configuration, "authentication.", true);
         Set<String> elements = new TreeSet<>();
         for (String key : names.keySet()) {
             var lowerCaseKey = key.toLowerCase();
             if (lowerCaseKey.startsWith(TOKEN_APPLICATION.keyName)) {
-                log.trace("Determined AuthenticationType=%s", TOKEN_APPLICATION);
+                LOGGER.trace("Determined AuthenticationType=%s", TOKEN_APPLICATION);
                 return AuthenticationType.TOKEN_APPLICATION;
             }
             if (lowerCaseKey.startsWith(TOKEN_FROM_USER.keyName)) {
-                log.trace("Determined AuthenticationType=%s", TOKEN_FROM_USER);
+                LOGGER.trace("Determined AuthenticationType=%s", TOKEN_FROM_USER);
                 return AuthenticationType.TOKEN_FROM_USER;
             }
             if (lowerCaseKey.contains(".")) {
@@ -124,18 +124,18 @@ public enum AuthenticationType {
 
         }
         if (elements.isEmpty()) {
-            log.trace("Check whether there is a key / value like 'authentication=certificate'. Otherwise add NONE");
+            LOGGER.trace("Check whether there is a key / value like 'authentication=certificate'. Otherwise add NONE");
             elements.add(
                     configuration.getOrDefault("authentication", AuthenticationType.NONE.name()).trim().toLowerCase());
         }
-        log.debug("Connection='%s' extracted names %s", basename, elements);
+        LOGGER.debug("Connection='%s' extracted names %s", basename, elements);
         for (AuthenticationType type : AuthenticationType.values()) {
             if (elements.contains(type.keyName)) {
-                log.debug("Determined Authentication-Type '%s' for connection '%s'", type, basename);
+                LOGGER.debug("Determined Authentication-Type '%s' for connection '%s'", type, basename);
                 return type;
             }
         }
-        log.warn("""
+        LOGGER.warn("""
                 Portal-131: Unable to determine AuthenticationType for connection='%s' and properties, returning \
                 AuthenticationType.NONE\
                 """, basename, configuration);
