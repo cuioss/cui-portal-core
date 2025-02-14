@@ -92,7 +92,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
                     lookupKey);
         }
 
-        LOGGER.warn(BUNDLE.WARN.KEY_NOT_FOUND.format(
+        LOGGER.warn(() -> BUNDLE.WARN.KEY_NOT_FOUND.format(
                 lookupKey, resourceBundleRegistry.getResolvedPaths()));
         return "??" + lookupKey + "??";
     }
@@ -105,7 +105,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
      * @param newLocale
      */
     void actOnLocaleChangeEven(@Observes @LocaleChangeEvent final Locale newLocale) {
-        LOGGER.debug(BUNDLE.DEBUG.LOCALE_CHANGED.format(newLocale));
+        LOGGER.debug(() -> BUNDLE.DEBUG.LOCALE_CHANGED.format(newLocale));
         resolvedBundles = null;
     }
 
@@ -118,7 +118,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
                 path.getBundle(currentLocale).ifPresent(builder::add);
             }
             resolvedBundles = builder.toImmutableList();
-            LOGGER.debug(BUNDLE.DEBUG.RESOLVED.format(
+            LOGGER.debug(() -> BUNDLE.DEBUG.RESOLVED.format(
                     resolvedBundles.size(), currentLocale));
         }
         return resolvedBundles;

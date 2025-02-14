@@ -52,7 +52,7 @@ public enum ProjectStage implements CuiProjectStage {
             }
         }
 
-        LOGGER.error(STAGE.ERROR.INVALID_STAGE.format(stage));
+        LOGGER.error(() -> STAGE.ERROR.INVALID_STAGE.format(stage));
         return ProjectStage.PRODUCTION;
     }
 

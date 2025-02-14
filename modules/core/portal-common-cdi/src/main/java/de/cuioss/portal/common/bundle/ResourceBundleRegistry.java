@@ -100,23 +100,23 @@ public class ResourceBundleRegistry implements Serializable {
             if (resolvedBundle.isPresent() && locator.getBundlePath().isPresent()) {
                 var bundlePath = locator.getBundlePath().get();
                 if (registeredPaths.contains(bundlePath)) {
-                    LOGGER.warn(BUNDLE.WARN.DUPLICATE_PATH.format(bundlePath));
+                    LOGGER.warn(() -> BUNDLE.WARN.DUPLICATE_PATH.format(bundlePath));
                 } else {
-                    LOGGER.debug(BUNDLE.DEBUG.ADDING.format(bundlePath));
+                    LOGGER.debug(() -> BUNDLE.DEBUG.ADDING.format(bundlePath));
                     validLocators.add(locator);
                     registeredPaths.add(bundlePath);
                 }
             } else {
-                LOGGER.warn(BUNDLE.WARN.MISSING_PATH.format(locator.getClass().getName()));
+                LOGGER.warn(() -> BUNDLE.WARN.MISSING_PATH.format(locator.getClass().getName()));
             }
         }
 
         resolvedPaths = validLocators.toImmutableList();
 
         if (resolvedPaths.isEmpty()) {
-            LOGGER.warn(BUNDLE.WARN.NO_VALID_BUNDLES.format());
+            LOGGER.warn(BUNDLE.WARN.NO_VALID_BUNDLES::format);
         } else {
-            LOGGER.debug(BUNDLE.DEBUG.RESULTING.format(
+            LOGGER.debug(() -> BUNDLE.DEBUG.RESULTING.format(
                     resolvedPaths.stream()
                             .map(loc -> loc.getBundlePath().orElse("undefined"))
                             .collect(Collectors.joining(", "))));
