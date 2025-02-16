@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.DEBUG;
 import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
 import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
 import static de.cuioss.tools.base.Preconditions.checkState;
@@ -136,7 +135,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
         final String tokenUri = configuration.getTokenUri().trim();
         final String redirectUri = configuration.getExternalContextPath().trim() + servletRequest.getRequestURI();
-        LOGGER.debug(DEBUG.CREATING_AUTH_USER_INFO.format(scopes, tokenUri, redirectUri));
+        LOGGER.debug("Creating authenticated user info with scopes: %s, tokenUri: %s, redirectUri: %s", scopes, tokenUri, redirectUri);
 
         try (final RequestToken requestToken = builder.url(tokenUri).build(RequestToken.class)) {
             token = requestToken.requestToken(
