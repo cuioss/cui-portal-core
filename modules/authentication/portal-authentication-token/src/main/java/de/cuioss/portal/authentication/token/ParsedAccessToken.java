@@ -85,12 +85,12 @@ public class ParsedAccessToken extends ParsedToken {
      */
     public Set<String> getScopes() {
         if (!jsonWebToken.containsClaim(CLAIM_NAME_SCOPE)) {
-            LOGGER.debug("No Scopes available");
+            LOGGER.debug("No scopes available for token");
             return Set.of();
         }
 
         var result = Splitter.on(' ').splitToList(jsonWebToken.getClaim(CLAIM_NAME_SCOPE));
-        LOGGER.debug("Extracted scopes: '%s'", result);
+        LOGGER.debug("Extracted scopes: %s", result);
         return new TreeSet<>(result);
     }
 

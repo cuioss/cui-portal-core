@@ -61,7 +61,7 @@ public class ParsedRefreshToken implements Serializable {
      */
     public static ParsedRefreshToken fromTokenString(String tokenString) {
         if (MoreStrings.isEmpty(tokenString)) {
-            LOGGER.debug("Creating empty refresh token");
+            LOGGER.debug("Creating refresh token from empty token string");
         }
         return new ParsedRefreshToken(tokenString);
     }
