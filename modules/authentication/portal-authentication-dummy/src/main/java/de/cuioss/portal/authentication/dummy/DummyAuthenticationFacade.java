@@ -45,7 +45,7 @@ import java.util.List;
 public class DummyAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private static final String DUMMY = "dummy";
-    private static final CuiLogger log = new CuiLogger(DummyAuthenticationFacade.class);
+    private static final CuiLogger LOGGER = new CuiLogger(DummyAuthenticationFacade.class);
 
     static final AuthenticatedUserInfo NOT_LOGGED_IN = new BaseAuthenticatedUserInfo(false, DUMMY, DUMMY, DUMMY, DUMMY);
 
@@ -60,25 +60,25 @@ public class DummyAuthenticationFacade implements FormBasedAuthenticationFacade 
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
             final LoginCredentials loginCredentials) {
-        log.debug("Login called");
+        LOGGER.debug("Login called");
         return AuthenticationResults.validResult(NOT_LOGGED_IN);
     }
 
     @Override
     public boolean logout(final HttpServletRequest servletRequest) {
-        log.debug("Logout called");
+        LOGGER.debug("Logout called");
         return false;
     }
 
     @Override
     public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(final HttpServletRequest servletRequest) {
-        log.debug("retrieveCurrentAuthenticationContext called");
+        LOGGER.debug("retrieveCurrentAuthenticationContext called");
         return NOT_LOGGED_IN;
     }
 
     @Override
     public List<UserStore> getAvailableUserStores() {
-        log.debug("getAvailableUserStores called");
+        LOGGER.debug("getAvailableUserStores called");
         return Collections.emptyList();
     }
 
