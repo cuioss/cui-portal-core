@@ -52,10 +52,4 @@ public class PortalTokenLogMessages {
             .identifier(102)
             .template("Unable to parse token due to ParseException")
             .build();
-
-    public static final LogRecord COULD_NOT_PARSE_TOKEN_TRACE = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(103)
-            .template("Offending token '%s'")
-            .build();
 }

@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static de.cuioss.tools.string.MoreStrings.trimOrNull;
-
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -30,6 +28,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
+
+import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 
 /**
  * Wrapper around {@link JsonWebToken}
@@ -47,17 +47,17 @@ public abstract class ParsedToken {
         return jsonWebToken.getRawToken();
     }
 
-    protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger logger) {
-        logger.trace("Parsing token '%s'", tokenString);
+    protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger givenLogger) {
+        givenLogger.trace("Parsing token '%s'", tokenString);
         if (MoreStrings.isEmpty(trimOrNull(tokenString))) {
-            logger.warn(PortalTokenLogMessages.TOKEN_IS_EMPTY::format);
+            givenLogger.warn(PortalTokenLogMessages.TOKEN_IS_EMPTY::format);
             return Optional.empty();
         }
         try {
             return Optional.ofNullable(tokenParser.parse(tokenString));
         } catch (ParseException e) {
-            logger.warn(e, PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN::format);
-            logger.trace(() -> PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN_TRACE.format(tokenString));
+            givenLogger.warn(e, PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN::format);
+            givenLogger.trace("Offending token '%s'", tokenString);
             return Optional.empty();
         }
     }

@@ -16,7 +16,6 @@ This document describes the log messages used in the Portal Token Module.
 | 100 | "Token exceeds maximum size limit of %s bytes" | Logged when a token's size exceeds the maximum allowed limit |
 | 101 | "The given token was empty" | Logged when attempting to process an empty token |
 | 102 | "Unable to parse token due to ParseException" | Logged when token parsing fails |
-| 103 | "Offending token '%s'" | Logged with details of the token that failed to parse |
 
 ### Error Messages (200-299)
 Currently, no error messages are defined.
