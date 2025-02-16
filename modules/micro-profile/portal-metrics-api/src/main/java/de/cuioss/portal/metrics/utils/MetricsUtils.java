@@ -20,6 +20,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.metrics.PortalMetricsLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.WebApplicationException;
 import lombok.experimental.UtilityClass;
@@ -28,6 +29,7 @@ import org.eclipse.microprofile.metrics.Tag;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -55,12 +57,13 @@ public class MetricsUtils {
      */
     public static String getAppName() {
         if (null == metricsAppName) {
+            LOGGER.debug("Resolving metrics application name");
             metricsAppName = resolveConfigProperty(MetricsConfigKeys.MP_METRICS_APP_NAME)
                     .orElseGet(() -> resolveConfigProperty(MetricsConfigKeys.PORTAL_METRICS_APP_NAME)
                             .orElseGet(() -> resolveConfigProperty(PortalConfigurationKeys.APPLICATION_CONTEXT_NAME)
                                     .orElseThrow(() -> new NoSuchElementException(
                                             "Invalid config. Missing 'mp.metrics.appName' or 'portal.metrics.appName'"))));
-            LOGGER.info("Portal-019: Metrics App-Name: {}", metricsAppName);
+            LOGGER.info(() -> PortalMetricsLogMessages.METRICS_APP_NAME.format(metricsAppName));
         }
         return metricsAppName;
     }
@@ -70,7 +73,9 @@ public class MetricsUtils {
      */
     public static Tag getAppTag() {
         if (null == metricsAppTag) {
+            LOGGER.debug("Creating application tag");
             metricsAppTag = new Tag("_app", getAppName());
+            LOGGER.debug("Created application tag: %s=%s", metricsAppTag.getTagName(), metricsAppTag.getTagValue());
         }
         return metricsAppTag;
     }
@@ -81,6 +86,7 @@ public class MetricsUtils {
      * @return MetricID with {@code _app}-Tag and tags given in {@code tags}.
      */
     public static MetricID createMetricId(final String name, final Tag... tags) {
+        LOGGER.debug("Creating metric ID for name '%s' with %s tags", name, tags != null ? tags.length : 0);
         return createMetricId(name, null, tags);
     }
 
@@ -92,6 +98,7 @@ public class MetricsUtils {
      *         Tag for the exception class.
      */
     public static MetricID createMetricId(final String name, final Throwable exception, final Tag... tags) {
+        LOGGER.debug("Creating metric ID for name '%s' with exception and %s tags", name, tags != null ? tags.length : 0);
         return createMetricIdBuilder(name, exception, immutableList(tags), null).build();
     }
 
@@ -105,21 +112,20 @@ public class MetricsUtils {
     public static MetricIdBuilder createMetricIdBuilder(final String name, final Throwable exception,
             final Collection<Tag> tags, final Collection<Function<Throwable, Tag>> exceptionTagMappers) {
 
+        LOGGER.debug("Building metric ID for name '%s'", name);
         final var idBuilder = new MetricIdBuilder().name(name).tag(getAppTag()).exception(exception)
                 .exceptionTagMapper(CLASSNAME_EXCEPTION_TAG_MAPPER)
                 .exceptionTagMapper(WEB_APPLICATION_EXCEPTION_TAG_MAPPER);
 
-        if (null != tags) {
-            for (Tag tag : tags) {
-                idBuilder.tag(tag);
-            }
-        }
+        Optional.ofNullable(tags).ifPresent(t -> {
+            LOGGER.debug("Adding %s tags to metric ID", t.size());
+            t.forEach(idBuilder::tag);
+        });
 
-        if (null != exceptionTagMappers) {
-            for (Function<Throwable, Tag> exceptionTagMapper : exceptionTagMappers) {
-                idBuilder.exceptionTagMapper(exceptionTagMapper);
-            }
-        }
+        Optional.ofNullable(exceptionTagMappers).ifPresent(mappers -> {
+            LOGGER.debug("Adding %s exception tag mappers to metric ID", mappers.size());
+            mappers.forEach(idBuilder::exceptionTagMapper);
+        });
 
         return idBuilder;
     }
@@ -129,17 +135,9 @@ public class MetricsUtils {
      * @return the resulting {@link Tag}
      */
     public static Tag createHttpStatusCodeTag(final jakarta.ws.rs.core.Response response) {
-        if (null != response) {
-            return createHttpStatusCodeTag(response.getStatus());
-        }
-        return null;
-    }
-
-    /**
-     * @param statusCode to create the {@link Tag}
-     * @return the resulting {@link Tag}
-     */
-    public static Tag createHttpStatusCodeTag(final int statusCode) {
-        return new Tag("httpStatusCode", String.valueOf(statusCode));
+        return Optional.ofNullable(response)
+                .map(jakarta.ws.rs.core.Response::getStatus)
+                .map(status -> new Tag("http_status", String.valueOf(status)))
+                .orElse(null);
     }
 }

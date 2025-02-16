@@ -23,6 +23,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.MoreStrings;
 import org.eclipse.microprofile.metrics.*;
 
 import java.util.Collections;
@@ -86,6 +87,7 @@ public class CaffeineCacheMetrics {
         this.cache = cache;
         this.cacheConfig = cacheConfig;
         this.tags = CollectionBuilder.copyFrom(tags).toArray(Tag.class);
+        LOGGER.debug("Created CaffeineCacheMetrics for cache '%s' with %s tags", namePrefix, this.tags.length);
     }
 
     /**
@@ -93,22 +95,31 @@ public class CaffeineCacheMetrics {
      * {@link Gauge}s with a consistent naming-scheme
      */
     private HashMap<Metadata, Gauge<? extends Number>> createMetrics() {
+        LOGGER.debug("Creating metrics for cache '%s'", namePrefix);
         final var metrics = new HashMap<Metadata, Gauge<? extends Number>>();
 
-        metrics.put(getMetadata("hitRate"), (Gauge<Double>) () -> cache.stats().hitRate());
-        metrics.put(getMetadata("hitCount"), (Gauge<Long>) () -> cache.stats().hitCount());
+        // Cache hit/miss metrics
+        metrics.put(getMetadata("hitRate"), cache.stats()::hitRate);
+        metrics.put(getMetadata("hitCount"), cache.stats()::hitCount);
+        metrics.put(getMetadata("missCount"), cache.stats()::missCount);
+        metrics.put(getMetadata("missRate"), cache.stats()::missRate);
 
-        metrics.put(getMetadata("missCount"), (Gauge<Long>) () -> cache.stats().missCount());
-        metrics.put(getMetadata("missRate"), (Gauge<Double>) () -> cache.stats().missRate());
+        // Cache load metrics
+        metrics.put(getMetadata("loadCount"), cache.stats()::loadCount);
+        metrics.put(getMetadata("loadSuccessCount"), cache.stats()::loadSuccessCount);
+        metrics.put(getMetadata("loadFailureCount"), cache.stats()::loadFailureCount);
+        metrics.put(getMetadata("loadFailureRate"), cache.stats()::loadFailureRate);
 
-        metrics.put(getMetadata("loadFailureCount"), (Gauge<Long>) () -> cache.stats().loadFailureCount());
-        metrics.put(getMetadata("loadFailureRate"), (Gauge<Double>) () -> cache.stats().loadFailureRate());
-        metrics.put(getMetadata("evictionCount"), (Gauge<Long>) () -> cache.stats().evictionCount());
+        // Cache size metrics
+        metrics.put(getMetadata("evictionCount"), cache.stats()::evictionCount);
+        metrics.put(getMetadata("estimatedSize"), cache::estimatedSize);
+        metrics.put(getMetadata("maxSize"), cacheConfig::getSize);
 
-        metrics.put(getMetadata("config.size"), (Gauge<Long>) cacheConfig::getSize);
-        metrics.put(getMetadata("config.expiration"),
-                (Gauge<Long>) () -> cacheConfig.getTimeUnit().toMillis(cacheConfig.getExpiration()));
+        // Cache timing metrics
+        metrics.put(getMetadata("averageLoadPenalty"), cache.stats()::averageLoadPenalty);
+        metrics.put(getMetadata("totalLoadTime"), cache.stats()::totalLoadTime);
 
+        LOGGER.debug("Created %s metrics for cache '%s'", metrics.size(), namePrefix);
         return metrics;
     }
 
@@ -124,7 +135,9 @@ public class CaffeineCacheMetrics {
      */
     public void bindTo(final MetricRegistry registry) {
         requireNonNull(registry);
-        var metrics = createMetrics();
+        LOGGER.debug("Binding metrics for cache '%s' to registry", namePrefix);
+        final var metrics = createMetrics();
         metrics.forEach((meta, metric) -> registry.gauge(meta, metric::getValue, tags));
+        LOGGER.info(() -> PortalMetricsLogMessages.CACHE_METRICS_REGISTERED.format(metrics.size(), namePrefix));
     }
 }

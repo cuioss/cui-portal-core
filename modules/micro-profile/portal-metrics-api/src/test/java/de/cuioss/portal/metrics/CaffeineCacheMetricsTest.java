@@ -37,7 +37,7 @@ class CaffeineCacheMetricsTest {
         final MetricRegistry registry = new PortalTestMetricRegistry();
         new CaffeineCacheMetrics(prefix, cache, cacheConfig).bindTo(registry);
 
-        assertEquals(9, registry.getGauges().size());
+        assertEquals(13, registry.getGauges().size());
         assertTrue(registry.getGauges().firstKey().getName().startsWith(prefix));
     }
 }
