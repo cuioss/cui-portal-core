@@ -44,8 +44,6 @@ import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
-import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -77,16 +75,13 @@ import static java.util.Objects.requireNonNull;
 @PortalAuthenticationFacade
 @ApplicationScoped
 public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
-        implements Serializable, Oauth2AuthenticationFacade {
+        implements Oauth2AuthenticationFacade {
 
     private static final CuiLogger LOGGER = new CuiLogger(Oauth2AuthenticationFacadeImpl.class);
 
     private static final String ERROR_ACCESS_DENIED = "access_denied";
 
     private static final String ERROR_INVALID_SCOPE = "invalid_scope";
-
-    @Serial
-    private static final long serialVersionUID = -7635870199193359039L;
 
     private static final String AUTHENTICATED_USER_INFO_KEY = "AuthenticatedUserInfo";
     private static final String STATE_KEY = "State";
@@ -182,10 +177,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                     throw new OauthAuthenticationException("system.exception.oauth.consent");
                 }
                 if (ERROR_INVALID_SCOPE.equals(error.get().getValue())) {
-                    LOGGER.warn(() -> WARN.INVALID_SCOPE.format(parameters));
+                    LOGGER.warn(WARN.INVALID_SCOPE.format(parameters));
                     throw new OauthAuthenticationException("system.exception.oauth.invalidScope");
                 }
-                LOGGER.warn(() -> WARN.LOGIN_ERROR.format(parameters));
+                LOGGER.warn(WARN.LOGIN_ERROR.format(parameters));
                 throw new OauthAuthenticationException("system.exception.oauth.login");
             }
         }
@@ -200,7 +195,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         final AuthenticatedUserInfo sessionUser;
         synchronized (codeLock) {
             if (null == servletRequest.getSession().getAttribute(STATE_KEY)) {
-                LOGGER.warn(() -> WARN.UNKNOWN_STATE.format(state.getValue()));
+                LOGGER.warn(WARN.UNKNOWN_STATE.format(state.getValue()));
                 return Optional.empty();
             }
             if (state.getValue().equals(servletRequest.getSession().getAttribute(STATE_KEY))) {
@@ -370,7 +365,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         }
         final var tokenParts = token.getId_token().split("\\.");
         if (tokenParts.length != 3) {
-            LOGGER.info(() -> INFO.ID_TOKEN_SPLIT_FAILED.format(token.getId_token()));
+            LOGGER.info(INFO.ID_TOKEN_SPLIT_FAILED.format(token.getId_token()));
             return Collections.emptyMap();
         }
         var objectReader = new ObjectMapper().reader().forType(new TypeReference<Map<String, Object>>() {
@@ -379,7 +374,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             return objectReader.readValue(Base64.getDecoder().decode(tokenParts[1]));
         } catch (IOException e) {
-            LOGGER.info(e, () -> INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
+            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
             return Collections.emptyMap();
         }
     }
