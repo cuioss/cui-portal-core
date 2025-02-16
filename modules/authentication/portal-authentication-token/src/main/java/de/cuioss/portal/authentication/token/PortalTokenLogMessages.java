@@ -19,64 +19,43 @@ import de.cuioss.tools.logging.LogRecord;
 import de.cuioss.tools.logging.LogRecordModel;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Defines the log messages for the Portal Token module.
+ */
 @UtilityClass
-public class LogMessages {
+public class PortalTokenLogMessages {
 
-    public static final String PREFIX = "Portal";
+    private static final String PREFIX = "PortalToken";
 
-    // Info-Level
+    // Info-Level (001-099)
     public static final LogRecord CONFIGURED_JWKS = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(120)
+            .identifier(1)
             .template("Initializing JWKS lookup, jwks-endpoint='%s', refresh-interval='%s', issuer = '%s'")
             .build();
 
-    public static final LogRecord TOKEN_EMPTY = LogRecordModel.builder()
+    // Warn-Level (100-199)
+    public static final LogRecord TOKEN_SIZE_EXCEEDED = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(121)
-            .template("Token is empty or null")
+            .identifier(100)
+            .template("Token exceeds maximum size limit of %s bytes")
             .build();
 
-    public static final LogRecord INVALID_TOKEN_FORMAT = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(122)
-            .template("Invalid JWT token format: expected 3 parts but got %s")
-            .build();
-
-    public static final LogRecord TOKEN_PARSE_FAILED = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(123)
-            .template("Failed to parse token: %s")
-            .build();
-
-    public static final LogRecord PAYLOAD_SIZE_EXCEEDED = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(124)
-            .template("Decoded payload exceeds maximum size limit of %s bytes")
-            .build();
-
-    // WARN-LEVEL
     public static final LogRecord TOKEN_IS_EMPTY = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(130)
+            .identifier(101)
             .template("The given token was empty")
             .build();
 
     public static final LogRecord COULD_NOT_PARSE_TOKEN = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(131)
+            .identifier(102)
             .template("Unable to parse token due to ParseException")
             .build();
 
     public static final LogRecord COULD_NOT_PARSE_TOKEN_TRACE = LogRecordModel.builder()
             .prefix(PREFIX)
-            .identifier(132)
+            .identifier(103)
             .template("Offending token '%s'")
-            .build();
-
-    public static final LogRecord TOKEN_SIZE_EXCEEDED = LogRecordModel.builder()
-            .prefix(PREFIX)
-            .identifier(133)
-            .template("Token exceeds maximum size limit of %s bytes")
             .build();
 }

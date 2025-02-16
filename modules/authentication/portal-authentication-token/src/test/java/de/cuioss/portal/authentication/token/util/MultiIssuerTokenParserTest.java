@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.authentication.token.util;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.authentication.token.JwksAwareTokenParser;
 import de.cuioss.portal.authentication.token.JwksAwareTokenParserTest;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -25,6 +22,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+
+import static de.cuioss.portal.authentication.token.TestTokenProducer.ISSUER;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
 class MultiIssuerTokenParserTest {
@@ -87,9 +91,4 @@ class MultiIssuerTokenParserTest {
         assertFalse(parser.isPresent());
     }
 
-    @Test
-    void shouldHandleUnknownIssuerInToken() {
-        var parser = multiIssuerParser.getParserForIssuer("unknown-issuer");
-        assertFalse(parser.isPresent());
-    }
 }

@@ -42,7 +42,7 @@ class ParsedTokenTest {
                 TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
         assertFalse(jsonWebToken.isPresent());
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
+                PortalTokenLogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
     }
 
     @Test
@@ -54,7 +54,7 @@ class ParsedTokenTest {
 
         assertFalse(jsonWebToken.isPresent());
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+                PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
 
     @Test
@@ -67,7 +67,7 @@ class ParsedTokenTest {
         assertFalse(jsonWebToken.isPresent());
 
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+                PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
 
     @Test
@@ -79,7 +79,7 @@ class ParsedTokenTest {
                         TestTokenProducer.WRONG_SIGNATURE_TOKEN_PARSER, LOGGER);
         assertFalse(jsonWebToken.isPresent());
         LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+                PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
     }
 
     @Test

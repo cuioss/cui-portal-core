@@ -50,14 +50,14 @@ public abstract class ParsedToken {
     protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger logger) {
         logger.trace("Parsing token '%s'", tokenString);
         if (MoreStrings.isEmpty(trimOrNull(tokenString))) {
-            logger.warn(LogMessages.TOKEN_IS_EMPTY.format());
+            logger.warn(PortalTokenLogMessages.TOKEN_IS_EMPTY.format());
             return Optional.empty();
         }
         try {
             return Optional.ofNullable(tokenParser.parse(tokenString));
         } catch (ParseException e) {
-            logger.warn(e, LogMessages.COULD_NOT_PARSE_TOKEN.format());
-            logger.trace(() -> LogMessages.COULD_NOT_PARSE_TOKEN_TRACE.format(tokenString));
+            logger.warn(e, PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.format());
+            logger.trace(() -> PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN_TRACE.format(tokenString));
             return Optional.empty();
         }
     }

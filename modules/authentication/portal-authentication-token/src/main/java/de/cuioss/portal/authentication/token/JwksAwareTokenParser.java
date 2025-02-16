@@ -114,7 +114,7 @@ public class JwksAwareTokenParser implements JWTParser {
                 LOGGER.debug("Defaulting jwksRefreshIntervall to %s", 180);
                 containedContextInfo.setJwksRefreshInterval(180);
             }
-            LOGGER.info(LogMessages.CONFIGURED_JWKS.format(containedContextInfo.getPublicKeyLocation(), containedContextInfo.getJwksRefreshInterval(), containedContextInfo.getIssuedBy()));
+            LOGGER.info(PortalTokenLogMessages.CONFIGURED_JWKS.format(containedContextInfo.getPublicKeyLocation(), containedContextInfo.getJwksRefreshInterval(), containedContextInfo.getIssuedBy()));
             return new JwksAwareTokenParser(new DefaultJWTParser(containedContextInfo), containedContextInfo.getIssuedBy());
         }
     }

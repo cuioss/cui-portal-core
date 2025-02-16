@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.authentication.token.util;
 
-import de.cuioss.portal.authentication.token.LogMessages;
+import de.cuioss.portal.authentication.token.PortalTokenLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
@@ -80,18 +80,18 @@ public class NonValidatingJwtTokenParser {
      */
     public Optional<JsonWebToken> unsecured(String token) {
         if (MoreStrings.isEmpty(token)) {
-            LOGGER.info(LogMessages.TOKEN_EMPTY.format());
+            LOGGER.debug("Token is empty or null");
             return Optional.empty();
         }
 
         if (token.getBytes(StandardCharsets.UTF_8).length > MAX_TOKEN_SIZE) {
-            LOGGER.warn(LogMessages.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
+            LOGGER.warn(PortalTokenLogMessages.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
             return Optional.empty();
         }
 
         var parts = Splitter.on('.').splitToList(token);
         if (parts.size() != 3) {
-            LOGGER.info(LogMessages.INVALID_TOKEN_FORMAT.format(parts.size()));
+            LOGGER.debug("Invalid JWT token format: expected 3 parts but got %s", parts.size());
             return Optional.empty();
         }
 
@@ -99,7 +99,7 @@ public class NonValidatingJwtTokenParser {
             JsonObject claims = parsePayload(parts.get(1));
             return Optional.of(new NotValidatedJsonWebToken(claims));
         } catch (Exception e) {
-            LOGGER.info(e, LogMessages.TOKEN_PARSE_FAILED.format(e.getMessage()));
+            LOGGER.debug(e, "Failed to parse token: %s", e.getMessage());
             return Optional.empty();
         }
     }
@@ -108,7 +108,7 @@ public class NonValidatingJwtTokenParser {
         byte[] decoded = Base64.getUrlDecoder().decode(payload);
 
         if (decoded.length > MAX_PAYLOAD_SIZE) {
-            LOGGER.info(LogMessages.PAYLOAD_SIZE_EXCEEDED.format(MAX_PAYLOAD_SIZE));
+            LOGGER.debug("Decoded payload exceeds maximum size limit of %s bytes", MAX_PAYLOAD_SIZE);
             throw new IllegalStateException("Decoded payload exceeds maximum size limit");
         }
 
