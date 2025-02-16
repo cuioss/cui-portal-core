@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static java.util.stream.Collectors.toSet;
-
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Splitter;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -28,7 +26,13 @@ import lombok.ToString;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Represents an Access Token with corresponding information. In essence, it is a convenience type
@@ -85,12 +89,12 @@ public class ParsedAccessToken extends ParsedToken {
      */
     public Set<String> getScopes() {
         if (!jsonWebToken.containsClaim(CLAIM_NAME_SCOPE)) {
-            LOGGER.debug("No scopes available for token");
+            LOGGER.debug("No scope claim found in token");
             return Set.of();
         }
 
         var result = Splitter.on(' ').splitToList(jsonWebToken.getClaim(CLAIM_NAME_SCOPE));
-        LOGGER.debug("Extracted scopes: %s", result);
+        LOGGER.debug("Found scopes in token: %s", result);
         return new TreeSet<>(result);
     }
 
@@ -99,7 +103,14 @@ public class ParsedAccessToken extends ParsedToken {
      * @return boolean indicating whether the token provides all given Scopes
      */
     public boolean providesScopes(Collection<String> expectedScopes) {
-        return getScopes().containsAll(expectedScopes);
+        if (null == expectedScopes || expectedScopes.isEmpty()) {
+            LOGGER.debug("No scopes to check against");
+            return true;
+        }
+        var availableScopes = getScopes();
+        var result = availableScopes.containsAll(expectedScopes);
+        LOGGER.debug("Scope check result=%s (expected=%s, available=%s)", result, expectedScopes, availableScopes);
+        return result;
     }
 
     /**
@@ -109,7 +120,7 @@ public class ParsedAccessToken extends ParsedToken {
      * {@link #providesScopes(Collection)} it log on debug the corresponding scopes
      */
     public boolean providesScopesAndDebugIfScopesAreMissing(Collection<String> expectedScopes, String logContext,
-            CuiLogger logger) {
+                                                            CuiLogger logger) {
         Set<String> delta = determineMissingScopes(expectedScopes);
         if (delta.isEmpty()) {
             logger.trace("All expected scopes are present: {}, {}", expectedScopes, logContext);
@@ -139,14 +150,22 @@ public class ParsedAccessToken extends ParsedToken {
      * @return the roles defined in the 'roles' claim of the token
      */
     public Set<String> getRoles() {
+        LOGGER.debug("Retrieving roles from token");
         if (!jsonWebToken.containsClaim(CLAIM_NAME_ROLES)) {
+            LOGGER.debug("No roles claim found in token");
             return Set.of();
         }
 
-        return jsonWebToken.<JsonArray>getClaim(CLAIM_NAME_ROLES)
-                .getValuesAs(JsonString.class)
-                .stream()
-                .map(JsonString::getString).collect(toSet());
+        var roles = jsonWebToken.getClaim(CLAIM_NAME_ROLES);
+        if (roles instanceof JsonArray array) {
+            var result = array.getValuesAs(JsonString.class).stream()
+                    .map(JsonString::getString)
+                    .collect(toSet());
+            LOGGER.debug("Found roles in token: %s", result);
+            return result;
+        }
+        LOGGER.debug("Roles claim is not a JSON array");
+        return Set.of();
     }
 
     /**
@@ -183,9 +202,15 @@ public class ParsedAccessToken extends ParsedToken {
      * @return an optional containing the potential name
      */
     public Optional<String> getName() {
-        return Optional.ofNullable(jsonWebToken.getClaim(CLAIM_NAME_NAME));
+        LOGGER.debug("Retrieving name from token");
+        if (!jsonWebToken.containsClaim(CLAIM_NAME_NAME)) {
+            LOGGER.debug("No name claim found in token");
+            return Optional.empty();
+        }
+        String name = jsonWebToken.getClaim(CLAIM_NAME_NAME);
+        LOGGER.debug("Found name in token: %s", name);
+        return Optional.ofNullable(name);
     }
-
 
     /**
      * Resolves the preferred username from the token.

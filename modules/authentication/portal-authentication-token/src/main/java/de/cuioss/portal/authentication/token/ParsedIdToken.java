@@ -43,8 +43,13 @@ public class ParsedIdToken extends ParsedToken {
      * otherwise {@link Optional#empty()}
      */
     public static Optional<ParsedIdToken> fromTokenString(String tokenString, JWTParser tokenParser) {
+        LOGGER.debug("Creating ID token from token string");
         Optional<JsonWebToken> rawToken = jsonWebTokenFrom(tokenString, tokenParser, LOGGER);
-
+        if (rawToken.isEmpty()) {
+            LOGGER.debug("Failed to create ID token from string");
+            return Optional.empty();
+        }
+        LOGGER.debug("Successfully created ID token");
         return rawToken.map(ParsedIdToken::new);
     }
 
@@ -54,7 +59,13 @@ public class ParsedIdToken extends ParsedToken {
      * @return email if present
      */
     public Optional<String> getEmail() {
-        return jsonWebToken.claim("email");
+        LOGGER.debug("Retrieving email from ID token");
+        Optional<String> email = jsonWebToken.claim("email");
+        if (email.isEmpty()) {
+            LOGGER.debug("No email claim found in ID token");
+        } else {
+            LOGGER.debug("Found email in ID token: %s", email.get());
+        }
+        return email;
     }
-
 }

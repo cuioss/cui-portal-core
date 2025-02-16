@@ -17,6 +17,7 @@ package de.cuioss.portal.authentication.token;
 
 import de.cuioss.portal.authentication.token.util.MultiIssuerTokenParser;
 import de.cuioss.tools.base.Preconditions;
+import de.cuioss.tools.logging.CuiLogger;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ import java.util.Optional;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenFactory {
 
+    private static final CuiLogger LOGGER = new CuiLogger(TokenFactory.class);
+
     private final MultiIssuerTokenParser tokenParser;
 
     /**
@@ -38,13 +41,14 @@ public class TokenFactory {
      * @return A new TokenFactory instance
      */
     public static TokenFactory of(@NonNull JwksAwareTokenParser... tokenParser) {
-
         Preconditions.checkArgument(tokenParser.length > 0, "tokenParser must be set");
         var builder = MultiIssuerTokenParser.builder();
         for (JwksAwareTokenParser jwksAwareTokenParser : tokenParser) {
             builder.addParser(jwksAwareTokenParser);
         }
-        return new TokenFactory(builder.build());
+        var factory = new TokenFactory(builder.build());
+        LOGGER.debug("Created TokenFactory with %s parser(s)", tokenParser.length);
+        return factory;
     }
 
     /**
@@ -54,10 +58,13 @@ public class TokenFactory {
      * @return The parsed access token, which may be empty if the token is invalid or no parser is found
      */
     public Optional<ParsedAccessToken> createAccessToken(@NonNull String tokenString) {
+        LOGGER.debug("Creating access token");
         var parser = tokenParser.getParserForToken(tokenString);
         if (parser.isPresent()) {
+            LOGGER.debug("Found parser for token, attempting to create access token");
             return ParsedAccessToken.fromTokenString(tokenString, parser.get());
         }
+        LOGGER.debug("No suitable parser found for token");
         return Optional.empty();
     }
 
@@ -68,10 +75,13 @@ public class TokenFactory {
      * @return The parsed ID token, which may be empty if the token is invalid or no parser is found
      */
     public Optional<ParsedIdToken> createIdToken(@NonNull String tokenString) {
+        LOGGER.debug("Creating ID token");
         var parser = tokenParser.getParserForToken(tokenString);
         if (parser.isPresent()) {
+            LOGGER.debug("Found parser for token, attempting to create ID token");
             return ParsedIdToken.fromTokenString(tokenString, parser.get());
         }
+        LOGGER.debug("No suitable parser found for token");
         return Optional.empty();
     }
 
@@ -82,8 +92,11 @@ public class TokenFactory {
      * @return The parsed refresh token, which may be empty if the token is invalid or no parser is found
      */
     public Optional<ParsedRefreshToken> createRefreshToken(@NonNull String tokenString) {
-
+        LOGGER.debug("Creating refresh token");
         return tokenParser.getParserForToken(tokenString)
-                .map(parser -> ParsedRefreshToken.fromTokenString(tokenString));
+                .map(parser -> {
+                    LOGGER.debug("Found parser for token, creating refresh token");
+                    return ParsedRefreshToken.fromTokenString(tokenString);
+                });
     }
 }
