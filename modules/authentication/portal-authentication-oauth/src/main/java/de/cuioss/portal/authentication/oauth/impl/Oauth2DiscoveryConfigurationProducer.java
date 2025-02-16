@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
-import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.*;
-import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
-import static de.cuioss.tools.string.MoreStrings.isBlank;
-
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
 import de.cuioss.portal.restclient.CuiRestClientBuilder;
@@ -39,6 +34,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_DISCOVER_PATH;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
+import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
+import static de.cuioss.tools.string.MoreStrings.isBlank;
 
 /**
  * Produces {@link Oauth2Configuration} using the new config params
@@ -128,7 +131,7 @@ public class Oauth2DiscoveryConfigurationProducer {
         if (!isBlank(settingServerBaseUrl) && !isBlank(settingOauth2discoveryUri)) {
             final var builder = new CuiRestClientBuilder(LOGGER);
             final var discoveryURI = addTrailingSlashToUrl(settingServerBaseUrl) + settingOauth2discoveryUri;
-            LOGGER.debug(() -> DEBUG.USING_DISCOVERY_URI.format(discoveryURI));
+            LOGGER.debug("Using discovery URI: %s", discoveryURI);
             builder.url(discoveryURI);
             try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
                 final var discovery = discoveryEndpoint.getDiscovery();
@@ -140,7 +143,7 @@ public class Oauth2DiscoveryConfigurationProducer {
             LOGGER.warn(() -> WARN.CONFIG_KEYS_NOT_SET.format(OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH));
         }
 
-        LOGGER.debug(() -> INFO.CONFIG_CREATED.format(configuration));
+        LOGGER.debug("Configuration created: %s", configuration);
 
         if (null != configuration && configValidationEnabled.get()) {
             configuration.validate();
@@ -189,11 +192,11 @@ public class Oauth2DiscoveryConfigurationProducer {
         // overwrite well-known config, if present
 
         internalTokenUrl.get().ifPresent(url -> {
-            LOGGER.debug(() -> DEBUG.OVERWRITE_TOKEN_URL.format(newConfiguration.getTokenUri(), url));
+            LOGGER.debug("Overwriting token URL from %s to %s", newConfiguration.getTokenUri(), url);
             newConfiguration.setTokenUri(url);
         });
         internalUserInfoUrl.get().ifPresent(url -> {
-            LOGGER.debug(() -> DEBUG.OVERWRITE_USERINFO_URL.format(newConfiguration.getUserInfoUri(), url));
+            LOGGER.debug("Overwriting userinfo URL from %s to %s", newConfiguration.getUserInfoUri(), url);
             newConfiguration.setUserInfoUri(url);
         });
 
