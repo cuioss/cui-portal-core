@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.tools.logging.CuiLogger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,8 @@ public enum TokenType {
 
     ACCESS_TOKEN("Bearer"), ID_TOKEN("ID"), REFRESH_TOKEN("Refresh"), UNKNOWN("unknown");
 
+    private static final CuiLogger LOGGER = new CuiLogger(TokenType.class);
+
     @Getter
     private final String typeClaimName;
 
@@ -40,6 +43,7 @@ public enum TokenType {
                 return tokenType;
             }
         }
+        LOGGER.warn("Unknown token type: %s", typeClaimName);
         return UNKNOWN;
     }
 }
