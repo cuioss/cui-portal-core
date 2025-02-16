@@ -30,11 +30,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-public class TokenKeycloakITest extends KeycloakITBase {
+public class TokenKeycloakITTest extends KeycloakITBase {
 
     public static final String SCOPES = "openid email profile";
     public static final List<String> SCOPES_AS_LIST = Splitter.on(" ").splitToList(SCOPES);
-    private static final CuiLogger LOGGER = new CuiLogger(TokenKeycloakITest.class);
+    private static final CuiLogger LOGGER = new CuiLogger(TokenKeycloakITTest.class);
 
     @BeforeEach
     void initTls() {
