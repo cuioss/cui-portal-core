@@ -16,9 +16,9 @@
 package de.cuioss.portal.configuration.impl.producer;
 
 import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.*;
 import static de.cuioss.portal.configuration.cache.CacheConfig.*;
 import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.*;
 import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;

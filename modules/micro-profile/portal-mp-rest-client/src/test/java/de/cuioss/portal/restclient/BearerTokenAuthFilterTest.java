@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.restclient;
 
+import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
@@ -35,11 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
-
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnableMockWebServer

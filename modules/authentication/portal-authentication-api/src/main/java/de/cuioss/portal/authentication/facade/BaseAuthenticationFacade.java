@@ -56,10 +56,10 @@ public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
         if (null == authenticatedUserInfo) {
             return null;
         }
-        
+
         final List<PortalUserEnricher> sortedPortalUserEnrichers = PortalPriorities
                 .sortByPriority(mutableList(portalUserEnrichers));
-                
+
         var enrichedAuthenticatedUserInfo = authenticatedUserInfo;
         for (PortalUserEnricher portalUserEnricher : sortedPortalUserEnrichers) {
             var enriched = portalUserEnricher.apply(enrichedAuthenticatedUserInfo);

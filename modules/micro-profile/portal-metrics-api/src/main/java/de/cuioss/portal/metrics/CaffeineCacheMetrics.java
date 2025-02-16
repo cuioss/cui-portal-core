@@ -23,7 +23,6 @@ import com.github.benmanes.caffeine.cache.Cache;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.string.MoreStrings;
 import org.eclipse.microprofile.metrics.*;
 
 import java.util.Collections;

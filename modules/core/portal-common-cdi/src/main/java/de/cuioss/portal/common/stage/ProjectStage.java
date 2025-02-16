@@ -15,9 +15,10 @@
  */
 package de.cuioss.portal.common.stage;
 
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.STAGE;
+
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.STAGE;
 
 /**
  * Portal project stage.

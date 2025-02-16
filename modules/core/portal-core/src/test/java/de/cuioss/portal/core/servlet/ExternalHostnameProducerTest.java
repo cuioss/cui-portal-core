@@ -15,10 +15,13 @@
  */
 package de.cuioss.portal.core.servlet;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
-import de.cuioss.test.juli.junit5.EnableTestLogger;
-import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -30,10 +33,6 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests the {@link CuiExternalHostname} qualifier in conjunction with the hostname producer
@@ -101,7 +100,7 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match request server name and port");
-        LogAsserts.assertSingleLogMessagePresentContaining( TestLogLevel.DEBUG, "Resolved hostname: ");
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, "Resolved hostname: ");
     }
 
     @Test
@@ -111,6 +110,6 @@ class ExternalHostnameProducerTest {
         var name = hostname.get();
         assertNotNull(name, "Hostname should be injected");
         assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match X-Forwarded host and port");
-        LogAsserts.assertSingleLogMessagePresentContaining( TestLogLevel.DEBUG, "Resolved hostname: ");
+        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, "Resolved hostname: ");
     }
 }

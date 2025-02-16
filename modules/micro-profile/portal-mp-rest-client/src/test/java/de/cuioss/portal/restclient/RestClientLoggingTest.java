@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.restclient;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.generator.Generators;
@@ -44,9 +47,6 @@ import org.junit.jupiter.api.Test;
 import java.io.Closeable;
 import java.util.List;
 import java.util.logging.LogRecord;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnableMockWebServer

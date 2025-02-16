@@ -17,7 +17,7 @@ package de.cuioss.portal.common.bundle;
 
 import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
+
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;

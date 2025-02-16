@@ -16,24 +16,20 @@
 package de.cuioss.portal.authentication.facade;
 
 import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import jakarta.inject.Inject;
-
-import org.jboss.weld.junit5.auto.AddBeanClasses;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import jakarta.inject.Inject;
 import lombok.Getter;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 @EnableAutoWeld
-@AddBeanClasses({ MockBaseAuthenticationFacade.class, MockPortalUserEnricher.class })
+@AddBeanClasses({MockBaseAuthenticationFacade.class, MockPortalUserEnricher.class})
 @PropertyReflectionConfig(skip = true)
 class BaseAuthenticationFacadeTest implements ShouldBeNotNull<MockBaseAuthenticationFacade> {
 
@@ -48,9 +44,9 @@ class BaseAuthenticationFacadeTest implements ShouldBeNotNull<MockBaseAuthentica
         var displayName = STRING_GENERATOR.next();
         var identifier = STRING_GENERATOR.next();
         underTest.setAuthenticatedUserInfo(new BaseAuthenticatedUserInfo(true, displayName, identifier, null, null));
-        
+
         var result = underTest.retrieveCurrentAuthenticationContext(null);
-        
+
         assertNotNull(result);
         assertEquals(displayName, result.getDisplayName());
         assertEquals(identifier, result.getIdentifier());
@@ -68,6 +64,6 @@ class BaseAuthenticationFacadeTest implements ShouldBeNotNull<MockBaseAuthentica
     @Test
     void shouldHandleLogout() {
         var result = underTest.logout(null);
-        assertEquals(false, result);
+        assertFalse(result);
     }
 }

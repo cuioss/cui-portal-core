@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.core.listener;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.core.servlet.CuiContextPath;
@@ -34,9 +37,6 @@ import jakarta.servlet.annotation.WebListener;
 
 import java.util.Collections;
 import java.util.List;
-
-import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Central Listener for Application life-cycle events.

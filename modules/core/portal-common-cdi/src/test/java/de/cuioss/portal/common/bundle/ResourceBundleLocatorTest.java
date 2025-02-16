@@ -15,9 +15,9 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.InvalidBundlePath;

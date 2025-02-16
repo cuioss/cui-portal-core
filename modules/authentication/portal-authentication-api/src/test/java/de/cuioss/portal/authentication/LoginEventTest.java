@@ -16,18 +16,14 @@
 package de.cuioss.portal.authentication;
 
 import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
-import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresent;
 import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresent;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
 
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
-import de.cuioss.tools.logging.CuiLogger;
+import org.junit.jupiter.api.Test;
 
 @VerifyBuilder(required = {"action"})
 @EnableTestLogger

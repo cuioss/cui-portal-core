@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.restclient;
 
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.client.ClientRequestContext;
@@ -22,8 +24,6 @@ import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.Form;
 
 import java.io.IOException;
-
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
 /**
  * A {@linkplain ClientRequestFilter} to log the request uri, headers and body

@@ -15,10 +15,11 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationMessages;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.*;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import jakarta.annotation.PostConstruct;

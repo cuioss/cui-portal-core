@@ -15,10 +15,8 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;

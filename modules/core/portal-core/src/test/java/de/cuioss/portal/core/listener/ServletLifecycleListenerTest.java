@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.core.listener;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.core.servlet.CuiContextPath;
 import de.cuioss.test.jsf.mocks.CuiMockServletContext;
@@ -32,11 +35,6 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnableTestLogger

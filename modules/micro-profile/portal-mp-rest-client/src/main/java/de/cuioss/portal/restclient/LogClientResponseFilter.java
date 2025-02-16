@@ -50,7 +50,7 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
 
     @Override
     public void filter(final ClientRequestContext clientRequestContext,
-                       final ClientResponseContext clientResponseContext) throws IOException {
+            final ClientResponseContext clientResponseContext) throws IOException {
         try {
             log.info(RestClientLogMessages.INFO.RESPONSE_INFO.format(name, clientResponseContext.getStatus(),
                     clientResponseContext.getStatusInfo(), clientResponseContext.getAllowedMethods(),

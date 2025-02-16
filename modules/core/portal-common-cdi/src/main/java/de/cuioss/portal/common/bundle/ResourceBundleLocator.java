@@ -15,7 +15,8 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import de.cuioss.portal.common.PortalCommonCDILogMessages;
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
+
 import de.cuioss.tools.logging.CuiLogger;
 
 import java.io.Serializable;
@@ -23,8 +24,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 
 /**
  * Used for configuring ResourceBundles. Implementations should provide a
