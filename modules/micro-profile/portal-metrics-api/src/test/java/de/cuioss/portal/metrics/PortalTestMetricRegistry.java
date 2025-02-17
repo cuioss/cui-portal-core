@@ -15,17 +15,37 @@
  */
 package de.cuioss.portal.metrics;
 
+import de.cuioss.tools.collect.CollectionLiterals;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.metrics.*;
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricFilter;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Simple Mock variant of {@link MetricRegistry}. Partially implemented.
@@ -35,6 +55,8 @@ import java.util.function.Supplier;
  */
 @ApplicationScoped
 public class PortalTestMetricRegistry implements MetricRegistry {
+
+    private static final CuiLogger LOGGER = new CuiLogger(PortalTestMetricRegistry.class);
 
     private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException(
             "Not implemented yet");
@@ -125,6 +147,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public <T extends Number> Gauge<T> gauge(Metadata metadata, Supplier<T> supplier, Tag... tags) {
         metricMap.put(new MetricID(metadata.getName()), (Gauge) () -> null);
+        LOGGER.info("Gauge for metric '%s'", metadata.getName(), CollectionLiterals.mutableList(tags).stream().map(tag -> tag.getTagName() + "=" + tag.getTagValue()).collect(Collectors.toList()));
         return null;
     }
 
