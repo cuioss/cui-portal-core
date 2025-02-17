@@ -94,6 +94,8 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
         if (values == null) {
             throw new IllegalArgumentException("Map of values must not be null");
         }
+        LOGGER.debug("Creating annotation instance for class '%s'", annotationClass.getName());
+        LOGGER.trace("Annotation values: %s", values);
         return (T) initAnnotation(annotationClass, values);
     }
 
@@ -105,6 +107,8 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
      * @return annotation instance for the given type
      */
     public static <T extends Annotation> T of(Class<T> annotationClass) {
+        LOGGER.debug("Creating annotation instance for class '%s' with default values", 
+            annotationClass.getName());
         return of(annotationClass, Collections.emptyMap());
     }
 
@@ -119,6 +123,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
+        LOGGER.trace("Invoking method '%s' on annotation proxy", method.getName());
         switch (method.getName()) {
             case "hashCode" -> {
                 return hashCode();
@@ -137,12 +142,16 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             case "toString" -> {
                 return toString();
             }
-            default -> LOGGER.debug("Nothing to do with method %s", method);
+            default -> LOGGER.trace("Handling member access for method %s", method);
         }
         if (memberValues.containsKey(method.getName())) {
-            return memberValues.get(method.getName());
+            Object value = memberValues.get(method.getName());
+            LOGGER.trace("Returning member value for method '%s': %s", method.getName(), value);
+            return value;
         }
-        return method.getDefaultValue();
+        Object defaultValue = method.getDefaultValue();
+        LOGGER.trace("Returning default value for method '%s': %s", method.getName(), defaultValue);
+        return defaultValue;
     }
 
     /**

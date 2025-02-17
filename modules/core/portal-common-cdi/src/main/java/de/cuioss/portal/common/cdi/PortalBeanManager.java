@@ -19,6 +19,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static java.util.Objects.requireNonNull;
 
 import de.cuioss.portal.common.priority.PriorityComparator;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -37,6 +38,8 @@ import java.util.*;
 @UtilityClass
 public final class PortalBeanManager {
 
+    private static final CuiLogger LOGGER = new CuiLogger(PortalBeanManager.class);
+
     /**
      * Looks up a normal scoped CDI-bean programmatically.
      *
@@ -54,6 +57,9 @@ public final class PortalBeanManager {
         requireNonNull(beanClass, "beanClass");
         requireNonNull(beanManager, "beanManager");
 
+        LOGGER.debug("Attempting to resolve bean of type '%s' with qualifier '%s'", 
+            beanClass.getName(), annotationClass != null ? annotationClass.getName() : "none");
+
         final Set<Bean<?>> beanTypes = resolveBeanTypes(beanManager, beanClass, annotationClass);
         checkBeanTypesFound(beanClass, annotationClass, beanTypes);
         final var sortedBeans = sortByPriority(mutableList(beanTypes));
@@ -61,7 +67,10 @@ public final class PortalBeanManager {
         final var bean = (Bean<T>) sortedBeans.iterator().next();
         final CreationalContext<T> context = beanManager.createCreationalContext(bean);
         // Wild casting again
-        return (T) beanManager.getReference(bean, beanClass, context);
+        T result = (T) beanManager.getReference(bean, beanClass, context);
+        
+        LOGGER.debug("Successfully resolved bean: %s", result);
+        return result;
     }
 
     private static List<Bean<?>> sortByPriority(final List<Bean<?>> toBeSorted) {
