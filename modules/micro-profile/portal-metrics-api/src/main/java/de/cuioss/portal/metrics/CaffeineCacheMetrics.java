@@ -30,11 +30,42 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Provides a factory for programmatically creating and registering cache
- * metrics.
- * <p>
- * {@code Caffeine.newBuilder().recordStats()} should be used!
- *
+ * Factory for creating and registering Caffeine cache metrics in a MicroProfile Metrics registry.
+ * This class provides a convenient way to monitor cache performance by exposing various metrics
+ * such as hit rates, miss rates, load statistics, and size information.
+ * 
+ * <h2>Metrics Provided</h2>
+ * <ul>
+ *   <li>Hit/Miss Statistics:
+ *     <ul>
+ *       <li>hitRate - Ratio of cache hits to total lookups</li>
+ *       <li>hitCount - Number of cache hits</li>
+ *       <li>missCount - Number of cache misses</li>
+ *       <li>missRate - Ratio of cache misses to total lookups</li>
+ *     </ul>
+ *   </li>
+ *   <li>Load Statistics:
+ *     <ul>
+ *       <li>loadCount - Number of cache loads</li>
+ *       <li>loadSuccessCount - Number of successful cache loads</li>
+ *       <li>loadFailureCount - Number of failed cache loads</li>
+ *       <li>loadFailureRate - Ratio of failed loads to total loads</li>
+ *       <li>averageLoadPenalty - Average time spent loading new values</li>
+ *       <li>totalLoadTime - Total time spent loading new values</li>
+ *     </ul>
+ *   </li>
+ *   <li>Size Information:
+ *     <ul>
+ *       <li>estimatedSize - Current estimated size of the cache</li>
+ *       <li>maxSize - Maximum configured size of the cache</li>
+ *       <li>evictionCount - Number of cache evictions</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ * 
+ * <h2>Usage Example</h2>
+ * To use this class, ensure your cache is configured with {@code recordStats()} enabled:
+ * 
  * <pre>
  * &#64;Inject
  * &#64;ConfigAsCacheConfig(name = "cache.config.key")
@@ -43,10 +74,20 @@ import java.util.Map;
  * &#64;Inject
  * &#64;RegistryType(type = MetricRegistry.Type.APPLICATION)
  * private MetricRegistry appRegistry;
- * final Cache&lt;String, String&gt; cache = Caffeine.newBuilder().maximumSize(cacheConfig.getSize())
- *         .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit()).recordStats().build();
- * new CaffeineCacheMetrics("my-cache-name", cache, cacheConfig).bindTo(appRegistry);
+ *
+ * // Create cache with stats recording enabled
+ * Cache&lt;String, String&gt; cache = Caffeine.newBuilder()
+ *         .maximumSize(cacheConfig.getSize())
+ *         .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
+ *         .recordStats()
+ *         .build();
+ *
+ * // Register metrics
+ * new CaffeineCacheMetrics("my-cache", cache, cacheConfig).bindTo(appRegistry);
  * </pre>
+ *
+ * <p>All metrics will be prefixed with the provided name to distinguish between multiple caches.
+ * Optional tags can be added to provide additional context for the metrics.
  *
  * @author Oliver Wolff
  */
@@ -60,21 +101,28 @@ public class CaffeineCacheMetrics {
     private final Tag[] tags;
 
     /**
-     * @param namePrefix  must not be null nor empty. Used to separate different
-     *                    caches
-     * @param cache       must not be null
-     * @param cacheConfig the configuration for that cache must not be null
+     * Creates a new metrics factory for the given cache.
+     *
+     * @param namePrefix  must not be null nor empty. Used as prefix for all metrics to
+     *                    distinguish between different caches in the same registry
+     * @param cache       must not be null and should be configured with
+     *                    {@code recordStats()} enabled
+     * @param cacheConfig the configuration for the cache, must not be null
      */
     public CaffeineCacheMetrics(final String namePrefix, final Cache<?, ?> cache, final CacheConfig cacheConfig) {
         this(namePrefix, cache, cacheConfig, Collections.emptySet());
     }
 
     /**
-     * @param namePrefix  must not be null nor empty. Used to separate different
-     *                    caches
-     * @param cache       must not be null
-     * @param cacheConfig the configuration for that cache must not be null
-     * @param tags        tags to be added to each metric
+     * Creates a new metrics factory for the given cache with additional tags.
+     *
+     * @param namePrefix  must not be null nor empty. Used as prefix for all metrics to
+     *                    distinguish between different caches in the same registry
+     * @param cache       must not be null and should be configured with
+     *                    {@code recordStats()} enabled
+     * @param cacheConfig the configuration for the cache, must not be null
+     * @param tags        additional tags to be added to each metric for better
+     *                    categorization and filtering. May be empty but not null.
      */
     public CaffeineCacheMetrics(final String namePrefix, final Cache<?, ?> cache, final CacheConfig cacheConfig,
             final Iterable<Tag> tags) {
@@ -90,8 +138,10 @@ public class CaffeineCacheMetrics {
     }
 
     /**
-     * @return a newly created {@link Map} with {@link Metric} providing a number of
-     * {@link Gauge}s with a consistent naming-scheme
+     * Creates a map of metrics for the cache.
+     *
+     * @return a newly created {@link Map} containing {@link Metric} instances that
+     *         provide various cache statistics as {@link Gauge}s
      */
     private HashMap<Metadata, Gauge<? extends Number>> createMetrics() {
         LOGGER.debug("Creating metrics for cache '%s'", namePrefix);
@@ -127,9 +177,10 @@ public class CaffeineCacheMetrics {
     }
 
     /**
-     * Add metrics to the given {@link MetricRegistry}, if not present.
+     * Registers all cache metrics with the given registry. Each metric will be
+     * prefixed with the configured name prefix and include any configured tags.
      *
-     * @param registry to be used
+     * @param registry the metric registry to register the metrics with
      * @throws NullPointerException if registry is null
      */
     public void bindTo(final MetricRegistry registry) {

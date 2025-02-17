@@ -1,22 +1,4 @@
-/*
- * Copyright 2023 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cuioss.portal.metrics.utils;
-
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
@@ -32,9 +14,26 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+
 /**
- * Provides some convenience methods for metric related data
+ * Utility class providing helper methods for working with MicroProfile Metrics in the Portal context.
+ * This class focuses on creating consistent metric identifiers and handling common tag scenarios.
  *
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Automatic application name tagging for all metrics</li>
+ *   <li>Configurable through portal configuration properties</li>
+ * </ul>
+ *
+ * <h2>Configuration</h2>
+ * The application name for metrics is resolved in the following order:
+ * <ol>
+ *   <li>{@code mp.metrics.appName} - MicroProfile standard property</li>
+ *   <li>{@code portal.metrics.appName} - Portal-specific property</li>
+ *   <li>{@code portal.application.name} - Fallback to application name</li>
+ * </ol>
  */
 @UtilityClass
 public class MetricsUtils {
@@ -53,7 +52,16 @@ public class MetricsUtils {
     private static Tag metricsAppTag;
 
     /**
-     * @return this applications name for the metrics Tag {@code _app}.
+     * Retrieves the application name used for metrics tagging. The name is resolved
+     * from configuration properties in the following order:
+     * <ol>
+     *   <li>mp.metrics.appName</li>
+     *   <li>portal.metrics.appName</li>
+     *   <li>portal.application.name</li>
+     * </ol>
+     *
+     * @return the configured application name for metrics
+     * @throws NoSuchElementException if no application name is configured
      */
     public static String getAppName() {
         if (null == metricsAppName) {
@@ -69,7 +77,10 @@ public class MetricsUtils {
     }
 
     /**
-     * @return Tag with key {@code _app} and value {@link #getAppName()}.
+     * Creates a Tag with the application name. This tag is automatically added to
+     * all metrics created by this utility class.
+     *
+     * @return Tag with key {@code _app} and the configured application name as value
      */
     public static Tag getAppTag() {
         if (null == metricsAppTag) {
@@ -81,9 +92,11 @@ public class MetricsUtils {
     }
 
     /**
+     * Creates a MetricID with the application tag and any additional tags provided.
+     *
      * @param name metric name
-     * @param tags to be added
-     * @return MetricID with {@code _app}-Tag and tags given in {@code tags}.
+     * @param tags optional additional tags
+     * @return MetricID with application tag and provided tags
      */
     public static MetricID createMetricId(final String name, final Tag... tags) {
         LOGGER.debug("Creating metric ID for name '%s' with %s tags", name, tags != null ? tags.length : 0);
@@ -91,11 +104,13 @@ public class MetricsUtils {
     }
 
     /**
-     * @param name      of the metric
-     * @param exception to be converted into Tag
-     * @param tags      additional Tags
-     * @return MetricID with {@code _app}-Tag and tags given in {@code tags}, plus a
-     *         Tag for the exception class.
+     * Creates a MetricID with the application tag, exception-related tags, and any
+     * additional tags provided.
+     *
+     * @param name      metric name
+     * @param exception exception to extract tags from (may be null)
+     * @param tags      optional additional tags
+     * @return MetricID with application tag, exception tags, and provided tags
      */
     public static MetricID createMetricId(final String name, final Throwable exception, final Tag... tags) {
         LOGGER.debug("Creating metric ID for name '%s' with exception and %s tags", name, tags != null ? tags.length : 0);
@@ -103,14 +118,16 @@ public class MetricsUtils {
     }
 
     /**
-     * @param name                of the metric
-     * @param exception           to be processed into Tags
-     * @param tags                additional Tags
-     * @param exceptionTagMappers additional exception-to-Tag mapper functions
-     * @return MetricID with additional Tags depending on the given exception.
+     * Creates a builder for constructing a MetricID with advanced tag configuration.
+     * This method allows for custom exception tag mappers and additional tags.
+     *
+     * @param name      metric name
+     * @param exception exception to extract tags from (may be null)
+     * @param tags      collection of additional tags
+     * @return MetricIdBuilder configured with the provided parameters
      */
     public static MetricIdBuilder createMetricIdBuilder(final String name, final Throwable exception,
-            final Collection<Tag> tags, final Collection<Function<Throwable, Tag>> exceptionTagMappers) {
+                                                        final Collection<Tag> tags, final Collection<Function<Throwable, Tag>> exceptionTagMappers) {
 
         LOGGER.debug("Building metric ID for name '%s'", name);
         final var idBuilder = new MetricIdBuilder().name(name).tag(getAppTag()).exception(exception)
