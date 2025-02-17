@@ -1,7 +1,6 @@
-= portal-metrics-api
+= Portal Metrics API
 
-== What is it?
-Provides some extensions to microprofile-metrics-api
+Module providing MicroProfile Metrics integration for the Portal, with a focus on Caffeine Cache metrics.
 
 == Maven Coordinates
 
@@ -13,6 +12,68 @@ Provides some extensions to microprofile-metrics-api
     </dependency>
 ----
 
-== Core Types and Concepts
+== Core Features
 
-* link:src/main/java/de/cuioss/portal/metrics/CaffeineCacheMetrics.java[CaffeineCacheMetrics]
+* Caffeine Cache Metrics Integration
+* MicroProfile Metrics Support
+* Configurable Application Name Tagging
+* Standardized Logging
+
+== CaffeineCache.Metrics
+
+=== Overview
+
+The `CaffeineCacheMetrics` class provides comprehensive metrics for Caffeine caches, including:
+
+* Hit/Miss Statistics
+** Hit Rate and Count
+** Miss Rate and Count
+* Load Statistics
+** Load Success Count
+** Load Failure Count and Rate
+* Size Metrics
+** Estimated Size
+** Eviction Count
+
+=== Usage
+
+[source,java]
+----
+@Inject
+@ConfigAsCacheConfig(name = "cache.config.key")
+private CacheConfig cacheConfig;
+
+@Inject
+@RegistryType(type = MetricRegistry.Type.APPLICATION)
+private MetricRegistry appRegistry;
+
+// Create cache with stats recording enabled
+Cache<String, String> cache = Caffeine.newBuilder()
+        .maximumSize(cacheConfig.getSize())
+        .expireAfterAccess(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
+        .recordStats()
+        .build();
+
+// Register metrics
+new CaffeineCacheMetrics("my-cache", cache, cacheConfig).bindTo(appRegistry);
+----
+
+=== Requirements
+
+* Cache must be configured with `recordStats()` enabled
+* Valid `CacheConfig` instance
+* MicroProfile Metrics registry
+
+== Configuration
+
+=== Application Name
+
+The application name for metrics is resolved in the following order:
+
+1. `mp.metrics.appName` - MicroProfile standard property
+2. `portal.metrics.appName` - Portal-specific property
+3. `portal.application.name` - Fallback to application name
+
+== Documentation
+
+For detailed log message documentation, see link:doc/LogMessages.md[Log Messages].
