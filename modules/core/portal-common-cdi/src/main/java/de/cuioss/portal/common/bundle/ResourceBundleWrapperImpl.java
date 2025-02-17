@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -41,7 +42,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
 /**
@@ -88,7 +88,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
     @Override
     public String getString(final String key) {
         if (MoreStrings.isBlank(key)) {
-            LOGGER.warn(BUNDLE.WARN.BUNDLE_IGNORING_EMPTY_KEY::format);
+            LOGGER.warn(PortalCommonLogMessages.WARN.BUNDLE_IGNORING_EMPTY_KEY::format);
             return null;
         }
 
@@ -100,12 +100,12 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
         if (projectStage.get().isDevelopment()) {
             throw new MissingResourceException(
-                    BUNDLE.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()),
+                    PortalCommonLogMessages.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()),
                     getClass().getName(),
                     key);
         }
 
-        LOGGER.warn(BUNDLE.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()));
+        LOGGER.warn(PortalCommonLogMessages.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()));
         return "??" + key + "??";
     }
 

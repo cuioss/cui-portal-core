@@ -15,8 +15,7 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
-
+import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 
 import java.io.Serializable;
@@ -70,7 +69,7 @@ public interface ResourceBundleLocator extends Serializable {
             LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath.get(), locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn(BUNDLE.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
+            LOGGER.warn(PortalCommonLogMessages.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
             return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
         }
     }
@@ -90,7 +89,7 @@ public interface ResourceBundleLocator extends Serializable {
             LOGGER.debug("Loaded bundle for %s, path=%s, locale=%s", getClass().getName(), bundlePath, locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn(e, BUNDLE.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
+            LOGGER.warn(e, PortalCommonLogMessages.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
             return Optional.empty();
         }
     }

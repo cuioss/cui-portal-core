@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.InvalidBundlePath;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
@@ -62,7 +62,7 @@ class ResourceBundleLocatorTest {
 
         // Verify error message
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                BUNDLE.WARN.LOAD_FAILED.resolveIdentifierString());
+                PortalCommonLogMessages.WARN.LOAD_FAILED.resolveIdentifierString());
         // Verify no success messages in error case
         LogAsserts.assertNoLogMessagePresent(TestLogLevel.INFO, ResourceBundleLocator.class);
     }

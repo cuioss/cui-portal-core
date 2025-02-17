@@ -1,5 +1,6 @@
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.bundle.support.PortalMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
@@ -34,7 +35,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -188,7 +188,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             var exception = assertThrows(MissingResourceException.class,
                     () -> underTest.getString("not.there"),
                     "Should throw MissingResourceException for invalid key in development mode");
-            assertTrue(exception.getMessage().contains(BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString()),
+            assertTrue(exception.getMessage().contains(PortalCommonLogMessages.WARN.KEY_NOT_FOUND.resolveIdentifierString()),
                     "Should contain error code");
         }
 
@@ -207,7 +207,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             assertAll("Invalid key handling in production",
                     () -> assertEquals("??not.there??", result, "Should wrap invalid key with ??"),
                     () -> LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
-                            BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString())
+                            PortalCommonLogMessages.WARN.KEY_NOT_FOUND.resolveIdentifierString())
             );
         }
 
@@ -226,7 +226,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
         void shouldHandleInvalidInput(String invalidKey) {
             projectStage = ProjectStage.PRODUCTION;
             assertNull(underTest.getString(invalidKey), "Null key should return null for: " + invalidKey);
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, BUNDLE.WARN.BUNDLE_IGNORING_EMPTY_KEY.resolveIdentifierString());
+            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, PortalCommonLogMessages.WARN.BUNDLE_IGNORING_EMPTY_KEY.resolveIdentifierString());
         }
 
         /**
@@ -242,7 +242,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
             projectStage = ProjectStage.PRODUCTION;
             var missingKey = "non.existent.key";
             assertEquals("??" + missingKey + "??", underTest.getString(missingKey), "Incorrect missing key format");
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,BUNDLE.WARN.KEY_NOT_FOUND.resolveIdentifierString());
+            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, PortalCommonLogMessages.WARN.KEY_NOT_FOUND.resolveIdentifierString());
         }
 
         @ParameterizedTest
@@ -252,7 +252,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
         void shouldHandleEmptyAndNullCases(String emptyKey) {
             projectStage = ProjectStage.PRODUCTION;
             assertNull(underTest.getString(emptyKey), "Null key should return null for: " + emptyKey);
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, BUNDLE.WARN.BUNDLE_IGNORING_EMPTY_KEY.resolveIdentifierString());
+            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, PortalCommonLogMessages.WARN.BUNDLE_IGNORING_EMPTY_KEY.resolveIdentifierString());
         }
     }
 
