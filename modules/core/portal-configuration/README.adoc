@@ -1,7 +1,6 @@
-= portal-configuration
+= Portal Configuration Module
 
-== What is it?
-Provides portal-specific extensions to microprofile-config. In addition it provides some default configuration.
+Module providing configuration management and type-safe configuration injection for the Portal.
 
 == Maven Coordinates
 
@@ -13,23 +12,76 @@ Provides portal-specific extensions to microprofile-config. In addition it provi
     </dependency>
 ----
 
-== Core Types and Concepts
-* link:src/main/java/de/cuioss/portal/configuration/types/[Additional configuration-types]
-* link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[Simplifies the programmatic lookup up configuration-properties]
+== Core Features
 
-Constant Key classes for:
+* Hierarchical Configuration Structure
+* Type-safe Configuration Injection
+* Configuration Validation
+* File Change Watching
+* Project Stage Management
+* Secure Configuration Handling
 
-* link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[Portal-Configuration-Core]
-* link:src/main/java/de/cuioss/portal/configuration/HealthCheckConfigKeys.java[Health-Check]
-* link:src/main/java/de/cuioss/portal/configuration/MetricsConfigKeys.java[Metrics]
-* link:src/main/java/de/cuioss/portal/configuration/TracingConfigKeys.java[Tracing]
+== Configuration Types
+
+=== Built-in Types
+* Lists (`ConfigAsList`)
+* Sets (`ConfigAsSet`)
+* Paths (`ConfigAsPath`)
+* Locales (`ConfigAsLocale`)
+* Cache Configuration (`ConfigAsCacheConfig`)
+
+=== Configuration Hierarchy
+
+[source]
+----
+portal.                    # Base prefix for all portal configurations
+├── configuration.        # Core configuration settings
+├── session.             # Session-related settings
+├── resource.            # Resource handling configuration
+├── theme.               # Theme configuration
+├── view.                # View-related settings
+├── pages.               # Page-specific configuration
+└── listener.            # Event listener configuration
+----
+
+== Usage Examples
+
+=== Basic Configuration Injection
+
+[source,java]
+----
+@Inject
+@ConfigProperty(name = "portal.theme.default")
+private String defaultTheme;
+
+@Inject
+@ConfigAsList(name = "portal.theme.available_themes")
+private List<String> availableThemes;
+
+@Inject
+@ConfigAsLocale(name = "portal.locale.default")
+private Locale defaultLocale;
+----
+
+=== Optional Configuration
+
+[source,java]
+----
+@Inject
+@ConfigPropertyNullable(name = "portal.custom.setting")
+private String customSetting;
+----
 
 == Documentation
-For detailed configuration guidelines and best practices, see:
 
-* link:docs/CONFIGURATION.adoc[Configuration Best Practices]
+For detailed information about:
 
-== Thread Safety
-All configuration types and utilities in this module are designed to be thread-safe.
-Configuration values are immutable once loaded, and any dynamic reloading is handled
-in a thread-safe manner.
+* Configuration Best Practices: link:docs/CONFIGURATION.adoc[Configuration Guide]
+* Log Messages: link:doc/LogMessages.md[Log Messages]
+
+== Security Considerations
+
+* Never store credentials in plain text
+* Use appropriate security configuration types
+* Follow the principle of least privilege
+* Configure appropriate access controls
