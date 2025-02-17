@@ -31,7 +31,8 @@ class MockBaseAuthenticationFacade extends BaseAuthenticationFacade {
 
     @Override
     public boolean logout(HttpServletRequest servletRequest) {
-        return false;
+        authenticatedUserInfo = null;
+        return true;
     }
 
     @Override

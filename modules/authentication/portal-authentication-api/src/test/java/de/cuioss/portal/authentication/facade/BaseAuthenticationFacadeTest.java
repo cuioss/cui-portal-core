@@ -26,8 +26,18 @@ import jakarta.inject.Inject;
 import lombok.Getter;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+/**
+ * Test cases for {@link BaseAuthenticationFacade} focusing on user enrichment,
+ * authentication context, and logout functionality.
+ */
 @EnableAutoWeld
 @AddBeanClasses({MockBaseAuthenticationFacade.class, MockPortalUserEnricher.class})
 @PropertyReflectionConfig(skip = true)
@@ -39,31 +49,135 @@ class BaseAuthenticationFacadeTest implements ShouldBeNotNull<MockBaseAuthentica
     @Getter
     private MockBaseAuthenticationFacade underTest;
 
-    @Test
-    void shouldEnrichWithSingleEnricher() {
-        var displayName = STRING_GENERATOR.next();
-        var identifier = STRING_GENERATOR.next();
-        underTest.setAuthenticatedUserInfo(new BaseAuthenticatedUserInfo(true, displayName, identifier, null, null));
+    @Nested
+    @DisplayName("User Enrichment Tests")
+    class UserEnrichmentTests {
 
-        var result = underTest.retrieveCurrentAuthenticationContext(null);
+        @Test
+        @DisplayName("Should enrich user info with single enricher")
+        void shouldEnrichWithSingleEnricher() {
+            // given
+            var displayName = STRING_GENERATOR.next();
+            var identifier = STRING_GENERATOR.next();
+            var userInfo = BaseAuthenticatedUserInfo.builder()
+                    .authenticated(true)
+                    .displayName(displayName)
+                    .identifier(identifier)
+                    .build();
 
-        assertNotNull(result);
-        assertEquals(displayName, result.getDisplayName());
-        assertEquals(identifier, result.getIdentifier());
-        assertEquals(1, result.getRoles().size());
-        assertEquals("testRole", result.getRoles().get(0));
+            // when
+            underTest.setAuthenticatedUserInfo(userInfo);
+            var result = underTest.retrieveCurrentAuthenticationContext(null);
+
+            // then
+            assertNotNull(result, "Result should not be null");
+            assertEquals(displayName, result.getDisplayName(), "Display name should match");
+            assertEquals(identifier, result.getIdentifier(), "Identifier should match");
+            assertEquals(1, result.getRoles().size(), "Should have one role");
+            assertEquals("testRole", result.getRoles().get(0), "Should have test role");
+        }
+
+        @Test
+        @DisplayName("Should enrich user info with roles and groups")
+        void shouldEnrichWithRolesAndGroups() {
+            // given
+            var displayName = STRING_GENERATOR.next();
+            var identifier = STRING_GENERATOR.next();
+            var roles = Arrays.asList("role1", "role2");
+            var groups = Arrays.asList("group1", "group2");
+            var userInfo = BaseAuthenticatedUserInfo.builder()
+                    .authenticated(true)
+                    .displayName(displayName)
+                    .identifier(identifier)
+                    .roles(roles)
+                    .groups(groups)
+                    .build();
+
+            // when
+            underTest.setAuthenticatedUserInfo(userInfo);
+            var result = underTest.retrieveCurrentAuthenticationContext(null);
+
+            // then
+            assertNotNull(result, "Result should not be null");
+            assertTrue(result.getRoles().containsAll(roles), "Should contain original roles");
+            assertTrue(result.getGroups().containsAll(groups), "Should contain original groups");
+            assertTrue(result.getRoles().contains("testRole"), "Should contain enriched role");
+        }
     }
 
-    @Test
-    void shouldHandleNullUserInfo() {
-        underTest.setAuthenticatedUserInfo(null);
-        var result = underTest.retrieveCurrentAuthenticationContext(null);
-        assertNull(result);
+    @Nested
+    @DisplayName("Edge Case Tests")
+    class EdgeCaseTests {
+
+        @Test
+        @DisplayName("Should handle null user info")
+        void shouldHandleNullUserInfo() {
+            // when
+            underTest.setAuthenticatedUserInfo(null);
+            var result = underTest.retrieveCurrentAuthenticationContext(null);
+
+            // then
+            assertNull(result, "Result should be null for null user info");
+        }
+
+        @Test
+        @DisplayName("Should handle user info with empty collections")
+        void shouldHandleEmptyCollections() {
+            // given
+            var userInfo = BaseAuthenticatedUserInfo.builder()
+                    .authenticated(true)
+                    .displayName("test")
+                    .identifier("test")
+                    .roles(Collections.emptyList())
+                    .groups(Collections.emptyList())
+                    .build();
+
+            // when
+            underTest.setAuthenticatedUserInfo(userInfo);
+            var result = underTest.retrieveCurrentAuthenticationContext(null);
+
+            // then
+            assertNotNull(result, "Result should not be null");
+            assertEquals(1, result.getRoles().size(), "Should only have enriched role");
+            assertTrue(result.getGroups().isEmpty(), "Groups should be empty");
+        }
     }
 
-    @Test
-    void shouldHandleLogout() {
-        var result = underTest.logout(null);
-        assertFalse(result);
+    @Nested
+    @DisplayName("Authentication State Tests")
+    class AuthenticationStateTests {
+
+        @Test
+        @DisplayName("Should handle logout")
+        void shouldHandleLogout() {
+            // when
+            var result = underTest.logout(null);
+
+            // then
+            assertTrue(result, "Logout should return true");
+            assertNull(underTest.retrieveCurrentAuthenticationContext(null),
+                    "Context should be null after logout");
+        }
+
+        @Test
+        @DisplayName("Should track authentication state")
+        void shouldTrackAuthenticationState() {
+            // given
+            var userInfo = BaseAuthenticatedUserInfo.builder()
+                    .authenticated(true)
+                    .displayName("test")
+                    .identifier("test")
+                    .build();
+
+            // when
+            underTest.setAuthenticatedUserInfo(userInfo);
+            var beforeLogout = underTest.retrieveCurrentAuthenticationContext(null);
+            underTest.logout(null);
+            var afterLogout = underTest.retrieveCurrentAuthenticationContext(null);
+
+            // then
+            assertNotNull(beforeLogout, "Context should exist before logout");
+            assertNull(afterLogout, "Context should be null after logout");
+        }
     }
 }
