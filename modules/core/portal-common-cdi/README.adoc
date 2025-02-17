@@ -1,7 +1,7 @@
 = portal-common-cdi
 
 == What is it?
-Provides some base-types and utilities.
+Provides core CDI-based infrastructure and utilities for Portal applications.
 
 == Maven Coordinates
 
@@ -13,11 +13,29 @@ Provides some base-types and utilities.
     </dependency>
 ----
 
-== Core Types and Concepts
+== Overview
+This package serves as the foundation for CDI integration in Portal applications.
+It provides essential infrastructure parts, utilities, and services that
+enable seamless CDI integration across the Portal framework.
 
-* link:src/main/java/de/cuioss/portal/common/bundle/package-info.java[Handling of Resource Bundles]
-* link:src/main/java/de/cuioss/portal/common/cdi/PortalBeanManager.java[PortalBeanManager]
-* link:src/main/java/de/cuioss/portal/common/locale/PortalLocale.java[PortalLocale]
-* link:src/main/java/de/cuioss/portal/common/priority/package-info.java[Priority-Tooling]
-* link:src/main/java/de/cuioss/portal/common/stage/ProjectStage.java[ProjectStage]
-* link:src/main/java/de/cuioss/portal/common/util/PortalResourceLoader.java[PortalResourceLoader]
+== Key Features
+* CDI bean management and utilities
+* Resource bundle integration
+* Locale management
+* Priority-based component ordering
+
+== Package Organization
+* `cdi` - Core CDI utilities and infrastructure
+* `bundle` - Resource bundle management system
+* `locale` - Locale management and change notification
+* `priority` - Priority-based ordering utilities
+
+== Best Practices
+* Use provided CDI utilities instead of direct `BeanManager` access
+* Leverage resource bundle system for internationalization
+* Follow priority guidelines for component ordering
+* Observe locale change events for dynamic language updates
+
+== Thread Safety
+All components in this package and its subpackages are designed to be thread-safe
+and suitable for use in concurrent web applications.
