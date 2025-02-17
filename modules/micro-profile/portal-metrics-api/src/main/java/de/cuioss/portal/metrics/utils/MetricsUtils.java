@@ -63,7 +63,7 @@ public class MetricsUtils {
                             .orElseGet(() -> resolveConfigProperty(PortalConfigurationKeys.APPLICATION_CONTEXT_NAME)
                                     .orElseThrow(() -> new NoSuchElementException(
                                             "Invalid config. Missing 'mp.metrics.appName' or 'portal.metrics.appName'"))));
-            LOGGER.info(() -> PortalMetricsLogMessages.METRICS_APP_NAME.format(metricsAppName));
+            LOGGER.info(PortalMetricsLogMessages.INFO.METRICS_APP_NAME.format(metricsAppName));
         }
         return metricsAppName;
     }

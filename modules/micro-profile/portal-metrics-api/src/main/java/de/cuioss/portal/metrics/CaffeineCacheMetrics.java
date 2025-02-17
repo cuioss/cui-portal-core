@@ -137,6 +137,6 @@ public class CaffeineCacheMetrics {
         LOGGER.debug("Binding metrics for cache '%s' to registry", namePrefix);
         final var metrics = createMetrics();
         metrics.forEach((meta, metric) -> registry.gauge(meta, metric::getValue, tags));
-        LOGGER.info(() -> PortalMetricsLogMessages.CACHE_METRICS_REGISTERED.format(metrics.size(), namePrefix));
+        LOGGER.info(PortalMetricsLogMessages.INFO.CACHE_METRICS_REGISTERED.format(metrics.size(), namePrefix));
     }
 }
