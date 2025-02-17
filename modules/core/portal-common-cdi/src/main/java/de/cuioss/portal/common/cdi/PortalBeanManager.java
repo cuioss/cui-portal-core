@@ -82,11 +82,11 @@ public final class PortalBeanManager {
     /**
      * Looks up a normal scoped CDI bean programmatically.
      *
-     * @param beanManager     the bean manager to use for lookup, must not be null
-     * @param beanClass       the type of bean to look up, must not be null
-     * @param annotationClass optional qualifier annotation class
-     * @param <T>            the bean type
-     * @param <V>            the qualifier annotation type
+     * @param beanManager the bean manager to use for lookup, must not be null
+     * @param beanClass the type of bean to look up, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
      * @return the found bean instance, never null
      * @throws IllegalArgumentException if the bean cannot be uniquely identified
      * @throws NullPointerException if beanManager or beanClass is null
@@ -113,6 +113,12 @@ public final class PortalBeanManager {
         return result;
     }
 
+    /**
+     * Sorts a list of CDI beans by their priority.
+     *
+     * @param toBeSorted the list of beans to sort, must not be null
+     * @return sorted list of beans in descending priority order
+     */
     private static List<Bean<?>> sortByPriority(final List<Bean<?>> toBeSorted) {
         if (toBeSorted.size() < 2)
             return toBeSorted;
@@ -131,11 +137,13 @@ public final class PortalBeanManager {
     /**
      * Resolves a CDI bean instance.
      *
-     * @param beanClass       the type of bean to resolve, must not be null
-     * @param annotationClass optional qualifier annotation class
-     * @param <T>            the bean type
-     * @param <V>            the qualifier annotation type
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
      * @return Optional containing the resolved bean, or empty if not found
+     * @throws IllegalArgumentException if the bean cannot be uniquely identified
+     * @throws NullPointerException if beanClass is null
      */
     public static <T, V extends Annotation> Optional<T> resolveBean(final Class<T> beanClass,
             final Class<V> annotationClass) {
@@ -145,12 +153,13 @@ public final class PortalBeanManager {
     /**
      * Resolves a required CDI bean instance.
      *
-     * @param beanClass       the type of bean to resolve, must not be null
-     * @param annotationClass optional qualifier annotation class
-     * @param <T>            the bean type
-     * @param <V>            the qualifier annotation type
-     * @return the resolved bean instance
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
+     * @return the resolved bean instance, never null
      * @throws IllegalStateException if no bean could be found
+     * @throws NullPointerException if beanClass is null
      */
     public static <T, V extends Annotation> T resolveBeanOrThrowIllegalStateException(final Class<T> beanClass,
             final Class<V> annotationClass) {
@@ -162,9 +171,10 @@ public final class PortalBeanManager {
      * Resolves a required CDI bean without qualifier.
      *
      * @param beanClass the type of bean to resolve, must not be null
-     * @param <T>       the bean type
-     * @return the resolved bean instance
+     * @param <T> the type of the bean to resolve
+     * @return the resolved bean instance, never null
      * @throws IllegalStateException if no bean could be found
+     * @throws NullPointerException if beanClass is null
      */
     public static <T> T resolveRequiredBean(final Class<T> beanClass) {
         return resolveBeanOrThrowIllegalStateException(beanClass, null);
@@ -173,11 +183,11 @@ public final class PortalBeanManager {
     /**
      * Resolves bean types matching the given criteria.
      *
-     * @param beanManager     the bean manager to use for lookup, must not be null
-     * @param beanClass       the type of bean to resolve, must not be null
-     * @param annotationClass optional qualifier annotation class
-     * @param <T>            the bean type
-     * @param <V>            the qualifier annotation type
+     * @param beanManager the bean manager to use for lookup, must not be null
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
      * @return set of matching bean types, may be empty but never null
      * @throws NullPointerException if beanManager or beanClass is null
      */
@@ -200,7 +210,7 @@ public final class PortalBeanManager {
      * @param annotationClass the class of the annotation to be checked
      * @param beanTypes the set of beans found by the CDI container
      * @param <T> the type of the bean
-     * @param <V> the type of the annotation
+     * @param <V> the type of the qualifier annotation
      * @throws IllegalStateException if no bean or multiple beans were found
      */
     private static <T, V extends Annotation> void checkBeanTypesFound(final Class<T> beanClass,
@@ -210,13 +220,15 @@ public final class PortalBeanManager {
     }
 
     /**
-     * @param beanClass
-     * @param annotationClass
-     * @param <T>
-     * @param <V>
-     * @return the created error-message
+     * Creates an error message for bean resolution failures.
+     *
+     * @param beanClass the class of the bean that could not be resolved
+     * @param annotationClass the class of the qualifier annotation, may be null
+     * @param <T> the type of the bean
+     * @param <V> the type of the qualifier annotation
+     * @return formatted error message
      */
-    public static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
+    private static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
             final Class<V> annotationClass) {
         return "No bean of type " + beanClass + " and annotation "
                 + (null != annotationClass ? annotationClass.getName() : "(null)") + " could be found";
@@ -231,7 +243,9 @@ public final class PortalBeanManager {
      * @param <T>
      * @param <V>
      * @return Portal-532 log message
+     * @deprecated Must not be used from outside
      */
+    @Deprecated(since = "1.2")
     public static <T, V extends Annotation> String createLogMessage(final Class<T> beanClass,
             final Class<V> annotationClass) {
         return "Portal-532: " + createErrorMessage(beanClass, annotationClass);
@@ -243,7 +257,7 @@ public final class PortalBeanManager {
      * @return The CDI {@link BeanManager}.
      * @see CDI#getBeanManager()
      */
-    public static BeanManager getBeanManager() {
+    private static BeanManager getBeanManager() {
         return CDI.current().getBeanManager();
     }
 }
