@@ -1,30 +1,34 @@
 # Portal Metrics Module Log Messages
 
 ## Overview
-This document describes the log messages used in the Portal Metrics module. All messages use the prefix `Portal-Metrics`.
+This document describes the log messages used in the Portal Metrics module. All messages are defined as LogRecords and follow the DSL-Style Nested Constants Pattern.
 
-## Message Ranges
-* 001-099: INFO level messages for general metrics operations
-* 100-199: WARN level messages
-* 200-299: ERROR level messages
+## Message Categories
 
-## INFO Messages (001-099)
+* **INFO (001-099)**: General metrics operations
+* **WARN (100-199)**: Warning conditions
+* **ERROR (200-299)**: Error conditions
 
-### METRICS_APP_NAME (001)
-* Template: `Metrics App-Name: %s`
-* Description: Logged when the metrics application name is resolved from configuration
-* Parameters:
-  1. The resolved application name
+## Log Messages
 
-### CACHE_METRICS_REGISTERED (002)
-* Template: `Registered %s metrics for cache '%s'`
-* Description: Logged when cache metrics are registered with the metrics registry
-* Parameters:
-  1. Number of metrics registered
-  2. Name of the cache
+### INFO Level (001-099)
 
-### CACHE_METRICS_REMOVED (003)
-* Template: `Removed metrics for cache '%s'`
-* Description: Logged when cache metrics are removed from the registry
-* Parameters:
-  1. Name of the cache
+| ID | Component | Message | Description |
+|----|-----------|---------|-------------|
+| Portal-Metrics-001 | METRICS | Metrics App-Name: %s | Logged when the metrics application name is resolved |
+| Portal-Metrics-002 | METRICS | Registered %s metrics for cache '%s' | Logged when cache metrics are registered with the registry |
+| Portal-Metrics-003 | METRICS | Removed metrics for cache '%s' | Logged when cache metrics are removed from the registry |
+
+### WARN Level (100-199)
+
+| ID | Component | Message | Description |
+|----|-----------|---------|-------------|
+| Portal-Metrics-100 | CONFIG | Invalid config. Missing '%s' or '%s' | Logged when required configuration properties are missing |
+| Portal-Metrics-101 | CONFIG | Invalid metrics configuration: %s | Logged when metrics configuration is invalid |
+
+### ERROR Level (200-299)
+
+| ID | Component | Message | Description |
+|----|-----------|---------|-------------|
+| Portal-Metrics-200 | REGISTRY | Failed to register metric '%s': %s | Logged when a metric cannot be registered with the registry |
+| Portal-Metrics-201 | REGISTRY | Failed to update metric '%s': %s | Logged when a metric value cannot be updated |
