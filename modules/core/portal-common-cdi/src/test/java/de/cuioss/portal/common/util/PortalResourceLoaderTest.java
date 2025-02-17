@@ -15,21 +15,65 @@
  */
 package de.cuioss.portal.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("Tests PortalResourceLoader utility")
 class PortalResourceLoaderTest {
 
-    @Test
-    void shouldHandleExistingResource() {
-        assertTrue(PortalResourceLoader.getResource("/META-INF/beans.xml", getClass()).isPresent());
+    private static final String EXISTING_RESOURCE = "/META-INF/beans.xml";
+    private static final String NON_EXISTING_RESOURCE = "/not/present";
+
+    @Nested
+    @DisplayName("Resource Loading Tests")
+    class ResourceLoadingTests {
+
+        @Test
+        @DisplayName("Should find existing resource")
+        void shouldHandleExistingResource() {
+            var resource = PortalResourceLoader.getResource(EXISTING_RESOURCE, getClass());
+            assertTrue(resource.isPresent(), "Should find existing resource");
+            assertNotNull(resource.get(), "Resource URL should not be null");
+        }
+
+        @Test
+        @DisplayName("Should handle non-existing resource")
+        void shouldHandleNonExistingResource() {
+            assertFalse(PortalResourceLoader.getResource(NON_EXISTING_RESOURCE, getClass()).isPresent(),
+                    "Should return empty Optional for non-existing resource");
+        }
+
+        @Test
+        @DisplayName("Should handle deprecated method")
+        @SuppressWarnings("deprecation")
+        void shouldHandleDeprecatedMethod() {
+            var resource = PortalResourceLoader.getRessource(EXISTING_RESOURCE, getClass());
+            assertTrue(resource.isPresent(), "Should find existing resource using deprecated method");
+            assertNotNull(resource.get(), "Resource URL should not be null from deprecated method");
+        }
     }
 
-    @Test
-    void shouldHandleNonExistingResource() {
-        assertFalse(PortalResourceLoader.getResource("/not/present", getClass()).isPresent());
-    }
+    @Nested
+    @DisplayName("Error Handling Tests")
+    class ErrorHandlingTests {
 
+        @Test
+        @DisplayName("Should reject null resource path")
+        void shouldRejectNullResourcePath() {
+            assertThrows(NullPointerException.class,
+                () -> PortalResourceLoader.getResource(null, getClass()),
+                "Should throw NullPointerException for null resource path");
+        }
+
+        @Test
+        @DisplayName("Should reject null calling class")
+        void shouldRejectNullCallingClass() {
+            assertThrows(NullPointerException.class,
+                () -> PortalResourceLoader.getResource(EXISTING_RESOURCE, null),
+                "Should throw NullPointerException for null calling class");
+        }
+    }
 }
