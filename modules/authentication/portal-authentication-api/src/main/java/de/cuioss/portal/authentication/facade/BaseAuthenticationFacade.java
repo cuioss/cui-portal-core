@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;
 import de.cuioss.portal.common.priority.PortalPriorities;
@@ -25,19 +23,21 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 /**
  * Base implementation of {@link AuthenticationFacade} that provides common functionality
  * for authentication handling.
- * 
+ *
  * <p>This class is thread-safe as it relies on CDI-managed components and immutable state.
  * Implementations should ensure thread-safety by following the same principles.</p>
- * 
+ *
  * @author Oliver Wolff
  */
 public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
 
     @Inject
-    private Instance<PortalUserEnricher> portalUserEnrichers;
+    private Instance<PortalUserEnricher> portalUserEnricher;
 
     /**
      * Enriches the given {@link AuthenticatedUserInfo} using the available
@@ -57,12 +57,12 @@ public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
             return null;
         }
 
-        final List<PortalUserEnricher> sortedPortalUserEnrichers = PortalPriorities
-                .sortByPriority(mutableList(portalUserEnrichers));
+        final List<PortalUserEnricher> sortedPortalUserEnricher = PortalPriorities
+                .sortByPriority(mutableList(portalUserEnricher));
 
         var enrichedAuthenticatedUserInfo = authenticatedUserInfo;
-        for (PortalUserEnricher portalUserEnricher : sortedPortalUserEnrichers) {
-            var enriched = portalUserEnricher.apply(enrichedAuthenticatedUserInfo);
+        for (PortalUserEnricher userEnricher : sortedPortalUserEnricher) {
+            var enriched = userEnricher.apply(enrichedAuthenticatedUserInfo);
             if (enriched != null) {
                 enrichedAuthenticatedUserInfo = enriched;
             }

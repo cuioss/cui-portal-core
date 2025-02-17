@@ -88,7 +88,7 @@ public class AuthenticationResults {
      * @param cause    the optional throwable to be wrapped
      *
      * @return {@link ResultObject} with {@link ResultObject#getState()} is
-     *         {@code RequestResultState#ERROR}, the given reason as message and the
+     *         {@code RequestResultState#ERROR}, the given reason as a message and the
      *         default result {@link #NOT_LOGGED_IN}
      */
     public static ResultObject<AuthenticatedUserInfo> invalidResult(final String reason, final String username,
