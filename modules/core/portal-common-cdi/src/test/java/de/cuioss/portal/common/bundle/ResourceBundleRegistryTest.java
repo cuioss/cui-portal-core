@@ -32,6 +32,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for {@link ResourceBundleRegistry} which verifies:
+ * <ul>
+ *   <li>Bundle registration and initialization</li>
+ *   <li>Bundle priority handling</li>
+ *   <li>Error handling for invalid bundles</li>
+ *   <li>Bundle path validation</li>
+ * </ul>
+ * 
+ * <p>Test Setup:
+ * <ul>
+ *   <li>Uses CDI test framework for dependency injection</li>
+ *   <li>Tests various bundle configurations</li>
+ *   <li>Verifies error logging and handling</li>
+ * </ul>
+ */
 @EnableAutoWeld
 @EnableTestLogger(debug = {ResourceBundleRegistry.class, ResourceBundleLocator.class, ResourceBundleRegistryTest.class})
 @AddBeanClasses({MediumPrioBundles.class, HighPrioBundles.class, MissingBundle.class})
@@ -42,10 +58,26 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
     @Getter
     private ResourceBundleRegistry underTest;
 
+    /**
+     * Verifies basic registry initialization:
+     * <ul>
+     *   <li>Registry is properly initialized</li>
+     *   <li>Default bundles are registered</li>
+     *   <li>No errors during initialization</li>
+     * </ul>
+     */
     @Nested
     @DisplayName("Bundle Resolution Tests")
     class BundleResolutionTests {
 
+        /**
+         * Verifies basic registry initialization:
+         * <ul>
+         *   <li>Registry is properly initialized</li>
+         *   <li>Default bundles are registered</li>
+         *   <li>No errors during initialization</li>
+         * </ul>
+         */
         @Test
         @DisplayName("Should initialize and sort portal resource bundles")
         void shouldInitPortalResourceBundles() {

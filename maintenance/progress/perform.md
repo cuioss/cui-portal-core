@@ -1,489 +1,124 @@
-# Java Maintenance Progress - Perform Phase
+# Java Package-Level Maintenance Progress
 
-## Project: cui-portal-core
-Start Time: 2025-02-06T12:06:29+01:00
+## Test Refactoring Phase
+
+### portal-common-cdi
 Status: In Progress
 
-## Initial State
-- All preparation steps completed
-- Project builds successfully
-- All modernization changes applied
-- Location: /home/oliver/git/cui-portal-core
-
-## Project Analysis
-
-### 1. Structure Analysis
-Modules:
-1. portal core bom (bom/)
-2. portal-core modules (modules/)
-   - Portal Common CDI
-   - Portal Authentication API
-   - Portal Configuration
-   - Portal Servlet Core
-   - Portal Core Unit Testing
-   - Portal Authentication Mock
-   - Portal MP Rest Client
-   - Portal Authentication OAuth
-   - Portal Authentication Dummy
-   - Portal Keycloak Integration Test
-   - Portal Authentication Token
-   - Portal Metrics API
-
-Dependencies:
-- Java 17
-- Jakarta EE
-- CDI for dependency injection
-- CUI OSS libraries
-- cui-java-tools
-
-### 2. Documentation Status
-- API surface to be analyzed
-- Dependencies documented in pom.xml files
-- Module purposes to be reviewed
-- Migration guides needed for any breaking changes
-
-## Current Focus
-- Continuing module-by-module maintenance
-- Portal Servlet Core module analysis
-- Documentation updates in progress
-
-## Progress Steps
-
-### 1. Module Analysis
-Status: In Progress
-- [x] Review module structure
-- [x] Identify Java packages
-- [x] Document requirements
-- [x] Map API surface
-
-#### Portal Common CDI Module
-- [x] Module Structure:
-  * Core utility module providing base types and CDI infrastructure
-  * Location: modules/core/portal-common-cdi
-  * Maven coordinates: de.cuioss.portal.core:portal-common-cdi
-
-- [x] Key Components:
-  1. Resource Bundle Management
-     * ResourceBundleLocator - Interface for locating resource bundles
-     * ResourceBundleRegistry - Registry for managing bundles
-     * ResourceBundleWrapperImpl - Serializable wrapper with locale change support
-
-  2. CDI Infrastructure
-     * PortalBeanManager - CDI bean management utilities
-     * AnnotationInstanceProvider - Dynamic annotation creation support
-
-  3. Priority Management
-     * PriorityComparator - Sorting based on @Priority annotation
-     * PortalPriorities - Constants and methods for portal element ordering
-
-  4. Project Configuration
-     * ProjectStage - Environment stage management (DEVELOPMENT/PRODUCTION)
-     * PortalLocale - Locale management and change events
-     * PortalResourceLoader - Resource loading utilities
-
-- [x] Public API Surface:
-  * Resource bundle management interfaces
-  * CDI utility classes
-  * Priority ordering system
-  * Project stage configuration
-  * Resource loading utilities
-
-- [x] Module Requirements:
-  * Java 17 compatibility 
-  * CDI integration 
-  * Serialization support 
-  * Thread-safety in resource loading 
-  * Proper error handling 
-
-#### Portal Authentication API Module
-- [x] Module Structure:
-  * Authentication API and base implementations
-  * Location: modules/authentication/portal-authentication-api
-  * Maven coordinates: de.cuioss.portal.authentication:portal-authentication-api
-
-- [x] Key Components:
-  1. Authentication Facade
-     * AuthenticationFacade - Core authentication interface
-     * BaseAuthenticationFacade - Common authentication functionality
-     * FormBasedAuthenticationFacade - Form-based auth support
-
-  2. User Management
-     * AuthenticatedUserInfo - User information interface
-     * BaseAuthenticatedUserInfo - Base user info implementation
-     * PortalUserEnricher - User info enrichment support
-
-  3. Authentication Results
-     * AuthenticationResults - Constants and utility methods
-     * AuthenticationSource - Authentication source types
-
-- [x] Public API Surface:
-  * Authentication interfaces
-  * User information types
-  * Authentication result handling
-  * User enrichment framework
-
-- [x] Module Requirements:
-  * Java 17 compatibility
-  * CDI integration
-  * Thread-safety in authentication
-  * Proper error handling
-  * Extensible user enrichment
-
-#### Portal Configuration Module
-Status: Complete
-
-- [x] Module Structure:
-  * Location: modules/core/portal-configuration
-  * Maven coordinates: de.cuioss.portal.core:portal-configuration
-  * Purpose: Provides portal-specific extensions to microprofile-config and default configurations
-
-- [x] Key Components:
-  1. Configuration Types
-     * Additional configuration types in types/ package
-     * Custom type support for portal configuration
-
-  2. Configuration Keys
-     * PortalConfigurationKeys - Core configuration constants
-     * HealthCheckConfigKeys - Health check configuration
-     * MetricsConfigKeys - Metrics configuration
-     * TracingConfigKeys - Tracing configuration
-
-  3. Configuration Support
-     * ConfigurationHelper - Programmatic configuration lookup
-     * Cache configuration support
-     * Connection management
-     * Initialization and scheduling
-
-  4. Implementation Details
-     * Producers for configuration values
-     * Initializers for configuration setup
-     * Schedule management
-     * Exception handling
-
-- [x] Test Coverage Analysis:
-  1. Connection Management Tests
-     * AuthenticationTypeTest - Authentication type handling
-     * StaticTokenResolverTest - Token resolution
-     * ConnectionTypeTest - Connection type management
-     * ConnectionMetadataTest - Connection metadata handling
-
-  2. Configuration Utility Tests
-     * ConfigurationHelperTest - Configuration access and lookup
-     * ConfigurationPlaceholderHelperTest - Placeholder resolution
-     * ApplicationInitializerTest - Initialization process
-
-  3. Test Coverage Areas
-     * Authentication types and flows
-     * Connection metadata and types
-     * Configuration helpers and utilities
-     * Application initialization
-     * Token resolution and handling
-
-  4. Test Quality
-     * Using JUnit 5 features
-     * Proper test isolation
-     * Clear test naming
-     * Comprehensive assertions
-
-- [x] Configuration Types Analysis:
-  1. Collection Support
-     * ConfigAsList - List configuration type
-     * ConfigAsSet - Set configuration type
-     * ConfigAsFilteredMap - Map with filtering capabilities
-     * ConfigAsLocaleList - List of locales
-
-  2. Resource Types
-     * ConfigAsPath - Path configuration
-     * ConfigAsFileLoader - File loading configuration
-     * ConfigAsFileLoaderList - Multiple file loader config
-
-  3. Specialized Types
-     * ConfigAsCacheConfig - Cache configuration
-     * ConfigAsConnectionMetadata - Connection settings
-     * ConfigAsLocale - Locale configuration
-     * ConfigPropertyNullable - Nullable property support
-
-  4. Type Requirements
-     * Type-safe configuration conversion
-     * Validation support
-     * Default value handling
-     * Proper error messaging
-
-- [x] Public API Documentation:
-  1. Core Configuration Keys
-     * Portal base configuration paths
-     * Session configuration settings
-     * Resource and theme configuration
-     * View configuration options
-     * Scheduler configuration
-
-  2. Configuration Helper
-     * MicroProfile Config integration
-     * Configuration property access
-     * Type conversion utilities
-     * Default value handling
-     * Error logging support
-
-  3. Documentation Quality
-     * Clear class and method documentation
-     * Parameter descriptions
-     * Return value documentation
-     * Usage examples
-     * Thread-safety notes
-
-  4. API Stability
-     * Consistent naming patterns
-     * Clear deprecation policies
-     * Backward compatibility
-     * Error handling guidelines
-
-- [x] Module Requirements:
-  * Java 17 compatibility - Verified
-  * MicroProfile Config integration - Implemented
-  * CDI support - Available
-  * Thread-safety - Documented
-  * Configuration validation - Implemented
-
-- [x] Configuration Key Documentation:
-  1. Portal Configuration Keys
-     * Well-documented base paths
-     * Clear key naming conventions
-     * Comprehensive examples
-     * Default values specified
-     * Usage guidance provided
-
-  2. Health Check Keys
-     * Security configuration
-     * Access control settings
-     * Role-based restrictions
-     * Detailed health info control
-     * Clear documentation
-
-  3. Documentation Completeness
-     * All keys documented
-     * Default values specified
-     * Valid value ranges defined
-     * Configuration hierarchy clear
-     * Examples provided where needed
-
-  4. Areas for Enhancement
-     * Add more usage examples
-     * Include configuration scenarios
-     * Document common patterns
-     * Cross-reference related keys
-
-- [x] Documentation Updates:
-  1. Configuration Best Practices
-     * Created CONFIGURATION.adoc
-     * Documented configuration hierarchy
-     * Added common patterns
-     * Included troubleshooting guide
-
-  2. README Updates
-     * Added documentation links
-     * Clarified module purpose
-     * Added thread safety notes
-     * Improved formatting
-
-  3. Documentation Standards
-     * Following @llm-rules
-     * Based on existing code
-     * Using verified examples
-     * Proper linking
-     * Consistent terminology
-
-#### Portal Core Module
-- [x] Module Structure:
-  * Location: modules/core/portal-core
-  * Maven coordinates: de.cuioss.portal.core:portal-core
-  * Purpose: Provides core portal functionality and Jakarta EE integration
-
-- [x] Package Organization:
-  1. Core Packages
-     * listener - Servlet lifecycle and event handling
-     * servlet - Core servlet functionality
-     * storage - Runtime storage management
-     * user - User management and production
-
-  2. Implementation Structure
-     * Logical package separation
-     * Clear component boundaries
-     * Implementation details isolated
-     * Public API well-defined
-
-  3. Key Files
-     * ServletLifecycleListener - Manages servlet lifecycle
-     * PortalUserProducer - User context management
-     * Storage implementations - Runtime data handling
-
-- [x] Key Components:
-  1. Core Infrastructure
-     * ServletLifecycleListener - Improved lifecycle handling and dependency injection
-     * PortalUserProducer - User context management
-     * Storage Framework - Abstraction over session storage
-     * ExternalHostnameProducer - Enhanced request scoping and hostname resolution
-
-  2. Jakarta EE Integration
-     * CDI Integration
-       - Scoped beans (@ApplicationScoped, @RequestScoped)
-       - Event handling (@Observes)
-       - Producer methods
-       - Dependency injection
-
-     * Servlet Integration
-       - Context listeners
-       - Request/Response handling
-       - Session management
-       - Web application lifecycle
-
-     * Security Integration
-       - User authentication
-       - Session management
-       - Security context
-       - Access control
-
-  3. Portal Services
-     * User Management
-       - Authentication facade
-       - User context production
-       - User change events
-       - Session tracking
-
-     * Storage Services
-       - Session abstraction
-       - Data persistence
-       - State management
-       - Type-safe access
-
-     * Lifecycle Services
-       - Application initialization
-       - Context management
-       - Event coordination
-       - Resource cleanup
-
-- [x] Test Coverage:
-  1. Unit Tests
-     * ModuleConsistencyTest - Checks module consistency
-     * ServletLifecycleListenerTest - Tests lifecycle listener
-     * AbstractPortalServletTest - Tests servlet functionality
-     * ExternalHostnameProducerTest - Tests hostname production
-     * MapStorageImplTest - Tests storage implementation
-     * PortalUserProducerTest - Tests user production
-
-  2. Test Areas
-     * Lifecycle management - ServletLifecycleListenerTest
-     * User context handling - PortalUserProducerTest
-     * Storage operations - MapStorageImplTest
-     * Servlet functionality - AbstractPortalServletTest
-     * Hostname production - ExternalHostnameProducerTest
-     * Module consistency - ModuleConsistencyTest
-
-- [x] Security Implementation:
-  1. Authentication Framework
-     * AuthenticatedUserInfo - Core user information interface
-     * PortalAuthenticationFacade - Authentication service interface
-     * FormBasedAuthenticationFacade - Form-based authentication support
-     * LoginCredentials - Credential management
-
-  2. User Context Management
-     * PortalUserProducer - Request-scoped user context
-     * UserChangeEvent - User state change notifications
-     * AuthenticationSource - Authentication source tracking
-     * User store integration
-
-  3. Security Features
-     * Form-based authentication
-     * User session management
-     * Role-based access control
-     * Security event handling
-
-  4. Test Support
-     * PortalAuthenticationFacadeMock - Authentication testing
-     * Mock user creation
-     * Security context simulation
-     * Credential management testing
-
-Next Steps:
-1. Document integration points
-2. Verify documentation completeness
-3. Update module documentation
-
-#### Portal Servlet Core Module
-- [ ] Module Structure:
-  * Location: modules/core/portal-servlet-core
-  * Maven coordinates: de.cuioss.portal.core:portal-servlet-core
-  * Purpose: Provides portal-specific extensions to Jakarta EE Servlet API
-
-- [ ] Key Components:
-  1. Servlet Extensions
-     * PortalServlet - Portal-specific servlet implementation
-     * PortalServletRequest - Portal-specific request wrapper
-     * PortalServletResponse - Portal-specific response wrapper
-
-  2. Filter Support
-     * PortalFilter - Portal-specific filter implementation
-     * PortalFilterChain - Portal-specific filter chain implementation
-
-  3. Listener Support
-     * PortalServletContextListener - Portal-specific context listener
-     * PortalServletRequestListener - Portal-specific request listener
-     * PortalServletResponseListener - Portal-specific response listener
-
-  4. Implementation Details
-     * Servlet container integration
-     * Filter and listener registration
-     * Request and response processing
-
-- [ ] Test Coverage Analysis:
-  1. Servlet Tests
-     * PortalServletTest - Servlet implementation testing
-     * PortalServletRequestTest - Request wrapper testing
-     * PortalServletResponseTest - Response wrapper testing
-
-  2. Filter Tests
-     * PortalFilterTest - Filter implementation testing
-     * PortalFilterChainTest - Filter chain testing
-
-  3. Listener Tests
-     * PortalServletContextListenerTest - Context listener testing
-     * PortalServletRequestListenerTest - Request listener testing
-     * PortalServletResponseListenerTest - Response listener testing
-
-  4. Test Quality
-     * Using JUnit 5 features
-     * Proper test isolation
-     * Clear test naming
-     * Comprehensive assertions
-
-- [ ] Public API Documentation:
-  1. Servlet API
-     * PortalServlet API documentation
-     * PortalServletRequest API documentation
-     * PortalServletResponse API documentation
-
-  2. Filter API
-     * PortalFilter API documentation
-     * PortalFilterChain API documentation
-
-  3. Listener API
-     * PortalServletContextListener API documentation
-     * PortalServletRequestListener API documentation
-     * PortalServletResponseListener API documentation
-
-  4. API Stability
-     * Consistent naming patterns
-     * Clear deprecation policies
-     * Backward compatibility
-     * Error handling guidelines
-
-- [ ] Module Requirements:
-  * Java 17 compatibility
-  * Jakarta EE Servlet API integration
-  * CDI support
-  * Thread-safety
-  * Proper error handling
-
-Next Steps:
-1. Complete Portal Servlet Core module analysis
-2. Document Portal Servlet Core module
-3. Update module documentation
+#### Test Structure Review
+- [x] Test naming follows conventions
+  - Tests are named with suffix "Test"
+  - Class names clearly indicate what is being tested
+- [x] Test methods are focused and well-organized
+  - Methods have clear, descriptive names
+  - Each test focuses on a specific functionality
+- [x] Proper use of test fixtures and setup
+  - Uses @BeforeEach for test initialization
+  - Appropriate use of @Produces for CDI beans
+- [x] Clear separation of unit and integration tests
+  - Uses Weld testing framework for CDI integration tests
+  - Proper scope activation with @ActivateScopes
+
+#### Test Coverage
+- [x] Core functionality tests
+  - [x] ResourceBundle management
+    - Tests bundle loading
+    - Tests locale switching
+    - Tests key resolution
+  - [x] CDI utilities
+    - Tests bean resolution
+    - Tests scope handling
+  - [x] Locale handling
+    - Tests locale change events
+    - Tests bundle reloading
+  - [x] Project stage management
+    - Tests development vs production behavior
+    - Tests error handling differences
+- [x] Edge case testing
+  - [x] Extremely long keys
+  - [x] Concurrent access
+  - [x] Special characters in keys
+  - [x] Invalid configurations
+  - [x] Error states
+- [x] Error handling tests
+  - [x] MissingResourceException handling
+  - [x] Invalid key handling
+  - [x] Null/empty input handling
+- [x] Configuration tests
+  - [x] Different project stages
+  - [x] Various locale configurations
+  - [x] Bundle priority handling
+
+#### Test Quality
+- [x] Assertions are meaningful and specific
+  - Uses explicit assertEquals with clear messages
+  - Proper exception testing with assertThrows
+  - Clear assertion messages
+- [x] Test data is well-defined and maintainable
+  - Uses support classes for test data
+  - Clear test value organization
+  - Parameterized tests for variations
+- [x] Mocks and stubs are used appropriately
+  - Uses CDI producers for controlled dependencies
+  - Clean separation of test doubles
+  - Proper test bundle implementations
+- [x] Test independence
+  - Verified no shared state between tests
+  - Each test properly initializes its state
+  - Concurrent access tests added
+
+#### Documentation
+- [x] Test purpose is clearly documented
+  - Added comprehensive class documentation
+  - Added method-level documentation
+  - Documented test scenarios
+- [x] Test scenarios are described
+  - Each test method describes its scenarios
+  - Edge cases are documented
+  - Error conditions are explained
+- [x] Setup requirements are documented
+  - CDI configuration documented
+  - Test bundle setup explained
+  - Locale handling described
+- [x] Special test configurations explained
+  - Documented scope requirements
+  - Explained producer configurations
+  - Described test bundle hierarchy
+
+#### Next Steps
+1. Build and verify the changes
+2. Run all tests to ensure no regressions
+3. Fix any issues found during verification
+
+### portal-metrics-api
+Status: Not Started
+
+#### Test Structure Review
+- [ ] Test naming follows conventions
+- [ ] Test methods are focused and well-organized
+- [ ] Proper use of test fixtures and setup
+- [ ] Clear separation of unit and integration tests
+
+#### Test Coverage
+- [ ] Core metrics functionality tests
+- [ ] Metric collection tests
+- [ ] Metric reporting tests
+- [ ] Configuration tests
+
+#### Test Quality
+- [ ] Assertions are meaningful and specific
+- [ ] Test data is well-defined and maintainable
+- [ ] Mocks and stubs are used appropriately
+- [ ] Test independence (no inter-test dependencies)
+
+#### Documentation
+- [ ] Test purpose is clearly documented
+- [ ] Test scenarios are described
+- [ ] Setup requirements are documented
+- [ ] Special test configurations explained
+
+## Notes
+- Focus on test maintainability and readability
+- Ensure tests follow current best practices
+- Document any test-specific requirements
+- Track test improvements and refactoring needs

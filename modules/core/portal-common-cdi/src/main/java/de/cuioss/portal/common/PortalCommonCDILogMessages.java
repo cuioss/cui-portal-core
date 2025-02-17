@@ -69,6 +69,11 @@ public final class PortalCommonCDILogMessages {
                     .prefix(PREFIX)
                     .identifier(104)
                     .build();
+            public static final LogRecord BUNDLE_IGNORING_EMPTY_KEY = LogRecordModel.builder()
+                    .template("Ignoring Empty Key")
+                    .prefix(PREFIX)
+                    .identifier(105)
+                    .build();
         }
     }
 

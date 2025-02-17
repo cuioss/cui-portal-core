@@ -15,14 +15,12 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
-
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
+import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.event.Observes;
@@ -33,8 +31,18 @@ import lombok.Synchronized;
 import lombok.ToString;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
 /**
  * It can do the following tricks:
@@ -43,7 +51,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * {@link java.util.ResourceBundle}s</li>
  * <li>Listens and acts on {@link de.cuioss.portal.common.locale.LocaleChangeEvent}s</li>
  * </ul>
- *
+ * <p>
  * Handling of Missing Keys: On {@link de.cuioss.portal.common.stage.ProjectStage#DEVELOPMENT} it will throw a
  * {@link java.util.MissingResourceException}. Otherwise, it will return the requested key,
  * surrounded with Question-Marks
@@ -74,26 +82,31 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private final List<String> keyList = new CopyOnWriteArrayList<>();
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getString(final String key) {
-        final String lookupKey = key == null ? "null" : key;
+        if (MoreStrings.isBlank(key)) {
+            LOGGER.warn(BUNDLE.WARN.BUNDLE_IGNORING_EMPTY_KEY::format);
+            return null;
+        }
 
         for (final ResourceBundle bundle : getResolvedBundles()) {
-            if (bundle.containsKey(lookupKey)) {
-                return bundle.getString(lookupKey);
+            if (bundle.containsKey(key)) {
+                return bundle.getString(key);
             }
         }
 
         if (projectStage.get().isDevelopment()) {
             throw new MissingResourceException(
-                    BUNDLE.WARN.KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()),
+                    BUNDLE.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()),
                     getClass().getName(),
-                    lookupKey);
+                    key);
         }
 
-        LOGGER.warn(BUNDLE.WARN.KEY_NOT_FOUND.format(lookupKey, resourceBundleRegistry.getResolvedPaths()));
-        return "??" + lookupKey + "??";
+        LOGGER.warn(BUNDLE.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()));
+        return "??" + key + "??";
     }
 
     /**
@@ -122,13 +135,17 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
         return resolvedBundles;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Enumeration<String> getKeys() {
         return Collections.enumeration(keySet());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Synchronized
     public Set<String> keySet() {
@@ -142,7 +159,9 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
         return mutableSet(keyList);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getBundleContent() {
         return Joiner.on(", ").join(resourceBundleRegistry.getResolvedPaths());

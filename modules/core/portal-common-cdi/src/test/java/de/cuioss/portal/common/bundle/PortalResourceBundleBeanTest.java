@@ -39,6 +39,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
+/**
+ * Tests for {@link PortalResourceBundleBean} which verifies:
+ * <ul>
+ *   <li>Resource bundle loading and key resolution</li>
+ *   <li>Locale change handling</li>
+ *   <li>Project stage specific behavior (e.g. error handling)</li>
+ *   <li>Key enumeration and access</li>
+ * </ul>
+ * 
+ * <p>Test Setup:
+ * <ul>
+ *   <li>Uses Weld test framework for CDI context</li>
+ *   <li>Activates RequestScoped and SessionScoped contexts</li>
+ *   <li>Provides test messages via {@link PortalMessages}</li>
+ *   <li>Configurable project stage and locale via producers</li>
+ * </ul>
+ */
 @EnableAutoWeld
 @AddBeanClasses({PortalMessages.class, ResourceBundleRegistry.class, ResourceBundleWrapperImpl.class})
 @ActivateScopes({RequestScoped.class, SessionScoped.class})
@@ -61,6 +78,15 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
     @LocaleChangeEvent
     Event<Locale> localeChangeEvent;
 
+    /**
+     * Verifies basic message resolution for multiple keys.
+     * Tests that:
+     * <ul>
+     *   <li>Common error messages are correctly resolved</li>
+     *   <li>Portal title is available</li>
+     *   <li>Keys from different message bundles are accessible</li>
+     * </ul>
+     */
     @Test
     void getMessage() {
         var underTest = getUnderTest();
@@ -69,6 +95,15 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
         assertEquals(PortalResourceBundleWrapperImplTest.PORTAL_TITLE, underTest.getString("portal.title"));
     }
 
+    /**
+     * Verifies that the resource bundle correctly responds to locale changes.
+     * Tests that:
+     * <ul>
+     *   <li>Initial messages are in English</li>
+     *   <li>After locale change event, messages switch to German</li>
+     *   <li>Same keys resolve to different translations</li>
+     * </ul>
+     */
     @Test
     void shouldSwitchMessageBundleOnLocaleChange() {
         var underTest = getUnderTest();
@@ -79,6 +114,16 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
         assertEquals("Interner Server Fehler", underTest.getString("page.error.title"));
     }
 
+    /**
+     * Verifies error handling behavior in development stage.
+     * Tests that:
+     * <ul>
+     *   <li>Missing keys throw MissingResourceException in development</li>
+     *   <li>Exception contains information about the missing key</li>
+     * </ul>
+     * 
+     * Note: In production stage, missing keys return the key surrounded by '??'
+     */
     @Test
     void shouldFailOnInvalidKey() {
         var underTest = getUnderTest();
@@ -86,6 +131,15 @@ class PortalResourceBundleBeanTest implements ShouldHandleObjectContracts<Portal
         assertThrows(MissingResourceException.class, () -> underTest.getString("not.there"));
     }
 
+    /**
+     * Verifies the key enumeration functionality.
+     * Tests that:
+     * <ul>
+     *   <li>All expected keys are present</li>
+     *   <li>Keys from all configured bundles are included</li>
+     *   <li>The enumeration is not empty</li>
+     * </ul>
+     */
     @Test
     void shouldReturnKeys() {
         final List<String> keys = Collections.list(getUnderTest().getKeys());
