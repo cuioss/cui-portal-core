@@ -38,25 +38,44 @@ import java.util.stream.Collectors;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
- * Registry for all available {@link ResourceBundleLocator}s.
- * The injected {@link ResourceBundleLocator}s must have unique paths and define an existing
- * resource bundle. The registry will sort them according to their {@link jakarta.annotation.Priority}
- * annotation.
- *
- * <p>During initialization, the registry:
+ * Application-scoped registry managing and validating {@link ResourceBundleLocator}s.
+ * 
+ * <h2>Overview</h2>
+ * The registry collects and manages all available {@link ResourceBundleLocator}s,
+ * ensuring they are properly ordered by priority and validated for correctness.
+ * 
+ * <h2>Initialization Process</h2>
+ * During {@link PostConstruct}, the registry:
  * <ol>
- *   <li>Sorts all locators by their priority</li>
- *   <li>Validates each locator for bundle and path presence</li>
- *   <li>Ensures path uniqueness</li>
+ *   <li>Collects all CDI-injected {@link ResourceBundleLocator}s</li>
+ *   <li>Sorts them by {@link jakarta.annotation.Priority}</li>
+ *   <li>Validates each locator's bundle existence and path</li>
+ *   <li>Ensures path uniqueness across all locators</li>
  *   <li>Creates an immutable list of valid locators</li>
  * </ol>
- * </p>
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * &#064;Inject
+ * private ResourceBundleRegistry registry;
+ * 
+ * public void process() {
+ *     List<ResourceBundleLocator> locators = registry.getResolvedPaths();
+ *     // Process locators in priority order
+ * }
+ * </pre>
+ * 
+ * <h2>Thread Safety</h2>
+ * This bean is thread-safe. After initialization, it provides an immutable view
+ * of the validated locators.
  *
  * @author Oliver Wolff
+ * @see ResourceBundleLocator
+ * @see jakarta.annotation.Priority
  */
 @ApplicationScoped
-@EqualsAndHashCode(of = "resolvedPaths", doNotUseGetters = true)
-@ToString(of = "resolvedPaths", doNotUseGetters = true)
+@ToString
+@EqualsAndHashCode(of = "resolvedPaths")
 public class ResourceBundleRegistry implements Serializable {
 
     @Serial

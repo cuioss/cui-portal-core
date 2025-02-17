@@ -30,10 +30,49 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
- * Utility classes for dealing with CDI-Beans. In essence, it contains some
- * convenient ways to call the Bean manger like instantiating the Annotations.
+ * Utility class providing convenient methods for programmatic CDI bean access
+ * and management.
+ * 
+ * <h2>Overview</h2>
+ * This class simplifies common CDI operations such as bean lookup, instantiation,
+ * and annotation-based filtering.
+ * It provides type-safe access to CDI beans while handling common edge cases.
+ * 
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Type-safe bean lookup and instantiation</li>
+ *   <li>Annotation-based bean filtering</li>
+ *   <li>Priority-based bean ordering</li>
+ *   <li>Proper resource cleanup</li>
+ * </ul>
+ * 
+ * <h2>Usage Examples</h2>
+ * <pre>
+ * // Simple bean lookup
+ * MyBean bean = PortalBeanManager.getBean(MyBean.class);
+ * 
+ * // Lookup with qualifier
+ * MyBean bean = PortalBeanManager.getBean(MyBean.class, MyQualifier.class);
+ * 
+ * // Get all beans of a type, sorted by priority
+ * List<MyInterface> beans = PortalBeanManager.getBeans(MyInterface.class);
+ * 
+ * // Create bean instance with specific qualifiers
+ * Set<Annotation> qualifiers = new HashSet<>();
+ * qualifiers.add(new MyQualifierLiteral());
+ * MyBean bean = PortalBeanManager.create(beanManager, MyBean.class, qualifiers);
+ * </pre>
+ * 
+ * <h2>Error Handling</h2>
+ * <ul>
+ *   <li>Throws {@link IllegalArgumentException} for invalid bean lookups</li>
+ *   <li>Returns empty collections instead of null for multi-bean lookups</li>
+ *   <li>Logs warnings for ambiguous bean resolutions</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @see BeanManager
+ * @see CDI
  */
 @UtilityClass
 public final class PortalBeanManager {
@@ -41,7 +80,7 @@ public final class PortalBeanManager {
     private static final CuiLogger LOGGER = new CuiLogger(PortalBeanManager.class);
 
     /**
-     * Looks up a normal scoped CDI-bean programmatically.
+     * Looks up a normal scoped CDI bean programmatically.
      *
      * @param beanManager     an instance of the beanManager for doing the lookup.
      * @param beanClass       identifying the type to be loaded must not be null

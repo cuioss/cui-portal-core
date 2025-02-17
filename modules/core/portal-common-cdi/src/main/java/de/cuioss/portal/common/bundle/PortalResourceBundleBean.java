@@ -29,24 +29,36 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * <p>
- * Portal variant of {@link java.util.ResourceBundle}. It delegates to
- * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} that does the actual heavy lifting.
- * </p>
- * <p>
- * Its usage is for cases where there is technically a {@link java.util.ResourceBundle}
- * needed.
- * Sadly, there is no corresponding interface, solely an Abstract-Class
- * that cannot be proxied by CDI.
- * Currently, its sole use is the context of the
- * PortalApplication, that it exposes it on
- * {@link jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
- * with the name "msgs"
- * </p><p>
- * It can be used directly in jsf views: {@code #{msgs['page.401.title']}}
- * </p>
+ * Portal-specific implementation of {@link ResourceBundle} that delegates to
+ * {@link ResourceBundleWrapper} for actual resource resolution.
+ *
+ * <h2>Overview</h2>
+ * This class bridges the gap between JSF's resource bundle requirements and
+ * Portal's unified bundle management system.
+ * It is primarily used to expose Portal's resource bundles to JSF views under the name "msgs".
+ *
+ * <h2>Technical Background</h2>
+ * Since {@link ResourceBundle} is an abstract class and not an interface, it
+ * cannot be directly proxied by CDI.
+ * This implementation provides the necessary bridge while maintaining CDI compatibility.
+ *
+ * <h2>Usage in JSF Views</h2>
+ * Access bundle messages directly in JSF views:
+ * <pre>
+ * // Basic message access
+ * #{msgs['page.title']}
+ *
+ * // With parameters
+ * #{msgs['welcome.message'].format(user.name)}
+ * </pre>
+ *
+ * <h2>Thread Safety</h2>
+ * This implementation is thread-safe.
+ * All resource resolution is delegated to the thread-safe {@link ResourceBundleWrapper}.
  *
  * @author Oliver Wolff
+ * @see ResourceBundleWrapper
+ * @see jakarta.faces.application.Application#getResourceBundle
  */
 @EqualsAndHashCode(callSuper = false)
 @ToString
@@ -66,7 +78,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws NullPointerException if the given key is {@code null}
      */
     @Override
@@ -76,7 +88,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return a non-null enumeration of the keys in this resource bundle
      */
     @Override
@@ -87,7 +99,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return a non-null set of the keys in this resource bundle
      */
     @Override
@@ -98,7 +110,7 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
 
     /**
      * Retrieves the wrapped ResourceBundleWrapper instance, creating it if necessary.
-     * 
+     *
      * @return the non-null ResourceBundleWrapper instance
      */
     @NonNull

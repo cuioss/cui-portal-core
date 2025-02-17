@@ -29,32 +29,49 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Copied from deltaspike core
- * <p>
- * A small helper class to create an Annotation instance of the given annotation
- * class via {@link Proxy}. The annotation literal gets filled
- * with the default values.
- * </p>
- * <p>
- * This class can be used to dynamically create Annotations which can be used in
- * AnnotatedTyp.
- * This is, e.g., the case if you configure an annotation via properties or XML file.
- * In those cases you cannot use
- * {@link jakarta.enterprise.util.AnnotationLiteral} because the type is not known
- * at compile time.
- * </p>
- * <p>
- * usage:
- * </p>
- *
+ * Utility class for creating runtime instances of annotations using dynamic proxies.
+ * 
+ * <h2>Overview</h2>
+ * This class enables the creation of annotation instances at runtime, particularly
+ * useful when working with CDI's {@link jakarta.enterprise.inject.spi.AnnotatedType}
+ * and when annotations need to be configured from external sources like properties
+ * or XML files.
+ * 
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Creates annotation instances using Java's {@link Proxy} mechanism</li>
+ *   <li>Supports default values for annotation members</li>
+ *   <li>Allows custom member value overrides</li>
+ *   <li>Thread-safe implementation</li>
+ * </ul>
+ * 
+ * <h2>Usage Examples</h2>
  * <pre>
- * String annotationClassName = ...;
- * Class&lt;? extends annotation&gt; annotationClass =
- *     (Class&lt;? extends Annotation&gt;) ClassUtils.getClassLoader(null).loadClass(annotationClassName);
- * Annotation a = AnnotationInstanceProvider.of(annotationClass)
+ * // Create with default values
+ * Priority priority = AnnotationInstanceProvider.of(Priority.class);
+ * 
+ * // Create with custom values
+ * Map<String, Object> values = new HashMap<>();
+ * values.put("value", 100);
+ * Priority customPriority = AnnotationInstanceProvider.of(Priority.class, values);
+ * 
+ * // Load annotation class dynamically
+ * String className = "jakarta.annotation.Priority";
+ * Class<? extends Annotation> annotationClass = 
+ *     (Class<? extends Annotation>) Class.forName(className);
+ * Annotation annotation = AnnotationInstanceProvider.of(annotationClass);
  * </pre>
- *
- * @author <a href="https://github.com/apache/deltaspike/blob/ds-1.9.2/deltaspike/core/api/src/main/java/org/apache/deltaspike/core/util/metadata/AnnotationInstanceProvider.java">...</a>
+ * 
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>All annotation methods are properly implemented (equals, hashCode, toString)</li>
+ *   <li>Member values are immutable once set</li>
+ *   <li>Null values are not allowed for annotation members</li>
+ * </ul>
+ * 
+ * @author Apache DeltaSpike Team
+ * @see jakarta.enterprise.util.AnnotationLiteral
+ * @see java.lang.reflect.Proxy
  */
 public class AnnotationInstanceProvider implements Annotation, InvocationHandler, Serializable {
     @Serial
