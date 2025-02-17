@@ -15,20 +15,30 @@
  */
 package de.cuioss.portal.configuration.impl.initializer;
 
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
+import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
-import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.TestLoggerFactory;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for {@link PortalConfigurationLogger} verifying logging behavior and edge cases.
+ */
 @EnableAutoWeld
 @EnableTestLogger
+@DisplayName("PortalConfigurationLogger Tests")
 class PortalConfigurationLoggerTest {
 
     @Inject
@@ -45,11 +55,68 @@ class PortalConfigurationLoggerTest {
         applicationInitializers.forEach(ApplicationInitializer::initialize);
     }
 
-    @Test
-    void shouldIgnoreOnInfoLevel() {
-        TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
-        underTest.initialize();
-        LogAsserts.assertNoLogMessagePresent(TestLogLevel.WARN, PortalConfigurationLogger.class);
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Portal Configuration");
+    @Nested
+    @DisplayName("Log Level Tests")
+    class LogLevelTests {
+        
+        @Test
+        @DisplayName("Should log on INFO level and ignore WARN")
+        void shouldLogOnInfoLevel() {
+            TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
+            underTest.initialize();
+            assertNoLogMessagePresent(TestLogLevel.WARN, PortalConfigurationLogger.class);
+            assertLogMessagePresentContaining(TestLogLevel.INFO, "Portal Configuration");
+        }
+
+        @Test
+        @DisplayName("Should not log on DEBUG level")
+        void shouldNotLogOnDebugLevel() {
+            TestLogLevel.DEBUG.addLogger(PortalConfigurationLogger.class);
+            underTest.initialize();
+            assertNoLogMessagePresent(TestLogLevel.DEBUG, PortalConfigurationLogger.class);
+        }
+
+        @Test
+        @DisplayName("Should handle multiple log level changes")
+        void shouldHandleMultipleLogLevels() {
+            TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
+            TestLogLevel.WARN.addLogger(PortalConfigurationLogger.class);
+            TestLogLevel.ERROR.addLogger(PortalConfigurationLogger.class);
+            
+            underTest.initialize();
+            
+            assertLogMessagePresentContaining(TestLogLevel.INFO, "Portal Configuration");
+            assertNoLogMessagePresent(TestLogLevel.WARN, PortalConfigurationLogger.class);
+            assertNoLogMessagePresent(TestLogLevel.ERROR, PortalConfigurationLogger.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("Edge Case Tests")
+    class EdgeCaseTests {
+
+        @Test
+        @DisplayName("Should handle repeated initialization")
+        void shouldHandleRepeatedInit() {
+            TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
+            
+            // Multiple initializations should not cause issues
+            assertDoesNotThrow(() -> {
+                underTest.initialize();
+                underTest.initialize();
+                underTest.initialize();
+            });
+            
+            assertLogMessagePresentContaining(TestLogLevel.INFO, "Portal Configuration");
+        }
+
+        @Test
+        @DisplayName("Should handle not log on warn level")
+        void shouldHandleNoLogLevel() {
+            TestLogLevel.WARN.addLogger(PortalConfigurationLogger.class);
+            TestLoggerFactory.getTestHandler().clearRecords();
+            assertDoesNotThrow(() -> underTest.initialize());
+            assertNoLogMessagePresent(TestLogLevel.INFO, PortalConfigurationLogger.class);
+        }
     }
 }
