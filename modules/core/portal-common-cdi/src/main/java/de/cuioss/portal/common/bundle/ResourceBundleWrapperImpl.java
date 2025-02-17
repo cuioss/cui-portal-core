@@ -83,7 +83,12 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
     private final List<String> keyList = new CopyOnWriteArrayList<>();
 
     /**
-     * {@inheritDoc}
+     * Resolves a message for the given key.
+     * 
+     * @param key to be looked up, must not be blank
+     * @return the resolved message if key is defined, otherwise returns "??[key]??"
+     *         and logs a warning. Returns null if key is blank.
+     * @throws MissingResourceException in development stage if key is not found
      */
     @Override
     public String getString(final String key) {

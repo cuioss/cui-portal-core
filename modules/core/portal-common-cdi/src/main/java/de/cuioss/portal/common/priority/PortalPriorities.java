@@ -90,19 +90,17 @@ public final class PortalPriorities {
     public static final int PORTAL_INSTALLATION_LEVEL = 150;
 
     /**
-     * Helper method that sorts a number of given objects regarding their
-     * priority. The Priority is assumed to be defined by the {@link jakarta.annotation.Priority}
-     * annotation at class level. If it is not set, the priority is defaulted to
-     * {@value #DEFAULT_LEVEL}
+     * Sorts a list of objects based on their {@link jakarta.annotation.Priority} annotation.
+     * Objects without the annotation are assigned {@link #DEFAULT_LEVEL} priority.
      *
-     * @param toBeSorted must not be null
-     * @return the sorted list. In case of {@link java.util.List#size()} is lower than 2 the
-     *         original list will be returned.
-     * @param <T> a T class
+     * @param toBeSorted the list to be sorted, must not be null
+     * @param <T> the type of objects in the list, must be annotatable with {@link Priority}
+     * @return a new sorted list in descending priority order, or the original list if size < 2
+     * @throws NullPointerException if toBeSorted is null
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> sortByPriority(final List<T> toBeSorted) {
-        if (toBeSorted.size() < 2) {
+        if (null == toBeSorted || toBeSorted.size() < 2) {
             return toBeSorted;
         }
         final List<PriorityComparator> wrapperList = new ArrayList<>();

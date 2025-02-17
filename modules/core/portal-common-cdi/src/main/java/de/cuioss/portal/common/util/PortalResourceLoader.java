@@ -15,6 +15,17 @@ import java.util.Optional;
 /**
  * Helper class that streamlines loading Resources from the classpath. This is
  * needed because Quarkus modules behave differently.
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * // Load a resource using a specific class context
+ * Optional<URL> resource = PortalResourceLoader.getResource("/path/to/resource.txt", MyClass.class);
+ * 
+ * // Process the resource if found
+ * resource.ifPresent(url -> {
+ *     // Process the resource
+ * });
+ * </pre>
  */
 @UtilityClass
 public class PortalResourceLoader {
@@ -26,11 +37,12 @@ public class PortalResourceLoader {
      *
      * @param resourcePath identifying the concrete resource, must not be null
      * @param callingClass The class to use as context for resource loading, must not be null
+     * @param <T> the type of the calling class
      * @return The {@link Optional} {@link URL} identifying the resource
      * @deprecated Use {@link #getResource(String, Class)} instead. This method will be removed in a future version.
      */
     @Deprecated(since = "2.0", forRemoval = true)
-    public static Optional<URL> getRessource(String resourcePath, Class<?> callingClass) {
+    public static <T> Optional<URL> getRessource(String resourcePath, Class<T> callingClass) {
         return getResource(resourcePath, callingClass);
     }
 
@@ -39,9 +51,12 @@ public class PortalResourceLoader {
      *
      * @param resourcePath identifying the concrete resource, must not be null
      * @param callingClass The class to use as context for resource loading, must not be null
+     * @param <T> the type of the calling class
      * @return The {@link Optional} {@link URL} identifying the resource. Will be empty if the resource cannot be found.
+     * @throws IllegalArgumentException if resourcePath is empty
+     * @throws NullPointerException if resourcePath or callingClass is null
      */
-    public static Optional<URL> getResource(String resourcePath, Class<?> callingClass) {
+    public static <T> Optional<URL> getResource(String resourcePath, Class<T> callingClass) {
         requireNotEmpty(resourcePath);
         requireNonNull(callingClass);
         var result = Optional.ofNullable(callingClass.getResource(resourcePath));

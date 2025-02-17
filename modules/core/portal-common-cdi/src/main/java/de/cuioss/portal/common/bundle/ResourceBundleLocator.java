@@ -93,11 +93,12 @@ public interface ResourceBundleLocator extends Serializable {
     Optional<String> getBundlePath();
 
     /**
-     * <p>getBundle.</p>
+     * Returns a {@link ResourceBundle} for the specified locale.
      *
-     * @return an {@link java.util.Optional} {@link java.util.ResourceBundle} derived by the path of
-     *         {@link #getBundlePath()}
-     * @param locale a {@link java.util.Locale} object
+     * @param locale the locale for which to get the bundle, must not be null
+     * @return the resource bundle for the given locale, or null if not found
+     * @throws MissingResourceException if the bundle path exists but the bundle cannot be loaded
+     * @see ResourceBundle#getBundle(String, Locale)
      */
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();

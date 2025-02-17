@@ -98,13 +98,13 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     }
 
     /**
-     * Creates an annotation instance for the given annotation class
+     * Creates an annotation instance for the given annotation class.
      *
-     * @param annotationClass type of the target annotation
-     * @param values          A non-null map of the member values, keys being the
-     *                        name of the members
-     * @param <T>             current type
+     * @param annotationClass type of the target annotation, must not be null
+     * @param values         map of member values, must not be null, keys are member names
+     * @param <T>           the annotation type
      * @return annotation instance for the given type
+     * @throws IllegalArgumentException if values is null
      */
     @SuppressWarnings("unchecked")
     public static <T extends Annotation> T of(Class<T> annotationClass, Map<String, ?> values) {
@@ -117,10 +117,10 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     }
 
     /**
-     * Creates an annotation instance for the given annotation class
+     * Creates an annotation instance for the given annotation class using default values.
      *
-     * @param annotationClass type of the target annotation
-     * @param <T>             current type
+     * @param annotationClass type of the target annotation, must not be null
+     * @param <T>           the annotation type
      * @return annotation instance for the given type
      */
     public static <T extends Annotation> T of(Class<T> annotationClass) {
@@ -129,14 +129,24 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
         return of(annotationClass, Collections.emptyMap());
     }
 
+    /**
+     * Creates a proxy instance for the given annotation class.
+     *
+     * @param annotationClass type of the target annotation, must not be null
+     * @param values         map of member values, must not be null
+     * @param <T>           the annotation type
+     * @return proxy instance for the given annotation type
+     */
     private static synchronized <T extends Annotation> Annotation initAnnotation(Class<T> annotationClass,
-                                                                                 Map<String, ?> values) {
+                                                                              Map<String, ?> values) {
         return (Annotation) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[]{annotationClass},
                 new AnnotationInstanceProvider(annotationClass, values));
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IllegalArgumentException if the method is not supported or member values are invalid
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
@@ -180,10 +190,12 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     }
 
     /**
-     * Copied from Apache OWB (javax.enterprise.util.AnnotationLiteral#toString())
-     * with minor changes.
+     * Returns a string representation of this annotation instance.
+     * Format follows the standard annotation string representation:
+     * "@AnnotationType(member1=value1, member2=value2)".
      *
-     * @return the current state of the annotation as string
+     * @return string representation of the annotation
+     * @throws RuntimeException if member value access fails
      */
     @Override
     public String toString() {

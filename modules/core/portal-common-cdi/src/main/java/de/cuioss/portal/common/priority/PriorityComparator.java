@@ -93,12 +93,13 @@ public class PriorityComparator implements Comparable<PriorityComparator> {
     }
 
     /**
-     * Recursively find the first appearance of the {@link Priority} annotation
+     * Recursively find the first appearance of the {@link Priority} annotation.
      *
-     * @param annotatedClass maybe null
-     * @return
+     * @param <T> the type of the class to check for the Priority annotation
+     * @param annotatedClass the class to check for the Priority annotation, may be null
+     * @return the Priority annotation if found, null otherwise
      */
-    private Priority findPriorityAnnotation(final Class<?> annotatedClass) {
+    private <T> Priority findPriorityAnnotation(final Class<T> annotatedClass) {
         if (null == annotatedClass) {
             return null;
         }

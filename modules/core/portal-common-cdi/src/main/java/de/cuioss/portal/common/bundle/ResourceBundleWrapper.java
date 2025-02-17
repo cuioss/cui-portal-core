@@ -72,16 +72,17 @@ public interface ResourceBundleWrapper extends Serializable {
     }
 
     /**
-     * <p>keySet.</p>
+     * Returns a set of all keys available in this bundle.
      *
-     * @return set of all supported keys of this bundle
+     * @return unmodifiable set of all keys in this bundle and its parents, never null
+     * @see java.util.ResourceBundle#keySet()
      */
     Set<String> keySet();
 
     /**
-     * <p>getBundleContent.</p>
+     * Returns a debug representation of the bundle's content.
      *
-     * @return a list of all configured bundles to be used for debugging.
+     * @return string containing details about configured bundles and their content
      */
     String getBundleContent();
 
