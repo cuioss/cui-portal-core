@@ -15,11 +15,12 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.enterprise.inject.spi.Annotated;
@@ -60,26 +61,26 @@ class ConfigurationHelperTest {
 
     @Test
     void shouldFilterEmptyMap() {
-        assertTrue(getFilteredPropertyMap(Collections.emptyMap(), "", false).isEmpty());
-        assertTrue(getFilteredPropertyMap(Collections.emptyMap(), "", true).isEmpty());
+        assertTrue(ConfigurationHelper.getFilteredPropertyMap(Collections.emptyMap(), "", false).isEmpty());
+        assertTrue(ConfigurationHelper.getFilteredPropertyMap(Collections.emptyMap(), "", true).isEmpty());
     }
 
     @Test
     void shouldNotFilterContent() {
-        assertTrue(getFilteredPropertyMap(SIMPLE_MAP, NOT_THERE, false).isEmpty());
-        assertTrue(getFilteredPropertyMap(SIMPLE_MAP, NOT_THERE, true).isEmpty());
+        assertTrue(ConfigurationHelper.getFilteredPropertyMap(SIMPLE_MAP, NOT_THERE, false).isEmpty());
+        assertTrue(ConfigurationHelper.getFilteredPropertyMap(SIMPLE_MAP, NOT_THERE, true).isEmpty());
     }
 
     @Test
     void shouldFilterContent() {
-        assertEquals(1, getFilteredPropertyMap(SIMPLE_MAP, KEY1, false).size());
-        assertEquals(1, getFilteredPropertyMap(SIMPLE_MAP, KEY1, true).size());
+        assertEquals(1, ConfigurationHelper.getFilteredPropertyMap(SIMPLE_MAP, KEY1, false).size());
+        assertEquals(1, ConfigurationHelper.getFilteredPropertyMap(SIMPLE_MAP, KEY1, true).size());
     }
 
     @Test
     void shouldStripPrefixes() {
-        assertEquals(2, getFilteredPropertyMap(SIMPLE_MAP, "key", false).size());
-        final var strippedMap = getFilteredPropertyMap(SIMPLE_MAP, "key", true);
+        assertEquals(2, ConfigurationHelper.getFilteredPropertyMap(SIMPLE_MAP, "key", false).size());
+        final var strippedMap = ConfigurationHelper.getFilteredPropertyMap(SIMPLE_MAP, "key", true);
         assertEquals(2, strippedMap.size());
         assertTrue(strippedMap.containsKey("1"));
         assertTrue(strippedMap.containsKey("2"));
@@ -87,79 +88,79 @@ class ConfigurationHelperTest {
 
     @Test
     void shouldConvertToEnumIgnoringCase() {
-        assertEquals(TestEnum.ONE, convertToEnum("one", TestEnum.class));
-        assertEquals(TestEnum.ONE, convertToEnum(" oNe ", TestEnum.class));
+        assertEquals(TestEnum.ONE, ConfigurationHelper.convertToEnum("one", TestEnum.class));
+        assertEquals(TestEnum.ONE, ConfigurationHelper.convertToEnum(" oNe ", TestEnum.class));
     }
 
     @Test
     void shouldConvertToEnumUsingDefault() {
         TestLogLevel.ERROR.addLogger(ConfigurationHelper.class);
-        assertEquals(TestEnum.TWO, convertToEnum("invalid", TestEnum.class, TestEnum.TWO));
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.ERROR, "Portal-512");
+        assertEquals(TestEnum.TWO, ConfigurationHelper.convertToEnum("invalid", TestEnum.class, TestEnum.TWO));
+        assertLogMessagePresentContaining(TestLogLevel.ERROR, "Portal-512");
     }
 
     @Test
     void shouldNotConvertToEnumOnWrongStringInput() {
-        assertThrows(IllegalArgumentException.class, () -> convertToEnum("invalid", TestEnum.class));
+        assertThrows(IllegalArgumentException.class, () -> ConfigurationHelper.convertToEnum("invalid", TestEnum.class));
     }
 
     @Test
     void shouldNotConvertToEnumOnNullInput() {
-        assertThrows(IllegalArgumentException.class, () -> convertToEnum(null, TestEnum.class));
+        assertThrows(IllegalArgumentException.class, () -> ConfigurationHelper.convertToEnum(null, TestEnum.class));
     }
 
     @Test
     void shouldNotConvertToEnumOnEmptyInput() {
-        assertThrows(IllegalArgumentException.class, () -> convertToEnum("", TestEnum.class));
+        assertThrows(IllegalArgumentException.class, () -> ConfigurationHelper.convertToEnum("", TestEnum.class));
     }
 
     @Test
     void shouldNotConvertToEnumOnMissingDefault() {
-        assertThrows(IllegalArgumentException.class, () -> convertToEnum("test", TestEnum.class, false, null));
+        assertThrows(IllegalArgumentException.class, () -> ConfigurationHelper.convertToEnum("test", TestEnum.class, false, null));
     }
 
     // Config Resolving
     @Test
     void shouldResolveConfigMap() {
-        assertNotNull(resolveConfigProperties());
-        assertFalse(resolveConfigProperties().isEmpty());
+        assertNotNull(ConfigurationHelper.resolveConfigProperties());
+        assertFalse(ConfigurationHelper.resolveConfigProperties().isEmpty());
     }
 
     @Test
     void shouldResolveConfigNames() {
-        assertNotNull(resolveConfigPropertyNames());
-        assertFalse(resolveConfigPropertyNames().isEmpty());
+        assertNotNull(ConfigurationHelper.resolveConfigPropertyNames());
+        assertFalse(ConfigurationHelper.resolveConfigPropertyNames().isEmpty());
     }
 
     @Test
     void shouldResolveFilteredProperties() {
-        assertNotNull(resolveFilteredConfigProperties(KEY1));
-        assertTrue(resolveFilteredConfigProperties(KEY1).isEmpty());
+        assertNotNull(ConfigurationHelper.resolveFilteredConfigProperties(KEY1));
+        assertTrue(ConfigurationHelper.resolveFilteredConfigProperties(KEY1).isEmpty());
     }
 
     @Test
     void shouldResolveSingleProperty() {
-        assertFalse(resolveConfigProperty(KEY1).isPresent());
+        assertFalse(ConfigurationHelper.resolveConfigProperty(KEY1).isPresent());
 
         setAsSystemProperty(KEY1, "1");
-        assertTrue(resolveConfigProperty(KEY1).isPresent());
-        assertTrue(resolveConfigProperty(KEY1, Integer.class).isPresent());
-        assertEquals(Integer.valueOf(1), resolveConfigProperty(KEY1, Integer.class).get());
+        assertTrue(ConfigurationHelper.resolveConfigProperty(KEY1).isPresent());
+        assertTrue(ConfigurationHelper.resolveConfigProperty(KEY1, Integer.class).isPresent());
+        assertEquals(Integer.valueOf(1), ConfigurationHelper.resolveConfigProperty(KEY1, Integer.class).get());
 
         System.clearProperty(KEY1);
-        assertFalse(resolveConfigProperty(KEY1).isPresent());
-        assertFalse(resolveConfigProperty("").isPresent());
+        assertFalse(ConfigurationHelper.resolveConfigProperty(KEY1).isPresent());
+        assertFalse(ConfigurationHelper.resolveConfigProperty("").isPresent());
     }
 
     @Test
     void shouldResolveSinglePropertyOrThrow() {
-        assertFalse(resolveConfigProperty(KEY1).isPresent());
+        assertFalse(ConfigurationHelper.resolveConfigProperty(KEY1).isPresent());
 
         setAsSystemProperty(KEY1, VALUE_ONE);
 
-        assertEquals(VALUE_ONE, resolveConfigPropertyOrThrow(KEY1));
+        assertEquals(VALUE_ONE, ConfigurationHelper.resolveConfigPropertyOrThrow(KEY1));
 
-        assertThrows(IllegalStateException.class, () -> resolveConfigPropertyOrThrow("not.there"));
+        assertThrows(IllegalStateException.class, () -> ConfigurationHelper.resolveConfigPropertyOrThrow("not.there"));
     }
 
     @Test
@@ -185,8 +186,8 @@ class ConfigurationHelperTest {
         setAsSystemProperty("a.config.key", "value");
         setAsSystemProperty("unresolvable.key", "${not.there}");
 
-        assertDoesNotThrow(() -> resolveConfigProperty("a.config.key"));
-        assertDoesNotThrow(() -> resolveConfigProperty("unresolvable.key"));
+        assertDoesNotThrow(() -> ConfigurationHelper.resolveConfigProperty("a.config.key"));
+        assertDoesNotThrow(() -> ConfigurationHelper.resolveConfigProperty("unresolvable.key"));
         assertDoesNotThrow(ConfigurationHelper::resolveConfigProperties);
     }
 

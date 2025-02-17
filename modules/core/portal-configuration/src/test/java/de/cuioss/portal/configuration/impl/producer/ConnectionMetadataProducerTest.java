@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.configuration.connections.TokenResolver;
@@ -26,7 +28,6 @@ import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLoca
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
-import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.inject.Inject;
@@ -237,7 +238,7 @@ class ConnectionMetadataProducerTest {
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, "bla");
         configuration.fireEvent();
         assertEquals(AuthenticationType.NONE, metadataNotFailProvider.get().getAuthenticationType());
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-131");
+        assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-131");
     }
 
     @Test
@@ -254,7 +255,7 @@ class ConnectionMetadataProducerTest {
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TYPE_KEY, "bla");
         configuration.fireEvent();
         assertEquals(ConnectionType.UNDEFINED, metadataProvider.get().getConnectionType());
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-131");
+        assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-131");
     }
 
     @Test

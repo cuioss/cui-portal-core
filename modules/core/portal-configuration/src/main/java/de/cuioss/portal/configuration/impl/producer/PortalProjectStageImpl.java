@@ -86,14 +86,14 @@ public class PortalProjectStageImpl implements Serializable {
 
         switch (configuredProjectStage) {
             case DEVELOPMENT:
-                LOGGER.warn(WARN.PROJECT_STAGE_DEVELOPMENT_DETECTED.getTemplate());
+                LOGGER.warn(WARN.PROJECT_STAGE_DEVELOPMENT_DETECTED::format);
                 break;
             case TEST:
-                LOGGER.warn(WARN.PROJECT_STAGE_TEST_DETECTED.getTemplate());
+                LOGGER.warn(WARN.PROJECT_STAGE_TEST_DETECTED::format);
                 break;
             case PRODUCTION:
             default:
-                LOGGER.info(INFO.PROJECT_STAGE_PRODUCTION_DETECTED.getTemplate());
+                LOGGER.info(INFO.PROJECT_STAGE_PRODUCTION_DETECTED::format);
                 break;
         }
     }
