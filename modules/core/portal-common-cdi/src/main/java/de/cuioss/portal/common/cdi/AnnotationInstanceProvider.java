@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.common.cdi;
 
+import de.cuioss.tools.logging.CuiLogger;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -35,8 +37,9 @@ import java.util.Objects;
  * </p>
  * <p>
  * This class can be used to dynamically create Annotations which can be used in
- * AnnotatedTyp. This is e.g. the case if you configure an annotation via
- * properties or XML file. In those cases you cannot use
+ * AnnotatedTyp.
+ * This is, e.g., the case if you configure an annotation via properties or XML file.
+ * In those cases you cannot use
  * {@link jakarta.enterprise.util.AnnotationLiteral} because the type is not known
  * at compile time.
  * </p>
@@ -56,6 +59,8 @@ import java.util.Objects;
 public class AnnotationInstanceProvider implements Annotation, InvocationHandler, Serializable {
     @Serial
     private static final long serialVersionUID = -2345068201195886173L;
+
+    private static final CuiLogger LOGGER = new CuiLogger(AnnotationInstanceProvider.class);
     private static final Object[] EMPTY_OBJECT_ARRAY = {};
     @SuppressWarnings("rawtypes") // owolff: Original Code
     private static final Class[] EMPTY_CLASS_ARRAY = {};
@@ -104,7 +109,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
     }
 
     private static synchronized <T extends Annotation> Annotation initAnnotation(Class<T> annotationClass,
-            Map<String, ?> values) {
+                                                                                 Map<String, ?> values) {
         return (Annotation) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[]{annotationClass},
                 new AnnotationInstanceProvider(annotationClass, values));
     }
@@ -132,6 +137,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             case "toString" -> {
                 return toString();
             }
+            default -> LOGGER.debug("Nothing to do with method %s", method);
         }
         if (memberValues.containsKey(method.getName())) {
             return memberValues.get(method.getName());

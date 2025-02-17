@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
@@ -36,6 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static de.cuioss.portal.common.PortalCommonCDILogMessages.BUNDLE;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Registry for all available {@link ResourceBundleLocator}s.
@@ -88,7 +88,8 @@ public class ResourceBundleRegistry implements Serializable {
      * @throws IllegalStateException if no valid resource bundles are found
      */
     @PostConstruct
-    @SuppressWarnings("java:S3655") // owolff: false positive - isPresent is checked
+    @SuppressWarnings("java:S3655")
+    // owolff: false positive - isPresent is checked
     void initBean() {
         final var validLocators = new CollectionBuilder<ResourceBundleLocator>();
         var locators = mutableList(locatorList);

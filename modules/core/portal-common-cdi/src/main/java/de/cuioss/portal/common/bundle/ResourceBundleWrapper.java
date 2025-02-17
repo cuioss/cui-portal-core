@@ -21,8 +21,8 @@ import java.util.Enumeration;
 import java.util.Set;
 
 /**
- * Defines the portal-contract dealing with UnifiedResourceBundle Technically it
- * provides an interface similar to {@link java.util.ResourceBundle}
+ * Defines the portal-contract dealing with UnifiedResourceBundle
+ * Technically it provides an interface similar to {@link java.util.ResourceBundle}
  *
  * @author Oliver Wolff
  */
