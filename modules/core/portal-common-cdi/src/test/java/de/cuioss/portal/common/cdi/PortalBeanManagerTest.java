@@ -61,7 +61,9 @@ class PortalBeanManagerTest {
             assertAll("Priority bean resolution verification",
                     () -> assertTrue(resolved.isPresent(), "Bean should be resolved"),
                     () -> assertInstanceOf(TestBeanWithQualifierAndPriority20.class, resolved.get(),
-                            "Should resolve to highest priority implementation")
+                            "Should resolve to highest priority implementation"),
+                    () -> assertEquals(TestBeanWithQualifierAndPriority20.MESSAGE, resolved.get().getInitMessage(),
+                            "Should have correct initialization message")
             );
         }
 
@@ -91,7 +93,7 @@ class PortalBeanManagerTest {
 
             assertAll("Bean without qualifier verification",
                     () -> assertTrue(resolved.isPresent(), "Bean should be resolved"),
-                    () -> assertEquals(TestBeanWithQualifier.MESSAGE, resolved.get().getInitMessage(),
+                    () -> assertEquals(TestBeanWithoutQualifier.MESSAGE, resolved.get().getInitMessage(),
                             "Should have correct initialization message")
             );
         }
@@ -103,7 +105,7 @@ class PortalBeanManagerTest {
 
             assertAll("Required bean resolution verification",
                     () -> assertNotNull(resolved, "Required bean should not be null"),
-                    () -> assertEquals(TestBeanWithQualifier.MESSAGE, resolved.getInitMessage(),
+                    () -> assertEquals(TestBeanWithoutQualifier.MESSAGE, resolved.getInitMessage(),
                             "Should have correct initialization message")
             );
         }
