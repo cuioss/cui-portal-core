@@ -24,11 +24,39 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Helper class for sorting elements regarding its {@link jakarta.annotation.Priority}
- * annotation. In case the given class does not have a {@link jakarta.annotation.Priority}
- * annotation present an order of {@code 0} is assumed.
+ * Comparator implementation for ordering objects based on their {@link jakarta.annotation.Priority}
+ * annotation value.
+ * 
+ * <h2>Overview</h2>
+ * This class wraps objects and compares them based on their priority annotation.
+ * Objects without a priority annotation are assigned a default priority of 0.
+ * Higher priority values indicate higher precedence in sorting.
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * // Create comparators for objects
+ * PriorityComparator comp1 = new PriorityComparator(obj1);
+ * PriorityComparator comp2 = new PriorityComparator(obj2);
+ * 
+ * // Compare objects
+ * int result = comp1.compareTo(comp2);
+ * </pre>
+ * 
+ * <h2>Priority Resolution</h2>
+ * Priority is resolved in the following order:
+ * <ol>
+ *   <li>Direct {@link Priority} annotation on the object</li>
+ *   <li>For CDI beans, {@link Priority} annotation on the bean class</li>
+ *   <li>Default value of 0 if no priority is found</li>
+ * </ol>
+ * 
+ * <p>Note: This class has a natural ordering that is inconsistent with equals.
+ * Two objects may compare as equal even if they wrap different objects with the
+ * same priority.
  *
  * @author Oliver Wolff
+ * @see jakarta.annotation.Priority
+ * @see PortalPriorities
  */
 @ToString
 @EqualsAndHashCode(of = "order")
@@ -41,9 +69,10 @@ public class PriorityComparator implements Comparable<PriorityComparator> {
     private final Object wrapped;
 
     /**
-     * <p>Constructor for PriorityComparator.</p>
+     * Creates a new comparator wrapping the given object.
      *
-     * @param wrappedObject must not be null
+     * @param wrappedObject the object to wrap and compare, must not be null
+     * @throws NullPointerException if wrappedObject is null
      */
     public PriorityComparator(final Object wrappedObject) {
         requireNonNull(wrappedObject, "wrappedObject");

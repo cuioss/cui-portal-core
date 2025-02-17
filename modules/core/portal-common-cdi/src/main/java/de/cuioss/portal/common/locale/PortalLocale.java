@@ -24,7 +24,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Marker for the concrete client-specific Locale to be injected
+ * CDI qualifier for injecting the client-specific {@link java.util.Locale}.
+ * 
+ * <p>This qualifier enables the injection of the current user's locale, which is
+ * dynamically determined based on client preferences and portal configuration.
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * &#064;Inject
+ * &#064;PortalLocale
+ * private Locale userLocale;
+ * </pre>
+ * 
+ * <p>The injected locale will automatically update when the user changes their
+ * language preference.
+ * To be notified of such changes, observe the {@link LocaleChangeEvent}.
  *
  * @author Oliver Wolff
  */

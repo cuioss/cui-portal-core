@@ -23,27 +23,39 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>
- * Provides constants and methods for ordering portal related elements.
- * </p>
- * <h2>Design</h2>
- * <p>
- * Some items at the portal need an explicit ordering in order to check the
- * priority. For e.g. instances of {@link de.cuioss.portal.common.bundle.ResourceBundleLocator} can have a
- * higher priority for overwriting portal defined messages. The ordering relies
- * on the {@link jakarta.annotation.Priority} annotation on the corresponding elements. The higher
- * the {@link jakarta.annotation.Priority#value()} the higher is the priority. If the corresponding
- * element has not annotated with {@link jakarta.annotation.Priority} the order will be defaulted
- * to {@link #DEFAULT_LEVEL}
- * </p>
- * <h2>Implementation</h2>
- * <p>
- * In order to have a better structure this class provides some constants
- * defining the general range of portal applications. In addition there is the
- * helper method {@link #sortByPriority(List)} simplifying the task of sorting.
- * </p>
+ * Utility class for managing priority-based ordering of portal components.
+ * 
+ * <h2>Overview</h2>
+ * Provides constants and methods for ordering components based on the
+ * {@link jakarta.annotation.Priority} annotation. Components without the annotation
+ * default to {@link #DEFAULT_LEVEL}.
+ * 
+ * <h2>Priority Levels</h2>
+ * <ul>
+ *   <li>{@link #PORTAL_CORE_LEVEL}: Core portal components (10)</li>
+ *   <li>{@link #PORTAL_MODULE_LEVEL}: Standard portal modules (50)</li>
+ *   <li>{@link #PORTAL_ASSEMBLY_LEVEL}: Assembly-specific components (100)</li>
+ *   <li>{@link #PORTAL_INSTALLATION_LEVEL}: Installation-specific components (150)</li>
+ * </ul>
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * // Sort components by priority
+ * List<MyComponent> components = new ArrayList<>();
+ * List<MyComponent> sorted = PortalPriorities.sortByPriority(components);
+ * 
+ * // Define component priority
+ * &#064;Priority(PortalPriorities.PORTAL_MODULE_LEVEL)
+ * public class MyComponent {
+ *     // Implementation
+ * }
+ * </pre>
+ * 
+ * <p>Higher priority values indicate higher precedence in the ordering.
+ * Components are sorted in descending order of priority.
  *
  * @author Oliver Wolff
+ * @see jakarta.annotation.Priority
  */
 @UtilityClass
 public final class PortalPriorities {

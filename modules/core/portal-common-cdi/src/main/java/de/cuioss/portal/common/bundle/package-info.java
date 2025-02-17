@@ -1,35 +1,34 @@
 /**
- * <p>
- * Provides the handling of the unified {@link java.util.ResourceBundle}
- * </p>
- * <h2>Usage</h2>
- * <p>
- * The central element is
- * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} It unifies all
- * configured {@link java.util.ResourceBundle}s for the portal.
- * To use it within a bean use:
- * </p>
+ * Provides a unified resource bundle management system for Portal applications.
  *
+ * <h2>Overview</h2>
+ * This package provides a centralized way to handle {@link java.util.ResourceBundle}s
+ * in Portal applications.
+ * It enables unified access to messages and resources across different modules while supporting dynamic locale changes.
+ *
+ * <h2>Key Components</h2>
+ * <ul>
+ *   <li>{@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} - Core interface for accessing unified bundles</li>
+ *   <li>{@link de.cuioss.portal.common.bundle.ResourceBundleRegistry} - Central registry for bundle configuration</li>
+ *   <li>{@link de.cuioss.portal.common.bundle.ResourceBundleLocator} - Interface for locating module-specific bundles</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * <h3>XHTML Usage</h3>
+ * The bundle is exposed as "msgs" and can be used in XHTML:
  * <pre>
- *
- * &#064;Inject
- * private ResourceBundleWrapper resourceBundleWrapper;
- * </pre>
- * <p>
- * It is exposed as well as the named ResourceBundle "msgs" and can therefore
- * be used within xhtml as standard {@link java.util.ResourceBundle}:
- *
- * <pre>
- * {@code #(msgs['page.dashboard.title'])}
+ * {@code #{msgs['page.title']}}
  * </pre>
  *
  * <h2>Configuration</h2>
- * <p>
- * Extending the {@link java.util.ResourceBundle}s is quite easy on a module
- * level. You need to provide an instance of
- * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator} The actual
- * configuration will be done with
- * {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry}
- * </p>
+ * To add module-specific bundles:
+ * <ol>
+ *   <li>Implement {@link de.cuioss.portal.common.bundle.ResourceBundleLocator}</li>
+ *   <li>Register your implementation as CDI bean</li>
+ *   <li>The {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry} will automatically pick up your bundles</li>
+ * </ol>
+ *
+ * @author Oliver Wolff
  */
 package de.cuioss.portal.common.bundle;
