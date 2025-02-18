@@ -15,11 +15,12 @@
  */
 package de.cuioss.portal.authentication.mock;
 
-import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.*;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.facade.*;
+import de.cuioss.portal.authentication.facade.AuthenticationFacade;
+import de.cuioss.portal.authentication.facade.AuthenticationResults;
+import de.cuioss.portal.authentication.facade.AuthenticationSource;
+import de.cuioss.portal.authentication.facade.FormBasedAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo.BaseAuthenticatedUserInfoBuilder;
 import de.cuioss.portal.authentication.model.UserStore;
@@ -39,6 +40,11 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.DEBUG;
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.INFO;
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.WARN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Dummy implementation of the {@link AuthenticationFacade} interface.

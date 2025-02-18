@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
-
 import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
 import de.cuioss.portal.common.locale.PortalLocale;
@@ -34,8 +32,17 @@ import lombok.Synchronized;
 import lombok.ToString;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
 /**
  * It can do the following tricks:

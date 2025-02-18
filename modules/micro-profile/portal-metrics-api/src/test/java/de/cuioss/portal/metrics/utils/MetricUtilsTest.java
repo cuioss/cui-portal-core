@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.metrics.utils;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
@@ -35,6 +30,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Serial;
 import java.lang.reflect.Field;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = {

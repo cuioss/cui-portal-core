@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import io.smallrye.config.inject.ConfigProducer;
@@ -27,6 +24,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * JUnit 5 annotation that enables Portal configuration support in unit tests.

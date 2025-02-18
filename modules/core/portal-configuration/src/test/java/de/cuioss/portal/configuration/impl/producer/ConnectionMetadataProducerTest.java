@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
@@ -45,6 +41,12 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for {@link ConnectionMetadataProducer} verifying connection metadata configuration

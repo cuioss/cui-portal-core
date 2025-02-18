@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.configuration;
 
+import lombok.experimental.UtilityClass;
+
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.ENABLED;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_BASE;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TracingConfigKeys {

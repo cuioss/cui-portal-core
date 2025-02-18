@@ -15,13 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.tools.io.MorePaths;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
@@ -34,6 +27,13 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.Map;
 import java.util.Optional;
+
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Interface to observe changes in file systems.

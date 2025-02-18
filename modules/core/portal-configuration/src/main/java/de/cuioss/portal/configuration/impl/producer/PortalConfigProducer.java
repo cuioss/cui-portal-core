@@ -15,19 +15,17 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-import static de.cuioss.portal.configuration.cache.CacheConfig.*;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
-import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static de.cuioss.tools.string.MoreStrings.*;
-
 import de.cuioss.portal.configuration.cache.CacheConfig;
-import de.cuioss.portal.configuration.types.*;
+import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
+import de.cuioss.portal.configuration.types.ConfigAsFileLoader;
+import de.cuioss.portal.configuration.types.ConfigAsFileLoaderList;
+import de.cuioss.portal.configuration.types.ConfigAsFilteredMap;
+import de.cuioss.portal.configuration.types.ConfigAsList;
+import de.cuioss.portal.configuration.types.ConfigAsLocale;
+import de.cuioss.portal.configuration.types.ConfigAsLocaleList;
+import de.cuioss.portal.configuration.types.ConfigAsPath;
+import de.cuioss.portal.configuration.types.ConfigAsSet;
+import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
@@ -44,8 +42,31 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_KEY;
+import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_UNIT_KEY;
+import static de.cuioss.portal.configuration.cache.CacheConfig.SIZE_KEY;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.appendPropertySeparator;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveAnnotationOrThrow;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyAsList;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveFilteredConfigProperties;
+import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import static de.cuioss.tools.string.MoreStrings.requireNotEmptyTrimmed;
 
 /**
  * Provides specific producer methods for elements not covered by the standard

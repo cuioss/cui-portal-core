@@ -15,14 +15,13 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.lang.Boolean.parseBoolean;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
-import de.cuioss.portal.configuration.connections.impl.*;
+import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
+import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata.ConnectionMetadataBuilder;
+import de.cuioss.portal.configuration.connections.impl.ConnectionMetadataKeys;
+import de.cuioss.portal.configuration.connections.impl.ConnectionType;
+import de.cuioss.portal.configuration.connections.impl.StaticTokenResolver;
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.io.MorePaths;
@@ -39,6 +38,11 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.io.File;
 import java.util.Map;
 import java.util.Optional;
+
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.lang.Boolean.parseBoolean;
+import static java.util.Objects.requireNonNull;
 
 /**
  * {@linkplain ConnectionMetadata} producer that defaults to the

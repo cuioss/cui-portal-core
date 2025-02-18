@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.core.storage.PortalClientStorage;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
@@ -25,6 +23,11 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @DisplayName("PortalClientStorageMock Tests")

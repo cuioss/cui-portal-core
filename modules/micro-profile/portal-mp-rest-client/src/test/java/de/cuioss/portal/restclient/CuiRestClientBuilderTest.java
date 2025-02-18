@@ -15,14 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
-import static de.cuioss.test.generator.Generators.enumValues;
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static okhttp3.tls.internal.TlsUtil.localhost;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import de.cuioss.portal.configuration.connections.impl.StaticTokenResolver;
@@ -38,7 +30,13 @@ import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.LoginCredentials;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.Setter;
@@ -66,6 +64,20 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
+import static de.cuioss.test.generator.Generators.enumValues;
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static okhttp3.tls.internal.TlsUtil.localhost;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = PORTAL_TRACING_ENABLED + ":true")

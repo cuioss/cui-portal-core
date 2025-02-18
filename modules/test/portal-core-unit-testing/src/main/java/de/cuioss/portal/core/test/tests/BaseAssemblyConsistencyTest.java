@@ -15,15 +15,15 @@
  */
 package de.cuioss.portal.core.test.tests;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import jakarta.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Base class for testing the consistency and structure of Portal assembly modules.

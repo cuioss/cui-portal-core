@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
-import org.junit.jupiter.api.Test;
 
 class MockWebServerHolderTest {
 

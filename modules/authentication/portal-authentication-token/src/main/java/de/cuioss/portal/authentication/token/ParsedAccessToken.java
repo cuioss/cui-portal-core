@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static java.util.stream.Collectors.toSet;
-
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Splitter;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -28,7 +26,13 @@ import lombok.ToString;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Represents an Access Token with corresponding information. In essence, it is a convenience type

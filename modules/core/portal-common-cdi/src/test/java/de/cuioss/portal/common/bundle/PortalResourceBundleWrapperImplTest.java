@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.bundle.support.PortalMessages;
 import de.cuioss.portal.common.locale.LocaleChangeEvent;
@@ -51,6 +49,14 @@ import java.util.MissingResourceException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Integration tests for {@link ResourceBundleWrapperImpl} which verifies:

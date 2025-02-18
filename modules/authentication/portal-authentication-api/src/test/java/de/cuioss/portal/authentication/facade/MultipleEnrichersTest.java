@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
@@ -28,6 +24,10 @@ import lombok.Getter;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
+
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnableAutoWeld
 @AddBeanClasses({MockBaseAuthenticationFacade.class, MockPortalUserEnricher.class, MockHighPriorityUserEnricher.class})

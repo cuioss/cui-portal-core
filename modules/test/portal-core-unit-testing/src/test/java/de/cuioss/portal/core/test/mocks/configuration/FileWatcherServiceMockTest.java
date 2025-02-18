@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
 import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
@@ -30,6 +28,11 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @DisplayName("FileWatcherServiceMock Tests")

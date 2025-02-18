@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.core.test.support.PortalAuthenticationFacadeMock;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
@@ -33,6 +31,10 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the {@link PortalUserProducer} which handles the production of

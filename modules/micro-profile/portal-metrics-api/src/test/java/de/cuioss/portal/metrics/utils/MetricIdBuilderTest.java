@@ -15,14 +15,17 @@
  */
 package de.cuioss.portal.metrics.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.eclipse.microprofile.metrics.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayName("MetricIdBuilder Tests")
 class MetricIdBuilderTest {

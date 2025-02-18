@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -24,6 +22,8 @@ import lombok.ToString;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 
 /**
  * Tracks changes to a single file by monitoring its last modification timestamp.

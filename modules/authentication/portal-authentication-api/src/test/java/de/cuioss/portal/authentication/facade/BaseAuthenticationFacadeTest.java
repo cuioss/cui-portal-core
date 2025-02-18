@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
@@ -26,13 +23,18 @@ import jakarta.inject.Inject;
 import lombok.Getter;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for {@link BaseAuthenticationFacade} focusing on user enrichment,

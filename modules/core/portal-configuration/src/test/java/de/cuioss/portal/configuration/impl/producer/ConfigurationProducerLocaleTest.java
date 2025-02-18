@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.types.ConfigAsLocale;
@@ -33,6 +29,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Locale;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld

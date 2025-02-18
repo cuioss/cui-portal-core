@@ -15,13 +15,21 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
 import de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import java.util.List;
+
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.EXTERNAL_HOSTNAME;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_ID;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_SECRET;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 

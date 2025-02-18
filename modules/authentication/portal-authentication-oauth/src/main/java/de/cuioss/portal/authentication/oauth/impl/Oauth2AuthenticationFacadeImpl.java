@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.net.URLEncoder.encode;
-import static java.util.Objects.requireNonNull;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
@@ -26,10 +22,17 @@ import de.cuioss.portal.authentication.facade.AuthenticationSource;
 import de.cuioss.portal.authentication.facade.BaseAuthenticationFacade;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
-import de.cuioss.portal.authentication.oauth.*;
+import de.cuioss.portal.authentication.oauth.LoginPagePath;
+import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
+import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
+import de.cuioss.portal.authentication.oauth.Oauth2Service;
+import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
+import de.cuioss.portal.authentication.oauth.OauthRedirector;
+import de.cuioss.portal.authentication.oauth.OidcRpInitiatedLogoutParams;
 import de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
 import de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.INFO;
 import de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
+import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.net.UrlParameter;
@@ -46,7 +49,16 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.net.URLEncoder.encode;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Default implementation of {@link Oauth2AuthenticationFacade}. Uses

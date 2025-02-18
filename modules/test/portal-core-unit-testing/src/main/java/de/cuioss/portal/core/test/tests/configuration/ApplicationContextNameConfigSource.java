@@ -15,12 +15,12 @@
  */
 package de.cuioss.portal.core.test.tests.configuration;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import java.util.Map;
 import java.util.Set;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 
 /**
  * MicroProfile ConfigSource implementation that provides the application context name

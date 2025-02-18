@@ -15,15 +15,15 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * JUnit 5 annotation that enables and configures a {@link MockWebServer} instance for HTTP interaction testing.

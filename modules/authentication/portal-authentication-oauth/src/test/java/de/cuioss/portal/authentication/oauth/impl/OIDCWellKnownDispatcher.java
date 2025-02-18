@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -39,6 +36,9 @@ import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.tools.io.FileLoaderUtility.toStringUnchecked;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OIDCWellKnownDispatcher extends Dispatcher {
 

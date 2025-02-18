@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.initializer;
 
-import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
-import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.test.juli.TestLogLevel;
@@ -32,6 +28,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
+import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Tests for {@link PortalConfigurationLogger} verifying logging behavior and edge cases.

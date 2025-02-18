@@ -15,19 +15,25 @@
  */
 package de.cuioss.portal.metrics;
 
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.microprofile.metrics.MetricRegistry.name;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
-import org.eclipse.microprofile.metrics.*;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Tag;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.microprofile.metrics.MetricRegistry.name;
 
 /**
  * Factory for creating and registering Caffeine cache metrics in a MicroProfile Metrics registry.

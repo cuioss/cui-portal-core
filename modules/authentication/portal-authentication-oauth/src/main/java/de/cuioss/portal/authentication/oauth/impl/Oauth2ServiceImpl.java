@@ -15,13 +15,6 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
-import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
-import static de.cuioss.tools.base.Preconditions.checkState;
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static java.net.URLEncoder.encode;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
@@ -35,7 +28,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -49,6 +46,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
+import static de.cuioss.tools.base.Preconditions.checkState;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static java.net.URLEncoder.encode;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Default implementation of {@link Oauth2Service}.

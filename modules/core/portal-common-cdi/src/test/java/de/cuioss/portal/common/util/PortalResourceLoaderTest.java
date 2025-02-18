@@ -15,11 +15,14 @@
  */
 package de.cuioss.portal.common.util;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Tests PortalResourceLoader utility")
 class PortalResourceLoaderTest {
@@ -63,8 +66,9 @@ class PortalResourceLoaderTest {
         @Test
         @DisplayName("Should reject null resource path")
         void shouldRejectNullResourcePath() {
+            final var clazz = getClass();
             assertThrows(NullPointerException.class,
-                    () -> PortalResourceLoader.getResource(null, getClass()),
+                    () -> PortalResourceLoader.getResource(null, clazz),
                     "Should throw NullPointerException for null resource path");
         }
 

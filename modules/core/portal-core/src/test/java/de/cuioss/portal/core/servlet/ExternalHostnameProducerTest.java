@@ -1,8 +1,5 @@
 package de.cuioss.portal.core.servlet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
@@ -22,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * Tests the {@link CuiExternalHostname} qualifier in conjunction with the hostname producer.
  * Verifies hostname resolution from both direct server properties and X-Forwarded headers.
@@ -33,7 +33,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 @DisplayName("Testing ExternalHostnameProducer functionality")
 class ExternalHostnameProducerTest {
 
-    private static final String PATH = "/context/more";
     private static final String SERVER_NAME = "test.example.com";
     private static final int SERVER_PORT = 8443;
     private static final String SERVER_NAME_AND_PORT = SERVER_NAME + ":" + SERVER_PORT;

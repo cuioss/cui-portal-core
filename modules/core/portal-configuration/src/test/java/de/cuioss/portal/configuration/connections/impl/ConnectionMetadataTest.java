@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static de.cuioss.test.generator.Generators.strings;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
 import de.cuioss.portal.configuration.connections.impl.generator.ContextMapGenerator;
@@ -38,6 +34,13 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
+import static de.cuioss.test.generator.Generators.strings;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @PropertyReflectionConfig(exclude = {"loginCredentialsNecessary"})
 @ObjectTestConfig(equalsAndHashCodeBasicOnly = true)

@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.metrics.utils;
 
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Getter;
 import org.eclipse.microprofile.metrics.MetricID;
@@ -24,7 +22,10 @@ import org.eclipse.microprofile.metrics.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
+
+import static de.cuioss.tools.base.Preconditions.checkArgument;
 
 /**
  * Builder for MicroProfile {@link MetricID}.
@@ -128,7 +129,7 @@ public class MetricIdBuilder {
             LOGGER.debug("Processing %s exception tag mappers", exceptionTagMappers.size());
             exceptionTagMappers.stream()
                     .map(mapper -> mapper.apply(exception))
-                    .filter(tag -> tag != null)
+                    .filter(Objects::nonNull)
                     .forEach(tags::add);
         }
 

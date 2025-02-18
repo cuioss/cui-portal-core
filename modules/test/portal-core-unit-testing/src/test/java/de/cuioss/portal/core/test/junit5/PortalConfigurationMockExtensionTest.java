@@ -15,14 +15,16 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import jakarta.inject.Inject;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = {

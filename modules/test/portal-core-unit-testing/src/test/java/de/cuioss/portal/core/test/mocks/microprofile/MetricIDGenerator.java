@@ -15,12 +15,12 @@
  */
 package de.cuioss.portal.core.test.mocks.microprofile;
 
-import static de.cuioss.test.generator.Generators.booleans;
-import static de.cuioss.test.generator.Generators.letterStrings;
-
 import de.cuioss.test.generator.TypedGenerator;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
+
+import static de.cuioss.test.generator.Generators.booleans;
+import static de.cuioss.test.generator.Generators.letterStrings;
 
 class MetricIDGenerator implements TypedGenerator<MetricID> {
 

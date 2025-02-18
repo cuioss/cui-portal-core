@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
@@ -28,6 +24,10 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld

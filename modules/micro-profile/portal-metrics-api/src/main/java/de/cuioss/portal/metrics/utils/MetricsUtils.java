@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.metrics.utils;
 
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.metrics.PortalMetricsLogMessages;
@@ -31,6 +28,9 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
+
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 /**
  * Utility class providing helper methods for working with MicroProfile Metrics in the Portal context.

@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.test.juli.TestLogLevel.INFO;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -40,6 +35,13 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
+
+import static de.cuioss.test.juli.TestLogLevel.INFO;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Sven Haag

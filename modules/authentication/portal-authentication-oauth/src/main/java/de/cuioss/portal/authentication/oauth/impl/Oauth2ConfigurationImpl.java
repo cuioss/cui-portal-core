@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import static de.cuioss.tools.base.Preconditions.checkState;
-
 import de.cuioss.portal.authentication.oauth.Oauth2Configuration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +23,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.util.List;
+
+import static de.cuioss.tools.base.Preconditions.checkState;
 
 /**
  * Default implementation.

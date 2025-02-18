@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.core.test.tests;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.jboss.weld.exceptions.DeploymentException;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BaseAssemblyConsistencyTestTest extends BaseAssemblyConsistencyTest {
 

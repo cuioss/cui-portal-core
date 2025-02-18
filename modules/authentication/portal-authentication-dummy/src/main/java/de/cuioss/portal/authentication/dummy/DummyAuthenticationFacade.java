@@ -16,7 +16,11 @@
 package de.cuioss.portal.authentication.dummy;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.facade.*;
+import de.cuioss.portal.authentication.facade.AuthenticationFacade;
+import de.cuioss.portal.authentication.facade.AuthenticationResults;
+import de.cuioss.portal.authentication.facade.AuthenticationSource;
+import de.cuioss.portal.authentication.facade.FormBasedAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.tools.logging.CuiLogger;

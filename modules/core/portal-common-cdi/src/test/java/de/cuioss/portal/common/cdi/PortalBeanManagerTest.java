@@ -15,10 +15,13 @@
  */
 package de.cuioss.portal.common.cdi;
 
-import static de.cuioss.portal.common.cdi.PortalBeanManager.resolveBean;
-import static org.junit.jupiter.api.Assertions.*;
-
-import de.cuioss.portal.common.cdi.support.*;
+import de.cuioss.portal.common.cdi.support.DependentTestBeanWithoutQualifier;
+import de.cuioss.portal.common.cdi.support.TestAnnotation;
+import de.cuioss.portal.common.cdi.support.TestBeanWithQualifier;
+import de.cuioss.portal.common.cdi.support.TestBeanWithQualifierAndPriority10;
+import de.cuioss.portal.common.cdi.support.TestBeanWithQualifierAndPriority20;
+import de.cuioss.portal.common.cdi.support.TestBeanWithoutQualifier;
+import de.cuioss.portal.common.cdi.support.TestInterface;
 import jakarta.enterprise.context.RequestScoped;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
@@ -28,6 +31,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+
+import static de.cuioss.portal.common.cdi.PortalBeanManager.resolveBean;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @AddBeanClasses({TestBeanWithQualifier.class, TestBeanWithoutQualifier.class, DependentTestBeanWithoutQualifier.class,

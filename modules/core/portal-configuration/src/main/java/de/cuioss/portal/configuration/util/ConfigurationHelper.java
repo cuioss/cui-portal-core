@@ -15,12 +15,6 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.*;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.collect.MapBuilder;
 import de.cuioss.tools.logging.CuiLogger;
@@ -47,6 +41,14 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static de.cuioss.tools.string.MoreStrings.isEmpty;
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class providing core functionality for configuration handling in the Portal.

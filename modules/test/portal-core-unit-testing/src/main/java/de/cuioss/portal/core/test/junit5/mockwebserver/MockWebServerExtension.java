@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-
 import de.cuioss.tools.logging.CuiLogger;
 import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -26,6 +24,8 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * Handle the lifetime of an instance of {@link MockWebServer}, see

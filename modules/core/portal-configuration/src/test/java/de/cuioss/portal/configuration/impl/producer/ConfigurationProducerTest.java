@@ -15,13 +15,17 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.cache.CacheConfig;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
-import de.cuioss.portal.configuration.types.*;
+import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
+import de.cuioss.portal.configuration.types.ConfigAsFileLoader;
+import de.cuioss.portal.configuration.types.ConfigAsFileLoaderList;
+import de.cuioss.portal.configuration.types.ConfigAsList;
+import de.cuioss.portal.configuration.types.ConfigAsPath;
+import de.cuioss.portal.configuration.types.ConfigAsSet;
+import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.io.FileLoader;
@@ -37,6 +41,15 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal

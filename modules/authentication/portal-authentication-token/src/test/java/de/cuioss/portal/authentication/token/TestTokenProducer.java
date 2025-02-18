@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import de.cuioss.test.generator.Generators;
 import io.smallrye.jwt.auth.principal.DefaultJWTParser;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
@@ -29,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestTokenProducer {
 

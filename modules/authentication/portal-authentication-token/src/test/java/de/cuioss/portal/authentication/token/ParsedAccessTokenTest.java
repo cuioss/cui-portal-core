@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.domain.EmailGenerator;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -25,6 +22,16 @@ import de.cuioss.tools.logging.CuiLogger;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+
+import static de.cuioss.portal.authentication.token.TestTokenProducer.DEFAULT_TOKEN_PARSER;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_NAME;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_ROLES;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedEmptyJWT;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @EnableTestLogger

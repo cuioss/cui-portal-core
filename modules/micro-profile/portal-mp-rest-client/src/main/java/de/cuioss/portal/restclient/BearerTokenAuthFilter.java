@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
-
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.HttpHeaders;
 import lombok.RequiredArgsConstructor;
+
+import static de.cuioss.tools.string.MoreStrings.isEmpty;
 
 /**
  * Client filter that will do token authentication. You must allocate it and

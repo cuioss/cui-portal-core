@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.replacePlaceholders;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.TestLoggerFactory;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -28,6 +25,13 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.replacePlaceholders;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @EnableTestLogger(debug = ConfigurationPlaceholderHelper.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)

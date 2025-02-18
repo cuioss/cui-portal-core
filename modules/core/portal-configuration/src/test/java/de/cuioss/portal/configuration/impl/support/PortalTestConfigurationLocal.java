@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
@@ -38,6 +36,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 
 /**
  * Mock variant of configuration, overwriting all other configuration elements.

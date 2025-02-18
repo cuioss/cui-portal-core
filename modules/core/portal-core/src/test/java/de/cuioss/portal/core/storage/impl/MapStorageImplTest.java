@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.core.storage.impl;
 
-import static de.cuioss.test.generator.Generators.integers;
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.core.storage.MapStorage;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.ValueObjectTest;
@@ -32,6 +28,13 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
+
+import static de.cuioss.test.generator.Generators.integers;
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the {@link MapStorageImpl} which provides a basic key-value storage implementation.

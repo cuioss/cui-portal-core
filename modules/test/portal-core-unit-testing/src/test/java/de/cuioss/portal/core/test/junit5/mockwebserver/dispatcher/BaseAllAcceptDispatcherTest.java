@@ -15,12 +15,19 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
-import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandlerTest.assertMockResponse;
-import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.*;
-import static jakarta.servlet.http.HttpServletResponse.*;
-
 import mockwebserver3.RecordedRequest;
 import org.junit.jupiter.api.Test;
+
+import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandlerTest.assertMockResponse;
+import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.DELETE;
+import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.GET;
+import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.POST;
+import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.PUT;
+import static jakarta.servlet.http.HttpServletResponse.SC_CREATED;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_IMPLEMENTED;
+import static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 class BaseAllAcceptDispatcherTest {
 

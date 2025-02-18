@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.mocks.microprofile;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.test.generator.junit.EnableGeneratorController;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import lombok.Getter;
@@ -28,6 +26,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @EnableAutoWeld
 @EnableGeneratorController

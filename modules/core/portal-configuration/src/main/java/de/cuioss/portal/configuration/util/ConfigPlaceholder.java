@@ -15,14 +15,14 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.PLACEHOLDER_PATTERN;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
 import java.util.Optional;
+
+import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.PLACEHOLDER_PATTERN;
 
 /**
  * Data Transfer Object (DTO) representing a configuration placeholder in the Portal's

@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.core;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import de.cuioss.portal.core.test.support.PortalAuthenticationFacadeMock;
 import jakarta.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.environment.se.Weld;
@@ -26,6 +23,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests ensuring the consistency and proper configuration of the portal core module.

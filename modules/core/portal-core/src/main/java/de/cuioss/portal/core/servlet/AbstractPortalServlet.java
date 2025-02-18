@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.servlet;
 
-import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
@@ -31,6 +29,8 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
 
 /**
  * Base servlet implementation providing common portal functionality including

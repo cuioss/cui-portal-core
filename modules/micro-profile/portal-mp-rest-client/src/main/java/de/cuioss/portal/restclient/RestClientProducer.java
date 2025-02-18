@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer.MISSING_BASENAME_MSG;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-import static de.cuioss.tools.lang.MoreObjects.requireType;
-import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
-
 import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.base.Preconditions;
@@ -34,6 +29,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+
+import static de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer.MISSING_BASENAME_MSG;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import static de.cuioss.tools.lang.MoreObjects.requireType;
+import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 
 /**
  * Produces a {@link RestClientHolder} to the given service interface.

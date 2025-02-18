@@ -15,9 +15,9 @@
  */
 package de.cuioss.portal.authentication.facade;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AuthenticationSourceTest {
 

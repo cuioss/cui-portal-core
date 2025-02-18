@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Splitter;
@@ -25,6 +23,8 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
+
+import static de.cuioss.tools.base.Preconditions.checkArgument;
 
 /**
  * JUnit 5 {@link Extension} that manages the configuration lifecycle for portal unit tests.

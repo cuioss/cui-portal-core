@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeSerializable;
+import org.junit.jupiter.api.Test;
+
 import static de.cuioss.portal.authentication.token.TestTokenProducer.REFRESH_TOKEN;
 import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeSerializable;
-import org.junit.jupiter.api.Test;
 
 class ParsedRefreshTokenTest implements ShouldBeSerializable<ParsedRefreshToken> {
 

@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.authentication.model;
 
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Thread-safe, immutable implementation of {@link AuthenticatedUserInfo} suitable for most

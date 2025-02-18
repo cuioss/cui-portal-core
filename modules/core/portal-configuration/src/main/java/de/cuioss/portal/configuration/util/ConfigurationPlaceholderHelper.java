@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static java.util.regex.Matcher.quoteReplacement;
-
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
 
@@ -25,6 +22,9 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static java.util.regex.Matcher.quoteReplacement;
 
 /**
  * Helper class for processing configuration placeholders in property values.

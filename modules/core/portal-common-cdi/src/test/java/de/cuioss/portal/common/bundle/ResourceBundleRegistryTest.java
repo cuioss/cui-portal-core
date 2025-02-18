@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.MediumPrioBundles;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
@@ -31,6 +29,10 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests for {@link ResourceBundleRegistry} which verifies:

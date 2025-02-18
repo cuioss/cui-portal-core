@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.THEME_DEFAULT;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyOrThrow;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.MetricsConfigKeys;
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.configuration.cache.CacheConfig;
@@ -40,6 +35,16 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.THEME_DEFAULT;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyOrThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld

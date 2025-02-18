@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
+import org.junit.jupiter.api.Test;
+
 import static de.cuioss.test.generator.Generators.nonEmptyStrings;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
 
 class OidcRpInitiatedLogoutParamsTest {
 

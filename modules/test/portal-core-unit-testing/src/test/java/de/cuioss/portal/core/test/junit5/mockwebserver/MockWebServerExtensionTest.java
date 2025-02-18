@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
@@ -24,6 +22,8 @@ import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnableMockWebServer
 class MockWebServerExtensionTest implements MockWebServerHolder {

@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
@@ -27,6 +24,9 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SuppressWarnings("el-syntax")
 @EnableAutoWeld

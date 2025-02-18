@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
-import static de.cuioss.portal.authentication.facade.AuthenticationResults.invalidResultKey;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.AuthenticationResults;
 import de.cuioss.portal.authentication.facade.AuthenticationSource;
@@ -37,6 +32,11 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+
+import static de.cuioss.portal.authentication.facade.AuthenticationResults.invalidResultKey;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Mock implementation of the {@link FormBasedAuthenticationFacade} for unit testing.

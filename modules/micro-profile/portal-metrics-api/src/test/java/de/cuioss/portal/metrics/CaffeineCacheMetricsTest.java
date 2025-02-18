@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.metrics;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import de.cuioss.portal.configuration.cache.CacheConfig;
@@ -30,6 +28,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
 @DisplayName("CaffeineCacheMetrics Tests")

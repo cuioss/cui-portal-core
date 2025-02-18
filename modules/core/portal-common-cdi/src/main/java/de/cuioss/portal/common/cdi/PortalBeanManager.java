@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.common.cdi;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.portal.common.priority.PriorityComparator;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -27,7 +24,14 @@ import jakarta.enterprise.inject.spi.CDI;
 import lombok.experimental.UtilityClass;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class providing convenient methods for programmatic CDI bean access

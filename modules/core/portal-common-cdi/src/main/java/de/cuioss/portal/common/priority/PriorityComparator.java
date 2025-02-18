@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.common.priority;
 
-import static java.util.Objects.requireNonNull;
-
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.spi.Bean;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Comparator implementation for ordering objects based on their {@link jakarta.annotation.Priority}

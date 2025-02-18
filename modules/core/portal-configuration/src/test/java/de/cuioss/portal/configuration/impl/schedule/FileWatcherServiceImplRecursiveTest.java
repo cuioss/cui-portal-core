@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
@@ -38,6 +36,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnablePortalConfigurationLocal
 @EnableAutoWeld

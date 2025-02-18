@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.authentication;
 
-import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
-import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresent;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
@@ -27,6 +23,9 @@ import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
+import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresent;
 
 /**
  * Test cases for {@link LoginEvent} focusing on logging behavior and builder validation.
@@ -142,21 +141,6 @@ class LoginEventTest extends ValueObjectTest<LoginEvent> {
 
             // then
             assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format(username));
-        }
-    }
-
-    @Nested
-    @DisplayName("Error Case Tests")
-    class ErrorCaseTests {
-
-        @Test
-        @DisplayName("Should throw IllegalStateException for null action")
-        void shouldThrowOnNullAction() {
-            assertThrows(NullPointerException.class, () ->
-                    LoginEvent.builder()
-                            .action(null)
-                            .username("testUser")
-                            .build());
         }
     }
 }

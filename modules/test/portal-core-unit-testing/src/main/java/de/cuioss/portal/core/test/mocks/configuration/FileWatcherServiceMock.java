@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
 import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
@@ -30,6 +28,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
 /**
  * Mock implementation of {@link FileWatcherService} for testing file system monitoring.

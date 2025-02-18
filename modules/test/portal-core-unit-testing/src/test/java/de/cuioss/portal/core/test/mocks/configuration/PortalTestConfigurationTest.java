@@ -15,11 +15,6 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.cuioss.portal.common.stage.ProjectStage;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
@@ -34,6 +29,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnablePortalConfiguration

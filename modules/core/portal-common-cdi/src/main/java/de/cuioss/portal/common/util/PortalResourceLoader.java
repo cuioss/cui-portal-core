@@ -3,14 +3,14 @@
  */
 package de.cuioss.portal.common.util;
 
-import static de.cuioss.tools.collect.MoreCollections.requireNotEmpty;
-import static java.util.Objects.requireNonNull;
-
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.experimental.UtilityClass;
 
 import java.net.URL;
 import java.util.Optional;
+
+import static de.cuioss.tools.collect.MoreCollections.requireNotEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Helper class that streamlines loading Resources from the classpath. This is

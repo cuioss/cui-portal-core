@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
+import de.cuioss.tools.logging.CuiLogger;
+
 import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static de.cuioss.tools.string.MoreStrings.isEmpty;
-
-import de.cuioss.tools.logging.CuiLogger;
 
 /**
  * Defines the technical protocol or interface type used for external service connections.
