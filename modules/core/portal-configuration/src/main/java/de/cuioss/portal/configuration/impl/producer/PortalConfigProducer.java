@@ -257,7 +257,7 @@ public class PortalConfigProducer {
             try {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
-                LOGGER.error(e, ERROR.INVALID_CONTENT_FOR_TIME_UNIT.format(configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
+                LOGGER.error(e, ERROR.INVALID_TIME_UNIT.format(configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
                         configProperties.get(EXPIRATION_UNIT_KEY)));
             }
         }
@@ -265,7 +265,7 @@ public class PortalConfigProducer {
         if (configProperties.containsKey(CacheConfig.RECORD_STATISTICS_KEY)) {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
-                LOGGER.error(ERROR.INVALID_CONTENT_FOR_BOOLEAN.format(configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
+                LOGGER.error(ERROR.INVALID_BOOLEAN.format(configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
                         configProperties.get(CacheConfig.RECORD_STATISTICS_KEY)));
                 recordStats = false;
             } else {
