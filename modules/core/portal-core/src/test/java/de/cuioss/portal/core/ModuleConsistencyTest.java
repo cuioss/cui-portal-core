@@ -21,23 +21,47 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.cuioss.portal.core.test.support.PortalAuthenticationFacadeMock;
 import jakarta.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.environment.se.Weld;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
+/**
+ * Tests ensuring the consistency and proper configuration of the portal core module.
+ */
+@DisplayName("Module Consistency Tests")
 class ModuleConsistencyTest {
 
-    @Test
-    void shouldStartUpContainer() {
-        try (var weld = new Weld().enableDiscovery().addBeanClass(PortalAuthenticationFacadeMock.class).initialize()) {
-            assertNotNull(weld.select(BeanManager.class),
+    @Nested
+    @DisplayName("CDI Container Tests")
+    class CdiContainerTests {
+        
+        @Test
+        @DisplayName("Should start up CDI container successfully")
+        void shouldStartUpContainer() {
+            try (var weld = new Weld()
+                    .enableDiscovery()
+                    .addBeanClass(PortalAuthenticationFacadeMock.class)
+                    .initialize()) {
+                
+                assertNotNull(weld.select(BeanManager.class),
                     "Unable to acquire an instance of javax.enterprise.inject.spi.BeanManager");
+            }
         }
     }
 
-    @Test
-    void moduleShouldProvideBeansXml() {
-        assertTrue(Path.of("src", "main", "resources", "META-INF", "beans.xml").toFile().exists(),
+    @Nested
+    @DisplayName("Module Configuration Tests")
+    class ModuleConfigurationTests {
+        
+        @Test
+        @DisplayName("Should provide beans.xml in META-INF")
+        void moduleShouldProvideBeansXml() {
+            assertTrue(Path.of("src", "main", "resources", "META-INF", "beans.xml")
+                    .toFile()
+                    .exists(),
                 "It is best-practice that each module provides a beans.xml");
+        }
     }
 }

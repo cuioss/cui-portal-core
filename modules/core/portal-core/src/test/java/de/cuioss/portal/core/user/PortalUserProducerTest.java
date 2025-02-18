@@ -30,12 +30,19 @@ import org.easymock.EasyMock;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for the {@link PortalUserProducer} which handles the production of
+ * authenticated user information in the portal context.
+ */
 @EnableAutoWeld
 @AddBeanClasses({PortalAuthenticationFacadeMock.class})
 @ActivateScopes(RequestScoped.class)
-class PortalUserProducerTest implements ShouldHandleObjectContracts<PortalUserProducer> {
+@DisplayName("PortalUserProducer Tests")
+class PortalUserProducerTest {
 
     @Produces
     @RequestScoped
@@ -50,14 +57,28 @@ class PortalUserProducerTest implements ShouldHandleObjectContracts<PortalUserPr
     @Inject
     private Provider<AuthenticatedUserInfo> userInfoProvider;
 
-    /**
-     * Checks whether the correct user is produced.
-     */
-    @Test
-    void shouldProduceUser() {
-        var userInfo = userInfoProvider.get();
-        assertNotNull(userInfo);
-        assertTrue(userInfo.isAuthenticated());
-        assertEquals(PortalAuthenticationFacadeMock.USER, userInfo.getDisplayName());
+    @Nested
+    @DisplayName("User Production Tests")
+    class UserProductionTests {
+        
+        @Test
+        @DisplayName("Should produce authenticated user with correct information")
+        void shouldProduceAuthenticatedUser() {
+            var userInfo = userInfoProvider.get();
+            assertNotNull(userInfo, "User info should not be null");
+            assertTrue(userInfo.isAuthenticated(), "User should be authenticated");
+            assertEquals(PortalAuthenticationFacadeMock.USER, userInfo.getDisplayName(),
+                "Display name should match mock user");
+        }
+    }
+
+    @Nested
+    @DisplayName("Object Contract Tests")
+    class ObjectContractTests implements ShouldHandleObjectContracts<PortalUserProducer> {
+        
+        @Override
+        public PortalUserProducer getUnderTest() {
+            return underTest;
+        }
     }
 }

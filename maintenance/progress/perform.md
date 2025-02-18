@@ -184,6 +184,63 @@ Status: Completed
   - Included monitoring setup guidelines
   - Added related documentation links
 
+### portal-servlet-core
+Status: In Progress
+
+#### Test Structure Review
+- [ ] Test organization
+  - [ ] Move test support classes to common test package
+  - [ ] Organize tests by feature/component
+  - [ ] Separate unit and integration tests
+  - [ ] Create test utilities package
+- [ ] Test naming and structure
+  - [ ] Consistent test class naming
+  - [ ] Clear test method names
+  - [ ] Proper test categorization
+  - [ ] Test class documentation
+- [ ] Test fixtures and setup
+  - [ ] Common test configurations
+  - [ ] Shared mock objects
+  - [ ] Test data factories
+  - [ ] Reusable assertions
+
+#### Current Test Analysis
+- [x] Servlet tests
+  - [x] AbstractPortalServletTest
+    - Tests basic servlet functionality
+    - Authentication and authorization
+    - Role-based access control
+  - [x] ExternalHostnameProducerTest
+    - Hostname resolution
+    - X-Forwarded header handling
+  - [x] MockPortalServlet
+    - Test support class
+    - Mock implementation for testing
+- [x] Test support
+  - [x] PortalUserProducerMock
+  - [x] PortalAuthenticationFacadeMock
+  - [x] Display name provider
+
+#### Planned Improvements
+- [ ] Test organization
+  - [ ] Create feature-specific test packages
+  - [ ] Separate mock objects
+  - [ ] Unified test support
+- [ ] Test coverage
+  - [ ] Identify coverage gaps
+  - [ ] Add missing test cases
+  - [ ] Edge case testing
+- [ ] Test quality
+  - [ ] Improve assertions
+  - [ ] Add test documentation
+  - [ ] Enhance error messages
+
+#### Documentation
+- [ ] Test purpose documentation
+- [ ] Test setup requirements
+- [ ] Mock object usage
+- [ ] Test data organization
+
 ## Notes
 - Focus on test maintainability and readability
 - Ensure tests follow current best practices
