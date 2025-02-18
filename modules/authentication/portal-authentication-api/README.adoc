@@ -1,73 +1,106 @@
 = Portal Authentication API
 
-Provides a comprehensive API for authentication and authorization in Portal applications, serving as an abstraction layer over various authentication mechanisms.
+Comprehensive authentication and authorization framework for Portal applications. This API provides a flexible abstraction layer over various authentication mechanisms, enabling secure user management and access control.
 
 == Maven Coordinates
 
-[source, xml]
+[source,xml]
 ----
-    <dependency>
-        <groupId>de.cuioss.portal.authentication</groupId>
-        <artifactId>portal-authentication-api</artifactId>
-    </dependency>
+<dependency>
+    <groupId>de.cuioss.portal.authentication</groupId>
+    <artifactId>portal-authentication-api</artifactId>
+</dependency>
 ----
 
 == Core Concepts
 
 === Authentication Model
-* User identity management through link:src/main/java/de/cuioss/portal/authentication/AuthenticatedUserInfo.java[AuthenticatedUserInfo]
-* Immutable user state with link:src/main/java/de/cuioss/portal/authentication/model/BaseAuthenticatedUserInfo.java[BaseAuthenticatedUserInfo]
-* Extensible attribute system for custom data
+* link:src/main/java/de/cuioss/portal/authentication/AuthenticatedUserInfo.java[AuthenticatedUserInfo] - Core interface for user identity
+* link:src/main/java/de/cuioss/portal/authentication/model/BaseAuthenticatedUserInfo.java[BaseAuthenticatedUserInfo] - Thread-safe implementation
+* Immutable user state management
+* Extensible attribute system
 * Role and group-based authorization
 
 === Authentication Facade
-* Unified authentication interface through link:src/main/java/de/cuioss/portal/authentication/facade/AuthenticationFacade.java[AuthenticationFacade]
-* Session management and logout handling
-* Authentication source tracking
-* Pluggable authentication mechanisms
+* link:src/main/java/de/cuioss/portal/authentication/facade/AuthenticationFacade.java[AuthenticationFacade] - Primary authentication interface
+* Session lifecycle management
+* Pluggable authentication sources
+* Secure logout handling
 
 === User Enrichment
-* Extensible user information through link:src/main/java/de/cuioss/portal/authentication/PortalUserEnricher.java[PortalUserEnricher]
+* link:src/main/java/de/cuioss/portal/authentication/PortalUserEnricher.java[PortalUserEnricher] - User data enrichment interface
 * Priority-based enrichment chain
-* Custom attribute addition
-* Dynamic user context updates
+* Dynamic context updates
+* Custom attribute management
 
-== Authentication Flow
+== Detailed Component Documentation
 
-=== 1. Initial Authentication
+=== AuthenticatedUserInfo Interface
+Core interface defining user authentication state:
+
+[source,java]
+----
+public interface AuthenticatedUserInfo {
+    boolean isAuthenticated();
+    String getIdentifier();
+    String getDisplayName();
+    Set<String> getRoles();
+    Set<String> getGroups();
+    Optional<String> getAttributeValue(String key);
+}
+----
+
+=== BaseAuthenticatedUserInfo Implementation
+Thread-safe implementation with builder pattern:
+
+[source,java]
+----
+var user = BaseAuthenticatedUserInfo.builder()
+    .identifier("user123")
+    .displayName("John Doe")
+    .authenticated(true)
+    .addRole("ADMIN")
+    .addGroup("IT_STAFF")
+    .addAttribute("department", "IT")
+    .build();
+----
+
+=== AuthenticationFacade Interface
+Primary authentication operations:
+
+[source,java]
+----
+public interface AuthenticationFacade {
+    AuthenticationResult login(HttpServletRequest request, 
+                             LoginCredentials credentials);
+    void logout(HttpServletRequest request);
+    AuthenticatedUserInfo getCurrentUser(HttpServletRequest request);
+}
+----
+
+== Usage Examples
+
+=== Basic Authentication Flow
+
 [source,java]
 ----
 @Inject
 private AuthenticationFacade authFacade;
 
-public void login(Credentials credentials) {
-    AuthenticationResult result = authFacade.authenticate(credentials);
+public void authenticate(HttpServletRequest request, String username, 
+                        String password) {
+    var credentials = new LoginCredentials(username, password);
+    var result = authFacade.login(request, credentials);
+    
     if (result.isValid()) {
-        AuthenticatedUserInfo user = result.getUserInfo();
+        var user = result.getUserInfo();
         // Process authenticated user
     }
 }
 ----
 
-=== 2. User Information Access
-[source,java]
-----
-@Inject
-private AuthenticatedUserInfo userInfo;
+=== Role-Based Access Control
 
-public void processUser() {
-    if (userInfo.isAuthenticated()) {
-        String userId = userInfo.getIdentifier();
-        String displayName = userInfo.getDisplayName();
-        Set<String> roles = userInfo.getRoles();
-        
-        // Access custom attributes
-        Optional<String> department = userInfo.getAttributeValue("department");
-    }
-}
-----
-
-=== 3. Authorization Checks
 [source,java]
 ----
 @Inject
@@ -79,69 +112,102 @@ public void restrictedOperation() {
     }
     
     if (!userInfo.isUserInRole("ADMIN")) {
-        throw new SecurityException("Admin access required");
+        throw new SecurityException("Insufficient privileges");
     }
     
     // Perform restricted operation
 }
 ----
 
-=== 4. User Enrichment
+=== Custom User Enrichment
+
 [source,java]
 ----
 @Priority(PortalPriorities.PORTAL_CORE_LEVEL)
 public class DepartmentEnricher implements PortalUserEnricher {
     
     @Override
-    public AuthenticatedUserInfo enrich(AuthenticatedUserInfo userInfo) {
+    public AuthenticatedUserInfo enrich(AuthenticatedUserInfo user) {
         return BaseAuthenticatedUserInfo.builder()
-            .copyFrom(userInfo)
-            .addAttribute("department", loadDepartment(userInfo))
+            .copyFrom(user)
+            .addAttribute("department", loadDepartment(user))
             .build();
     }
 }
 ----
 
-== Package Structure
+== Configuration
 
-=== link:src/main/java/de/cuioss/portal/authentication[authentication]
-Core authentication interfaces and base types.
+=== Core Properties
 
-=== link:src/main/java/de/cuioss/portal/authentication/model[model]
-User information model and storage implementations.
+[cols="2,2,1"]
+|===
+|Property |Description |Default
 
-=== link:src/main/java/de/cuioss/portal/authentication/facade[facade]
-Authentication facade and related services.
+|portal.authentication.enabled
+|Enables authentication subsystem
+|true
+
+|portal.authentication.session.timeout
+|Session timeout in seconds
+|3600
+
+|portal.authentication.allowed-roles
+|Comma-separated list of valid roles
+|USER,ADMIN
+|===
+
+=== Security Configuration
+
+[source,properties]
+----
+# Authentication settings
+portal.authentication.enabled=true
+portal.authentication.session.timeout=1800
+
+# Role configuration
+portal.authentication.allowed-roles=USER,ADMIN,MANAGER
+portal.authentication.default-role=USER
+
+# Session management
+portal.authentication.session.cookie-name=PORTAL_SESSION
+portal.authentication.session.secure-only=true
+----
 
 == Best Practices
 
-=== User Information Handling
-* Always use builder pattern for creating user information
-* Keep user information immutable
-* Use Optional for optional attributes
-* Handle authentication state explicitly
-
-=== Authentication Implementation
-* Extend BaseAuthenticationFacade for custom authentication
-* Implement proper logout cleanup
-* Track authentication sources
-* Handle session timeouts gracefully
-
-=== Security Considerations
-* Validate all user input
-* Use proper password handling
+=== Security Guidelines
+* Always validate user input
+* Use HTTPS for authentication
 * Implement proper session management
 * Follow least privilege principle
-* Log security-relevant events
+* Regularly rotate credentials
+* Log security events
+
+=== Implementation Guidelines
+* Extend BaseAuthenticationFacade for custom authentication
+* Use builder pattern for user info creation
+* Implement custom UserEnricher for additional attributes
+* Handle authentication failures gracefully
+* Validate configuration at startup
+
+== Technical Details
 
 === Thread Safety
-* All components are thread-safe by design
-* User information is immutable
-* Facade implementations are CDI-managed
-* Enrichers should be stateless
+* All model classes are immutable
+* Facade implementations are thread-safe
+* Session handling is concurrent-safe
+* Builder pattern ensures safe object creation
+
+=== Performance Considerations
+* User info objects are cached per request
+* Enrichment chain is optimized
+* Role checks use Set implementation
+* Attribute access is O(1)
 
 == Related Documentation
 
+* link:../portal-authentication-mock/[Portal Authentication Mock] - Testing support
+* link:../portal-authentication-oauth/[Portal Authentication OAuth] - OAuth implementation
 * link:https://jakarta.ee/specifications/security/[Jakarta Security]
-* link:https://jakarta.ee/specifications/cdi/[Jakarta CDI]
-* link:../portal-authentication/[Portal Authentication Implementations]
+* link:https://www.rfc-editor.org/rfc/rfc6749[OAuth 2.0 Specification]
