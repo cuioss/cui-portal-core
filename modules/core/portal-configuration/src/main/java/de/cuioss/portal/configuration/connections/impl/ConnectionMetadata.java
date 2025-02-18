@@ -22,7 +22,11 @@ import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.net.ssl.KeyStoreProvider;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.uimodel.application.LoginCredentials;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.http.ssl.SSLContexts;
 
 import javax.net.ssl.SSLContext;
@@ -38,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR.SSL_CONTEXT_CREATION_FAILED;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO.*;
 
 /**
  * Helper class that provides metadata regarding a connection.
@@ -122,6 +125,9 @@ public class ConnectionMetadata implements Serializable {
     @Setter
     private ConnectionType connectionType;
 
+    /**
+     * Human-readable description of this connection.
+     */
     @Getter
     @Setter
     private String description;
@@ -168,10 +174,18 @@ public class ConnectionMetadata implements Serializable {
     @Builder.Default
     private TimeUnit readTimeoutUnit = TimeUnit.SECONDS;
 
+    /**
+     * The hostname or IP address of the proxy server to be used for this connection.
+     * Only used if {@link #proxyPort} is also set.
+     */
     @Getter
     @Setter
     private String proxyHost;
 
+    /**
+     * The port number of the proxy server.
+     * Must be greater than 0 if {@link #proxyHost} is set.
+     */
     @Getter
     @Setter
     private Integer proxyPort;
@@ -219,7 +233,7 @@ public class ConnectionMetadata implements Serializable {
      * {@link #getTrustStoreInfo()} and {@link #getKeyStoreInfo()}.
      * If this fails, it will return {@link Optional#empty()}.
      *
-     * @return the created {@link SSLContext}
+     * @return the created {@link SSLContext} if successful, {@link Optional#empty()} otherwise
      */
     public Optional<SSLContext> resolveOptionalSSLContext() {
         LOGGER.debug("Resolving optional SSLContext for connection '%s'", getConnectionId());
@@ -246,7 +260,7 @@ public class ConnectionMetadata implements Serializable {
             }
             return Optional.of(contextBuilder.build());
         } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
-                | KeyManagementException e) {
+                       | KeyManagementException e) {
             LOGGER.error(e, SSL_CONTEXT_CREATION_FAILED.format(connectionId, e.getMessage()));
             return Optional.empty();
         }

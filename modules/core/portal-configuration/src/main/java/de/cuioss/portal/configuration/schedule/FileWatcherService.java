@@ -19,6 +19,10 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
+ * Service for monitoring file system changes. It allows registering paths (files or
+ * directories) to be watched for modifications. When changes are detected, appropriate
+ * events will be fired to notify interested parties.
+ *
  * @author Oliver Wolff
  */
 public interface FileWatcherService {
@@ -27,6 +31,7 @@ public interface FileWatcherService {
      * Registers one or more {@link Path}s to be watched.
      *
      * @param paths to be registered.
+     * @throws IllegalArgumentException if any of the paths is null or does not exist
      */
     void register(Path... paths);
 
@@ -39,7 +44,9 @@ public interface FileWatcherService {
     void unregister(Path... paths);
 
     /**
-     * @return the paths currently under control of this fileWatcher
+     * @return an immutable list of all paths currently being monitored by this file
+     * watcher service.
+     * The list includes both files and directories.
      */
     List<Path> getRegisteredPaths();
 }

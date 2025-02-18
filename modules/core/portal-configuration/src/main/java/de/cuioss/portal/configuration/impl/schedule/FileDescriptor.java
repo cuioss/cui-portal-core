@@ -45,6 +45,9 @@ final class FileDescriptor extends AbstractFileDescriptor {
         super(path);
     }
 
+    /**
+     * Updates the internal modification date of the file.
+     */
     @Override
     public void update() {
         try {
@@ -54,6 +57,12 @@ final class FileDescriptor extends AbstractFileDescriptor {
         }
     }
 
+    /**
+     * Checks if the file has been modified since the last update.
+     * 
+     * @return {@code true} if the file's modification date is newer than the stored date,
+     *         {@code false} otherwise
+     */
     @Override
     public boolean isUpdated() {
         var newdate = 0L;
