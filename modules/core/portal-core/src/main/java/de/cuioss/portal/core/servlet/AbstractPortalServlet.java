@@ -34,22 +34,55 @@ import java.util.Collections;
 import java.util.HashSet;
 
 /**
- * Provides a minimal layer for modeling {@link Servlet}s that can be enabled by
- * role or configuration. Currently only get-requests are supported
- * ->{@link #executeDoGet(HttpServletRequest, HttpServletResponse)}. If you need
- * to implement a different method you can call
- * {@link #checkAccess(HttpServletResponse)} in order to participate in the
- * checks The algorithm:
- * <ul>
- * <li>Check enabled: {@link #isEnabled()}</li>
- * <li>Check authentication status: {@link #isLoggedInUserRequired()}</li>
- * <li>Check required roles: {@link #getRequiredRoles()}</li>
- * </ul>
- * If all previous checks are passed the method
- * {@link AbstractPortalServlet#executeDoGet(HttpServletRequest, HttpServletResponse)}
- * will be called.
+ * Base servlet implementation providing common portal functionality including
+ * authentication, authorization, and error handling. This abstract class handles
+ * common cross-cutting concerns, allowing concrete implementations to focus on
+ * business logic.
  *
- * @author Oliver Wolff
+ * <p><strong>Key features:</strong></p>
+ * <ul>
+ *   <li>Role-based access control</li>
+ *   <li>Authentication verification</li>
+ *   <li>Standardized error handling</li>
+ *   <li>Configurable servlet enablement</li>
+ * </ul>
+ *
+ * <p><strong>Security features:</strong></p>
+ * <ul>
+ *   <li>Enforces authentication if required</li>
+ *   <li>Validates user roles against required roles</li>
+ *   <li>Handles unauthorized access with appropriate HTTP status codes</li>
+ * </ul>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;WebServlet("/api/data")
+ * public class DataServlet extends AbstractPortalServlet {
+ *     &#64;Override
+ *     protected void executeDoGet(HttpServletRequest request, HttpServletResponse response) 
+ *             throws IOException {
+ *         // Implement business logic here
+ *     }
+ *
+ *     &#64;Override
+ *     protected Collection<String> getRequiredRoles() {
+ *         return Set.of("ADMIN", "DATA_USER");
+ *     }
+ * }
+ * </pre>
+ *
+ * <p><strong>HTTP Status Codes:</strong></p>
+ * <ul>
+ *   <li>{@code 401} - User is not authenticated but authentication is required</li>
+ *   <li>{@code 403} - User is authenticated but lacks required roles</li>
+ *   <li>{@code 500} - Internal server error during request processing</li>
+ *   <li>{@code 503} - Service is currently disabled ({@link #isEnabled()} returns false)</li>
+ * </ul>
+ *
+ * @see #executeDoGet(HttpServletRequest, HttpServletResponse)
+ * @see #getRequiredRoles()
+ * @see #isEnabled()
+ * @since 1.0
  */
 public abstract class AbstractPortalServlet extends HttpServlet {
 

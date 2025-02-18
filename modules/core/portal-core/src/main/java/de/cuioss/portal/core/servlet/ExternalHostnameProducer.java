@@ -25,16 +25,32 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
- * Produces the external hostname for the portal. The hostname is resolved by
- * checking the following request headers in order:
+ * Produces the external hostname for the portal, handling both direct server access and
+ * proxy-forwarded scenarios. This is particularly useful in environments with load balancers,
+ * reverse proxies, or SSL terminators.
+ *
+ * <p>The hostname resolution follows this priority order:</p>
  * <ol>
- * <li>X-Forwarded-Host</li>
- * <li>X-Forwarded-Port</li>
- * <li>Server Name</li>
- * <li>Server Port</li>
+ * <li>X-Forwarded-Host header (for proxy-forwarded host)</li>
+ * <li>X-Forwarded-Port header (for proxy-forwarded port)</li>
+ * <li>Server Name from request (direct server name)</li>
+ * <li>Server Port from request (direct server port)</li>
  * </ol>
  *
+ * <p>The produced hostname will be in the format: {@code hostname:port}</p>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;Inject
+ * &#64;CuiExternalHostname
+ * Provider<String> hostname;
+ *
+ * String serverAddress = hostname.get();
+ * </pre>
+ *
  * @author Matthias Walliczek
+ * @see CuiExternalHostname
+ * @since 1.0
  */
 @ApplicationScoped
 public class ExternalHostnameProducer {

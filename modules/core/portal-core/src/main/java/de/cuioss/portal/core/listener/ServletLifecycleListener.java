@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.core.listener;
 
-import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
-
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.core.servlet.CuiContextPath;
@@ -25,7 +22,6 @@ import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -38,15 +34,33 @@ import jakarta.servlet.annotation.WebListener;
 import java.util.Collections;
 import java.util.List;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 /**
- * Central Listener for Application life-cycle events.
- * <p>
- * Currently it listens to the {@link Initialized} for the
- * {@link ServletContext} and {@link PreDestroy}, uses it for an ordered
- * configuration, see {@link ApplicationInitializer}
- * </p>
+ * Manages the lifecycle of portal components during servlet context initialization
+ * and destruction. This listener coordinates the initialization and cleanup of all
+ * registered {@link ApplicationInitializer} components.
  *
- * @author Oliver Wolff
+ * <p>Key responsibilities:</p>
+ * <ul>
+ *   <li>Initializes application components in correct order</li>
+ *   <li>Manages context path configuration</li>
+ *   <li>Ensures proper cleanup during shutdown</li>
+ *   <li>Handles initialization errors gracefully</li>
+ * </ul>
+ *
+ * <p>Initialization sequence:</p>
+ * <ol>
+ *   <li>Context path setup</li>
+ *   <li>Discovery of {@link ApplicationInitializer} instances</li>
+ *   <li>Ordered initialization based on {@link ApplicationInitializer#getOrder()}</li>
+ *   <li>Error handling and logging</li>
+ * </ol>
+ *
+ * @see ApplicationInitializer
+ * @see ServletContextListener
+ * @since 1.0
  */
 @ApplicationScoped
 @WebListener
