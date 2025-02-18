@@ -31,10 +31,95 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Simple Mock variant of {@link MetricRegistry}. Partially implemented.
+ * Mock implementation of MicroProfile {@link MetricRegistry} for testing purposes.
+ * Provides a simplified metric registry that supports basic metric operations and
+ * tracking in a test environment.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Counter and Timer metric support</li>
+ *   <li>Metadata management</li>
+ *   <li>Concurrent metric storage</li>
+ *   <li>Application-scoped registry</li>
+ *   <li>Metric ID and tag support</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Counter metrics:
+ * <pre>
+ * &#64;Inject
+ * private MetricRegistry registry;
+ *
+ * void testCounter() {
+ *     // Create and use counter
+ *     Counter counter = registry.counter("requests");
+ *     counter.inc();
+ *
+ *     // Verify count
+ *     assertEquals(1, counter.getCount());
+ * }
+ * </pre>
+ *
+ * Timer metrics:
+ * <pre>
+ * void testTimer() {
+ *     Timer timer = registry.timer("response_time");
+ *
+ *     // Time an operation
+ *     timer.time(() -> {
+ *         // Simulated work
+ *         Thread.sleep(100);
+ *         return null;
+ *     });
+ *
+ *     // Verify timer
+ *     assertTrue(timer.getCount() > 0);
+ * }
+ * </pre>
+ *
+ * Metadata and tags:
+ * <pre>
+ * void testMetadata() {
+ *     // Create metric with metadata
+ *     Metadata metadata = Metadata.builder()
+ *         .withName("requests")
+ *         .withDescription("Total requests")
+ *         .withUnit(MetricUnits.NONE)
+ *         .build();
+ *
+ *     // Create metric with tags
+ *     Tag tag = new Tag("endpoint", "/api");
+ *     Counter counter = registry.counter(metadata, tag);
+ *
+ *     // Verify registration
+ *     assertTrue(registry.getMetrics().containsKey(new MetricID("requests", tag)));
+ * }
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Uses {@link ConcurrentHashMap} for thread-safe metric storage</li>
+ *   <li>Supports basic metric types (Counter, Timer)</li>
+ *   <li>Some advanced features are not implemented</li>
+ *   <li>Maintains metadata separately from metrics</li>
+ *   <li>Application-scoped for consistent state</li>
+ * </ul>
+ *
+ * <h2>Limitations</h2>
+ * <ul>
+ *   <li>Some metric types may not be fully implemented</li>
+ *   <li>Histogram and Meter operations throw UnsupportedOperationException</li>
+ *   <li>Some advanced MetricRegistry features are not available</li>
+ * </ul>
  *
  * @author Oliver Wolff
  * @author Sven Haag
+ * @since 1.0
+ * @see MetricRegistry
+ * @see Counter
+ * @see Timer
+ * @see Metadata
  */
 @ApplicationScoped
 public class PortalTestMetricRegistry implements MetricRegistry {

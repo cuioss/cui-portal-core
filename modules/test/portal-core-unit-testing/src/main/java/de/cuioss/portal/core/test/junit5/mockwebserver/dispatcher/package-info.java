@@ -1,44 +1,39 @@
 /**
- * Provides dispatcher implementations for handling HTTP requests in MockWebServer tests.
- * These dispatchers allow for flexible and modular request handling in test scenarios.
+ * Request dispatching components for MockWebServer testing, providing modular
+ * and configurable HTTP request handling.
  *
- * <h2>Core Components</h2>
+ * <h2>Package Organization</h2>
  * <ul>
- *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher} - Base dispatcher providing default positive responses</li>
- *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandler} - Handler for configuring endpoint responses</li>
- *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher} - Combines multiple dispatchers</li>
- *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.ModuleDispatcherElement} - Interface for modular dispatchers</li>
+ *   <li>Base Components
+ *     <ul>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher} - Default response handling</li>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.ModuleDispatcherElement} - Dispatcher interface</li>
+ *     </ul>
+ *   </li>
+ *   <li>Response Configuration
+ *     <ul>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandler} - Response configuration</li>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher} - Multi-dispatcher support</li>
+ *     </ul>
+ *   </li>
  * </ul>
  *
- * <h2>Usage Example</h2>
- * <pre>
- * class MyDispatcherTest implements MockWebServerHolder {
- *     private final BaseAllAcceptDispatcher dispatcher = 
- *         new BaseAllAcceptDispatcher("/api");
- *
- *     &#64;Override
- *     public Dispatcher getDispatcher() {
- *         return dispatcher;
- *     }
- *
- *     &#64;Test
- *     void shouldHandleCustomResponse() {
- *         dispatcher.getGetResult()
- *             .setResponse(new MockResponse().setBody("custom"));
- *         // Test with custom response
- *     }
- * }
- * </pre>
- *
- * <h2>Features</h2>
+ * <h2>Key Concepts</h2>
  * <ul>
- *   <li>Modular request handling</li>
- *   <li>Pre-configured response handlers</li>
- *   <li>Support for all HTTP methods</li>
- *   <li>Customizable response content</li>
+ *   <li><strong>Modular Design</strong> - Composable dispatcher elements</li>
+ *   <li><strong>Response Handling</strong> - Flexible response configuration</li>
+ *   <li><strong>Method Support</strong> - Complete HTTP method coverage</li>
+ * </ul>
+ * <p>
+ * For detailed documentation and examples, see:
+ * <ul>
+ *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher} for basic usage</li>
+ *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandler} for response configuration</li>
  * </ul>
  *
  * @author Oliver Wolff
+ * @see de.cuioss.portal.core.test.junit5.mockwebserver
+ * @see mockwebserver3.Dispatcher
  * @since 1.0
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;

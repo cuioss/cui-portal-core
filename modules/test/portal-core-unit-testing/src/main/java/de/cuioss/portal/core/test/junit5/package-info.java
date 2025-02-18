@@ -1,35 +1,36 @@
 /**
- * Provides testing infrastructure for Portal applications using JUnit 5 and Weld-JUnit.
- * 
- * <h2>Core Components</h2>
+ * JUnit 5 specific extensions and test infrastructure for Portal Core testing.
+ *
+ * <h2>Package Organization</h2>
  * <ul>
- *   <li>{@link de.cuioss.portal.core.test.junit5.EnablePortalConfiguration} - Annotation for enabling portal configuration in tests</li>
- *   <li>{@link de.cuioss.portal.core.test.junit5.PortalTestConfigurationExtension} - JUnit 5 extension for portal configuration</li>
- *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver} - Mock web server support for testing HTTP interactions</li>
- * </ul>
- * 
- * <h2>Usage Examples</h2>
- * <pre>
- * &#64;EnablePortalConfiguration
- * class MyPortalTest {
- *     &#64;Inject
- *     PortalTestConfiguration configuration;
- *     
- *     &#64;Test
- *     void shouldLoadConfig() {
- *         assertNotNull(configuration);
- *     }
- * }
- * </pre>
- * 
- * <h2>Test Support Features</h2>
- * <ul>
- *   <li>CDI-based configuration testing</li>
- *   <li>Mock implementations for portal services</li>
- *   <li>HTTP server mocking capabilities</li>
- *   <li>Extensible test infrastructure</li>
+ *   <li>Configuration Support
+ *     <ul>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.EnablePortalConfiguration} - Test configuration activation</li>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.PortalTestConfigurationExtension} - Configuration extension</li>
+ *     </ul>
+ *   </li>
+ *   <li>HTTP Testing Support
+ *     <ul>
+ *       <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver} - Mock server and request handling</li>
+ *     </ul>
+ *   </li>
  * </ul>
  *
+ * <h2>Key Concepts</h2>
+ * <ul>
+ *   <li><strong>Portal Configuration</strong> - Automated test configuration setup</li>
+ *   <li><strong>HTTP Mocking</strong> - Web service interaction testing</li>
+ *   <li><strong>JUnit Integration</strong> - Seamless JUnit 5 extension support</li>
+ * </ul>
+ *
+ * For detailed documentation and examples, see:
+ * <ul>
+ *   <li>{@link de.cuioss.portal.core.test.junit5.EnablePortalConfiguration} for configuration setup</li>
+ *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver} for HTTP testing</li>
+ * </ul>
+ *
+ * @see de.cuioss.portal.core.test.junit5.mockwebserver
+ * @see org.junit.jupiter.api.extension.Extension
  * @author Oliver Wolff
  * @since 1.0
  */

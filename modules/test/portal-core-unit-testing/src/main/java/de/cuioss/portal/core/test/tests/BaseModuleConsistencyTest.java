@@ -26,24 +26,62 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 
 /**
- * Base class for testing the consistency / structure of a certain module by
- * starting up a {@link WeldContainer} and checking whether the module provides
- * a beans.xml-file
- * <h3>Extending</h3>
- * <p>
- * in case you want to add beans or modify the dev-mode you just need to
- * implement the callback method:
- * </p>
+ * Base class for testing the consistency and structure of a Portal module by
+ * verifying CDI container initialization and beans.xml configuration.
  *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Automated CDI container initialization testing</li>
+ *   <li>beans.xml presence verification</li>
+ *   <li>Customizable Weld container configuration</li>
+ *   <li>BeanManager availability testing</li>
+ *   <li>Module structure validation</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Basic module test:
  * <pre>
- * protected Weld modifyWeldContainer(Weld weld) {
- *     return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducer.class);
+ * public class MyModuleTest extends BaseModuleConsistencyTest {
+ *     // Uses default configuration
  * }
  * </pre>
  *
+ * Customized container configuration:
+ * <pre>
+ * public class CustomModuleTest extends BaseModuleConsistencyTest {
+ *     &#64;Override
+ *     protected Weld modifyWeldContainer(Weld weld) {
+ *         return weld.enableDevMode()
+ *                   .addBeanClass(CustomProducer.class)
+ *                   .addAlternative(MockService.class);
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Uses Weld SE for container initialization</li>
+ *   <li>Verifies beans.xml presence in META-INF/</li>
+ *   <li>Ensures BeanManager is accessible</li>
+ *   <li>Supports development mode configuration</li>
+ *   <li>Allows bean class additions and alternatives</li>
+ * </ul>
+ *
+ * <h2>Best Practices</h2>
+ * <ul>
+ *   <li>Create one test class per module</li>
+ *   <li>Override modifyWeldContainer() for custom configurations</li>
+ *   <li>Keep container modifications minimal</li>
+ *   <li>Use dev-mode only when necessary</li>
+ *   <li>Document any special container configurations</li>
+ * </ul>
  *
  * @author Oliver Wolff
- *
+ * @since 1.0
+ * @see WeldContainer
+ * @see BeanManager
+ * @see Weld
  */
 public class BaseModuleConsistencyTest {
 

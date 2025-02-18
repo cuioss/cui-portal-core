@@ -1,30 +1,29 @@
 /**
- * Provides base test classes and utilities for testing Portal Core components.
- * 
- * <h2>Core Test Classes</h2>
- * <ul>
- *   <li>{@link de.cuioss.portal.core.test.tests.BaseModuleConsistencyTest} - Base class for module consistency tests</li>
- *   <li>{@link de.cuioss.portal.core.test.tests.BaseAssemblyConsistencyTest} - Base class for assembly verification</li>
- *   <li>{@link de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest} - Base class for configuration key testing</li>
- * </ul>
- * 
- * <h2>Test Categories</h2>
- * <ul>
- *   <li><strong>Module Tests</strong> - Verify module structure and dependencies</li>
- *   <li><strong>Assembly Tests</strong> - Ensure correct packaging and deployment</li>
- *   <li><strong>Configuration Tests</strong> - Validate configuration keys and values</li>
- * </ul>
- * 
- * <h2>Usage Example</h2>
- * <pre>
- * class MyModuleTest extends BaseModuleConsistencyTest {
- *     &#64;Override
- *     protected String getModuleName() {
- *         return "my-module";
- *     }
- * }
- * </pre>
+ * Provides base test classes for verifying Portal Core module consistency,
+ * assembly structure, and configuration.
  *
+ * <h2>Package Organization</h2>
+ * <ul>
+ *   <li>Module Testing - {@link de.cuioss.portal.core.test.tests.BaseModuleConsistencyTest}</li>
+ *   <li>Assembly Testing - {@link de.cuioss.portal.core.test.tests.BaseAssemblyConsistencyTest}</li>
+ *   <li>Configuration Testing - {@link de.cuioss.portal.core.test.tests.configuration}</li>
+ * </ul>
+ *
+ * <h2>Key Concepts</h2>
+ * <ul>
+ *   <li><strong>Module Consistency</strong> - CDI container and beans.xml verification</li>
+ *   <li><strong>Assembly Structure</strong> - Web application packaging validation</li>
+ *   <li><strong>Configuration Keys</strong> - Configuration source and key validation</li>
+ * </ul>
+ *
+ * For detailed documentation and examples, see the individual class documentation:
+ * <ul>
+ *   <li>{@link de.cuioss.portal.core.test.tests.BaseModuleConsistencyTest} for module testing</li>
+ *   <li>{@link de.cuioss.portal.core.test.tests.BaseAssemblyConsistencyTest} for assembly testing</li>
+ *   <li>{@link de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest} for configuration testing</li>
+ * </ul>
+ *
+ * @see de.cuioss.portal.core.test.tests.configuration
  * @author Oliver Wolff
  * @since 1.0
  */

@@ -23,9 +23,61 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Define {@code application.context.name} config property for junit tests.
+ * MicroProfile ConfigSource implementation that provides the application context name
+ * for unit testing environments. Specifically defines the {@code application.context.name}
+ * property with a fixed value of "unit-test".
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Static configuration property provision</li>
+ *   <li>Immutable property storage</li>
+ *   <li>Thread-safe implementation</li>
+ *   <li>Consistent context naming</li>
+ *   <li>Test environment identification</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Direct property access:
+ * <pre>
+ * ConfigSource source = new ApplicationContextNameConfigSource();
+ * String contextName = source.getValue("application.context.name");
+ * assertEquals("unit-test", contextName);
+ * </pre>
+ *
+ * Service loader registration:
+ * <pre>
+ * // In META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource
+ * de.cuioss.portal.core.test.tests.configuration.ApplicationContextNameConfigSource
+ *
+ * // Then in your test
+ * Config config = ConfigProvider.getConfig();
+ * String contextName = config.getValue("application.context.name", String.class);
+ * assertEquals("unit-test", contextName);
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Implements MicroProfile {@link ConfigSource} interface</li>
+ *   <li>Uses immutable map for property storage</li>
+ *   <li>Provides single configuration property</li>
+ *   <li>Returns class name as config source name</li>
+ *   <li>Thread-safe by design</li>
+ * </ul>
+ *
+ * <h2>Best Practices</h2>
+ * <ul>
+ *   <li>Use in test environments only</li>
+ *   <li>Register via service loader for automatic discovery</li>
+ *   <li>Keep property value consistent across tests</li>
+ *   <li>Document usage in test documentation</li>
+ *   <li>Consider priority when multiple sources exist</li>
+ * </ul>
  *
  * @author Sven Haag
+ * @since 1.0
+ * @see ConfigSource
+ * @see org.eclipse.microprofile.config.Config
  */
 public class ApplicationContextNameConfigSource implements ConfigSource {
 
