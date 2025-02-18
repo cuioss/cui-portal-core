@@ -39,10 +39,10 @@ public class PortalConfigurationMessages {
                 .template("Running in Production-Mode")
                 .build();
 
-        /** Watching for file changes at path (010) */
+        /** Watching for file changes at path (020) */
         public static final LogRecord FILE_WATCH_STARTED = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(10)
+                .identifier(20)
                 .template("Watching for file changes at path: %s")
                 .build();
     }
@@ -59,80 +59,80 @@ public class PortalConfigurationMessages {
                 .template("Project stage 'development' detected. Set the property '" + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.")
                 .build();
 
-        /** Test mode detected (101) */
+        /** Test mode detected (110) */
         public static final LogRecord PROJECT_STAGE_TEST_DETECTED = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(101)
+                .identifier(110)
                 .template("Project stage 'test' detected. Set the property '" + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.")
                 .build();
 
-        /** Invalid locale configuration (102) */
+        /** Invalid locale configuration (120) */
         public static final LogRecord INVALID_LOCALE = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(102)
+                .identifier(120)
                 .template("Invalid configuration found for Locale: %s")
                 .build();
 
-        /** Invalid watch key (103) */
+        /** Invalid watch key (130) */
         public static final LogRecord INVALID_WATCH_KEY = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(103)
+                .identifier(130)
                 .template("Invalid element found, watchKey='%s', ignoring")
                 .build();
 
-        /** Invalid path (110) */
+        /** Invalid path (140) */
         public static final LogRecord PATH_INVALID = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(110)
+                .identifier(140)
                 .template("Path '%s' %s, therefore it can not be watched")
                 .build();
 
-        /** Unable to read file (111) */
+        /** Unable to read file (141) */
         public static final LogRecord UNABLE_TO_READ_FILE = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(111)
+                .identifier(141)
                 .template("Unable to read metadata for file %s")
                 .build();
 
-        /** Unable to read directory (112) */
+        /** Unable to read directory (142) */
         public static final LogRecord UNABLE_TO_READ_DIRECTORY = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(112)
+                .identifier(142)
                 .template("Directory %s could not be read")
                 .build();
 
-        /** Unable to construct connection metadata (115) */
+        /** Unable to construct connection metadata (150) */
         public static final LogRecord UNABLE_TO_CONSTRUCT = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(115)
+                .identifier(150)
                 .template("Unable to construct ConnectionMetadata, due to %s")
                 .build();
 
-        /** Missing base name (116) */
+        /** Missing base name (160) */
         public static final LogRecord MISSING_BASENAME = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(116)
+                .identifier(160)
                 .template("Configuration setting for baseName is missing.")
                 .build();
 
-        /** Missing configuration (117) */
+        /** Missing configuration (161) */
         public static final LogRecord MISSING_CONFIG = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(117)
+                .identifier(161)
                 .template("Missing configuration for %s detected.")
                 .build();
 
-        /** Missing basic auth configuration (118) */
+        /** Missing basic auth configuration (170) */
         public static final LogRecord MISSING_BASIC_AUTH_CONFIG = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(118)
+                .identifier(170)
                 .template("Configuration for basic authentication is incomplete. Missing: %s")
                 .build();
 
-        /** Missing token configuration (119) */
+        /** Missing token configuration (171) */
         public static final LogRecord MISSING_TOKEN_CONFIG = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(119)
+                .identifier(171)
                 .template("Configuration for token based authentication is incomplete. Missing: %s")
                 .build();
     }
@@ -149,94 +149,94 @@ public class PortalConfigurationMessages {
                 .template("Invalid content for '%s%s', expected a number but was '%s'")
                 .build();
 
-        /** Invalid time unit configuration (201) */
-        public static final LogRecord INVALID_CONTENT_FOR_TIME_UNIT = LogRecordModel.builder()
+        /** Invalid time unit configuration (210) */
+        public static final LogRecord INVALID_TIME_UNIT = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(201)
+                .identifier(210)
                 .template("Invalid content for '%s%s', expected one of %s but was '%s'")
                 .build();
 
-        /** Invalid boolean configuration (202) */
-        public static final LogRecord INVALID_CONTENT_FOR_BOOLEAN = LogRecordModel.builder()
+        /** Invalid boolean configuration (220) */
+        public static final LogRecord INVALID_BOOLEAN = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(202)
+                .identifier(220)
                 .template("Invalid content for '%s%s', expected a boolean but was '%s'")
                 .build();
 
-        /** Invalid number value (203) */
+        /** Invalid number value (230) */
         public static final LogRecord INVALID_NUMBER_VALUE = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(203)
+                .identifier(230)
                 .template("Invalid content for '%s', expected a number but was '%s'")
                 .build();
 
-        /** File system access error (204) */
+        /** File system access error (240) */
         public static final LogRecord FILE_SYSTEM_ACCESS_ERROR = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(204)
+                .identifier(240)
                 .template("Unable to access File-system for detecting changes, due to '%s', use the configuration property '%s' to disable this feature")
                 .build();
 
-        /** File system polling error (205) */
+        /** File system polling error (241) */
         public static final LogRecord FILE_SYSTEM_POLLING_ERROR = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(205)
+                .identifier(241)
                 .template("Error while polling / accessing the file-system")
                 .build();
 
-        /** File event handling error (206) */
+        /** File event handling error (242) */
         public static final LogRecord FILE_EVENT_HANDLING_ERROR = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(206)
+                .identifier(242)
                 .template("Handling fileChangedEvent failed for file %s")
                 .build();
 
-        /** Connection error (207) */
+        /** Connection error (250) */
         public static final LogRecord CONNECTION_ERROR = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(207)
-                .template("Error while connecting to %s")
+                .identifier(250)
+                .template("Connection error for %s: %s")
                 .build();
 
-        /** Connection timeout error (208) */
+        /** Connection timeout error (251) */
         public static final LogRecord CONNECTION_TIMEOUT_ERROR = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(208)
-                .template("Timeout while connecting to %s")
+                .identifier(251)
+                .template("Connection timeout for %s: %s")
                 .build();
 
-        /** Connection refused error (209) */
+        /** Connection refused error (252) */
         public static final LogRecord CONNECTION_REFUSED_ERROR = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(209)
-                .template("Connection to %s refused")
+                .identifier(252)
+                .template("Connection refused for %s: %s")
                 .build();
 
-        /** Missing connection metadata (210) */
+        /** Missing connection metadata (260) */
         public static final LogRecord MISSING_CONNECTION_METADATA = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(210)
+                .identifier(260)
                 .template("Missing connection metadata for %s")
                 .build();
 
-        /** Invalid connection metadata (211) */
+        /** Invalid connection metadata (261) */
         public static final LogRecord INVALID_CONNECTION_METADATA = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(211)
+                .identifier(261)
                 .template("Invalid connection metadata for %s")
                 .build();
 
-        /** Unable to schedule path (212) */
+        /** Unable to schedule path (270) */
         public static final LogRecord UNABLE_TO_SCHEDULE_PATH = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(212)
+                .identifier(270)
                 .template("Unable to schedule given Path for tracking for changes, due to '%s'")
                 .build();
 
-        /** SSL context creation failed (220) */
+        /** SSL context creation failed (280) */
         public static final LogRecord SSL_CONTEXT_CREATION_FAILED = LogRecordModel.builder()
                 .prefix(PREFIX)
-                .identifier(220)
+                .identifier(280)
                 .template("Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration")
                 .build();
     }
