@@ -31,11 +31,34 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Base Implementation of {@link AuthenticatedUserInfo} suitable for most
- * uses-cases. It can be overwritten but the extension point for custom
- * attributes is {@link #getContextMap()}
+ * Thread-safe, immutable implementation of {@link AuthenticatedUserInfo} suitable for most
+ * use cases. All collections returned by this class are unmodifiable.
+ * 
+ * <h2>Thread Safety</h2>
+ * This class is immutable and thread-safe. All state is final and collections
+ * are defensively copied during construction.
+ *
+ * <h2>Builder Usage</h2>
+ * <pre>
+ * var userInfo = BaseAuthenticatedUserInfo.builder()
+ *     .authenticated(true)
+ *     .displayName("John Doe")
+ *     .identifier("jdoe")
+ *     .qualifiedIdentifier("SYSTEM:jdoe")
+ *     .system("SYSTEM")
+ *     .roles(Arrays.asList("USER", "ADMIN"))
+ *     .groups(Arrays.asList("IT", "Management"))
+ *     .contextMapElement("lastLogin", new Date())
+ *     .build();
+ * </pre>
+ *
+ * <h2>Extension Points</h2>
+ * While this class can be extended, the preferred way to add custom attributes
+ * is through {@link #getContextMap()}. The context map is immutable after construction.
  *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see AuthenticatedUserInfo
  */
 @RequiredArgsConstructor
 @ToString
