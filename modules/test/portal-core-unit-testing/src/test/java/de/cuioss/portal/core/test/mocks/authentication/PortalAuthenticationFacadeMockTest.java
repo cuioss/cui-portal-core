@@ -15,15 +15,12 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
 import lombok.Getter;
-
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -45,7 +42,7 @@ class PortalAuthenticationFacadeMockTest implements ShouldBeNotNull<PortalAuthen
     @Nested
     @DisplayName("Authentication Tests")
     class AuthenticationTests {
-        
+
         @Test
         void shouldHandleValidLogin() {
             var result = underTest.login(null, PortalAuthenticationFacadeMock.createLoginCredentials(PortalAuthenticationFacadeMock.ADMIN));
@@ -63,7 +60,7 @@ class PortalAuthenticationFacadeMockTest implements ShouldBeNotNull<PortalAuthen
         void shouldHandleLogout() {
             underTest.doLogin();
             assertTrue(underTest.retrieveCurrentAuthenticationContext(null).isAuthenticated());
-            
+
             assertTrue(underTest.logout(null));
             assertFalse(underTest.retrieveCurrentAuthenticationContext(null).isAuthenticated());
         }
@@ -72,7 +69,7 @@ class PortalAuthenticationFacadeMockTest implements ShouldBeNotNull<PortalAuthen
     @Nested
     @DisplayName("User Store Tests")
     class UserStoreTests {
-        
+
         @Test
         void shouldProvideDefaultUserStores() {
             var stores = underTest.getAvailableUserStores();
@@ -86,7 +83,7 @@ class PortalAuthenticationFacadeMockTest implements ShouldBeNotNull<PortalAuthen
     @Nested
     @DisplayName("Helper Method Tests")
     class HelperMethodTests {
-        
+
         @Test
         void shouldCreateLoginCredentials() {
             var credentials = PortalAuthenticationFacadeMock.createLoginCredentials("testuser", "testpass");
@@ -105,7 +102,7 @@ class PortalAuthenticationFacadeMockTest implements ShouldBeNotNull<PortalAuthen
         void shouldAssertAuthenticationState() {
             underTest.doLogin();
             underTest.assertAuthenticated(true);
-            
+
             underTest.logout(null);
             underTest.assertAuthenticated(false);
         }

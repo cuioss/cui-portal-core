@@ -64,16 +64,16 @@ class PortalResourceLoaderTest {
         @DisplayName("Should reject null resource path")
         void shouldRejectNullResourcePath() {
             assertThrows(NullPointerException.class,
-                () -> PortalResourceLoader.getResource(null, getClass()),
-                "Should throw NullPointerException for null resource path");
+                    () -> PortalResourceLoader.getResource(null, getClass()),
+                    "Should throw NullPointerException for null resource path");
         }
 
         @Test
         @DisplayName("Should reject null calling class")
         void shouldRejectNullCallingClass() {
             assertThrows(NullPointerException.class,
-                () -> PortalResourceLoader.getResource(EXISTING_RESOURCE, null),
-                "Should throw NullPointerException for null calling class");
+                    () -> PortalResourceLoader.getResource(EXISTING_RESOURCE, null),
+                    "Should throw NullPointerException for null calling class");
         }
     }
 }

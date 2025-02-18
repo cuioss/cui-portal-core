@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.authentication.facade;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;
 import de.cuioss.portal.common.priority.PortalPriorities;
@@ -22,8 +24,6 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import java.util.List;
-
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Base implementation of {@link AuthenticationFacade} that provides common functionality

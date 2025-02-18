@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.authentication;
 
+import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
+
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Builder;
 import lombok.NonNull;
@@ -22,8 +24,6 @@ import lombok.Value;
 
 import java.io.Serial;
 import java.io.Serializable;
-
-import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
 
 /**
  * To signal successful / failed login and logout events (e.g., to the audit-logger).

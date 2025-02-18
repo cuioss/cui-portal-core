@@ -18,7 +18,10 @@ package de.cuioss.portal.common.priority;
 import static de.cuioss.test.generator.Generators.fixedValues;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.cuioss.portal.common.priority.support.*;
+import de.cuioss.portal.common.priority.support.HighPriorityClass;
+import de.cuioss.portal.common.priority.support.LowPriorityClass;
+import de.cuioss.portal.common.priority.support.MediumPriorityClass;
+import de.cuioss.portal.common.priority.support.NoPriorityClass;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.object.ObjectTestContracts;
@@ -53,14 +56,14 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
         @DisplayName("Should create configured priority ordering")
         void shouldCreateConfiguredOrdering() {
             assertAll("Priority level verification",
-                () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, noPriorityClassComparator.getOrder(),
-                        "No priority class should have default level"),
-                () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, lowClassComparator.getOrder(),
-                        "Low priority class should have core level"),
-                () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, mediumClassComparator.getOrder(),
-                        "Medium priority class should have module level"),
-                () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, highClassComparator.getOrder(),
-                        "High priority class should have assembly level")
+                    () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, noPriorityClassComparator.getOrder(),
+                            "No priority class should have default level"),
+                    () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, lowClassComparator.getOrder(),
+                            "Low priority class should have core level"),
+                    () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, mediumClassComparator.getOrder(),
+                            "Medium priority class should have module level"),
+                    () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, highClassComparator.getOrder(),
+                            "High priority class should have assembly level")
             );
         }
 
@@ -73,14 +76,14 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
             Collections.sort(sortList);
 
             assertAll("Priority order verification",
-                () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.get(0).getOrder(),
-                        "Highest priority should be first"),
-                () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, sortList.get(1).getOrder(),
-                        "Medium priority should be second"),
-                () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, sortList.get(2).getOrder(),
-                        "Low priority should be third"),
-                () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, sortList.get(3).getOrder(),
-                        "Default priority should be last")
+                    () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.get(0).getOrder(),
+                            "Highest priority should be first"),
+                    () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, sortList.get(1).getOrder(),
+                            "Medium priority should be second"),
+                    () -> assertEquals(PortalPriorities.PORTAL_CORE_LEVEL, sortList.get(2).getOrder(),
+                            "Low priority should be third"),
+                    () -> assertEquals(PortalPriorities.DEFAULT_LEVEL, sortList.get(3).getOrder(),
+                            "Default priority should be last")
             );
         }
 
@@ -91,10 +94,10 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
             final var secondNoPriority = new PriorityComparator(new NoPriorityClass());
 
             assertAll("Equal priority verification",
-                () -> assertEquals(0, firstNoPriority.compareTo(secondNoPriority),
-                        "Equal priority objects should return 0"),
-                () -> assertEquals(firstNoPriority.getOrder(), secondNoPriority.getOrder(),
-                        "Equal priority objects should have same order")
+                    () -> assertEquals(0, firstNoPriority.compareTo(secondNoPriority),
+                            "Equal priority objects should return 0"),
+                    () -> assertEquals(firstNoPriority.getOrder(), secondNoPriority.getOrder(),
+                            "Equal priority objects should have same order")
             );
         }
 
@@ -102,8 +105,8 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
         @DisplayName("Should handle null input correctly")
         void shouldHandleNullInput() {
             assertThrows(NullPointerException.class,
-                () -> new PriorityComparator(null),
-                "Should throw NullPointerException for null wrapped object");
+                    () -> new PriorityComparator(null),
+                    "Should throw NullPointerException for null wrapped object");
         }
 
         @Test
@@ -119,22 +122,22 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
             Collections.sort(shuffledList);
 
             assertAll("Stable ordering verification",
-                () -> assertEquals(originalList.size(), shuffledList.size(),
-                        "Sorted list should maintain same size"),
-                () -> assertTrue(shuffledList.containsAll(originalList),
-                        "Sorted list should contain all original elements"),
-                () -> assertEquals(first.getOrder(), shuffledList.get(0).getOrder(),
-                        "First element should have same order"),
-                () -> assertEquals(second.getOrder(), shuffledList.get(1).getOrder(),
-                        "Second element should have same order"),
-                () -> assertEquals(third.getOrder(), shuffledList.get(2).getOrder(),
-                        "Third element should have same order"),
-                () -> assertEquals(0, first.compareTo(second),
-                        "First and second elements should be equal"),
-                () -> assertEquals(0, second.compareTo(third),
-                        "Second and third elements should be equal"),
-                () -> assertEquals(0, first.compareTo(third),
-                        "First and third elements should be equal")
+                    () -> assertEquals(originalList.size(), shuffledList.size(),
+                            "Sorted list should maintain same size"),
+                    () -> assertTrue(shuffledList.containsAll(originalList),
+                            "Sorted list should contain all original elements"),
+                    () -> assertEquals(first.getOrder(), shuffledList.get(0).getOrder(),
+                            "First element should have same order"),
+                    () -> assertEquals(second.getOrder(), shuffledList.get(1).getOrder(),
+                            "Second element should have same order"),
+                    () -> assertEquals(third.getOrder(), shuffledList.get(2).getOrder(),
+                            "Third element should have same order"),
+                    () -> assertEquals(0, first.compareTo(second),
+                            "First and second elements should be equal"),
+                    () -> assertEquals(0, second.compareTo(third),
+                            "Second and third elements should be equal"),
+                    () -> assertEquals(0, first.compareTo(third),
+                            "First and third elements should be equal")
             );
         }
 

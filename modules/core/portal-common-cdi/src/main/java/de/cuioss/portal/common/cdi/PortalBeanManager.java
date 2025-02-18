@@ -97,8 +97,8 @@ public final class PortalBeanManager {
         requireNonNull(beanManager, "beanManager");
         requireNonNull(beanClass, "beanClass");
 
-        LOGGER.debug("Attempting to resolve bean of type '%s' with qualifier '%s'", 
-            beanClass.getName(), annotationClass != null ? annotationClass.getName() : "none");
+        LOGGER.debug("Attempting to resolve bean of type '%s' with qualifier '%s'",
+                beanClass.getName(), annotationClass != null ? annotationClass.getName() : "none");
 
         final Set<Bean<?>> beanTypes = resolveBeanTypes(beanManager, beanClass, annotationClass);
         checkBeanTypesFound(beanClass, annotationClass, beanTypes);
@@ -108,7 +108,7 @@ public final class PortalBeanManager {
         final CreationalContext<T> context = beanManager.createCreationalContext(bean);
         // Wild casting again
         T result = (T) beanManager.getReference(bean, beanClass, context);
-        
+
         LOGGER.debug("Successfully resolved bean: %s", result);
         return result;
     }

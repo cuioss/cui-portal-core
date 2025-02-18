@@ -16,7 +16,6 @@
 package de.cuioss.portal.authentication;
 
 import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
-import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresent;
 import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresent;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -39,7 +38,7 @@ class LoginEventTest extends ValueObjectTest<LoginEvent> {
     @Nested
     @DisplayName("Logging Behavior Tests")
     class LoggingTests {
-        
+
         @Test
         @DisplayName("Should log successful login with username")
         void shouldLogLoginSuccess() {
@@ -95,7 +94,7 @@ class LoginEventTest extends ValueObjectTest<LoginEvent> {
     @Nested
     @DisplayName("Edge Case Tests")
     class EdgeCaseTests {
-        
+
         @Test
         @DisplayName("Should handle null username by logging 'null'")
         void shouldHandleNullUsername() {

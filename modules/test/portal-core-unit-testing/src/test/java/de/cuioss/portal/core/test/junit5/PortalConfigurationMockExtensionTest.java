@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = {
-    "key1:value1",
-    "key2:value2"
+        "key1:value1",
+        "key2:value2"
 })
 @DisplayName("Tests PortalConfigurationMockExtension")
 class PortalConfigurationMockExtensionTest {
@@ -48,13 +48,13 @@ class PortalConfigurationMockExtensionTest {
     void shouldHandleConfigurationUpdates() {
         // Add new value
         configuration.update("key3", "value3");
-        assertEquals("value3", configuration.getValue("key3"), 
-            "Should store new value");
+        assertEquals("value3", configuration.getValue("key3"),
+                "Should store new value");
 
         // Update existing value
         configuration.update("key1", "updated");
-        assertEquals("updated", configuration.getValue("key1"), 
-            "Should update existing value");
+        assertEquals("updated", configuration.getValue("key1"),
+                "Should update existing value");
     }
 
     @Test
@@ -62,13 +62,13 @@ class PortalConfigurationMockExtensionTest {
     void shouldHandleConfigurationRemoval() {
         // Remove single key
         configuration.remove("key1");
-        assertNull(configuration.getValue("key1"), 
-            "Removed key should return null");
+        assertNull(configuration.getValue("key1"),
+                "Removed key should return null");
 
         // Clear all configuration
         configuration.clear();
-        assertNull(configuration.getValue("key2"), 
-            "All keys should be cleared");
+        assertNull(configuration.getValue("key2"),
+                "All keys should be cleared");
     }
 
     @Test
@@ -76,18 +76,18 @@ class PortalConfigurationMockExtensionTest {
     void shouldHandleProjectStageConfiguration() {
         // Set development stage
         configuration.development();
-        assertEquals("development", configuration.getValue(PORTAL_STAGE), 
-            "Should set development stage");
+        assertEquals("development", configuration.getValue(PORTAL_STAGE),
+                "Should set development stage");
 
         // Set production stage
         configuration.production();
-        assertEquals("production", configuration.getValue(PORTAL_STAGE), 
-            "Should set production stage");
+        assertEquals("production", configuration.getValue(PORTAL_STAGE),
+                "Should set production stage");
 
         // Clear stage
         configuration.remove(PORTAL_STAGE);
-        assertNull(configuration.getValue(PORTAL_STAGE), 
-            "Stage should be cleared");
+        assertNull(configuration.getValue(PORTAL_STAGE),
+                "Stage should be cleared");
     }
 
     @Test
@@ -95,10 +95,10 @@ class PortalConfigurationMockExtensionTest {
     void shouldHandleMultipleKeyUpdates() {
         // Update multiple keys at once
         configuration.update("key4", "value4", "key5", "value5");
-        
-        assertEquals("value4", configuration.getValue("key4"), 
-            "Should store first new value");
-        assertEquals("value5", configuration.getValue("key5"), 
-            "Should store second new value");
+
+        assertEquals("value4", configuration.getValue("key4"),
+                "Should store first new value");
+        assertEquals("value5", configuration.getValue("key5"),
+                "Should store second new value");
     }
 }

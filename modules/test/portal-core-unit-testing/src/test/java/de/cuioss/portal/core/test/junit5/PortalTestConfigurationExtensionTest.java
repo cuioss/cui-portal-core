@@ -15,20 +15,16 @@
  */
 package de.cuioss.portal.core.test.junit5;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -40,7 +36,7 @@ class PortalTestConfigurationExtensionTest {
     @Nested
     @DisplayName("Basic Configuration Tests")
     class BasicConfigurationTest {
-        
+
         @Inject
         @ConfigProperty(name = "key1")
         private Provider<String> attribute;
@@ -69,7 +65,7 @@ class PortalTestConfigurationExtensionTest {
         void shouldHandleConfigChanges() {
             configuration.update("dynamic.key", "initial");
             assertEquals("initial", configuration.getValue("dynamic.key"));
-            
+
             configuration.update("dynamic.key", "updated");
             assertEquals("updated", configuration.getValue("dynamic.key"));
         }
@@ -79,7 +75,7 @@ class PortalTestConfigurationExtensionTest {
         void shouldHandleConfigRemoval() {
             configuration.update("temp.key", "value");
             assertTrue(configuration.getPropertyNames().contains("temp.key"));
-            
+
             configuration.remove("temp.key");
             assertTrue(!configuration.getPropertyNames().contains("temp.key"));
         }

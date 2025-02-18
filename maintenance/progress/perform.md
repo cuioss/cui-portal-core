@@ -241,6 +241,29 @@ Status: In Progress
 - [ ] Mock object usage
 - [ ] Test data organization
 
+## Modules
+
+### portal-core-unit-testing 
+- [x] Review package-info.java files
+- [x] Update README.adoc
+- [x] Update code documentation where needed
+- [x] Verify test coverage
+- [x] Mark as completed
+
+### portal-authentication-mock 
+- [x] Review package-info.java files
+- [x] Update README.adoc
+- [x] Update code documentation where needed
+- [x] Verify test coverage
+- [x] Mark as completed
+
+### portal-authentication-api
+- [ ] Review package-info.java files
+- [ ] Update README.adoc
+- [ ] Update code documentation where needed
+- [ ] Verify test coverage
+- [ ] Mark as completed
+
 ## Notes
 - Focus on test maintainability and readability
 - Ensure tests follow current best practices

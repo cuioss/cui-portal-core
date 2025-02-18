@@ -1,27 +1,33 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.core.test.mocks.microprofile;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Optional;
-
+import de.cuioss.test.generator.junit.EnableGeneratorController;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import lombok.Getter;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricID;
-import org.eclipse.microprofile.metrics.Tag;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import de.cuioss.test.generator.TypedGenerator;
-import de.cuioss.test.generator.junit.EnableGeneratorController;
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
-import lombok.Getter;
 
 @EnableAutoWeld
 @EnableGeneratorController
@@ -29,7 +35,7 @@ import lombok.Getter;
 class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRegistry> {
 
     private static final String METRIC_NAME = "test.metric";
-    
+
     @Getter
     private PortalTestMetricRegistry underTest;
 
@@ -47,8 +53,8 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         void shouldCreateAndRetrieveCounter() {
             Counter counter = underTest.counter(METRIC_NAME);
             assertNotNull(counter, "Counter should be created");
-            assertEquals(counter, underTest.getCounter(new MetricID(METRIC_NAME)), 
-                "Should retrieve the same counter instance");
+            assertEquals(counter, underTest.getCounter(new MetricID(METRIC_NAME)),
+                    "Should retrieve the same counter instance");
         }
 
         @Test
@@ -59,8 +65,8 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
                     .build();
             Counter counter = underTest.counter(metadata);
             assertNotNull(counter, "Counter with metadata should be created");
-            assertEquals(counter, underTest.getCounter(new MetricID(METRIC_NAME)), 
-                "Should retrieve counter by ID");
+            assertEquals(counter, underTest.getCounter(new MetricID(METRIC_NAME)),
+                    "Should retrieve counter by ID");
         }
     }
 
@@ -75,10 +81,10 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
                     .withName(METRIC_NAME)
                     .build();
             Counter counter = underTest.counter(metadata);
-            
+
             assertNotNull(counter, "Counter should be created");
-            assertNotNull(underTest.getMetadata(METRIC_NAME), 
-                "Metadata should be stored");
+            assertNotNull(underTest.getMetadata(METRIC_NAME),
+                    "Metadata should be stored");
         }
     }
 
@@ -89,10 +95,10 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
         @Test
         @DisplayName("Should return null for non-existent metrics")
         void shouldReturnNullForNonExistentMetrics() {
-            assertNull(underTest.getCounter(new MetricID("non.existent")), 
-                "Should return null for non-existent counter");
-            assertNull(underTest.getMetadata("non.existent"), 
-                "Should return null for non-existent metadata");
+            assertNull(underTest.getCounter(new MetricID("non.existent")),
+                    "Should return null for non-existent counter");
+            assertNull(underTest.getMetadata("non.existent"),
+                    "Should return null for non-existent metadata");
         }
     }
 
@@ -101,9 +107,9 @@ class PortalTestMetricRegistryTest implements ShouldBeNotNull<PortalTestMetricRe
     void shouldHandleMetricRemoval() {
         Counter counter = underTest.counter(METRIC_NAME);
         assertNotNull(counter, "Counter should be created");
-        
+
         underTest.remove(METRIC_NAME);
-        assertNull(underTest.getCounter(new MetricID(METRIC_NAME)), 
-            "Counter should be removed");
+        assertNull(underTest.getCounter(new MetricID(METRIC_NAME)),
+                "Counter should be removed");
     }
 }

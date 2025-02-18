@@ -22,7 +22,6 @@ import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
-import jakarta.enterprise.inject.Alternative;
 import jakarta.inject.Inject;
 import lombok.ToString;
 
@@ -105,7 +104,6 @@ import java.util.Set;
  * @see Path
  */
 @ApplicationScoped
-@Alternative
 @PortalFileWatcherService
 @ToString
 public class FileWatcherServiceMock implements FileWatcherService {

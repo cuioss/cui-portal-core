@@ -66,7 +66,7 @@ class MetricIdBuilderTest {
         void processedExceptionMappers() {
             // Given
             final var countDown = new CountDownLatch(2);
-            
+
             // When
             var builder = new MetricIdBuilder()
                     .name("test")
@@ -79,14 +79,14 @@ class MetricIdBuilderTest {
                         countDown.countDown();
                         return new Tag("mapper2", throwable.getClass().getSimpleName());
                     });
-            
+
             // Then
             var metricId = assertDoesNotThrow(builder::build,
                     "Builder should process mappers without throwing");
             assertEquals(0L, countDown.getCount(), "All mappers should be processed");
-            assertEquals("Test exception", metricId.getTags().get("mapper1"), 
+            assertEquals("Test exception", metricId.getTags().get("mapper1"),
                     "First mapper should add exception message");
-            assertEquals("RuntimeException", metricId.getTags().get("mapper2"), 
+            assertEquals("RuntimeException", metricId.getTags().get("mapper2"),
                     "Second mapper should add exception class");
         }
     }
@@ -125,7 +125,7 @@ class MetricIdBuilderTest {
                     .name("test")
                     .tag(null)
                     .tags((Tag[]) null);
-            
+
             assertDoesNotThrow(builder::build,
                     "Builder should handle null tags without throwing");
         }

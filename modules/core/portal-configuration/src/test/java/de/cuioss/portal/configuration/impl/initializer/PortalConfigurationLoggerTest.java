@@ -58,7 +58,7 @@ class PortalConfigurationLoggerTest {
     @Nested
     @DisplayName("Log Level Tests")
     class LogLevelTests {
-        
+
         @Test
         @DisplayName("Should log on INFO level and ignore WARN")
         void shouldLogOnInfoLevel() {
@@ -82,9 +82,9 @@ class PortalConfigurationLoggerTest {
             TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
             TestLogLevel.WARN.addLogger(PortalConfigurationLogger.class);
             TestLogLevel.ERROR.addLogger(PortalConfigurationLogger.class);
-            
+
             underTest.initialize();
-            
+
             assertLogMessagePresentContaining(TestLogLevel.INFO, "Portal Configuration");
             assertNoLogMessagePresent(TestLogLevel.WARN, PortalConfigurationLogger.class);
             assertNoLogMessagePresent(TestLogLevel.ERROR, PortalConfigurationLogger.class);
@@ -99,14 +99,14 @@ class PortalConfigurationLoggerTest {
         @DisplayName("Should handle repeated initialization")
         void shouldHandleRepeatedInit() {
             TestLogLevel.INFO.addLogger(PortalConfigurationLogger.class);
-            
+
             // Multiple initializations should not cause issues
             assertDoesNotThrow(() -> {
                 underTest.initialize();
                 underTest.initialize();
                 underTest.initialize();
             });
-            
+
             assertLogMessagePresentContaining(TestLogLevel.INFO, "Portal Configuration");
         }
 

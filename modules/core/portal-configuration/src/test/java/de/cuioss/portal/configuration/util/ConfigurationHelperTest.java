@@ -15,12 +15,10 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.enterprise.inject.spi.Annotated;
@@ -68,7 +66,7 @@ class ConfigurationHelperTest {
     @Nested
     @DisplayName("Map Filtering Tests")
     class MapFilteringTests {
-        
+
         @Test
         @DisplayName("Should handle empty map")
         void shouldFilterEmptyMap() {
@@ -104,7 +102,7 @@ class ConfigurationHelperTest {
     @Nested
     @DisplayName("Enum Conversion Tests")
     class EnumConversionTests {
-        
+
         @Test
         @DisplayName("Should handle case-insensitive enum conversion")
         void shouldConvertToEnumIgnoringCase() {
@@ -148,7 +146,7 @@ class ConfigurationHelperTest {
     @Nested
     @DisplayName("Configuration Resolution Tests")
     class ConfigurationResolutionTests {
-        
+
         @Test
         @DisplayName("Should resolve configuration map")
         void shouldResolveConfigMap() {

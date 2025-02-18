@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR.SSL_CONTEXT_CREATION_FAILED;
+
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
 import de.cuioss.portal.configuration.connections.exception.ErrorReason;
@@ -40,8 +42,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR.SSL_CONTEXT_CREATION_FAILED;
 
 /**
  * Represents metadata for configuring and managing a connection to an external service.
@@ -289,7 +289,7 @@ public class ConnectionMetadata implements Serializable {
             }
             return Optional.of(contextBuilder.build());
         } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
-                       | KeyManagementException e) {
+                | KeyManagementException e) {
             LOGGER.error(e, SSL_CONTEXT_CREATION_FAILED.format(connectionId, e.getMessage()));
             return Optional.empty();
         }

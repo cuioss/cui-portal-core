@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import de.cuioss.tools.collect.CollectionBuilder;
@@ -34,8 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Application-scoped registry managing and validating {@link ResourceBundleLocator}s.

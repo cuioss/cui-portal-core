@@ -36,7 +36,7 @@ class ModuleConsistencyTest {
     @Nested
     @DisplayName("CDI Container Tests")
     class CdiContainerTests {
-        
+
         @Test
         @DisplayName("Should start up CDI container successfully")
         void shouldStartUpContainer() {
@@ -44,9 +44,9 @@ class ModuleConsistencyTest {
                     .enableDiscovery()
                     .addBeanClass(PortalAuthenticationFacadeMock.class)
                     .initialize()) {
-                
+
                 assertNotNull(weld.select(BeanManager.class),
-                    "Unable to acquire an instance of javax.enterprise.inject.spi.BeanManager");
+                        "Unable to acquire an instance of javax.enterprise.inject.spi.BeanManager");
             }
         }
     }
@@ -54,14 +54,14 @@ class ModuleConsistencyTest {
     @Nested
     @DisplayName("Module Configuration Tests")
     class ModuleConfigurationTests {
-        
+
         @Test
         @DisplayName("Should provide beans.xml in META-INF")
         void moduleShouldProvideBeansXml() {
             assertTrue(Path.of("src", "main", "resources", "META-INF", "beans.xml")
-                    .toFile()
-                    .exists(),
-                "It is best-practice that each module provides a beans.xml");
+                            .toFile()
+                            .exists(),
+                    "It is best-practice that each module provides a beans.xml");
         }
     }
 }

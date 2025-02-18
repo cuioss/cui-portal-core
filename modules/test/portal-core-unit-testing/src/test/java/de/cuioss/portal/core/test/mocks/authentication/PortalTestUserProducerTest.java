@@ -15,23 +15,19 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 @EnableAutoWeld
 @AddBeanClasses(PortalTestUserProducer.class)
@@ -54,15 +50,15 @@ class PortalTestUserProducerTest {
     @Nested
     @DisplayName("Authentication State Tests")
     class AuthenticationStateTest {
-        
+
         @Test
         @DisplayName("Should handle authentication state changes")
         void shouldHandleAuthenticationState() {
             assertTrue(userProvider.get().isAuthenticated(), "Default state should be authenticated");
-            
+
             userProducer.authenticated(false);
             assertFalse(userProvider.get().isAuthenticated(), "User should be unauthenticated");
-            
+
             userProducer.authenticated(true);
             assertTrue(userProvider.get().isAuthenticated(), "User should be authenticated again");
         }
@@ -72,39 +68,39 @@ class PortalTestUserProducerTest {
         void shouldPreserveUserInfo() {
             var user = userProvider.get();
             var identifier = user.getIdentifier();
-            
+
             userProducer.authenticated(false);
-            assertEquals(identifier, userProvider.get().getIdentifier(), 
-                "User identifier should be preserved");
+            assertEquals(identifier, userProvider.get().getIdentifier(),
+                    "User identifier should be preserved");
         }
     }
 
     @Nested
     @DisplayName("User Attributes Tests")
     class UserAttributesTest {
-        
+
         @Test
         @DisplayName("Should handle role modifications")
         void shouldHandleRoles() {
             userProducer.roles(List.of("ADMIN"));
-            assertTrue(userProvider.get().getRoles().contains("ADMIN"), 
-                "Added role should be present");
-            
+            assertTrue(userProvider.get().getRoles().contains("ADMIN"),
+                    "Added role should be present");
+
             userProducer.roles(List.of());
-            assertFalse(userProvider.get().getRoles().contains("ADMIN"), 
-                "Removed role should not be present");
+            assertFalse(userProvider.get().getRoles().contains("ADMIN"),
+                    "Removed role should not be present");
         }
 
         @Test
         @DisplayName("Should handle attribute modifications")
         void shouldHandleAttributes() {
             userProducer.contextMap(Map.of("department", "IT"));
-            assertEquals("IT", userProvider.get().getContextMap().get("department"), 
-                "Added attribute should be present");
-            
+            assertEquals("IT", userProvider.get().getContextMap().get("department"),
+                    "Added attribute should be present");
+
             userProducer.contextMap(Map.of());
-            assertFalse(userProvider.get().getContextMap().containsKey("department"), 
-                "Removed attribute should not be present");
+            assertFalse(userProvider.get().getContextMap().containsKey("department"),
+                    "Removed attribute should not be present");
         }
     }
 }

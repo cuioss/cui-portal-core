@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.core.listener;
 
 import static de.cuioss.portal.core.PortalCoreLogMessages.LIFECYCLE;
@@ -56,27 +71,27 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
     @Nested
     @DisplayName("Lifecycle Management Tests")
     class LifecycleManagementTests {
-        
+
         @Test
         @DisplayName("Should properly initialize and destroy components")
         void shouldInitializeAndDestroy() {
-            assertFalse(mockInitializer.isInitializeCalled(), 
-                "Initialize should not be called initially");
-            assertFalse(mockInitializer.isDestroyCalled(), 
-                "Destroy should not be called initially");
+            assertFalse(mockInitializer.isInitializeCalled(),
+                    "Initialize should not be called initially");
+            assertFalse(mockInitializer.isDestroyCalled(),
+                    "Destroy should not be called initially");
 
             underTest.contextInitialized(new ServletContextEvent(SERVLET_CONTEXT));
 
-            assertTrue(mockInitializer.isInitializeCalled(), 
-                "Initialize should be called after context initialization");
-            assertFalse(mockInitializer.isDestroyCalled(), 
-                "Destroy should not be called after initialization");
+            assertTrue(mockInitializer.isInitializeCalled(),
+                    "Initialize should be called after context initialization");
+            assertFalse(mockInitializer.isDestroyCalled(),
+                    "Destroy should not be called after initialization");
 
             underTest.applicationDestroyListener();
-            assertTrue(mockInitializer.isInitializeCalled(), 
-                "Initialize should remain called after destroy");
-            assertTrue(mockInitializer.isDestroyCalled(), 
-                "Destroy should be called after destroy listener");
+            assertTrue(mockInitializer.isInitializeCalled(),
+                    "Initialize should remain called after destroy");
+            assertTrue(mockInitializer.isDestroyCalled(),
+                    "Destroy should be called after destroy listener");
         }
 
         @Test
@@ -85,34 +100,34 @@ class ServletLifecycleListenerTest implements ShouldBeNotNull<ServletLifecycleLi
             mockInitializer.setExplodeOnDestroy(true);
 
             underTest.applicationDestroyListener();
-            assertTrue(mockInitializer.isDestroyCalled(), 
-                "Destroy should be called even if exception occurs");
+            assertTrue(mockInitializer.isDestroyCalled(),
+                    "Destroy should be called even if exception occurs");
 
-            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN, 
-                LIFECYCLE.WARN.DESTROY_ERROR.resolveIdentifierString());
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                    LIFECYCLE.WARN.DESTROY_ERROR.resolveIdentifierString());
         }
     }
 
     @Nested
     @DisplayName("Context Path Tests")
     class ContextPathTests {
-        
+
         @Test
         @DisplayName("Should handle default context path correctly")
         void shouldHandleDefaultContextPath() {
-            assertEquals("portal", contextPathProvider.get(), 
-                "Should start with default context path");
+            assertEquals("portal", contextPathProvider.get(),
+                    "Should start with default context path");
 
             underTest.contextInitialized(new ServletContextEvent(SERVLET_CONTEXT));
-            assertEquals(CONTEXT_PATH, contextPathProvider.get(), 
-                "Should update to mock context path after initialization");
+            assertEquals(CONTEXT_PATH, contextPathProvider.get(),
+                    "Should update to mock context path after initialization");
         }
 
         @Test
         @DisplayName("Should handle missing context path gracefully")
         void shouldHandleContextPathNotSet() {
-            assertEquals("portal", contextPathProvider.get(), 
-                "Should use default context path when not set");
+            assertEquals("portal", contextPathProvider.get(),
+                    "Should use default context path when not set");
         }
     }
 }

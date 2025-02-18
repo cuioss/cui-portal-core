@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.core.storage.impl;
 
 import static de.cuioss.test.generator.Generators.integers;
@@ -42,7 +57,7 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
     @Nested
     @DisplayName("Empty Storage Tests")
     class EmptyStorageTests {
-        
+
         @ParameterizedTest(name = "Should handle key={0} on empty storage")
         @NullSource
         @ValueSource(strings = {"", " ", "key", "very.long.key.path"})
@@ -50,21 +65,21 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
             final MapStorage<String, String> storage = new MapStorageImpl<>();
             final var value = strings.next();
 
-            assertFalse(storage.containsKey(key), 
-                "Empty storage should not contain key: " + key);
-            assertNull(storage.get(key), 
-                "Get on empty storage should return null for key: " + key);
-            assertEquals(value, storage.get(key, value), 
-                "Get with default value should return default for key: " + key);
-            assertNull(storage.remove(key), 
-                "Remove on empty storage should return null for key: " + key);
+            assertFalse(storage.containsKey(key),
+                    "Empty storage should not contain key: " + key);
+            assertNull(storage.get(key),
+                    "Get on empty storage should return null for key: " + key);
+            assertEquals(value, storage.get(key, value),
+                    "Get with default value should return default for key: " + key);
+            assertNull(storage.remove(key),
+                    "Remove on empty storage should return null for key: " + key);
         }
     }
 
     @Nested
     @DisplayName("Null Handling Tests")
     class NullHandlingTests {
-        
+
         @ParameterizedTest(name = "Should handle null value with key={0}")
         @ValueSource(strings = {"", " ", "key"})
         void shouldHandleNullValues(String key) {
@@ -74,19 +89,19 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
 
             // First store a non-null value
             storage.put(key, initialValue);
-            assertTrue(storage.containsKey(key), 
-                "Storage should contain key with initial value");
-            assertEquals(initialValue, storage.get(key), 
-                "Get should return initial value");
+            assertTrue(storage.containsKey(key),
+                    "Storage should contain key with initial value");
+            assertEquals(initialValue, storage.get(key),
+                    "Get should return initial value");
 
             // Try to store null value - should be ignored per implementation
             storage.put(key, null);
-            assertTrue(storage.containsKey(key), 
-                "Storage should still contain key after null value put");
-            assertEquals(initialValue, storage.get(key), 
-                "Get should still return initial value after null put");
-            assertEquals(initialValue, storage.get(key, defaultValue), 
-                "Get with default should return initial value");
+            assertTrue(storage.containsKey(key),
+                    "Storage should still contain key after null value put");
+            assertEquals(initialValue, storage.get(key),
+                    "Get should still return initial value after null put");
+            assertEquals(initialValue, storage.get(key, defaultValue),
+                    "Get with default should return initial value");
         }
 
         @Test
@@ -94,30 +109,30 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
         void shouldHandleNullKeyOperations() {
             final MapStorage<String, String> storage = new MapStorageImpl<>();
             final var value = strings.next();
-            
-            assertFalse(storage.containsKey(null), 
-                "Storage should not contain null key initially");
-            assertNull(storage.get(null), 
-                "Get with null key should return null initially");
-            
+
+            assertFalse(storage.containsKey(null),
+                    "Storage should not contain null key initially");
+            assertNull(storage.get(null),
+                    "Get with null key should return null initially");
+
             // Try to store with null key - should be ignored per implementation
             storage.put(null, value);
-            assertFalse(storage.containsKey(null), 
-                "Storage should not contain null key after put attempt");
-            assertNull(storage.get(null), 
-                "Get with null key should return null after put attempt");
-            
-            assertNull(storage.remove(null), 
-                "Remove with null key should return null");
-            assertFalse(storage.containsKey(null), 
-                "Storage should not contain null key after remove");
+            assertFalse(storage.containsKey(null),
+                    "Storage should not contain null key after put attempt");
+            assertNull(storage.get(null),
+                    "Get with null key should return null after put attempt");
+
+            assertNull(storage.remove(null),
+                    "Remove with null key should return null");
+            assertFalse(storage.containsKey(null),
+                    "Storage should not contain null key after remove");
         }
     }
 
     @Nested
     @DisplayName("Basic Operations Tests")
     class BasicOperationsTests {
-        
+
         @Test
         @DisplayName("Should handle basic storage operations correctly")
         void shouldHandleBasicOperations() {
@@ -132,9 +147,9 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
             storage.put(key, value);
             assertTrue(storage.containsKey(key), "Storage should contain key after put");
             assertEquals(value, storage.get(key), "Get should return stored value");
-            assertEquals(value, storage.get(key, ""), 
-                "Get with default should return stored value");
-            
+            assertEquals(value, storage.get(key, ""),
+                    "Get with default should return stored value");
+
             assertEquals(value, storage.remove(key), "Remove should return stored value");
             assertFalse(storage.containsKey(key), "Storage should not contain removed key");
             assertNull(storage.get(key), "Get after remove should return null");
@@ -146,52 +161,52 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
         void shouldHandleValueUpdates(String initialValue, String updatedValue) {
             final MapStorage<String, String> storage = new MapStorageImpl<>();
             final var key = strings.next();
-            
+
             // Initial put - only store if value is not null
             storage.put(key, initialValue);
             if (initialValue != null) {
-                assertTrue(storage.containsKey(key), 
-                    "Storage should contain key with non-null initial value");
-                assertEquals(initialValue, storage.get(key), 
-                    "Get should return initial value");
+                assertTrue(storage.containsKey(key),
+                        "Storage should contain key with non-null initial value");
+                assertEquals(initialValue, storage.get(key),
+                        "Get should return initial value");
             } else {
-                assertFalse(storage.containsKey(key), 
-                    "Storage should not contain key with null initial value");
-                assertNull(storage.get(key), 
-                    "Get should return null for null initial value");
+                assertFalse(storage.containsKey(key),
+                        "Storage should not contain key with null initial value");
+                assertNull(storage.get(key),
+                        "Get should return null for null initial value");
             }
-            
+
             // Update - only store if new value is not null
             storage.put(key, updatedValue);
             if (updatedValue != null) {
-                assertTrue(storage.containsKey(key), 
-                    "Storage should contain key with non-null updated value");
-                assertEquals(updatedValue, storage.get(key), 
-                    "Get should return updated value");
+                assertTrue(storage.containsKey(key),
+                        "Storage should contain key with non-null updated value");
+                assertEquals(updatedValue, storage.get(key),
+                        "Get should return updated value");
             } else {
                 // If initial value was non-null, it should be preserved
                 if (initialValue != null) {
-                    assertTrue(storage.containsKey(key), 
-                        "Storage should preserve initial value after null update");
-                    assertEquals(initialValue, storage.get(key), 
-                        "Get should return initial value after null update");
+                    assertTrue(storage.containsKey(key),
+                            "Storage should preserve initial value after null update");
+                    assertEquals(initialValue, storage.get(key),
+                            "Get should return initial value after null update");
                 } else {
-                    assertFalse(storage.containsKey(key), 
-                        "Storage should not contain key after null update");
-                    assertNull(storage.get(key), 
-                        "Get should return null after null update");
+                    assertFalse(storage.containsKey(key),
+                            "Storage should not contain key after null update");
+                    assertNull(storage.get(key),
+                            "Get should return null after null update");
                 }
             }
         }
-        
+
         static Stream<Arguments> valueUpdateScenarios() {
             return Stream.of(
-                Arguments.of(null, "value"),
-                Arguments.of("value", null),
-                Arguments.of("value1", "value2"),
-                Arguments.of("", " "),
-                Arguments.of(" ", ""),
-                Arguments.of("short", "very long value with spaces")
+                    Arguments.of(null, "value"),
+                    Arguments.of("value", null),
+                    Arguments.of("value1", "value2"),
+                    Arguments.of("", " "),
+                    Arguments.of(" ", ""),
+                    Arguments.of("short", "very long value with spaces")
             );
         }
     }
@@ -199,33 +214,33 @@ class MapStorageImplTest extends ValueObjectTest<MapStorageImpl<String, String>>
     @Nested
     @DisplayName("Performance Edge Cases")
     class PerformanceEdgeCases {
-        
+
         @ParameterizedTest(name = "Should handle {0} sequential operations")
         @ValueSource(ints = {100, 1000, 10000})
         void shouldHandleMultipleOperations(int operationCount) {
             final MapStorage<String, String> storage = new MapStorageImpl<>();
             final var key = strings.next();
             final var value = strings.next();
-            
+
             // Sequential puts
             for (int i = 0; i < operationCount; i++) {
                 storage.put(key + i, value + i);
-                assertTrue(storage.containsKey(key + i), 
-                    "Storage should contain key after put: " + i);
+                assertTrue(storage.containsKey(key + i),
+                        "Storage should contain key after put: " + i);
             }
-            
+
             // Sequential gets
             for (int i = 0; i < operationCount; i++) {
-                assertEquals(value + i, storage.get(key + i), 
-                    "Storage should return correct value: " + i);
+                assertEquals(value + i, storage.get(key + i),
+                        "Storage should return correct value: " + i);
             }
-            
+
             // Sequential removes
             for (int i = 0; i < operationCount; i++) {
-                assertEquals(value + i, storage.remove(key + i), 
-                    "Remove should return correct value: " + i);
-                assertFalse(storage.containsKey(key + i), 
-                    "Storage should not contain key after remove: " + i);
+                assertEquals(value + i, storage.remove(key + i),
+                        "Remove should return correct value: " + i);
+                assertFalse(storage.containsKey(key + i),
+                        "Storage should not contain key after remove: " + i);
             }
         }
     }

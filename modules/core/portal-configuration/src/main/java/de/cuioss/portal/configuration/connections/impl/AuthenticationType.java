@@ -15,6 +15,8 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.AccessLevel;
@@ -24,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 
 /**
  * Defines the authentication methods available for external service connections.

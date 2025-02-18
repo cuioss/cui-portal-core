@@ -16,12 +16,12 @@
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
 
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
-import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import lombok.NonNull;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
 
 import java.util.Optional;
+
 /**
  * Interface for modular HTTP request dispatching in test scenarios. Enables reusable
  * request handling components that can be combined to create complex test behaviors.

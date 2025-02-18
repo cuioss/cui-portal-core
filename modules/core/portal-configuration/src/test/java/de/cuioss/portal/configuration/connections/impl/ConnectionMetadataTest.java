@@ -15,6 +15,10 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
+import static de.cuioss.test.generator.Generators.strings;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
 import de.cuioss.portal.configuration.connections.impl.generator.ContextMapGenerator;
@@ -34,13 +38,6 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static de.cuioss.test.generator.Generators.strings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @PropertyReflectionConfig(exclude = {"loginCredentialsNecessary"})
 @ObjectTestConfig(equalsAndHashCodeBasicOnly = true)
@@ -63,7 +60,7 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
         final var testResources = Path.of("src/test/resources");
         truststoreLocation = testResources.resolve("host.keystore").toFile().getAbsolutePath();
         keystoreLocation = testResources.resolve("ca.keystore").toFile().getAbsolutePath();
-        
+
         // Set system properties for SSL
         System.setProperty("javax.net.ssl.trustStore", truststoreLocation);
         System.setProperty("javax.net.ssl.trustStorePassword", TRUSTSTORE_PASSWORD);
@@ -168,7 +165,7 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
                     .description(stringGenerator.next())
                     .serviceUrl(URL)
                     .build();
-            
+
             assertNotNull(metadata.resolveSSLContext());
         }
 
@@ -183,7 +180,7 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
                     .description(stringGenerator.next())
                     .serviceUrl(URL)
                     .build();
-            
+
             assertNotNull(metadata.resolveSSLContext());
         }
     }

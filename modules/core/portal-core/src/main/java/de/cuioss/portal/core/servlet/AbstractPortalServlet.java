@@ -21,7 +21,6 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

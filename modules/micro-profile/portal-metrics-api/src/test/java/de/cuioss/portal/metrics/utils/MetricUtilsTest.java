@@ -38,8 +38,8 @@ import java.lang.reflect.Field;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = {
-    MetricsConfigKeys.PORTAL_METRICS_APP_NAME + ":test-app",
-    PortalConfigurationKeys.APPLICATION_CONTEXT_NAME + ":test-app"
+        MetricsConfigKeys.PORTAL_METRICS_APP_NAME + ":test-app",
+        PortalConfigurationKeys.APPLICATION_CONTEXT_NAME + ":test-app"
 })
 @DisplayName("MetricUtils Tests")
 class MetricUtilsTest {
@@ -81,8 +81,8 @@ class MetricUtilsTest {
         void containsExceptionClassNameTag() {
             var metricID = MetricsUtils.createMetricId("test", new MetricUtilsTestException());
             var tags = metricID.getTags();
-            assertEquals(MetricUtilsTestException.class.getName(), tags.get("cause"), 
-                "Exception class name should be in cause tag");
+            assertEquals(MetricUtilsTestException.class.getName(), tags.get("cause"),
+                    "Exception class name should be in cause tag");
             assertEquals("test-app", tags.get("_app"), "App tag should still be present");
         }
     }
@@ -102,8 +102,8 @@ class MetricUtilsTest {
             }
 
             var metricID = MetricsUtils.createMetricId("test", new WebApplicationException(666));
-            assertEquals("666", metricID.getTags().get("httpStatusCode"), 
-                "HTTP status code should be present in tag");
+            assertEquals("666", metricID.getTags().get("httpStatusCode"),
+                    "HTTP status code should be present in tag");
         }
     }
 
@@ -115,10 +115,10 @@ class MetricUtilsTest {
         void buildMetricIdWithAdditionalTagsAndExceptionMapperTags() {
             var metricId = MetricsUtils
                     .createMetricIdBuilder("name", new MetricUtilsTestException(),
-                            immutableList(new Tag("tag1", "a-value"), new Tag("tag2", "b-value")), 
+                            immutableList(new Tag("tag1", "a-value"), new Tag("tag2", "b-value")),
                             immutableList(
-                                throwable -> new Tag("mapper1", "value"), 
-                                throwable -> new Tag("mapper2", "value")))
+                                    throwable -> new Tag("mapper1", "value"),
+                                    throwable -> new Tag("mapper2", "value")))
                     .build();
 
             assertTrue(metricId.getTags().containsKey("tag1"), "Custom tag1 should be present");

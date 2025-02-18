@@ -15,6 +15,9 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -23,9 +26,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
  * Tracks changes to a directory by monitoring its content and the modification timestamps

@@ -15,17 +15,12 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.cuioss.portal.core.storage.PortalClientStorage;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
 import lombok.Getter;
-
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,7 +32,7 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
 
     private static final String KEY = "testKey";
     private static final String VALUE = "testValue";
-    
+
     @Getter
     @Inject
     @PortalClientStorage
@@ -51,12 +46,12 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
         @DisplayName("Should store and retrieve values")
         void shouldStoreAndRetrieveValues() {
             underTest.put(KEY, VALUE);
-            assertEquals(VALUE, underTest.get(KEY), 
-                "Should retrieve stored value");
-            assertEquals(VALUE, underTest.get(KEY, "default"), 
-                "Should retrieve stored value with default");
+            assertEquals(VALUE, underTest.get(KEY),
+                    "Should retrieve stored value");
+            assertEquals(VALUE, underTest.get(KEY, "default"),
+                    "Should retrieve stored value with default");
             assertTrue(underTest.containsKey(KEY),
-                "Should contain stored key");
+                    "Should contain stored key");
         }
 
         @Test
@@ -64,38 +59,38 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
         void shouldHandleValueRemoval() {
             underTest.put(KEY, VALUE);
             assertEquals(VALUE, underTest.remove(KEY),
-                "Should return removed value");
-            
-            assertNull(underTest.get(KEY), 
-                "Should not retrieve removed value");
-            assertEquals("default", underTest.get(KEY, "default"), 
-                "Should return default value for removed key");
+                    "Should return removed value");
+
+            assertNull(underTest.get(KEY),
+                    "Should not retrieve removed value");
+            assertEquals("default", underTest.get(KEY, "default"),
+                    "Should return default value for removed key");
             assertFalse(underTest.containsKey(KEY),
-                "Should not contain removed key");
+                    "Should not contain removed key");
         }
 
         @Test
         @DisplayName("Should handle null values")
         void shouldHandleNullValues() {
             underTest.put(KEY, null);
-            assertNull(underTest.get(KEY), 
-                "Should not store null value");
-            assertEquals("default", underTest.get(KEY, "default"), 
-                "Should return default value for null stored value");
+            assertNull(underTest.get(KEY),
+                    "Should not store null value");
+            assertEquals("default", underTest.get(KEY, "default"),
+                    "Should return default value for null stored value");
             assertFalse(underTest.containsKey(KEY),
-                "Should not contain key with null value");
+                    "Should not contain key with null value");
         }
 
         @Test
         @DisplayName("Should handle empty string values")
         void shouldHandleEmptyStringValues() {
             underTest.put(KEY, "");
-            assertEquals("", underTest.get(KEY), 
-                "Should store and retrieve empty string");
-            assertEquals("", underTest.get(KEY, "default"), 
-                "Should return empty string instead of default");
+            assertEquals("", underTest.get(KEY),
+                    "Should store and retrieve empty string");
+            assertEquals("", underTest.get(KEY, "default"),
+                    "Should return empty string instead of default");
             assertTrue(underTest.containsKey(KEY),
-                "Should contain key with empty string value");
+                    "Should contain key with empty string value");
         }
 
         @Test
@@ -103,22 +98,22 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
         void shouldHandleNullKeys() {
             underTest.put(null, VALUE);
             assertNull(underTest.get(null),
-                "Should not store with null key");
+                    "Should not store with null key");
             assertEquals("default", underTest.get(null, "default"),
-                "Should return default for null key");
+                    "Should return default for null key");
             assertFalse(underTest.containsKey(null),
-                "Should not contain null key");
+                    "Should not contain null key");
         }
     }
 
     @Test
     @DisplayName("Should handle default values")
     void shouldHandleDefaultValues() {
-        assertNull(underTest.get(KEY), 
-            "Should return null for non-existent key");
-        assertEquals("default", underTest.get(KEY, "default"), 
-            "Should return default value for non-existent key");
+        assertNull(underTest.get(KEY),
+                "Should return null for non-existent key");
+        assertEquals("default", underTest.get(KEY, "default"),
+                "Should return default value for non-existent key");
         assertFalse(underTest.containsKey(KEY),
-            "Should not contain non-existent key");
+                "Should not contain non-existent key");
     }
 }

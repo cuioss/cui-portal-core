@@ -124,8 +124,8 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
      * @return annotation instance for the given type
      */
     public static <T extends Annotation> T of(Class<T> annotationClass) {
-        LOGGER.debug("Creating annotation instance for class '%s' with default values", 
-            annotationClass.getName());
+        LOGGER.debug("Creating annotation instance for class '%s' with default values",
+                annotationClass.getName());
         return of(annotationClass, Collections.emptyMap());
     }
 
@@ -138,7 +138,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
      * @return proxy instance for the given annotation type
      */
     private static synchronized <T extends Annotation> Annotation initAnnotation(Class<T> annotationClass,
-                                                                              Map<String, ?> values) {
+            Map<String, ?> values) {
         return (Annotation) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[]{annotationClass},
                 new AnnotationInstanceProvider(annotationClass, values));
     }

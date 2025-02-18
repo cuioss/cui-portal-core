@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.configuration.impl.producer;
 
 import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
@@ -224,37 +239,37 @@ class ConnectionMetadataProducerTest {
             System.clearProperty(PROPERTY_TRUSTSTORE_PASSWORD);
             System.clearProperty(PROPERTY_KEYSTORE_LOCATION);
             System.clearProperty(PROPERTY_KEYSTORE_PASSWORD);
-            
+
             // Set invalid truststore location
             System.setProperty(PROPERTY_TRUSTSTORE_LOCATION, "/not/there");
             System.setProperty(PROPERTY_TRUSTSTORE_PASSWORD, TRUSTSTORE_PASSWORD);
-            
+
             // Configure certificate authentication requiring truststore
             defaultConfig();
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, AuthenticationType.CERTIFICATE.name());
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION, keystoreLocation);
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD, KEYSTORE_PASSWORD);
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD, KEYSTORE_PASSWORD);
-            
+
             // Set invalid truststore configuration
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION, "/not/there");
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD, TRUSTSTORE_PASSWORD);
-            
+
             // Prevent fallback to default SSLContext
             System.setProperty("javax.net.ssl.trustStoreType", "INVALID_TYPE");
             configuration.fireEvent();
-            
+
             // Should throw IllegalStateException due to invalid truststore
             metadataProvider.get();
             LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN, "Unable to resolve real path for '/not/there'");
-            
+
             // Cleanup
             System.clearProperty(PROPERTY_TRUSTSTORE_LOCATION);
             System.clearProperty(PROPERTY_TRUSTSTORE_PASSWORD);
             System.clearProperty(PROPERTY_KEYSTORE_LOCATION);
             System.clearProperty(PROPERTY_KEYSTORE_PASSWORD);
             System.clearProperty("javax.net.ssl.trustStoreType");
-            
+
             // Restore original properties
             systemKeystores();
         }

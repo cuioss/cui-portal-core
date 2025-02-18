@@ -60,7 +60,7 @@ class PortalUserProducerTest {
     @Nested
     @DisplayName("User Production Tests")
     class UserProductionTests {
-        
+
         @Test
         @DisplayName("Should produce authenticated user with correct information")
         void shouldProduceAuthenticatedUser() {
@@ -68,14 +68,14 @@ class PortalUserProducerTest {
             assertNotNull(userInfo, "User info should not be null");
             assertTrue(userInfo.isAuthenticated(), "User should be authenticated");
             assertEquals(PortalAuthenticationFacadeMock.USER, userInfo.getDisplayName(),
-                "Display name should match mock user");
+                    "Display name should match mock user");
         }
     }
 
     @Nested
     @DisplayName("Object Contract Tests")
     class ObjectContractTests implements ShouldHandleObjectContracts<PortalUserProducer> {
-        
+
         @Override
         public PortalUserProducer getUnderTest() {
             return underTest;

@@ -74,10 +74,10 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         void shouldHandleStageTransitions() {
             underTest.development();
             assertConfigPresent(PORTAL_STAGE, ProjectStage.DEVELOPMENT.name().toLowerCase());
-            
+
             underTest.production();
             assertConfigPresent(PORTAL_STAGE, ProjectStage.PRODUCTION.name().toLowerCase());
-            
+
             underTest.development();
             assertConfigPresent(PORTAL_STAGE, ProjectStage.DEVELOPMENT.name().toLowerCase());
         }
@@ -87,7 +87,7 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         void shouldHandleExplicitStageSet() {
             underTest.setPortalProjectStage(ProjectStage.DEVELOPMENT);
             assertConfigPresent(PORTAL_STAGE, ProjectStage.DEVELOPMENT.name().toLowerCase());
-            
+
             underTest.setPortalProjectStage(ProjectStage.PRODUCTION);
             assertConfigPresent(PORTAL_STAGE, ProjectStage.PRODUCTION.name().toLowerCase());
         }
@@ -140,7 +140,7 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
 
             var configMap = immutableMap(key1, value1, key2, value2);
             underTest.update(configMap);
-            
+
             assertConfigPresent(key1, value1);
             assertConfigPresent(key2, value2);
         }
@@ -174,8 +174,8 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
             underTest.clear();
             assertConfigNotPresent(key1);
             assertConfigNotPresent(key2);
-            assertTrue(underTest.getPropertyNames().isEmpty(), 
-                "Property names should be empty after clear");
+            assertTrue(underTest.getPropertyNames().isEmpty(),
+                    "Property names should be empty after clear");
         }
     }
 
@@ -187,7 +187,7 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         @DisplayName("Should provide correct name")
         void shouldProvideName() {
             assertEquals("PortalTestConfiguration", underTest.getName(),
-                "Name should be class simple name");
+                    "Name should be class simple name");
         }
 
         @Test
@@ -195,9 +195,9 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         void shouldHaveCorrectOrdinal() {
             var ordinal = underTest.getOrdinal();
             assertTrue(ordinal > ConfigSource.DEFAULT_ORDINAL,
-                "Ordinal should be greater than DEFAULT_ORDINAL");
+                    "Ordinal should be greater than DEFAULT_ORDINAL");
             assertTrue(ordinal < 200,
-                "Ordinal should not exceed 199 to avoid conflicts with SmallRye");
+                    "Ordinal should not exceed 199 to avoid conflicts with SmallRye");
         }
 
         @Test
@@ -207,13 +207,13 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
             var value = letterStrings(3, 8).next();
 
             assertTrue(underTest.getPropertyNames().isEmpty(),
-                "Initial property names should be empty");
+                    "Initial property names should be empty");
 
             underTest.update(key, value);
             assertTrue(underTest.getPropertyNames().contains(key),
-                "Property names should contain added key");
+                    "Property names should contain added key");
             assertEquals(1, underTest.getPropertyNames().size(),
-                "Property names should have exactly one entry");
+                    "Property names should have exactly one entry");
         }
 
         @Test
@@ -223,19 +223,19 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
             var value = letterStrings(3, 8).next();
 
             assertTrue(underTest.getProperties().isEmpty(),
-                "Initial properties should be empty");
+                    "Initial properties should be empty");
 
             underTest.update(key, value);
             Map<String, String> properties = underTest.getProperties();
             assertEquals(value, properties.get(key),
-                "Properties should contain correct value");
+                    "Properties should contain correct value");
             assertEquals(1, properties.size(),
-                "Properties should have exactly one entry");
-            
+                    "Properties should have exactly one entry");
+
             // Verify immutability
             assertThrows(UnsupportedOperationException.class,
-                () -> properties.put(key, value),
-                "Properties map should be immutable");
+                    () -> properties.put(key, value),
+                    "Properties map should be immutable");
         }
 
         @Test
@@ -243,37 +243,37 @@ class PortalTestConfigurationTest implements ShouldBeNotNull<PortalTestConfigura
         void shouldHandleConfigOrdinalFromSource() {
             var defaultOrdinal = underTest.getOrdinal();
             var customOrdinal = 150;
-            
+
             underTest.update(ConfigSource.CONFIG_ORDINAL, String.valueOf(customOrdinal));
             assertEquals(customOrdinal, underTest.getOrdinal(),
-                "Should use custom ordinal when set");
-            
+                    "Should use custom ordinal when set");
+
             underTest.remove(ConfigSource.CONFIG_ORDINAL);
             assertEquals(defaultOrdinal, underTest.getOrdinal(),
-                "Should revert to default ordinal when custom is removed");
-            
+                    "Should revert to default ordinal when custom is removed");
+
             // Invalid ordinal
             underTest.update(ConfigSource.CONFIG_ORDINAL, "invalid");
             assertEquals(defaultOrdinal, underTest.getOrdinal(),
-                "Should use default ordinal when custom is invalid");
+                    "Should use default ordinal when custom is invalid");
         }
     }
 
     void assertConfigPresent(String key, String value) {
-        assertEquals(value, underTest.getValue(key), 
-            "Config value should be present and match");
+        assertEquals(value, underTest.getValue(key),
+                "Config value should be present and match");
         var resolved = ConfigurationHelper.resolveConfigProperty(key);
-        assertTrue(resolved.isPresent(), 
-            "Resolved configuration property '" + key + "' should be present");
-        assertEquals(value, resolved.get(), 
-            "Resolved configuration property '" + key + "' should match expected value");
+        assertTrue(resolved.isPresent(),
+                "Resolved configuration property '" + key + "' should be present");
+        assertEquals(value, resolved.get(),
+                "Resolved configuration property '" + key + "' should match expected value");
     }
 
     void assertConfigNotPresent(String key) {
-        assertNull(underTest.getValue(key), 
-            "Config value should not be present");
+        assertNull(underTest.getValue(key),
+                "Config value should not be present");
         var resolved = ConfigurationHelper.resolveConfigProperty(key);
-        assertFalse(resolved.isPresent(), 
-            "Resolved configuration property '" + key + "' should not be present");
+        assertFalse(resolved.isPresent(),
+                "Resolved configuration property '" + key + "' should not be present");
     }
 }
