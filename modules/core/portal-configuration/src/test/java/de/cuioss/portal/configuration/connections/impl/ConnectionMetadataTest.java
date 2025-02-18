@@ -29,6 +29,7 @@ import de.cuioss.test.valueobjects.api.object.ObjectTestConfig;
 import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
 import de.cuioss.uimodel.application.LoginCredentials;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -70,134 +71,148 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
         System.setProperty("javax.net.ssl.keyStorePassword", KEYSTORE_PASSWORD);
     }
 
-    @Test
-    void shouldCreateGoodCase() throws Exception {
-        assertNotNull(getAnyValid());
-        getAnyValid().validate();
+    @Nested
+    class ValidationTests {
+        @Test
+        void shouldCreateGoodCase() throws Exception {
+            assertNotNull(getAnyValid());
+            getAnyValid().validate();
+        }
+
+        @Test
+        void shouldFailWithMissingCredentials() {
+            final var builder = ConnectionMetadata.builder();
+            builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
+                    .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
+            assertThrows(ConnectionConfigurationException.class, () -> builder.build().validate());
+        }
+
+        @Test
+        void shouldFailWithInvalidCredentials() {
+            final var builder = ConnectionMetadata.builder();
+            builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
+                    .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
+            builder.loginCredentials(new LoginCredentials());
+            assertThrows(ConnectionConfigurationException.class, () -> builder.build().validate());
+        }
+
+        @Test
+        void shouldFailWithMissingTokenResolver() {
+            final var meta = getAnyValid();
+            meta.setAuthenticationType(AuthenticationType.TOKEN_APPLICATION);
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
+
+        @Test
+        void shouldValidateWithTokenResolver() throws Exception {
+            final var meta = getAnyValid();
+            meta.setAuthenticationType(AuthenticationType.TOKEN_APPLICATION);
+            meta.setTokenResolver(new StaticTokenResolver(nonEmptyStrings().next(), nonEmptyStrings().next()));
+            meta.validate();
+        }
+
+        @Test
+        void shouldFailWithMissingServiceUrl() {
+            final var meta = getAnyValid();
+            meta.setServiceUrl(null);
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
+
+        @Test
+        void shouldFailWithMissingAuthenticationType() {
+            final var meta = getAnyValid();
+            meta.setAuthenticationType(null);
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
+
+        @Test
+        void shouldFailWithMissingConnectionType() {
+            final var meta = getAnyValid();
+            meta.setConnectionType(null);
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
+
+        @Test
+        void shouldFailWithMissingConnectionId() {
+            final var meta = getAnyValid();
+            meta.setConnectionId(null);
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
     }
 
-    @Test
-    void shouldFailWithMissingCredentials() {
-        final var builder = ConnectionMetadata.builder();
-        builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
-        assertThrows(ConnectionConfigurationException.class, () -> builder.build().validate());
+    @Nested
+    class ProxyConfigurationTests {
+        @Test
+        void shouldFailWithInvalidProxyPort() {
+            final var meta = getAnyValid();
+            meta.setProxyHost("bla");
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
+
+        @Test
+        void shouldFailWithInvalidProxyHost() {
+            final var meta = getAnyValid();
+            meta.setProxyPort(123);
+            assertThrows(ConnectionConfigurationException.class, meta::validate);
+        }
     }
 
-    @Test
-    void shouldFailWithInvalidCredentials() {
-        final var builder = ConnectionMetadata.builder();
-        builder.authenticationType(AuthenticationType.BASIC).connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST).description(stringGenerator.next()).serviceUrl(URL);
-        builder.loginCredentials(new LoginCredentials());
-        assertThrows(ConnectionConfigurationException.class, () -> builder.build().validate());
+    @Nested
+    class SSLContextTests {
+        @Test
+        void shouldReturnDefaultSSLContext() {
+            var metadata = ConnectionMetadata.builder()
+                    .authenticationType(AuthenticationType.BASIC)
+                    .connectionId(stringGenerator.next())
+                    .connectionType(ConnectionType.REST)
+                    .description(stringGenerator.next())
+                    .serviceUrl(URL)
+                    .build();
+            
+            assertNotNull(metadata.resolveSSLContext());
+        }
+
+        @Test
+        void shouldReturnCustomSSLContext() {
+            var metadata = ConnectionMetadata.builder()
+                    .authenticationType(AuthenticationType.BASIC)
+                    .connectionId(stringGenerator.next())
+                    .keyStoreInfo(keystoreInfos.next())
+                    .trustStoreInfo(truststoreInfos.next())
+                    .connectionType(ConnectionType.REST)
+                    .description(stringGenerator.next())
+                    .serviceUrl(URL)
+                    .build();
+            
+            assertNotNull(metadata.resolveSSLContext());
+        }
     }
 
-    @Test
-    void shouldFailWithMissingTokenResolver() {
-        final var meta = getAnyValid();
-        meta.setAuthenticationType(AuthenticationType.TOKEN_APPLICATION);
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
+    @Nested
+    class ContextDataTests {
+        @Test
+        void shouldHandleContextData() {
+            final var minimum = ConnectionMetadata.builder().authenticationType(AuthenticationType.NONE)
+                    .connectionId(stringGenerator.next()).connectionType(ConnectionType.REST)
+                    .description(stringGenerator.next()).serviceUrl(URL);
+            final var key = stringGenerator.next();
+            final var value = stringGenerator.next();
+            final var build = minimum.build();
+            build.contextMapElement(key, value);
+            assertNotNull(build.getContextMap());
+            assertTrue(build.getContextMap().containsKey(key));
+            assertEquals(value, build.getContextMap().get(key));
+        }
     }
 
-    @Test
-    void shouldValidateWithTokenResolver() throws Exception {
-        final var meta = getAnyValid();
-        meta.setAuthenticationType(AuthenticationType.TOKEN_APPLICATION);
-        meta.setTokenResolver(new StaticTokenResolver(nonEmptyStrings().next(), nonEmptyStrings().next()));
-        meta.validate();
-    }
-
-    @Test
-    void shouldFailWithMissingServiceUrl() {
-        final var meta = getAnyValid();
-        meta.setServiceUrl(null);
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
-    }
-
-    @Test
-    void shouldFailWithMissingAuthenticationType() {
-        final var meta = getAnyValid();
-        meta.setAuthenticationType(null);
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
-    }
-
-    @Test
-    void shouldFailWithMissingConnectionType() {
-        final var meta = getAnyValid();
-        meta.setConnectionType(null);
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
-    }
-
-    @Test
-    void shouldFailWithInvalidProxyPort() {
-        final var meta = getAnyValid();
-        meta.setProxyHost("bla");
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
-    }
-
-    @Test
-    void shouldFailWithInvalidProxyHost() {
-        final var meta = getAnyValid();
-        meta.setProxyPort(123);
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
-    }
-
-    @Test
-    void shouldFailWithMissingConnectionId() {
-        final var meta = getAnyValid();
-        meta.setConnectionId(null);
-        assertThrows(ConnectionConfigurationException.class, meta::validate);
-    }
-
-    @Test
-    void shouldReturnDefaultSSLContext() {
-        var metadata = ConnectionMetadata.builder()
-                .authenticationType(AuthenticationType.BASIC)
-                .connectionId(stringGenerator.next())
-                .connectionType(ConnectionType.REST)
-                .description(stringGenerator.next())
-                .serviceUrl(URL)
-                .build();
-        
-        assertNotNull(metadata.resolveSSLContext());
-    }
-
-    @Test
-    void shouldReturnCustomSSLContext() {
-        var metadata = ConnectionMetadata.builder()
-                .authenticationType(AuthenticationType.BASIC)
-                .connectionId(stringGenerator.next())
-                .keyStoreInfo(keystoreInfos.next())
-                .trustStoreInfo(truststoreInfos.next())
-                .connectionType(ConnectionType.REST)
-                .description(stringGenerator.next())
-                .serviceUrl(URL)
-                .build();
-        
-        assertNotNull(metadata.resolveSSLContext());
-    }
-
-
-    @Test
-    void shouldHandleContextData() {
-        final var minimum = ConnectionMetadata.builder().authenticationType(AuthenticationType.NONE)
-                .connectionId(stringGenerator.next()).connectionType(ConnectionType.REST)
-                .description(stringGenerator.next()).serviceUrl(URL);
-        final var key = stringGenerator.next();
-        final var value = stringGenerator.next();
-        final var build = minimum.build();
-        build.contextMapElement(key, value);
-        assertNotNull(build.getContextMap());
-        assertTrue(build.getContextMap().containsKey(key));
-        assertEquals(value, build.getContextMap().get(key));
-    }
-
-    @Test
-    void shouldHaveDefaultTimeUnits() {
-        final var meta = ConnectionMetadata.builder().build();
-        assertEquals(TimeUnit.SECONDS, meta.getConnectionTimeoutUnit());
-        assertEquals(TimeUnit.SECONDS, meta.getReadTimeoutUnit());
+    @Nested
+    class DefaultConfigurationTests {
+        @Test
+        void shouldHaveDefaultTimeUnits() {
+            final var meta = ConnectionMetadata.builder().build();
+            assertEquals(TimeUnit.SECONDS, meta.getConnectionTimeoutUnit());
+            assertEquals(TimeUnit.SECONDS, meta.getReadTimeoutUnit());
+        }
     }
 
     private ConnectionMetadata getAnyValid() {
@@ -205,5 +220,4 @@ class ConnectionMetadataTest extends ValueObjectTest<ConnectionMetadata> {
                 .connectionId(stringGenerator.next()).connectionType(ConnectionType.REST)
                 .description(stringGenerator.next()).serviceUrl(URL).build();
     }
-
 }
