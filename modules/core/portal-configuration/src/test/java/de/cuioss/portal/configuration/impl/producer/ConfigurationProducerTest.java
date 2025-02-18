@@ -31,6 +31,7 @@ import jakarta.inject.Provider;
 import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -116,171 +117,195 @@ class ConfigurationProducerTest {
     @ConfigAsCacheConfig(name = "my-cache2", recordStatistics = false)
     private Provider<CacheConfig> myCacheConfigWithDisabledStats;
 
-    @Test
-    void shouldProduceFileLoaderList() {
-        configuration.put(CONFIGURATION_KEY, FILE_LOCATION);
-        configuration.fireEvent();
+    @Nested
+    class FileLoaderTests {
 
-        assertEquals(1, injectedFileLoaderList.get().size());
+        @Test
+        void shouldProduceFileLoaderList() {
+            configuration.put(CONFIGURATION_KEY, FILE_LOCATION);
+            configuration.fireEvent();
+
+            assertEquals(1, injectedFileLoaderList.get().size());
+        }
+
+        @Test
+        void shouldProduceFileLoaderListOnInvalidPath() {
+            configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
+            configuration.fireEvent();
+            assertEquals(1, injectedFileLoaderListTolerant.get().size());
+        }
+
+        @Test
+        void shouldFailToProduceFileLoaderOnEmptyPath() {
+            assertThrows(IllegalArgumentException.class, () -> injectedFileLoader.get());
+        }
+
+        @Test
+        void shouldFailToProduceFileLoaderOnInvalidPath() {
+            configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
+            configuration.fireEvent();
+            assertThrows(IllegalArgumentException.class, () -> injectedFileLoader.get());
+        }
+
+        @Test
+        void shouldProduceFileLoaderOnInvalidPath() {
+            configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
+            configuration.fireEvent();
+            assertNotNull(injectedFileLoaderTolerant.get());
+        }
+
+        @Test
+        void shouldProduceFileLoader() {
+            configuration.put(CONFIGURATION_KEY, FILE_LOCATION);
+            configuration.fireEvent();
+
+            assertNotNull(injectedFileLoader.get());
+        }
     }
 
-    @Test
-    void shouldProduceFileLoaderListOnInvalidPath() {
-        configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
-        configuration.fireEvent();
-        assertEquals(1, injectedFileLoaderListTolerant.get().size());
+    @Nested
+    class PathTests {
+
+        @Test
+        void shouldProducePathOnInvalidPath() {
+            configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
+            configuration.fireEvent();
+            assertNotNull(injectedPathTolerant.get());
+        }
+
+        @Test
+        void shouldProducePath() {
+            configuration.put(CONFIGURATION_KEY, FILE_LOCATION);
+            configuration.fireEvent();
+
+            assertNotNull(injectedPath.get());
+        }
+
+        @Test
+        void shouldFailToProducePathEmptyPath() {
+            assertThrows(IllegalArgumentException.class, () -> injectedPath.get());
+        }
     }
 
-    @Test
-    void shouldFailToProduceFileLoaderOnEmptyPath() {
-        assertThrows(IllegalArgumentException.class, () -> injectedFileLoader.get());
+    @Nested
+    class ListTests {
+
+        @Test
+        void shouldProduceSplittedList() {
+            // Property initially not there
+            assertTrue(injectedListProvider.get().isEmpty());
+            assertFalse(injectedListWithDefaultProvider.get().isEmpty());
+            assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+
+            configuration.put(CONFIGURATION_KEY, LIST_SINGLE_VALUE);
+            configuration.fireEvent();
+
+            assertEquals(1, injectedListProvider.get().size());
+            assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+
+            configuration.put(CONFIGURATION_KEY, LIST_TWO_VALUES);
+            configuration.fireEvent();
+
+            assertEquals(2, injectedListProvider.get().size());
+            assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+
+            configuration.put(CONFIGURATION_KEY, "");
+            configuration.fireEvent();
+            assertTrue(injectedListProvider.get().isEmpty());
+            assertFalse(injectedListWithDefaultProvider.get().isEmpty());
+            assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+        }
     }
 
-    @Test
-    void shouldFailToProduceFileLoaderOnInvalidPath() {
-        configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
-        configuration.fireEvent();
-        assertThrows(IllegalArgumentException.class, () -> injectedFileLoader.get());
+    @Nested
+    class SetTests {
+
+        @Test
+        void shouldProduceSplittedSet() {
+            // Property initially not there
+            assertTrue(injectedSetProvider.get().isEmpty());
+            assertFalse(injectedSetWithDefaultProvider.get().isEmpty());
+            assertEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
+
+            configuration.put(CONFIGURATION_KEY, LIST_SINGLE_VALUE);
+            configuration.fireEvent();
+
+            assertEquals(1, injectedSetProvider.get().size());
+            assertNotEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
+
+            configuration.put(CONFIGURATION_KEY, LIST_TWO_VALUES);
+            configuration.fireEvent();
+
+            assertEquals(2, injectedSetProvider.get().size());
+            assertNotEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
+
+            configuration.put(CONFIGURATION_KEY, "");
+            configuration.fireEvent();
+            assertTrue(injectedSetProvider.get().isEmpty());
+            assertFalse(injectedSetWithDefaultProvider.get().isEmpty());
+            assertEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
+        }
     }
 
-    @Test
-    void shouldProduceFileLoaderOnInvalidPath() {
-        configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
-        configuration.fireEvent();
-        assertNotNull(injectedFileLoaderTolerant.get());
+    @Nested
+    class NullableTests {
+
+        @Test
+        void shouldAllowNullableInjection() {
+            assertDoesNotThrow(() -> nullableProperty.get());
+            assertNull(nullableProperty.get());
+        }
     }
 
-    @Test
-    void shouldProduceFileLoader() {
-        configuration.put(CONFIGURATION_KEY, FILE_LOCATION);
-        configuration.fireEvent();
+    @Nested
+    class CacheConfigTests {
 
-        assertNotNull(injectedFileLoader.get());
-    }
+        @Test
+        void cacheConfigRecordStatsDisabledIfPortalMetricsDisabled() {
+            configuration.fireEvent(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "false");
+            var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
+            assertNotNull(cacheConfig);
+            assertFalse(cacheConfig.isRecordStatistics());
+        }
 
-    @Test
-    void shouldProducePathOnInvalidPath() {
-        configuration.put(CONFIGURATION_KEY, PATH_NOT_THERE);
-        configuration.fireEvent();
-        assertNotNull(injectedPathTolerant.get());
-    }
+        @Test
+        void cacheConfigRecordStatsEnabledPerDefault() {
+            configuration.fireEvent(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
+            var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
+            assertNotNull(cacheConfig);
+            assertTrue(cacheConfig.isRecordStatistics());
+        }
 
-    @Test
-    void shouldProducePath() {
-        configuration.put(CONFIGURATION_KEY, FILE_LOCATION);
-        configuration.fireEvent();
+        @Test
+        void cacheConfigRecordStatsDisabling() {
+            configuration.put(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
+            configuration.put("my-cache." + CacheConfig.RECORD_STATISTICS_KEY, "false");
+            configuration.fireEvent();
+            LOGGER.info("Event Fired: %s", ConfigurationHelper.resolveConfigProperty("my-cache." + CacheConfig.RECORD_STATISTICS_KEY).get());
+            var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
+            assertNotNull(cacheConfig);
+            assertFalse(cacheConfig.isRecordStatistics());
+        }
 
-        assertNotNull(injectedPath.get());
-    }
+        @Test
+        void cacheConfigRecordStatsDisabledViaAnnotation() {
+            configuration.fireEvent(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
+            var cacheConfig = assertDoesNotThrow(() -> myCacheConfigWithDisabledStats.get());
+            assertNotNull(cacheConfig);
+            assertFalse(cacheConfig.isRecordStatistics());
+        }
 
-    @Test
-    void shouldFailToProducePathEmptyPath() {
-        assertThrows(IllegalArgumentException.class, () -> injectedPath.get());
-    }
-
-    @Test
-    void shouldProduceSplittedList() {
-        // Property initially not there
-        assertTrue(injectedListProvider.get().isEmpty());
-        assertFalse(injectedListWithDefaultProvider.get().isEmpty());
-        assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
-
-        configuration.put(CONFIGURATION_KEY, LIST_SINGLE_VALUE);
-        configuration.fireEvent();
-
-        assertEquals(1, injectedListProvider.get().size());
-        assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
-
-        configuration.put(CONFIGURATION_KEY, LIST_TWO_VALUES);
-        configuration.fireEvent();
-
-        assertEquals(2, injectedListProvider.get().size());
-        assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
-
-        configuration.put(CONFIGURATION_KEY, "");
-        configuration.fireEvent();
-        assertTrue(injectedListProvider.get().isEmpty());
-        assertFalse(injectedListWithDefaultProvider.get().isEmpty());
-        assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
-    }
-
-    @Test
-    void shouldProduceSplittedSet() {
-        // Property initially not there
-        assertTrue(injectedSetProvider.get().isEmpty());
-        assertFalse(injectedSetWithDefaultProvider.get().isEmpty());
-        assertEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
-
-        configuration.put(CONFIGURATION_KEY, LIST_SINGLE_VALUE);
-        configuration.fireEvent();
-
-        assertEquals(1, injectedSetProvider.get().size());
-        assertNotEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
-
-        configuration.put(CONFIGURATION_KEY, LIST_TWO_VALUES);
-        configuration.fireEvent();
-
-        assertEquals(2, injectedSetProvider.get().size());
-        assertNotEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
-
-        configuration.put(CONFIGURATION_KEY, "");
-        configuration.fireEvent();
-        assertTrue(injectedSetProvider.get().isEmpty());
-        assertFalse(injectedSetWithDefaultProvider.get().isEmpty());
-        assertEquals(LIST_DEFAULT_VALUE, injectedSetWithDefaultProvider.get().iterator().next());
-    }
-
-    @Test
-    void shouldAllowNullableInjection() {
-        assertDoesNotThrow(() -> nullableProperty.get());
-        assertNull(nullableProperty.get());
-    }
-
-    @Test
-    void cacheConfigRecordStatsDisabledIfPortalMetricsDisabled() {
-        configuration.fireEvent(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "false");
-        var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
-        assertNotNull(cacheConfig);
-        assertFalse(cacheConfig.isRecordStatistics());
-    }
-
-    @Test
-    void cacheConfigRecordStatsEnabledPerDefault() {
-        configuration.fireEvent(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
-        var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
-        assertNotNull(cacheConfig);
-        assertTrue(cacheConfig.isRecordStatistics());
-    }
-
-    @Test
-    void cacheConfigRecordStatsDisabling() {
-        configuration.put(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
-        configuration.put("my-cache." + CacheConfig.RECORD_STATISTICS_KEY, "false");
-        configuration.fireEvent();
-        LOGGER.info("Event Fired: %s", ConfigurationHelper.resolveConfigProperty("my-cache." + CacheConfig.RECORD_STATISTICS_KEY).get());
-        var cacheConfig = assertDoesNotThrow(() -> myCacheConfig.get());
-        assertNotNull(cacheConfig);
-        assertFalse(cacheConfig.isRecordStatistics());
-    }
-
-    @Test
-    void cacheConfigRecordStatsDisabledViaAnnotation() {
-        configuration.fireEvent(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
-        var cacheConfig = assertDoesNotThrow(() -> myCacheConfigWithDisabledStats.get());
-        assertNotNull(cacheConfig);
-        assertFalse(cacheConfig.isRecordStatistics());
+        @Test
+        void cacheConfigRecordStatsDisabledViaAnnotationButEnabledViaConfig() {
+            configuration.put(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
+            configuration.put("my-cache2." + CacheConfig.RECORD_STATISTICS_KEY, "true");
+            configuration.fireEvent();
+            assertEquals("true", ConfigurationHelper.resolveConfigPropertyOrThrow("my-cache2." + CacheConfig.RECORD_STATISTICS_KEY));
+            var cacheConfig = assertDoesNotThrow(() -> myCacheConfigWithDisabledStats.get());
+            assertNotNull(cacheConfig);
+            assertTrue(cacheConfig.isRecordStatistics());
+        }
     }
 
     private static final CuiLogger LOGGER = new CuiLogger(ConfigurationProducerTest.class);
-
-    @Test
-    void cacheConfigRecordStatsDisabledViaAnnotationButEnabledViaConfig() {
-        configuration.put(MetricsConfigKeys.PORTAL_METRICS_ENABLED, "true");
-        configuration.put("my-cache2." + CacheConfig.RECORD_STATISTICS_KEY, "true");
-        configuration.fireEvent();
-        assertEquals("true", ConfigurationHelper.resolveConfigPropertyOrThrow("my-cache2." + CacheConfig.RECORD_STATISTICS_KEY));
-        var cacheConfig = assertDoesNotThrow(() -> myCacheConfigWithDisabledStats.get());
-        assertNotNull(cacheConfig);
-        assertTrue(cacheConfig.isRecordStatistics());
-    }
 }

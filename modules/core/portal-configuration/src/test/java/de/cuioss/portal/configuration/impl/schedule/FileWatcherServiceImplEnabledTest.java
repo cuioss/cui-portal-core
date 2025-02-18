@@ -29,6 +29,7 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -68,53 +69,59 @@ class FileWatcherServiceImplEnabledTest {
         underTest.destroy();
     }
 
-    @Test
-    void shouldRegisterAndUnregisterCorrectly() {
-        underTest.register(testFileHandler.getFile1());
-        assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().iterator().next());
+    @Nested
+    class RegistrationTests {
+        @Test
+        void shouldRegisterAndUnregisterCorrectly() {
+            underTest.register(testFileHandler.getFile1());
+            assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().iterator().next());
 
-        // Should not register twice
-        underTest.register(testFileHandler.getFile1());
-        assertEquals(1, underTest.getRegisteredPaths().size());
+            // Should not register twice
+            underTest.register(testFileHandler.getFile1());
+            assertEquals(1, underTest.getRegisteredPaths().size());
 
-        underTest.register(POM);
-        assertEquals(2, underTest.getRegisteredPaths().size());
+            underTest.register(POM);
+            assertEquals(2, underTest.getRegisteredPaths().size());
 
-        underTest.unregister(testFileHandler.getFile1());
-        assertEquals(1, underTest.getRegisteredPaths().size());
+            underTest.unregister(testFileHandler.getFile1());
+            assertEquals(1, underTest.getRegisteredPaths().size());
 
-        underTest.unregister(POM);
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+            underTest.unregister(POM);
+            assertTrue(underTest.getRegisteredPaths().isEmpty());
 
-        // Do not register not existing file
-        underTest.register(testFileHandler.getNonExistingFile());
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+            // Do not register not existing file
+            underTest.register(testFileHandler.getNonExistingFile());
+            assertTrue(underTest.getRegisteredPaths().isEmpty());
 
-        // Gracefully handle unregister
-        underTest.unregister(testFileHandler.getFile1());
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+            // Gracefully handle unregister
+            underTest.unregister(testFileHandler.getFile1());
+            assertTrue(underTest.getRegisteredPaths().isEmpty());
+        }
     }
 
-    @Test
-    @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
-    void shouldDetectChanges() throws IOException {
-        assertTrue(underTest.isUpAndRunning());
-        underTest.register(testFileHandler.getFile1());
-        underTest.register(testFileHandler.getFile2());
-        triggerAndAssertFileChangeEvent(testFileHandler.getFile1());
-        triggerAndAssertFileChangeEvent(testFileHandler.getFile2());
-    }
+    @Nested
+    class ChangeDetectionTests {
+        @Test
+        @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
+        void shouldDetectChanges() throws IOException {
+            assertTrue(underTest.isUpAndRunning());
+            underTest.register(testFileHandler.getFile1());
+            underTest.register(testFileHandler.getFile2());
+            triggerAndAssertFileChangeEvent(testFileHandler.getFile1());
+            triggerAndAssertFileChangeEvent(testFileHandler.getFile2());
+        }
 
-    @Test
-    @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
-    void shouldHandleDirectories() throws Exception {
-        var directory = testFileHandler.getBaseDir().toAbsolutePath();
-        underTest.register(directory);
+        @Test
+        @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
+        void shouldHandleDirectories() throws Exception {
+            var directory = testFileHandler.getBaseDir().toAbsolutePath();
+            underTest.register(directory);
 
-        // change file
-        TestFileHandler.touchTargetFile(testFileHandler.getFile1());
+            // change file
+            TestFileHandler.touchTargetFile(testFileHandler.getFile1());
 
-        assertFileChangeEvent(directory);
+            assertFileChangeEvent(directory);
+        }
     }
 
     void fileChangeListener(@Observes @FileChangedEvent final Path newPath) {

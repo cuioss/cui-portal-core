@@ -26,6 +26,7 @@ import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -59,54 +60,60 @@ class FileWatcherServiceImplDisabledTest {
         testFileHandler.cleanup();
     }
 
-    @Test
-    void shouldRegisterAndUnregisterCorrectly() {
-        underTest.register(testFileHandler.getFile1());
-        assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().iterator().next());
+    @Nested
+    class RegistrationTests {
+        @Test
+        void shouldRegisterAndUnregisterCorrectly() {
+            underTest.register(testFileHandler.getFile1());
+            assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().iterator().next());
 
-        // Should not register twice
-        underTest.register(testFileHandler.getFile1());
-        assertEquals(1, underTest.getRegisteredPaths().size());
+            // Should not register twice
+            underTest.register(testFileHandler.getFile1());
+            assertEquals(1, underTest.getRegisteredPaths().size());
 
-        underTest.register(POM);
-        assertEquals(2, underTest.getRegisteredPaths().size());
+            underTest.register(POM);
+            assertEquals(2, underTest.getRegisteredPaths().size());
 
-        underTest.unregister(testFileHandler.getFile1());
-        assertEquals(1, underTest.getRegisteredPaths().size());
+            underTest.unregister(testFileHandler.getFile1());
+            assertEquals(1, underTest.getRegisteredPaths().size());
 
-        underTest.unregister(POM);
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+            underTest.unregister(POM);
+            assertTrue(underTest.getRegisteredPaths().isEmpty());
 
-        // Do not register not existing file
-        underTest.register(testFileHandler.getNonExistingFile());
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+            // Do not register not existing file
+            underTest.register(testFileHandler.getNonExistingFile());
+            assertTrue(underTest.getRegisteredPaths().isEmpty());
 
-        // Gracefully handle unregister
-        underTest.unregister(testFileHandler.getFile1());
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+            // Gracefully handle unregister
+            underTest.unregister(testFileHandler.getFile1());
+            assertTrue(underTest.getRegisteredPaths().isEmpty());
+        }
+
+        @Test
+        void shouldHandleDirectories() {
+            final var directory = testFileHandler.getFile1().getParent().toAbsolutePath();
+            underTest.register(directory);
+            assertTrue(underTest.getRegisteredPaths().contains(directory));
+        }
     }
 
-    @Test
-    void shouldHandleDirectories() {
-        final var directory = testFileHandler.getFile1().getParent().toAbsolutePath();
-        underTest.register(directory);
-        assertTrue(underTest.getRegisteredPaths().contains(directory));
-    }
+    @Nested
+    class InitializationTests {
+        @Test
+        void shouldIgnoreInitIfConfiguredSo() {
+            configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "false");
+            configuration.fireEvent();
+            underTest.initialize();
+            assertFalse(underTest.isUpAndRunning());
+        }
 
-    @Test
-    void shouldIgnoreInitIfConfiguredSo() {
-        configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "false");
-        configuration.fireEvent();
-        underTest.initialize();
-        assertFalse(underTest.isUpAndRunning());
-    }
-
-    @Test
-    void shouldGracefullyHandleShutDownWithoutInit() {
-        configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "false");
-        configuration.fireEvent();
-        underTest.initialize();
-        assertFalse(underTest.isUpAndRunning());
-        underTest.destroy();
+        @Test
+        void shouldGracefullyHandleShutDownWithoutInit() {
+            configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "false");
+            configuration.fireEvent();
+            underTest.initialize();
+            assertFalse(underTest.isUpAndRunning());
+            underTest.destroy();
+        }
     }
 }
