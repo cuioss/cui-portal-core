@@ -26,8 +26,56 @@ import java.lang.annotation.Target;
 import java.util.Map;
 
 /**
- * Injects a number of config-properties as an immutable {@link Map} of
- * properties. It filters the property-keys using {@link #startsWith()}
+ * CDI qualifier for injecting filtered configuration properties as an immutable {@link Map}.
+ * This qualifier enables injection of configuration subsets by filtering properties
+ * based on a common prefix.
+ * <p>
+ * Features:
+ * <ul>
+ *   <li>Prefix-based property filtering</li>
+ *   <li>Optional prefix stripping from keys</li>
+ *   <li>Returns immutable map</li>
+ *   <li>Type-safe string key-value pairs</li>
+ * </ul>
+ * <p>
+ * Usage examples:
+ * <pre>
+ * // Basic usage - keep prefix
+ * &#64;Inject
+ * &#64;ConfigAsFilteredMap(startsWith = "portal.theme.")
+ * private Map<String, String> themeProperties;
+ * 
+ * // Strip prefix from keys
+ * &#64;Inject
+ * &#64;ConfigAsFilteredMap(
+ *     startsWith = "portal.mail.",
+ *     stripPrefix = true
+ * )
+ * private Map<String, String> mailConfig;
+ * </pre>
+ * <p>
+ * Example configuration:
+ * <pre>
+ * # Configuration properties
+ * portal.theme.name=dark
+ * portal.theme.primary-color=#000000
+ * portal.theme.secondary-color=#ffffff
+ * portal.mail.host=smtp.example.com
+ * portal.mail.port=587
+ * 
+ * # Results with prefix (themeProperties):
+ * {
+ *   "portal.theme.name": "dark",
+ *   "portal.theme.primary-color": "#000000",
+ *   "portal.theme.secondary-color": "#ffffff"
+ * }
+ * 
+ * # Results with stripped prefix (mailConfig):
+ * {
+ *   "host": "smtp.example.com",
+ *   "port": "587"
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
  */
@@ -37,17 +85,39 @@ import java.util.Map;
 public @interface ConfigAsFilteredMap {
 
     /**
-     * @return The name to be filtered using {@link String#startsWith(String)}
+     * The prefix to filter configuration properties.
+     * <p>
+     * Only properties whose keys start with this prefix will be included
+     * in the resulting map.
+     * The comparison is case-sensitive.
+     * <p>
+     * For example, if startsWith="app.config.", then:
+     * <ul>
+     *   <li>"app.config.key1" - included</li>
+     *   <li>"app.config.nested.key2" - included</li>
+     *   <li>"app.other.key3" - excluded</li>
+     * </ul>
+     *
+     * @return the prefix to filter properties by
      */
     @Nonbinding
     String startsWith();
 
     /**
-     * @return boolean indicating whether the keys in the resulting map should be
-     *         stripped of the prefix defined at {@link #startsWith()}. Defaults to
-     *         {@code false}
+     * Controls whether to remove the prefix from the map keys.
+     * <p>
+     * When {@code true}, the prefix specified by {@link #startsWith()} will be
+     * removed from all keys in the resulting map. This is useful when you want
+     * to work with shorter, context-free keys.
+     * <p>
+     * For example, with prefix="app.config." and property "app.config.key1=value":
+     * <ul>
+     *   <li>stripPrefix=false → {"app.config.key1": "value"}</li>
+     *   <li>stripPrefix=true → {"key1": "value"}</li>
+     * </ul>
+     *
+     * @return {@code true} to remove prefix from keys, {@code false} to keep full keys
      */
     @Nonbinding
     boolean stripPrefix() default false;
-
 }

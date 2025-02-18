@@ -26,123 +26,87 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * CDI qualifier for injecting connection configuration as {@link ConnectionMetadata} instances.
+ * This qualifier provides comprehensive configuration for various connection types
+ * including authentication, caching, and connection properties.
  * <p>
- * Injects a number of related config-properties as a
- * {@link ConnectionMetadata}. In case the required elements are not there /
- * empty the producer will throw an {@link IllegalArgumentException}, see
- * {@link #failOnInvalidConfiguration()}.
- * <p>
- * 'baseName' is the string that is equal for all other derived keys, e.g. for
- * the value-set-client: 'value-set-client.connection.url':
- * 'value-set-client.connection.' is the 'baseName' for configuring the
- * connection of the value-set-client.
- * </p>
- *
- * The expected structure is
- * <h3>Basic Information</h3>
+ * Features:
  * <ul>
- * <li><code>baseName.id</code>: Optional, id for that connection, usually used
- * for URL parameter or similar. If it is not set the baseName will be used</li>
- * <li><code>baseName.description</code>: Optional, description for that
- * connection.</li>
- * <li><code>baseName.url</code>: Required, the URL of the service to connect
- * to.</li>
- * <li><code>baseName.type</code>: Optional, must be one of "JMX",
- * "REST","DATABASE" "UNDEFINED" (case insensitive). If not set it defaults to
- * "UNDEFINED"</li>
- * </ul>
- *
- * <h3>Authentication</h3>
- * <ul>
- * <li><code>baseName.authentication</code>: Must be one of "none", "basic",
- * "certificate", "token.application" or "token.user" (case insensitive).
- * Defaults to "none"</li>
+ *   <li>Multiple authentication methods</li>
+ *   <li>Certificate management</li>
+ *   <li>Caching configuration</li>
+ *   <li>Connection type support</li>
+ *   <li>Flexible configuration structure</li>
  * </ul>
  * <p>
- * In case of authentication type "certificate" a key-store can be configured
- * for this connection: If it is not configured the key-store configured for the
- * system will be used
- * </p>
+ * <h2>Configuration Structure</h2>
+ * All properties use a common base name prefix. For example, with base name
+ * "app.service.connection", properties would be:
+ * <p>
+ * <h3>1. Basic Properties</h3>
  * <ul>
- * <li><code>baseName.authentication.certificate.keystore.location</code></li>
- * <li><code>baseName.authentication.certificate.keystore.password</code></li>
- * <li><code>baseName.authentication.certificate.keystore.keypassword</code> (To
- * be used for cases where the actual certificate has a different password
- * compared to the {@code keystore.password})</li>
+ *   <li>{@code baseName.id} - Optional identifier (defaults to baseName)</li>
+ *   <li>{@code baseName.description} - Optional connection description</li>
+ *   <li>{@code baseName.url} - Required service URL</li>
+ *   <li>{@code baseName.type} - Optional connection type:
+ *     <ul>
+ *       <li>JMX</li>
+ *       <li>REST</li>
+ *       <li>DATABASE</li>
+ *       <li>UNDEFINED (default)</li>
+ *     </ul>
+ *   </li>
  * </ul>
  * <p>
- * In case of authentication type "basic" the following properties must be
- * defined:
- * </p>
- * <ul>
- * <li><code>baseName.authentication.basic.username</code></li>
- * <li><code>baseName.authentication.basic.password</code></li>
- * </ul>
+ * <h3>2. Authentication Configuration</h3>
+ * Set via {@code baseName.authentication}:
  * <p>
- * In case of authentication type "token.application" the following properties
- * must be defined:
- * </p>
- * <ul>
- * <li><code>baseName.authentication.token.application.token</code>: Identifying
- * the actual token to be used. Usually a client token</li>
- * <li><code>baseName.authentication.token.application.key</code>: Identifying
- * the name of the header under which the token is added to the request, e.g.
- * "X-Vault-Token"</li>
- * </ul>
+ * a) Certificate Authentication:
+ * <pre>
+ * baseName.authentication=certificate
+ * baseName.authentication.certificate.keystore.location=path/to/keystore
+ * baseName.authentication.certificate.keystore.password=store-password
+ * baseName.authentication.certificate.keystore.keypassword=key-password
+ * </pre>
  * <p>
- * <em>Caution: The approach with "token.user" s work in progress / experimental
- * </em> In case of authentication type "token.user" the following properties
- * must be defined:
- * </p>
- * <ul>
- * <li><code>baseName.authentication.token.user.token.source</code>: Identifies
- * the Information from the AuthenticatedUserInfo that is used as source for the
- * token</li>
- * <li><code>baseName.authentication.token.user.key</code>: Identifying the name
- * of the header under which the token is added to the request, e.g.
- * "X-Vault-Token"</li>
- * </ul>
+ * b) Basic Authentication:
+ * <pre>
+ * baseName.authentication=basic
+ * baseName.authentication.basic.username=user
+ * baseName.authentication.basic.password=pass
+ * </pre>
  * <p>
- * In case your connection uses a secured transport like https you can
- * optionally configure a specific keystore / truststore for this connection. If
- * not the corresponding system settings will be used
- * </p>
- * <ul>
- * <li><code>baseName.transport.secure.keystore.location</code></li>
- * <li><code>baseName.transport.secure.keystore.password</code></li>
- * <li><code>baseName.transport.secure.keystore.keypassword</code> (To be used
- * for cases where the actual certificate has a different password compared to
- * the {@code keystore.password})</li>
- * <li><code>baseName.transport.secure.truststore.location</code></li>
- * <li><code>baseName.transport.secure.truststore.password</code></li>
- * <li><code>baseName.transport.secure.disableHostNameVerification</code>: If
- * set to {@code true} the hostname will not be validated for this connection.
- * <em>Caution:</em> Setting this value will compromise security: Only to be
- * used for testing!!</li>
- * </ul>
- * <h3>Additional Parameter</h3>
+ * c) Application Token:
+ * <pre>
+ * baseName.authentication=token.application
+ * baseName.authentication.token.application.token=your-token
+ * baseName.authentication.token.application.key=X-Auth-Token
+ * </pre>
  * <p>
- * In addition to the standard configuration you can configure connection
- * specific parameter. The base-name therefore is <code>baseName.config</code>.
- * </p>
- * <ul>
- * <li>{@code baseName.config.client}:okclient Enables the okHttpClient for
- * connections of type REST. This client is more efficient and reliable within
- * complex network scenarios and provides a built-in caching: Http code 304 will
- * always handled correctly. In addition the caching can be configured in many
- * aspects, see other parameter.</li>
- * <li>{@code baseName.config.max-age}: Sets the maximum age of a cached
- * response in minutes. If the cache response's age exceeds maxAge, it will not
- * be used and a network request will be made.</li>
- * <li>{@code baseName.config.max-stale}: Accept cached responses in minutes
- * that have exceeded their freshness lifetime by up to maxStale. If
- * unspecified, stale cache responses will not be used.</li>
- * <li>{@code baseName.config.min-fresh}: Sets the minimum number of minutes
- * that a response will continue to be fresh for. If the response will be stale
- * when minFresh have elapsed, the cached response will not be used and a
- * network request will be made.</li>
- * </ul>
- *
+ * d) User Token (Experimental):
+ * <pre>
+ * baseName.authentication=token.user
+ * baseName.authentication.token.user.token.source=token-source
+ * baseName.authentication.token.user.key=token-header
+ * </pre>
+ * <p>
+ * <h3>3. Cache Configuration</h3>
+ * Optional caching settings:
+ * <pre>
+ * baseName.config.cache=true
+ * baseName.config.max-age=60     # max age in minutes
+ * baseName.config.max-stale=30   # stale tolerance in minutes
+ * </pre>
+ * <p>
+ * Usage example:
+ * <pre>
+ * &#64;Inject
+ * &#64;ConfigAsConnectionMetadata(
+ *     baseName = "app.auth.service",
+ *     failOnInvalidConfiguration = true
+ * )
+ * private ConnectionMetadata authService;
+ * </pre>
  *
  * @author Oliver Wolff
  */
@@ -152,17 +116,41 @@ import java.lang.annotation.Target;
 public @interface ConfigAsConnectionMetadata {
 
     /**
-     * @return the name of the base property. Can end with a dot or not.
+     * The base name prefix for all connection configuration properties.
+     * <p>
+     * This prefix will be used to locate all related configuration properties
+     * such as URL, authentication settings, and cache configuration.
+     * <p>
+     * For example, if baseName is "app.service":
+     * <ul>
+     *   <li>URL will be read from "app.service.url"</li>
+     *   <li>Auth type from "app.service.authentication"</li>
+     *   <li>Cache settings from "app.service.config.cache"</li>
+     * </ul>
+     *
+     * @return the base configuration prefix
      */
     @Nonbinding
     String baseName();
 
     /**
-     * @return boolean indicating whether the corresponding producer should throw an
-     *         {@link IllegalArgumentException} in case the properties contain
-     *         errors. Defaults to <code>true</code>. In case of <code>false</code>
-     *         will return the created {@link ConnectionMetadata} without calling
-     *         {@link ConnectionMetadata#validate()}
+     * Controls validation behavior for missing or invalid configuration.
+     * <p>
+     * When true:
+     * <ul>
+     *   <li>Validates all required properties are present</li>
+     *   <li>Checks property value formats</li>
+     *   <li>Throws {@link IllegalArgumentException} on validation failure</li>
+     * </ul>
+     * When false:
+     * <ul>
+     *   <li>Allows missing optional properties</li>
+     *   <li>Uses default values where possible</li>
+     *   <li>May result in incomplete configuration</li>
+     * </ul>
+     *
+     * @return {@code true} to enable strict validation,
+     *         {@code false} to allow partial configuration
      */
     @Nonbinding
     boolean failOnInvalidConfiguration() default true;

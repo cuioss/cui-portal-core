@@ -24,10 +24,40 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Defines instances of {@link ApplicationInitializer}. See package-info for
- * details.
- *
+ * CDI qualifier that identifies beans implementing {@link ApplicationInitializer}.
+ * This qualifier enables the Portal's initialization framework to discover and
+ * manage beans requiring ordered initialization.
+ * 
+ * <h2>Usage</h2>
+ * Apply this qualifier to {@link jakarta.enterprise.context.ApplicationScoped} beans
+ * that implement {@link ApplicationInitializer}:
+ * 
+ * <pre>
+ * &#64;ApplicationScoped
+ * &#64;PortalInitializer
+ * public class DatabaseInitializer implements ApplicationInitializer {
+ *     &#64;Override
+ *     public void initialize() {
+ *         // Initialization logic
+ *     }
+ *     
+ *     &#64;Override
+ *     public Integer getOrder() {
+ *         return ORDER_EARLY;  // Initialize early
+ *     }
+ * }
+ * </pre>
+ * 
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Only use with {@link jakarta.enterprise.context.ApplicationScoped} beans</li>
+ *   <li>Must be combined with {@link ApplicationInitializer} implementation</li>
+ *   <li>Enables automatic discovery by the initialization framework</li>
+ *   <li>Supports injection points for framework components</li>
+ * </ul>
+ * 
  * @author Oliver Wolff
+ * @see ApplicationInitializer
  */
 @Qualifier
 @Retention(RUNTIME)

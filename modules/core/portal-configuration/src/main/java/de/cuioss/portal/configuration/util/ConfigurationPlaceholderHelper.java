@@ -27,12 +27,40 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Processes a map with configuration key/values. If a value contains a
- * placeholder, e.g. <code>${a.key}</code>, its value is looked up in the same
- * configuration map. If present, the placeholder is replaced with the value. If
- * the configuration key contains multiple placeholders, even with the same key,
- * all placeholders are replaced correspondingly.
- *
+ * Helper class for processing configuration placeholders in property values.
+ * Handles resolution of placeholders, including nested placeholders and default values,
+ * with protection against excessive nesting depth.
+ * 
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Resolves placeholders in configuration values</li>
+ *   <li>Supports default values using {@code ${key:default}} syntax</li>
+ *   <li>Handles nested placeholders up to 5 levels deep</li>
+ *   <li>Protects against circular dependencies</li>
+ * </ul>
+ * 
+ * <h2>Examples</h2>
+ * <pre>
+ * // Simple placeholder
+ * value = "${app.home}"
+ * result = "/opt/app"
+ * 
+ * // Placeholder with default
+ * value = "${app.port:8080}"
+ * result = "8080" (if app.port is not defined)
+ * 
+ * // Nested placeholders
+ * value = "${app.${env.name}.config}"
+ * result = "production-settings" (if env.name="prod" and app.prod.config="production-settings")
+ * </pre>
+ * 
+ * <h2>Error Handling</h2>
+ * <ul>
+ *   <li>Missing keys: Logged as warnings, throws exception if configured</li>
+ *   <li>Excessive nesting: Throws {@link ConfigKeyNestingException}</li>
+ *   <li>Invalid syntax: Throws {@link IllegalArgumentException}</li>
+ * </ul>
+ * 
  * @author Sven Haag
  */
 class ConfigurationPlaceholderHelper {

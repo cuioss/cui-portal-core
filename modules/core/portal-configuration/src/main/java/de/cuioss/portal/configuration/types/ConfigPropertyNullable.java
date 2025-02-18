@@ -24,30 +24,63 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <h1>Nullable ConfigProperty</h1>
+ * CDI qualifier for injecting optional configuration properties that may be null.
+ * This qualifier provides a way to handle missing configuration values without
+ * throwing exceptions.
  * <p>
- * Advises the configuration system to allow injection of {@code null} values,
- * instead of throwing a {@link java.util.NoSuchElementException}. A
- * configuration value will be {@code null}, if the configuration key is missing
- * or if its resolved value is an empty string.
- * </p>
+ * Features:
+ * <ul>
+ *   <li>Null-safe configuration injection</li>
+ *   <li>Optional default value support</li>
+ *   <li>Empty string to null conversion</li>
+ *   <li>Support for primitive and wrapper types</li>
+ * </ul>
+ * <p>
+ * <h2>Usage Guidelines</h2>
+ * <p>
+ * 1. Recommended for:
+ * <ul>
+ *   <li>Passivation-capable beans (e.g., {@link jakarta.enterprise.context.SessionScoped})</li>
+ *   <li>Beans implementing {@link java.io.Serializable}</li>
+ *   <li>Optional configuration values that may not be present</li>
+ * </ul>
+ * <p>
+ * 2. Not recommended for:
+ * <ul>
+ *   <li>{@link jakarta.enterprise.context.ApplicationScoped} beans (use {@link java.util.Optional} instead)</li>
+ *   <li>Collection types (has no effect)</li>
+ *   <li>Required configuration values</li>
+ * </ul>
+ * <p>
+ * <h2>Supported Types</h2>
+ * <ul>
+ *   <li>Primitive types (int, long, boolean, etc.)</li>
+ *   <li>Wrapper types ({@link Integer}, {@link Long}, etc.)</li>
+ *   <li>{@link String} values</li>
+ * </ul>
+ * <p>
+ * Usage examples:
+ * <pre>
+ * // Basic usage - returns null if not configured
+ * &#64;Inject
+ * &#64;ConfigPropertyNullable(name = "app.optional.setting")
+ * private String optionalSetting;
  *
- * <h2>Valid Beans</h2>
+ * // With default value
+ * &#64;Inject
+ * &#64;ConfigPropertyNullable(
+ *     name = "app.timeout",
+ *     defaultValue = "30"
+ * )
+ * private Integer timeout;
+ * </pre>
  * <p>
- * The usage of this annotation is only encouraged for passivation capable beans
- * such as {@link jakarta.enterprise.context.SessionScoped} beans or any other
- * bean that must implement the {@link java.io.Serializable} interface. For
- * other beans, such as {@link jakarta.enterprise.context.ApplicationScoped}
- * beans, the usage of {@link java.util.Optional} is encouraged - but only if
- * you don't want an exception for a missing config property.
- * </p>
- *
- * <h2>Valid Data Types</h2>
- * <p>
- * Use this annotation for injections of primitive types, their corresponding
- * object like {@link Integer} and {@link String} values. Don't use it for
- * {@link java.util.Collection} types, as it will have no effect.
- * </p>
+ * Null Handling:
+ * <ul>
+ *   <li>Returns null if configuration key is missing</li>
+ *   <li>Returns null if value resolves to empty string</li>
+ *   <li>Returns defaultValue if specified (or null if defaultValue is empty)</li>
+ * </ul>
  *
  * @author Sven Haag
  */
@@ -57,15 +90,29 @@ import java.lang.annotation.Target;
 public @interface ConfigPropertyNullable {
 
     /**
-     * @return config key
+     * The configuration property key to inject.
+     * <p>
+     * The value associated with this key will be injected into the annotated
+     * field.
+     * If the key is not found and no default value is specified,
+     * null will be injected instead of throwing an exception.
+     *
+     * @return the configuration key
      */
     @Nonbinding
     String name();
 
     /**
-     * @return a default value that is used, if no value is provided by any
-     *         {@link org.eclipse.microprofile.config.spi.ConfigSource} for the
-     *         given config key. An empty string will be converted to {@code null}!
+     * Optional default value to use when the configuration key is not found.
+     * <p>
+     * Special handling:
+     * <ul>
+     *   <li>Empty string ("") will be converted to null</li>
+     *   <li>For numeric types, the string must be parseable to the target type</li>
+     *   <li>For boolean, accepts "true"/"false" (case-insensitive)</li>
+     * </ul>
+     *
+     * @return the default value string, empty string if none
      */
     @Nonbinding
     String defaultValue() default "";

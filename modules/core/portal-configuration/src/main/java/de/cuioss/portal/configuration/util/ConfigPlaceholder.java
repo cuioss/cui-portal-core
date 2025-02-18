@@ -25,7 +25,40 @@ import lombok.ToString;
 import java.util.Optional;
 
 /**
- * DTO representing a placeholder in our configuration system.
+ * Data Transfer Object (DTO) representing a configuration placeholder in the Portal's
+ * configuration system. Handles parsing and representation of placeholders with
+ * optional default values.
+ * 
+ * <h2>Placeholder Format</h2>
+ * <ul>
+ *   <li>Basic: {@code ${config.key}}</li>
+ *   <li>With Default: {@code ${config.key:defaultValue}}</li>
+ * </ul>
+ * 
+ * <h2>Examples</h2>
+ * <pre>
+ * // Simple placeholder
+ * ${app.home}
+ * 
+ * // Placeholder with default
+ * ${app.port:8080}
+ * 
+ * // Placeholder with empty default
+ * ${app.theme:}
+ * 
+ * // Environment variable reference
+ * ${ENV_VAR:defaultValue}
+ * </pre>
+ * 
+ * <h2>Usage Notes</h2>
+ * <ul>
+ *   <li>Default values are optional</li>
+ *   <li>Empty default values are supported</li>
+ *   <li>Whitespace in keys is not recommended</li>
+ *   <li>Case-sensitive keys</li>
+ * </ul>
+ * 
+ * @author Oliver Wolff
  */
 @ToString
 @EqualsAndHashCode

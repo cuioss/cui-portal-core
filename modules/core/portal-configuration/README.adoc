@@ -1,6 +1,6 @@
 = Portal Configuration Module
 
-Module providing configuration management and type-safe configuration injection for the Portal.
+Module providing configuration management and type-safe configuration injection for the Portal based on MicroProfile Config.
 
 == Maven Coordinates
 
@@ -12,76 +12,117 @@ Module providing configuration management and type-safe configuration injection 
     </dependency>
 ----
 
-== Core Features
+== Core Concepts
 
-* Hierarchical Configuration Structure
-* Type-safe Configuration Injection
-* Configuration Validation
-* File Change Watching
-* Project Stage Management
-* Secure Configuration Handling
+The Portal Configuration module provides a robust configuration system built on MicroProfile Config with additional Portal-specific features:
+
+=== Configuration Hierarchy
+* All Portal configurations use the `portal.` prefix
+* Specialized prefixes for different areas (e.g., `portal.theme.`, `portal.session.`)
+* Configuration keys are defined in link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[PortalConfigurationKeys]
+
+=== Type-Safe Configuration
+* Built on MicroProfile Config's type conversion system
+* Extended with Portal-specific types
+* Validation at injection time
+* Default values through link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationDefaults.java[PortalConfigurationDefaults]
+
+=== Configuration Sources
+. System Properties
+. Environment Variables
+. Application Properties
+. Default Values
 
 == Configuration Types
 
-=== Built-in Types
-* Lists (`ConfigAsList`)
-* Sets (`ConfigAsSet`)
-* Paths (`ConfigAsPath`)
-* Locales (`ConfigAsLocale`)
-* Cache Configuration (`ConfigAsCacheConfig`)
+=== Basic Types
+* String: Default type
+* Numbers: Integer, Long, Double
+* Boolean: For feature flags
+* Enums: For fixed-choice options
 
-=== Configuration Hierarchy
-
-[source]
-----
-portal.                    # Base prefix for all portal configurations
-├── configuration.        # Core configuration settings
-├── session.             # Session-related settings
-├── resource.            # Resource handling configuration
-├── theme.               # Theme configuration
-├── view.                # View-related settings
-├── pages.               # Page-specific configuration
-└── listener.            # Event listener configuration
-----
+=== Specialized Types
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsList.java[ConfigAsList]: List configurations
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsSet.java[ConfigAsSet]: Set configurations
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsFileLoader.java[ConfigAsFileLoader]: File-based configurations
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsLocale.java[ConfigAsLocale]: Locale configurations
 
 == Usage Examples
 
-=== Basic Configuration Injection
-
+=== Basic Configuration
 [source,java]
 ----
+// Simple string configuration
 @Inject
-@ConfigProperty(name = "portal.theme.default")
-private String defaultTheme;
+@ConfigProperty(name = "portal.app.name")
+private String appName;
 
+// Integer with default
 @Inject
-@ConfigAsList(name = "portal.theme.available_themes")
-private List<String> availableThemes;
+@ConfigProperty(name = "portal.app.port", defaultValue = "8080")
+private Integer port;
 
+// Boolean feature flag
 @Inject
-@ConfigAsLocale(name = "portal.locale.default")
-private Locale defaultLocale;
+@ConfigProperty(name = "portal.feature.enabled", defaultValue = "false")
+private boolean featureEnabled;
 ----
 
-=== Optional Configuration
-
+=== List and Set Configurations
 [source,java]
 ----
+// List of allowed origins
 @Inject
-@ConfigPropertyNullable(name = "portal.custom.setting")
-private String customSetting;
+@ConfigAsList(name = "portal.security.allowed.origins")
+private List<String> allowedOrigins;
+
+// Set of enabled features
+@Inject
+@ConfigAsSet(name = "portal.features.enabled")
+private Set<String> enabledFeatures;
 ----
 
-== Documentation
+=== File-Based Configuration
+[source,java]
+----
+// Load configuration file
+@Inject
+@ConfigAsFileLoader(name = "portal.config.file")
+private FileLoader configFile;
 
-For detailed information about:
+// Multiple configuration files
+@Inject
+@ConfigAsFileLoaderList(name = "portal.config.files")
+private List<FileLoader> configFiles;
+----
 
-* Configuration Best Practices: link:docs/CONFIGURATION.adoc[Configuration Guide]
-* Log Messages: link:doc/LogMessages.md[Log Messages]
+== Best Practices
 
-== Security Considerations
+=== Key Naming
+* Use lowercase with dots as separators
+* Follow the established prefix hierarchy
+* Be descriptive but concise
+* Example: `portal.security.authentication.timeout`
 
-* Never store credentials in plain text
-* Use appropriate security configuration types
-* Follow the principle of least privilege
-* Configure appropriate access controls
+=== Type Safety
+* Use the most specific type possible
+* Provide sensible default values
+* Validate configuration at startup
+* Use Optional for truly optional values
+
+=== Configuration Organization
+* Group related configurations
+* Use consistent naming patterns
+* Document expected values and formats
+* Reference keys from link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[PortalConfigurationKeys]
+
+== Related Components
+
+* link:src/main/java/de/cuioss/portal/configuration/initializer/ApplicationInitializer.java[ApplicationInitializer]: Ordered initialization framework
+* link:src/main/java/de/cuioss/portal/configuration/schedule/FileWatcherService.java[FileWatcherService]: Configuration file monitoring
+* link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[ConfigurationHelper]: Configuration utility methods
+
+== Further Reading
+
+* link:https://github.com/eclipse/microprofile-config[MicroProfile Config]
+* link:https://jakarta.ee/specifications/cdi/[Jakarta CDI]

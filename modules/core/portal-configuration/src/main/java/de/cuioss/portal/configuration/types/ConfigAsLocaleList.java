@@ -28,8 +28,56 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Injects a config property as a {@link List} of {@link Locale}. The
- * corresponding producer may return an empty {@link List}.
+ * CDI qualifier for injecting a list of {@link Locale} instances from configuration.
+ * This qualifier enables injection of multiple locale settings from a single
+ * configuration property, with support for fallback to system locale and
+ * custom separators.
+ * <p>
+ * Features:
+ * <ul>
+ *   <li>Multiple locale injection</li>
+ *   <li>System locale fallback</li>
+ *   <li>Configurable separator</li>
+ *   <li>Flexible locale format support</li>
+ *   <li>Returns immutable list</li>
+ * </ul>
+ * <p>
+ * Usage examples:
+ * <pre>
+ * // Basic usage with system fallback
+ * &#64;Inject
+ * &#64;ConfigAsLocaleList(name = "app.supported.locales")
+ * private List<Locale> supportedLocales;
+ * 
+ * // Strict parsing with custom separator
+ * &#64;Inject
+ * &#64;ConfigAsLocaleList(
+ *     name = "app.available.languages",
+ *     defaultToSystem = false,
+ *     separator = '|'
+ * )
+ * private List<Locale> availableLanguages;
+ * </pre>
+ * <p>
+ * Example configuration:
+ * <pre>
+ * # Using default separator (,)
+ * app.supported.locales=en,de,fr,es
+ * 
+ * # Using language tags
+ * app.supported.locales=en-US,de-DE,fr-FR
+ * 
+ * # Using custom separator (|)
+ * app.available.languages=en_US|de_DE|fr_FR
+ * </pre>
+ * <p>
+ * Supported Locale Formats:
+ * <ul>
+ *   <li>Language codes: "en", "de", "fr"</li>
+ *   <li>Language tags: "en-US", "de-DE"</li>
+ *   <li>Underscore format: "en_US", "de_DE"</li>
+ *   <li>Full locale: "en_US_WIN", "de_DE_MAC"</li>
+ * </ul>
  *
  * @author Oliver Wolff
  */
@@ -39,23 +87,55 @@ import java.util.Locale;
 public @interface ConfigAsLocaleList {
 
     /**
-     * @return the name of the property
+     * The configuration property key that contains the list of locales.
+     * <p>
+     * The value should be a string containing multiple locale identifiers
+     * separated by the specified separator character. Each identifier will
+     * be parsed into a {@link Locale} instance.
+     * <p>
+     * Example with default separator:
+     * {@code app.locales=en,de,fr,es}
+     *
+     * @return the configuration key
      */
     @Nonbinding
     String name();
 
     /**
-     * @return boolean indicating whether the producer should return the
-     *         system-locale in case the given locale can not be parsed
-     *         '{@code true}' or throw an {@link IllegalArgumentException}
-     *         {@code false}. Defaults to {@code true}
+     * Controls fallback behavior when locale parsing fails.
+     * <p>
+     * When true:
+     * <ul>
+     *   <li>Returns system locale for invalid locale strings</li>
+     *   <li>Ensures list always contains valid locales</li>
+     *   <li>Prevents injection failures</li>
+     * </ul>
+     * When false:
+     * <ul>
+     *   <li>Throws {@link IllegalArgumentException} for invalid locales</li>
+     *   <li>Ensures strict locale format compliance</li>
+     *   <li>Fails fast on configuration errors</li>
+     * </ul>
+     *
+     * @return {@code true} to use system locale as fallback,
+     *         {@code false} to throw exception on parse errors
      */
     @Nonbinding
     boolean defaultToSystem() default true;
 
     /**
-     * @return the separator char to separate the individual Locale elements,
-     *         defaults to {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
+     * The character used to separate multiple locale identifiers in the
+     * configuration value.
+     * <p>
+     * Common separator choices:
+     * <ul>
+     *   <li>',' (default) - Standard CSV separator</li>
+     *   <li>';' - Alternative when locales may contain commas</li>
+     *   <li>'|' - Useful for complex locale strings</li>
+     * </ul>
+     *
+     * @return the separator character, defaults to
+     *         {@value PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
     @Nonbinding
     char separator() default PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;

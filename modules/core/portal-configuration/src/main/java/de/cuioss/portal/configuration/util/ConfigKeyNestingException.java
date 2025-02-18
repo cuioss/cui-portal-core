@@ -18,18 +18,58 @@ package de.cuioss.portal.configuration.util;
 import java.io.Serial;
 
 /**
- * Exception for a configuration key whose default value contains a placeholder
- * again for too many times.
+ * Exception thrown when a configuration placeholder's nesting depth exceeds
+ * the maximum allowed level (5 levels).
+ * 
+ * <h2>Nesting Depth Example</h2>
+ * <pre>
+ * # Level 1
+ * app.home=${env.home}
+ * 
+ * # Level 2
+ * env.home=${user.home}
+ * 
+ * # Level 3
+ * user.home=${system.home:/opt}
+ * 
+ * # Level 4
+ * system.home=${default.home}
+ * 
+ * # Level 5 (maximum)
+ * default.home=/home/user
+ * 
+ * # Level 6 would throw ConfigKeyNestingException
+ * </pre>
+ * 
+ * <h2>Usage Context</h2>
+ * This exception is typically thrown by {@link ConfigurationPlaceholderHelper}
+ * when resolving nested placeholders in configuration values. It helps prevent
+ * infinite recursion and circular dependencies in configuration resolution.
+ * 
+ * @author Oliver Wolff
  */
 public final class ConfigKeyNestingException extends IllegalStateException {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates a new exception for a configuration key that exceeds the maximum
+     * nesting depth.
+     * 
+     * @param configKey the configuration key that caused the nesting depth violation
+     */
     public ConfigKeyNestingException(String configKey) {
         super("Config key is nested too deep: " + configKey);
     }
 
+    /**
+     * Creates a new exception for a configuration key that exceeds the maximum
+     * nesting depth, with a cause.
+     * 
+     * @param configKey the configuration key that caused the nesting depth violation
+     * @param cause the underlying cause of the nesting depth violation
+     */
     public ConfigKeyNestingException(String configKey, Throwable cause) {
         super("Config key is nested too deep: " + configKey, cause);
     }

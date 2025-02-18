@@ -20,7 +20,60 @@ import de.cuioss.tools.logging.LogRecordModel;
 import lombok.experimental.UtilityClass;
 
 /**
- * Defines the log messages for the portal configuration module.
+ * Defines the structured log messages for the Portal configuration module.
+ * This class follows the CUI logging framework pattern, organizing messages
+ * by severity level and providing unique identifiers for each message.
+ * 
+ * <h2>Message Structure</h2>
+ * Messages are organized into categories by severity:
+ * <ul>
+ *   <li>INFO (001-099): Informational messages about normal operation</li>
+ *   <li>WARN (100-199): Warning messages about potential issues</li>
+ *   <li>ERROR (200-299): Error messages about operational failures</li>
+ *   <li>FATAL (300-399): Critical system failures</li>
+ * </ul>
+ * 
+ * <h2>Message Format</h2>
+ * Each message follows the format:
+ * <pre>
+ * PortalConfig-NNN: Message text
+ * </pre>
+ * Where:
+ * <ul>
+ *   <li>PortalConfig: Module prefix</li>
+ *   <li>NNN: Three-digit identifier</li>
+ *   <li>Message text: The actual message, possibly with parameters</li>
+ * </ul>
+ * 
+ * <h2>Usage Example</h2>
+ * <pre>
+ * // Logging an info message
+ * LOGGER.info(INFO.PROJECT_STAGE_PRODUCTION_DETECTED::format);
+ * 
+ * // Logging a warning with parameters
+ * LOGGER.warn(WARN.INVALID_CONNECTION_TYPE.format(
+ *     actualType,
+ *     expectedTypes
+ * ));
+ * 
+ * // Logging an error with exception
+ * LOGGER.error(e, ERROR.CONFIGURATION_ERROR.format(
+ *     configKey
+ * ));
+ * </pre>
+ * 
+ * <h2>Message Categories</h2>
+ * <ul>
+ *   <li>Project Stage Messages: System running mode</li>
+ *   <li>Configuration Messages: Configuration loading and validation</li>
+ *   <li>File Watch Messages: File system monitoring</li>
+ *   <li>Connection Messages: Connection configuration and setup</li>
+ *   <li>Locale Messages: Localization configuration</li>
+ * </ul>
+ * 
+ * @author Oliver Wolff
+ * @see de.cuioss.tools.logging.LogRecord
+ * @see de.cuioss.tools.logging.LogRecordModel
  */
 @UtilityClass
 public class PortalConfigurationMessages {

@@ -1,25 +1,4 @@
-/*
- * Copyright 2023 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cuioss.portal.configuration.util;
-
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.*;
-import static java.util.Objects.requireNonNull;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.tools.collect.MapBuilder;
@@ -34,13 +13,73 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static de.cuioss.tools.string.MoreStrings.isEmpty;
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import static java.util.Objects.requireNonNull;
+
 /**
- * Provides some utilities for interacting with configuration elements
- *
+ * Utility class providing core functionality for configuration handling in the Portal.
+ * Offers methods for filtering properties, resolving configuration values, and
+ * processing configuration data.
+ * 
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Property filtering by prefix</li>
+ *   <li>Environment variable resolution</li>
+ *   <li>Configuration value type conversion</li>
+ *   <li>Injection point handling</li>
+ * </ul>
+ * 
+ * <h2>Common Use Cases</h2>
+ * 
+ * <h3>Property Filtering</h3>
+ * <pre>
+ * // Filter properties starting with "app.module"
+ * Map<String, String> filtered = ConfigurationHelper.getFilteredPropertyMap(
+ *     properties,
+ *     "app.module.",
+ *     true  // Strip prefix from keys
+ * );
+ * </pre>
+ * 
+ * <h3>Environment Variable Resolution</h3>
+ * <pre>
+ * // Resolve value with environment fallback
+ * String value = ConfigurationHelper.resolveConfigProperty(
+ *     "app.home",     // Config key
+ *     "/opt/app",     // Default value
+ *     true           // Allow environment lookup
+ * );
+ * </pre>
+ * 
+ * <h3>Configuration Value Processing</h3>
+ * <pre>
+ * // Convert configuration value to typed list
+ * List<Integer> ports = ConfigurationHelper.resolveConfigList(
+ *     "app.ports",           // Config key
+ *     "8080,8443",          // Default value
+ *     Integer::parseInt      // Value converter
+ * );
+ * </pre>
+ * 
  * @author Oliver Wolff
  */
 @UtilityClass
