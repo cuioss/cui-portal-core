@@ -1,22 +1,143 @@
-= portal-core
+= Portal Core Module
 
-== What is it?
-
-Provides types that define the non-ui parts of the portal.
+Core components and infrastructure for building enterprise portal applications. This module provides essential services and base implementations for authentication, storage management, and servlet infrastructure.
 
 == Maven Coordinates
 
 [source,xml]
 ----
-    <dependency>
-        <groupId>de.cuioss.portal.core</groupId>
-        <artifactId>portal-core</artifactId>
-    </dependency>
+<dependency>
+    <groupId>de.cuioss.portal.core</groupId>
+    <artifactId>portal-core</artifactId>
+</dependency>
 ----
 
-== Core Types and Concepts
+== Core Concepts
 
-* link:src/main/java/de/cuioss/portal/core/listener/ServletLifecycleListener.java[ServletLifecycleListener]
-* link:src/main/java/de/cuioss/portal/core/servlet/package-info.java[Servlet-specific]
-* link:src/main/java/de/cuioss/portal/core/storage/package-info.java[Runtime Storage Objects]
-* link:src/main/java/de/cuioss/portal/core/user/PortalUserProducer.java[PortalUserProducer]
+=== Authentication and Authorization
+* Role-based access control
+* User context management
+* Session handling
+* Authentication provider integration
+
+=== Storage Management
+* Type-safe storage abstractions
+* Session and client-side storage
+* Thread-safe implementations
+* Serialization support
+
+=== Servlet Infrastructure
+* Base servlet implementations
+* Request processing
+* External hostname resolution
+* Proxy-aware components
+
+=== Lifecycle Management
+* Application initialization
+* Component lifecycle handling
+* Resource cleanup
+* Startup/shutdown coordination
+
+== Detailed Component Documentation
+
+=== ServletLifecycleListener
+link:src/main/java/de/cuioss/portal/core/listener/ServletLifecycleListener.java[ServletLifecycleListener]
+
+* Manages application lifecycle events
+* Coordinates initialization and destruction of components
+* Handles context path configuration
+* Supports ordered initialization sequence
+
+=== Portal Servlet Framework
+link:src/main/java/de/cuioss/portal/core/servlet/package-info.java[Servlet Components]
+
+* Base servlet with authentication support
+* Request processing pipeline
+* Error handling
+* External hostname resolution
+
+=== Storage Framework
+link:src/main/java/de/cuioss/portal/core/storage/package-info.java[Storage Components]
+
+* Thread-safe storage implementations
+* Session-scoped storage
+* Client-side storage
+* Type-safe operations
+
+=== User Management
+link:src/main/java/de/cuioss/portal/core/user/PortalUserProducer.java[User Components]
+
+* User context management
+* Authentication state handling
+* Role-based authorization
+* User event processing
+
+== Usage Examples
+
+=== Basic Servlet Implementation
+[source,java]
+----
+@WebServlet("/myservlet")
+public class MyPortalServlet extends AbstractPortalServlet {
+    @Override
+    protected void executeDoGet(HttpServletRequest request, 
+                              HttpServletResponse response) throws IOException {
+        // Implementation
+    }
+}
+----
+
+=== Storage Usage
+[source,java]
+----
+@Inject
+SessionStorage sessionStorage;
+
+public void storeUserPreference(String key, String value) {
+    sessionStorage.put(key, value);
+}
+----
+
+== Configuration
+
+=== Context Path
+[source,properties]
+----
+# Optional: Configure custom context path
+portal.application.contextPath=/myapp
+----
+
+
+== Best Practices
+
+=== Security
+* Always use AbstractPortalServlet for proper authentication in case you need a servlet.
+* Implement role checks for sensitive operations
+* Use storage abstractions instead of raw session access
+
+=== Performance
+* Utilize client storage for frequently accessed data
+* Implement proper cleanup in lifecycle listeners
+* Follow the initialization order guidelines
+
+=== Implementation Guidelines
+* Leverage CDI for dependency injection
+* Use type-safe storage operations
+* Follow the servlet lifecycle patterns
+
+== Technical Details
+
+=== Thread Safety
+* All storage implementations are thread-safe
+* Servlet components support concurrent access
+* Lifecycle operations are synchronized
+
+=== Session Management
+* Type-safe session storage
+* Automatic serialization handling
+* Cross-context session support
+
+== Related Documentation
+* link:https://jakarta.ee/specifications/platform/10/[Jakarta EE Platform]
+* link:https://jakarta.ee/specifications/cdi/4.0/[Context and Dependency Injection]
+* link:https://jakarta.ee/specifications/servlet/6.0/[Jakarta Servlet]
