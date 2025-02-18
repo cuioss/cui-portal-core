@@ -15,18 +15,17 @@
  */
 package de.cuioss.portal.configuration.impl.producer;
 
-import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.*;
-import static de.cuioss.portal.configuration.cache.CacheConfig.*;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
-import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static de.cuioss.tools.string.MoreStrings.*;
-
 import de.cuioss.portal.configuration.cache.CacheConfig;
-import de.cuioss.portal.configuration.types.*;
+import de.cuioss.portal.configuration.types.ConfigAsCacheConfig;
+import de.cuioss.portal.configuration.types.ConfigAsFileLoader;
+import de.cuioss.portal.configuration.types.ConfigAsFileLoaderList;
+import de.cuioss.portal.configuration.types.ConfigAsFilteredMap;
+import de.cuioss.portal.configuration.types.ConfigAsList;
+import de.cuioss.portal.configuration.types.ConfigAsLocale;
+import de.cuioss.portal.configuration.types.ConfigAsLocaleList;
+import de.cuioss.portal.configuration.types.ConfigAsPath;
+import de.cuioss.portal.configuration.types.ConfigAsSet;
+import de.cuioss.portal.configuration.types.ConfigPropertyNullable;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.io.FileLoader;
 import de.cuioss.tools.io.FileLoaderUtility;
@@ -43,8 +42,27 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_KEY;
+import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_UNIT_KEY;
+import static de.cuioss.portal.configuration.cache.CacheConfig.SIZE_KEY;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
+import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
+import static de.cuioss.tools.base.Preconditions.checkArgument;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
+import static de.cuioss.tools.string.MoreStrings.emptyToNull;
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import static de.cuioss.tools.string.MoreStrings.requireNotEmptyTrimmed;
 
 /**
  * Provides specific producer methods for elements not covered by the standard
@@ -58,10 +76,6 @@ public class PortalConfigProducer {
     private static final CuiLogger LOGGER = new CuiLogger(PortalConfigProducer.class);
 
     static final String UNUSED = "unused";
-
-    private static final String INVALID_CONTENT_FOR_LONG = ERROR.INVALID_CONTENT_FOR_LONG.getTemplate();
-    private static final String INVALID_CONTENT_FOR_TIME_UNIT = ERROR.INVALID_CONTENT_FOR_TIME_UNIT.getTemplate();
-    private static final String INVALID_CONTENT_FOR_BOOLEAN = ERROR.INVALID_CONTENT_FOR_BOOLEAN.getTemplate();
 
     @Inject
     @ConfigProperty(name = PORTAL_METRICS_ENABLED, defaultValue = "false")
@@ -226,8 +240,8 @@ public class PortalConfigProducer {
             try {
                 expiration = Long.parseLong(configProperties.get(EXPIRATION_KEY).trim());
             } catch (final NumberFormatException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_LONG, configKeyPrefix, EXPIRATION_KEY,
-                        configProperties.get(EXPIRATION_KEY));
+                LOGGER.error(e, ERROR.INVALID_NUMBER.format(configKeyPrefix, EXPIRATION_KEY,
+                        configProperties.get(EXPIRATION_KEY)));
             }
         }
 
@@ -235,7 +249,7 @@ public class PortalConfigProducer {
             try {
                 size = Long.parseLong(configProperties.get(SIZE_KEY).trim());
             } catch (final NumberFormatException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_LONG, configKeyPrefix, SIZE_KEY, configProperties.get(SIZE_KEY));
+                LOGGER.error(e, ERROR.INVALID_NUMBER.format(configKeyPrefix, SIZE_KEY, configProperties.get(SIZE_KEY)));
             }
         }
 
@@ -243,16 +257,16 @@ public class PortalConfigProducer {
             try {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
-                LOGGER.error(e, INVALID_CONTENT_FOR_TIME_UNIT, configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
-                        configProperties.get(EXPIRATION_UNIT_KEY));
+                LOGGER.error(e, ERROR.INVALID_CONTENT_FOR_TIME_UNIT.format(configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
+                        configProperties.get(EXPIRATION_UNIT_KEY)));
             }
         }
 
         if (configProperties.containsKey(CacheConfig.RECORD_STATISTICS_KEY)) {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
-                LOGGER.error(INVALID_CONTENT_FOR_BOOLEAN, configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
-                        configProperties.get(CacheConfig.RECORD_STATISTICS_KEY));
+                LOGGER.error(ERROR.INVALID_CONTENT_FOR_BOOLEAN.format(configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
+                        configProperties.get(CacheConfig.RECORD_STATISTICS_KEY)));
                 recordStats = false;
             } else {
                 recordStats = Boolean.parseBoolean(configValue);
@@ -282,7 +296,7 @@ public class PortalConfigProducer {
     }
 
     private static FileLoader checkFileLoader(final String pathProperty, final boolean failOnNotAccessible,
-            final String propertyName) {
+                                              final String propertyName) {
 
         final var path = nullToEmpty(pathProperty).trim();
         if (MoreStrings.isEmpty(path)) {
