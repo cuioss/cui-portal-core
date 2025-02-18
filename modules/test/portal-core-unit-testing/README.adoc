@@ -2,8 +2,8 @@
 
 == What is it?
 
-It is about mock-classes, base-classes, test-infrastructure and extensions (Junit 5). 
-This is the starting point for all unit-tests in the context of the cui-portal.
+Provides essential test infrastructure for the CUI Portal, including mock implementations, base classes, and JUnit 5 extensions. 
+This module serves as the foundation for all unit testing within the CUI Portal ecosystem.
 
 == Maven Coordinates
 
@@ -19,8 +19,7 @@ This is the starting point for all unit-tests in the context of the cui-portal.
 
 === Configuration
 
-The handling of configuration is simplified.
-The `@EnablePortalConfiguration` bootstraps the configuration-subsystem and adds the necessary producer by using `@AddBeanClasses`.
+The module simplifies configuration management through the `@EnablePortalConfiguration` annotation, which bootstraps the configuration subsystem and registers necessary producers via `@AddBeanClasses`.
 
 [source,java]
 ----
@@ -29,7 +28,9 @@ The `@EnablePortalConfiguration` bootstraps the configuration-subsystem and adds
 class ConfigurationEnabledTest {}
 ----
 
-Additional configuration can be added, either by the annotation, for all tests:
+Configuration can be provided in two ways:
+
+1. Via annotation for test-wide settings:
 
 [source,java]
 ----
@@ -38,7 +39,7 @@ Additional configuration can be added, either by the annotation, for all tests:
 class ConfigurationEnabledTest {}
 ----
 
-or by injecting the `PortalTestConfiguration` for applying in the context of certain tests
+2. Via injection for test-specific configuration:
 
 [source,java]
 ----
@@ -56,11 +57,10 @@ class ConfigurationEnabledTest {
 }
 ----
 
-
 === Testing a ResourceBundle-Locator
 
-This tests the initial structure, the provided path and an actual message to be resolved.
-To work the module needs a test / runtime dependency on `de.cuioss.portal.ui:portal-ui-runtime`
+Tests the resource bundle resolution, including structure validation and message resolution.
+Requires a test/runtime dependency on `de.cuioss.portal.ui:portal-ui-runtime`.
 
 [source,java]
 ----
@@ -88,8 +88,7 @@ class RuntimeBundleNamesTest implements ShouldBeNotNull<RuntimeBundleNames> {
 
 === Module Consistency Test
 
-A consistent module must be deployable within a CDI-Context. It must define all dependencies.
-This is checked by `de.cuioss.portal.core.test.tests.BaseModuleConsistencyTest`.
+Ensures CDI compatibility and proper dependency configuration using `BaseModuleConsistencyTest`:
 
 [source,java]
 ----
@@ -97,10 +96,9 @@ class ModuleConsistencyTest extends BaseModuleConsistencyTest {
 }
 ----
 
-The test actually starts a Weld-Container and looks up the Bean-Manager.
-In addition, it checks for the file `META-INF/beans.xml` being present.
+The test initializes a Weld container, verifies bean manager accessibility, and validates the presence of `META-INF/beans.xml`.
 
-In case you want to add beans or modify the dev-mode, you need to implement the callback method:
+For advanced configuration, implement the container modification callback:
 
 [source,java]
 ----
@@ -109,9 +107,8 @@ protected Weld modifyWeldContainer(Weld weld) {
     return weld.enableDevMode().addBeanClass(ServletObjectsFromJSFContextProducers.class);
 }
 ----
-This adds producers for the servlet objects, derived from JSF-FacesContext.
 
-Variant for a producer for pure mock-object without relying on JSF:
+Alternative configuration for JSF-independent mock objects:
 
 [source,java]
 ----
@@ -121,11 +118,11 @@ protected Weld modifyWeldContainer(Weld weld) {
 }
 ---- 
 
-The corresponding producer-types are defined at https://github.com/cuioss/cui-jsf-test-basic/tree/main/src/main/java/de/cuioss/test/jsf/producer[cui-jsf-test-basic] 
+Producer implementations are available at https://github.com/cuioss/cui-jsf-test-basic/tree/main/src/main/java/de/cuioss/test/jsf/producer[cui-jsf-test-basic].
 
 === Assembly Consistency Test
 
-A consistent assembly must be deployable within a CDI-Context. It must define all dependencies. This is checked by `de.cuioss.portal.core.test.tests.BaseAssemblyConsistencyTest`.
+Validates CDI deployment compatibility using `BaseAssemblyConsistencyTest`:
 
 [source,java]
 ----
@@ -133,11 +130,11 @@ class AssemblyConsistencyTest extends BaseAssemblyConsistencyTest {
 }
 ----
 
-The test actually starts a Weld-Container and looks up the Bean-Manager. In addition, it checks for the file WEB-INF/beans.xml being present.
+Verifies Weld container initialization and presence of `WEB-INF/beans.xml`.
 
 === Handling AuthenticatedUserInfo
 
-If you need an `AuthenticatedUserInfo`, add `de.cuioss.portal.core.test.mocks.authentication.PortalTestUserProducer`.
+Integrate authentication testing using `PortalTestUserProducer`:
 
 [source,java]
 ----
@@ -161,14 +158,13 @@ class PortalTestUserProducerTest {
 }
 ----
 
-=== Testing a configuration Module
+=== Testing Configuration Modules
 
-Extend `de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest`.
-The actual documentation can be found at class level
+Extend `AbstractConfigurationKeyVerifierTest` for configuration validation. See class-level documentation for details.
 
 === Using EasyMock
 
-Additional info see link:https://easymock.org/user-guide.html[Easymock user-guide]
+Integration with EasyMock for mocking. See link:https://easymock.org/user-guide.html[EasyMock user guide] for details.
 
 [source,java]
 ----
@@ -184,12 +180,11 @@ class SomeTestClass {}
 private SomeMockedService mockedOne;
 ----
 
-
 === Using MockWebServer
 
-This module supports an extension
-for using link:https://github.com/square/okhttp/tree/master/mockwebserver[MockWebServer].
-You need to add the dependency first:
+Integration with link:https://github.com/square/okhttp/tree/master/mockwebserver[MockWebServer] for HTTP testing.
+
+Required dependency:
 
 [source,xml]
 ----
@@ -199,7 +194,7 @@ You need to add the dependency first:
 </dependency>
 ----
 
-now you can use it in your tests:
+Basic usage:
 
 [source,java]
 ----
@@ -218,7 +213,7 @@ class MockWebServerExtensionTest implements MockWebServerHolder {
 
 ==== Dispatching Requests
 
-If you want to reuse the request dispatching of the server you can provide a concrete implementation for `de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder.getDispatcher()`
+Implement custom request handling by extending `MockWebServerHolder.getDispatcher()`:
 
 [source,java]
 ----
@@ -252,16 +247,16 @@ class ValueSetClientImplFhirTest implements MockWebServerHolder {
 }
 ----
 
-==== de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.ModuleDispatcherElement
+==== ModuleDispatcherElement
 
-The idea of an `ModuleDispatcherElement` is the reuse of answers in the context of `EnableMockWebServer`. In essence calls to `MockWebServerHolder.getDispatcher()` can be replaced with this structure.The general idea is to return an `Optional` `MockResponse` if the concrete handle can answer the call, `Optional.empty()` otherwise.
+`ModuleDispatcherElement` enables reusable request handling in `EnableMockWebServer` contexts. It returns an `Optional<MockResponse>` for matching requests.
 
-Dispatcher for a jwks endpoint 
+Example JWKS endpoint dispatcher:
 
 [source,java]
 ----
 /**
- * Handles the Resolving of JWKS Files from the Mocked oauth-Server. In essence, it returns the file
+ * Handles JWKS file resolution from the mock OAuth server, serving
  * "src/test/resources/token/test-public-key.jwks"
  */
 public class JwksResolveDispatcher implements ModuleDispatcherElement {
@@ -288,9 +283,9 @@ public class JwksResolveDispatcher implements ModuleDispatcherElement {
     }
 
     /**
-     * Verifies whether this endpoint was called the given times
+     * Verifies request count
      *
-     * @param expected amount of request calls
+     * @param expected Expected number of requests
      */
     public void assertCallsAnswered(int expected) {
         assertEquals(expected, callCounter);
@@ -298,7 +293,7 @@ public class JwksResolveDispatcher implements ModuleDispatcherElement {
 }
 ----
 
-Can now be reused like this: 
+Implementation example:
 
 [source,java]
 ----
@@ -337,8 +332,7 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
             JsonWebToken jsonWebToken = assertDoesNotThrow(() -> ParsedToken.jsonWebTokenFrom(token, parser, LOGGER));
             assertValidJsonWebToken(jsonWebToken, token);
         }
-        // For some reason, there are always at least 2 calls, instead of expected one call. No
-        // problem because as shown within this test, the number stays at 2
+        // Note: Initial implementation results in 2 calls instead of 1
         assertTrue(jwksResolveDispatcher.getCallCounter() < 3);
 
         for (int i = 0; i < 100; i++) {
@@ -349,4 +343,3 @@ class TokenParserProducerTest implements ShouldBeNotNull<TokenParserProducer>, M
     }
 }
 ----
-
