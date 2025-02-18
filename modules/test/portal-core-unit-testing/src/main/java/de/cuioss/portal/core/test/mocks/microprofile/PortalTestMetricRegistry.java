@@ -87,27 +87,32 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public Counter counter(final String name) {
-        return null;
+        return counter(new MetricID(name));
     }
 
     @Override
     public Counter counter(final String name, final Tag... tags) {
-        return null;
+        return counter(new MetricID(name, tags));
     }
 
     @Override
     public Counter counter(MetricID metricID) {
-        return null;
+        return (Counter) metricMap.computeIfAbsent(metricID, id -> {
+            Counter counter = new PortalTestCounter();
+            Metadata metadata = Metadata.builder().withName(id.getName()).build();
+            metadataMap.put(id.getName(), metadata);
+            return counter;
+        });
     }
 
     @Override
     public Counter counter(final Metadata metadata) {
-        return null;
+        return counter(new MetricID(metadata.getName()));
     }
 
     @Override
     public Counter counter(final Metadata metadata, final Tag... tags) {
-        return null;
+        return counter(new MetricID(metadata.getName(), tags));
     }
 
     @Override
@@ -264,6 +269,10 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public Counter getCounter(MetricID metricID) {
+        Metric metric = metricMap.get(metricID);
+        if (metric instanceof Counter) {
+            return (Counter) metric;
+        }
         return null;
     }
 
@@ -285,18 +294,20 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
 
     @Override
-    public Metadata getMetadata(String s) {
-        return null;
+    public Metadata getMetadata(String name) {
+        return metadataMap.get(name);
     }
 
     @Override
     public boolean remove(final String name) {
-        return false;
+        metricMap.entrySet().removeIf(entry -> entry.getKey().getName().equals(name));
+        metadataMap.remove(name);
+        return true;
     }
 
     @Override
     public boolean remove(final MetricID metricID) {
-        return false;
+        return metricMap.remove(metricID) != null;
     }
 
     @Override
