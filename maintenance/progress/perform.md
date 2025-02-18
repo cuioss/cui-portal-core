@@ -3,7 +3,7 @@
 ## Test Refactoring Phase
 
 ### portal-common-cdi
-Status: In Progress
+Status: Completed
 
 #### Test Structure Review
 - [x] Test naming follows conventions
@@ -85,10 +85,54 @@ Status: In Progress
   - Explained producer configurations
   - Described test bundle hierarchy
 
+#### Documentation Improvements
+- [x] Package documentation
+  - Enhanced package-info.java files for all packages
+  - Added comprehensive usage examples
+  - Documented thread safety considerations
+  - Added proper cross-references
+- [x] Core classes documentation
+  - Updated PortalBeanManager documentation
+  - Enhanced AnnotationInstanceProvider documentation
+  - Improved ResourceBundleWrapper documentation
+  - Updated ProjectStage documentation
+- [x] Module documentation
+  - Updated README.adoc with comprehensive guide
+  - Added detailed usage examples
+  - Included best practices
+  - Added working links to source and specifications
+- [x] Test documentation
+  - Test naming and organization documented
+  - Test fixtures and setup explained
+  - Test coverage documented
+  - Test assertions and quality documented
+
 #### Next Steps
 1. Build and verify the changes
 2. Run all tests to ensure no regressions
 3. Fix any issues found during verification
+
+### portal-configuration
+Status: Completed
+
+#### Documentation Improvements
+- [x] Package documentation
+  - Added comprehensive package-info.java
+  - Documented configuration hierarchy
+  - Explained configuration types
+- [x] Core classes documentation
+  - Updated PortalConfigurationKeys
+  - Enhanced PortalConfigurationDefaults
+  - Improved CuiConstants
+- [x] Utility package documentation
+  - Documented ConfigurationHelper
+  - Enhanced ConfigurationPlaceholderHelper
+  - Updated ConfigPlaceholder
+- [x] Module documentation
+  - Updated README.adoc
+  - Added usage examples
+  - Included best practices
+  - Added working links to source
 
 ### portal-metrics-api
 Status: Not Started

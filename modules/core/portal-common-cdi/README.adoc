@@ -1,7 +1,6 @@
-= portal-common-cdi
+= Portal Common CDI
 
-== What is it?
-Provides core CDI-based infrastructure and utilities for Portal applications.
+Core CDI infrastructure and utilities for Portal applications, providing essential services for dependency injection, resource management, and internationalization.
 
 == Maven Coordinates
 
@@ -13,29 +12,129 @@ Provides core CDI-based infrastructure and utilities for Portal applications.
     </dependency>
 ----
 
-== Overview
-This package serves as the foundation for CDI integration in Portal applications.
-It provides essential infrastructure parts, utilities, and services that
-enable seamless CDI integration across the Portal framework.
+== Core Concepts
 
-== Key Features
-* CDI bean management and utilities
-* Resource bundle integration
-* Locale management
-* Priority-based component ordering
+=== CDI Infrastructure
+* Programmatic bean management through link:src/main/java/de/cuioss/portal/common/cdi/PortalBeanManager.java[PortalBeanManager]
+* Dynamic annotation creation with link:src/main/java/de/cuioss/portal/common/cdi/AnnotationInstanceProvider.java[AnnotationInstanceProvider]
+* Thread-safe component design
+* Extension support for CDI customization
 
-== Package Organization
-* `cdi` - Core CDI utilities and infrastructure
-* `bundle` - Resource bundle management system
-* `locale` - Locale management and change notification
-* `priority` - Priority-based ordering utilities
+=== Resource Bundle Management
+* Unified bundle access through link:src/main/java/de/cuioss/portal/common/bundle/ResourceBundleWrapper.java[ResourceBundleWrapper]
+* Dynamic bundle reloading
+* Fallback chain support
+* Custom bundle integration
+
+=== Locale Handling
+* Dynamic locale switching
+* Change notification system
+* Locale-aware component support
+* Default locale configuration
+
+=== Project Stage Management
+* Development/Production mode support
+* Stage-specific behavior control
+* Configuration validation
+* Error handling strategies
+
+== Usage Examples
+
+=== Bean Management
+[source,java]
+----
+// Access beans programmatically
+@Inject
+private PortalBeanManager beanManager;
+
+// Get typed bean instance
+MyService service = beanManager.getBean(MyService.class);
+
+// Create annotation instance
+Qualifier qualifier = AnnotationInstanceProvider.of(Qualifier.class)
+    .withValue("name", "custom")
+    .create();
+----
+
+=== Resource Bundles
+[source,java]
+----
+// Inject resource bundle
+@Inject
+private ResourceBundleWrapper bundle;
+
+// Get localized message
+String message = bundle.getString("key.message");
+
+// Get with fallback
+String text = bundle.getString("key.missing", "Default Text");
+----
+
+=== Locale Management
+[source,java]
+----
+// Observe locale changes
+@Inject
+Event<LocaleChangedEvent> localeChanged;
+
+// Handle locale change
+public void onLocaleChange(@Observes LocaleChangedEvent event) {
+    Locale newLocale = event.getNewLocale();
+    // Update components
+}
+----
+
+=== Project Stage
+[source,java]
+----
+@Inject
+private ProjectStage projectStage;
+
+if (projectStage.isDevelopment()) {
+    // Development-specific behavior
+} else if (projectStage.isProduction()) {
+    // Production behavior
+}
+----
+
+== Package Structure
+
+=== link:src/main/java/de/cuioss/portal/common/cdi[cdi]
+Core CDI utilities for bean management and annotation handling.
+
+=== link:src/main/java/de/cuioss/portal/common/bundle[bundle]
+Resource bundle management and internationalization support.
+
+=== link:src/main/java/de/cuioss/portal/common/locale[locale]
+Locale management and change notification system.
+
+=== link:src/main/java/de/cuioss/portal/common/priority[priority]
+Priority-based component ordering utilities.
+
+=== link:src/main/java/de/cuioss/portal/common/stage[stage]
+Project stage management and environment configuration.
 
 == Best Practices
-* Use provided CDI utilities instead of direct `BeanManager` access
-* Leverage resource bundle system for internationalization
-* Follow priority guidelines for component ordering
-* Observe locale change events for dynamic language updates
 
-== Thread Safety
-All components in this package and its subpackages are designed to be thread-safe
-and suitable for use in concurrent web applications.
+=== CDI Usage
+* Use `PortalBeanManager` instead of direct `BeanManager` access
+* Leverage qualifiers for bean disambiguation
+* Follow CDI scoping guidelines
+* Use events for loose coupling
+
+=== Resource Management
+* Centralize bundle definitions
+* Use key conventions for message organization
+* Provide fallback messages
+* Handle missing resources gracefully
+
+=== Thread Safety
+* All components are thread-safe by design
+* Use appropriate synchronization when extending
+* Follow CDI concurrency guidelines
+* Handle concurrent locale changes properly
+
+== Related Documentation
+
+* link:https://jakarta.ee/specifications/cdi/[Jakarta CDI Specification]
+* link:https://jakarta.ee/specifications/platform/[Jakarta EE Platform]
