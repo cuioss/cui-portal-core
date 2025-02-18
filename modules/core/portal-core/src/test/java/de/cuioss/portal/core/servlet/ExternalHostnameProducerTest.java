@@ -1,18 +1,3 @@
-/*
- * Copyright 2023 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cuioss.portal.core.servlet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,22 +17,25 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the {@link CuiExternalHostname} qualifier in conjunction with the hostname producer
+ * Tests the {@link CuiExternalHostname} qualifier in conjunction with the hostname producer.
+ * Verifies hostname resolution from both direct server properties and X-Forwarded headers.
  */
 @EnableAutoWeld
 @EnableTestLogger(trace = ExternalHostnameProducer.class)
 @AddBeanClasses({ExternalHostnameProducer.class})
 @ActivateScopes(RequestScoped.class)
+@DisplayName("Testing ExternalHostnameProducer functionality")
 class ExternalHostnameProducerTest {
 
-    public static final String PATH = "/context/more";
+    private static final String PATH = "/context/more";
     private static final String SERVER_NAME = "test.example.com";
     private static final int SERVER_PORT = 8443;
     private static final String SERVER_NAME_AND_PORT = SERVER_NAME + ":" + SERVER_PORT;
-    public static final String PROTOCOL = "https://";
+    private static final String PROTOCOL = "https://";
 
     @Inject
     @CuiExternalHostname
@@ -94,22 +82,42 @@ class ExternalHostnameProducerTest {
         };
     }
 
-    @Test
-    @DisplayName("Should inject external hostname from request")
-    void shouldInjectExternalHostname() {
-        var name = hostname.get();
-        assertNotNull(name, "Hostname should be injected");
-        assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match request server name and port");
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, "Resolved hostname: ");
+    @Nested
+    @EnableTestLogger(trace = ExternalHostnameProducer.class)
+    @DisplayName("Direct Server Properties Tests")
+    class DirectServerPropertiesTests {
+        
+        @Test
+        @DisplayName("Should resolve hostname from server properties")
+        void shouldResolveFromServerProperties() {
+            var name = hostname.get();
+            assertNotNull(name, "Hostname should be injected");
+            assertEquals(SERVER_NAME_AND_PORT, name, 
+                "Hostname should match request server name and port");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
+                "Resolved hostname: ");
+        }
     }
 
-    @Test
-    @DisplayName("Should inject external hostname from X-Forwarded headers")
-    void shouldInjectExternalHostnameFromXForward() {
-        verifyAgainstXForward = true;
-        var name = hostname.get();
-        assertNotNull(name, "Hostname should be injected");
-        assertEquals(SERVER_NAME_AND_PORT, name, "Hostname should match X-Forwarded host and port");
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, "Resolved hostname: ");
+    @Nested
+    @EnableTestLogger(trace = ExternalHostnameProducer.class)
+    @DisplayName("X-Forwarded Header Tests")
+    class XForwardedHeaderTests {
+
+        @BeforeEach
+        void enableXForwarded() {
+            verifyAgainstXForward = true;
+        }
+        
+        @Test
+        @DisplayName("Should resolve hostname from X-Forwarded headers")
+        void shouldResolveFromXForwardedHeaders() {
+            var name = hostname.get();
+            assertNotNull(name, "Hostname should be injected");
+            assertEquals(SERVER_NAME_AND_PORT, name, 
+                "Hostname should match X-Forwarded host and port");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
+                "Resolved hostname: ");
+        }
     }
 }
