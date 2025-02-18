@@ -134,6 +134,31 @@ Status: Completed
   - Included best practices
   - Added working links to source
 
+### portal-authentication-api
+Status: Completed
+
+#### Documentation Improvements
+- [x] Package documentation
+  - Enhanced root package-info.java
+  - Added model package documentation
+  - Updated facade package documentation
+  - Added comprehensive examples
+- [x] Core classes documentation
+  - Updated AuthenticatedUserInfo documentation
+  - Enhanced BaseAuthenticatedUserInfo documentation
+  - Improved AuthenticationFacade documentation
+  - Updated PortalUserEnricher documentation
+- [x] Module documentation
+  - Updated README.adoc with detailed guide
+  - Added authentication flow examples
+  - Included security best practices
+  - Added working links to source
+- [x] Security documentation
+  - Added security considerations
+  - Documented thread safety aspects
+  - Included best practices
+  - Explained authentication flow
+
 ### portal-metrics-api
 Status: Not Started
 

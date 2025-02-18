@@ -1,40 +1,6 @@
-= portal-authentication-api
+= Portal Authentication API
 
-== Overview
-Provides types for handling authentication and authorization related information within the cui-portal.
-It serves as an abstraction layer over different authentication and authorization mechanisms.
-See link:../[portal-authentication] for the different runtime implementations.
-
-== Key Components
-
-=== AuthenticatedUserInfo
-The core interface representing information about an authenticated user:
-
-* Authentication status
-* User roles and groups
-* User identifiers (display name, technical ID)
-* System context and additional attributes
-
-=== BaseAuthenticatedUserInfo
-A concrete implementation of `AuthenticatedUserInfo` that provides:
-
-* Builder pattern for easy instantiation
-* Immutable state for thread safety
-* Extensible context map for custom attributes
-
-=== AuthenticationFacade
-Interface defining the authentication contract:
-
-* User context retrieval
-* Logout functionality
-* Authentication source identification
-
-=== PortalUserEnricher
-Interface for enriching user information:
-
-* Allows multiple implementations
-* Priority-based ordering
-* Chainable enrichment process
+Provides a comprehensive API for authentication and authorization in Portal applications, serving as an abstraction layer over various authentication mechanisms.
 
 == Maven Coordinates
 
@@ -46,53 +12,136 @@ Interface for enriching user information:
     </dependency>
 ----
 
-== Usage Examples
+== Core Concepts
 
-=== Basic Authentication Check
+=== Authentication Model
+* User identity management through link:src/main/java/de/cuioss/portal/authentication/AuthenticatedUserInfo.java[AuthenticatedUserInfo]
+* Immutable user state with link:src/main/java/de/cuioss/portal/authentication/model/BaseAuthenticatedUserInfo.java[BaseAuthenticatedUserInfo]
+* Extensible attribute system for custom data
+* Role and group-based authorization
+
+=== Authentication Facade
+* Unified authentication interface through link:src/main/java/de/cuioss/portal/authentication/facade/AuthenticationFacade.java[AuthenticationFacade]
+* Session management and logout handling
+* Authentication source tracking
+* Pluggable authentication mechanisms
+
+=== User Enrichment
+* Extensible user information through link:src/main/java/de/cuioss/portal/authentication/PortalUserEnricher.java[PortalUserEnricher]
+* Priority-based enrichment chain
+* Custom attribute addition
+* Dynamic user context updates
+
+== Authentication Flow
+
+=== 1. Initial Authentication
+[source,java]
+----
+@Inject
+private AuthenticationFacade authFacade;
+
+public void login(Credentials credentials) {
+    AuthenticationResult result = authFacade.authenticate(credentials);
+    if (result.isValid()) {
+        AuthenticatedUserInfo user = result.getUserInfo();
+        // Process authenticated user
+    }
+}
+----
+
+=== 2. User Information Access
 [source,java]
 ----
 @Inject
 private AuthenticatedUserInfo userInfo;
 
-public void someMethod() {
+public void processUser() {
     if (userInfo.isAuthenticated()) {
-        // Handle authenticated user
+        String userId = userInfo.getIdentifier();
         String displayName = userInfo.getDisplayName();
-        List<String> roles = userInfo.getRoles();
+        Set<String> roles = userInfo.getRoles();
+        
+        // Access custom attributes
+        Optional<String> department = userInfo.getAttributeValue("department");
     }
 }
 ----
 
-=== Role-Based Access Control
+=== 3. Authorization Checks
 [source,java]
 ----
 @Inject
 private AuthenticatedUserInfo userInfo;
 
 public void restrictedOperation() {
-    if (userInfo.isUserInRole("ADMIN")) {
-        // Perform admin operation
+    if (!userInfo.isAuthenticated()) {
+        throw new SecurityException("Authentication required");
     }
+    
+    if (!userInfo.isUserInRole("ADMIN")) {
+        throw new SecurityException("Admin access required");
+    }
+    
+    // Perform restricted operation
 }
 ----
 
-=== Custom User Enrichment
+=== 4. User Enrichment
 [source,java]
 ----
 @Priority(PortalPriorities.PORTAL_CORE_LEVEL)
-public class CustomUserEnricher implements PortalUserEnricher {
+public class DepartmentEnricher implements PortalUserEnricher {
     
     @Override
     public AuthenticatedUserInfo enrich(AuthenticatedUserInfo userInfo) {
-        // Add custom attributes or modify user information
-        return userInfo;
+        return BaseAuthenticatedUserInfo.builder()
+            .copyFrom(userInfo)
+            .addAttribute("department", loadDepartment(userInfo))
+            .build();
     }
 }
 ----
 
-== Thread Safety
-All components in this module are designed to be thread-safe:
+== Package Structure
 
-* Immutable state in `BaseAuthenticatedUserInfo`
-* CDI-managed components with proper scoping
-* No shared mutable state
+=== link:src/main/java/de/cuioss/portal/authentication[authentication]
+Core authentication interfaces and base types.
+
+=== link:src/main/java/de/cuioss/portal/authentication/model[model]
+User information model and storage implementations.
+
+=== link:src/main/java/de/cuioss/portal/authentication/facade[facade]
+Authentication facade and related services.
+
+== Best Practices
+
+=== User Information Handling
+* Always use builder pattern for creating user information
+* Keep user information immutable
+* Use Optional for optional attributes
+* Handle authentication state explicitly
+
+=== Authentication Implementation
+* Extend BaseAuthenticationFacade for custom authentication
+* Implement proper logout cleanup
+* Track authentication sources
+* Handle session timeouts gracefully
+
+=== Security Considerations
+* Validate all user input
+* Use proper password handling
+* Implement proper session management
+* Follow least privilege principle
+* Log security-relevant events
+
+=== Thread Safety
+* All components are thread-safe by design
+* User information is immutable
+* Facade implementations are CDI-managed
+* Enrichers should be stateless
+
+== Related Documentation
+
+* link:https://jakarta.ee/specifications/security/[Jakarta Security]
+* link:https://jakarta.ee/specifications/cdi/[Jakarta CDI]
+* link:../portal-authentication/[Portal Authentication Implementations]
