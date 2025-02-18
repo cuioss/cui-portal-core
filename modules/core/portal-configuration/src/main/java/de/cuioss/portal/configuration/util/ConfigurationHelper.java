@@ -54,7 +54,7 @@ import static java.util.Objects.requireNonNull;
  * Utility class providing core functionality for configuration handling in the Portal.
  * Offers methods for filtering properties, resolving configuration values, and
  * processing configuration data.
- * 
+ *
  * <h2>Key Features</h2>
  * <ul>
  *   <li>Property filtering by prefix</li>
@@ -62,9 +62,9 @@ import static java.util.Objects.requireNonNull;
  *   <li>Configuration value type conversion</li>
  *   <li>Injection point handling</li>
  * </ul>
- * 
+ *
  * <h2>Common Use Cases</h2>
- * 
+ *
  * <h3>Property Filtering</h3>
  * <pre>
  * // Filter properties starting with "app.module"
@@ -74,7 +74,7 @@ import static java.util.Objects.requireNonNull;
  *     true  // Strip prefix from keys
  * );
  * </pre>
- * 
+ *
  * <h3>Environment Variable Resolution</h3>
  * <pre>
  * // Resolve value with environment fallback
@@ -84,7 +84,7 @@ import static java.util.Objects.requireNonNull;
  *     true           // Allow environment lookup
  * );
  * </pre>
- * 
+ *
  * <h3>Configuration Value Processing</h3>
  * <pre>
  * // Convert configuration value to typed list
@@ -94,7 +94,7 @@ import static java.util.Objects.requireNonNull;
  *     Integer::parseInt      // Value converter
  * );
  * </pre>
- * 
+ *
  * @author Oliver Wolff
  */
 @UtilityClass
@@ -467,7 +467,7 @@ public final class ConfigurationHelper {
      * @param name config key
      * @return the list of configProperties
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name) {
+    public static List<String> resolveConfigPropertyAsList(@NonNull final String name) {
         return resolveConfigPropertyAsList(name, null);
     }
 
@@ -478,7 +478,7 @@ public final class ConfigurationHelper {
      * @param defaultValue string representing default config value. can be null.
      * @return the list of configProperties
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue) {
+    public static List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue) {
         return resolveConfigPropertyAsList(name, defaultValue, CONTEXT_PARAM_SEPARATOR);
     }
 
@@ -491,7 +491,7 @@ public final class ConfigurationHelper {
      * @return list with configured values, separated via
      * {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue, final char separator) {
+    public static List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue, final char separator) {
         final var configuredValue = resolveConfigProperty(name).orElse(emptyToNull(defaultValue));
         return immutableList(resolveListFromString(configuredValue, separator));
     }
