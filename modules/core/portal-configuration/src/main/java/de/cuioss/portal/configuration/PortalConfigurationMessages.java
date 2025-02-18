@@ -202,5 +202,11 @@ public class PortalConfigurationMessages {
                 .identifier(211)
                 .template("Invalid connection metadata for %s")
                 .build();
+
+        public static final LogRecord SSL_CONTEXT_CREATION_FAILED = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(510)  // Portal-510
+                .template("Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration")
+                .build();
     }
 }

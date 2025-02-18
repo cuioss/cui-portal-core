@@ -37,6 +37,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR.SSL_CONTEXT_CREATION_FAILED;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO.*;
+
 /**
  * Helper class that provides metadata regarding a connection.
  *
@@ -244,7 +247,7 @@ public class ConnectionMetadata implements Serializable {
             return Optional.of(contextBuilder.build());
         } catch (final NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
                 | KeyManagementException e) {
-            LOGGER.error(e, PORTAL_510, connectionId, e.getMessage());
+            LOGGER.error(e, SSL_CONTEXT_CREATION_FAILED.format(connectionId, e.getMessage()));
             return Optional.empty();
         }
     }
