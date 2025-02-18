@@ -29,28 +29,74 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Using this annotation at type-level of a junit 5 test provides the basic
- * types for handling configuration in unit-tests. It includes the types:
+ * JUnit 5 annotation that enables Portal configuration support in unit tests.
+ * This annotation provides the infrastructure for configuration-based testing by
+ * setting up CDI beans and configuration producers.
  *
+ * <h2>Features</h2>
  * <ul>
- * <li>{@link ConfigProducer}</li>
- * <li>{@link PortalTestConfiguration}</li>
- * <li>{@link PortalConfigProducer}</li>
+ *   <li>CDI configuration support</li>
+ *   <li>MicroProfile Config integration</li>
+ *   <li>Portal-specific configuration</li>
+ *   <li>Property-based configuration</li>
  * </ul>
- * <p>
- * Additional configuration can be added by using {@link #configuration()}
- * </p>
- * <p>
- * For details on usage, see {@link PortalTestConfiguration}
- * </p>
+ *
+ * <h2>Included Components</h2>
+ * <ul>
+ *   <li>{@link ConfigProducer} - MicroProfile Config producer</li>
+ *   <li>{@link PortalTestConfiguration} - Portal-specific test configuration</li>
+ *   <li>{@link PortalConfigProducer} - Portal configuration producer</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ * <pre>
+ * // Basic usage with default configuration
+ * &#64;EnablePortalConfiguration
+ * class BasicConfigTest {
+ *     &#64;Inject
+ *     PortalTestConfiguration configuration;
+ *
+ *     &#64;Test
+ *     void shouldHaveDefaultConfig() {
+ *         assertNotNull(configuration);
+ *     }
+ * }
+ *
+ * // Usage with custom configuration properties
+ * &#64;EnablePortalConfiguration(configuration = {
+ *     "portal.some.key=value",
+ *     "portal.other.key=123"
+ * })
+ * class CustomConfigTest {
+ *     &#64;Inject
+ *     PortalTestConfiguration configuration;
+ *
+ *     &#64;Test
+ *     void shouldHaveCustomConfig() {
+ *         assertEquals("value", configuration.getString("portal.some.key"));
+ *         assertEquals(123, configuration.getInteger("portal.other.key"));
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Configuration Format</h2>
+ * <ul>
+ *   <li>Properties use key=value format</li>
+ *   <li>Keys should follow portal naming convention</li>
+ *   <li>Values are parsed according to their type</li>
+ *   <li>Multiple properties can be specified</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see PortalTestConfiguration
+ * @see PortalTestConfigurationExtension
  */
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-@AddBeanClasses({ConfigProducer.class, PortalTestConfiguration.class, PortalConfigProducer.class})
 @ExtendWith(PortalTestConfigurationExtension.class)
+@AddBeanClasses({PortalTestConfiguration.class, PortalConfigProducer.class, ConfigProducer.class})
 public @interface EnablePortalConfiguration {
 
     /**

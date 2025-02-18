@@ -22,65 +22,113 @@ import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;
 
 import java.util.Optional;
-
 /**
- * The idea of an {@link ModuleDispatcherElement} is the reuse of answers in the
- * context of {@link EnableMockWebServer}. In essence calls to
- * {@link MockWebServerHolder#getDispatcher()} can be replaced with this
- * structure. The general idea is to return an {@link Optional}
- * {@link MockResponse} if the concrete handle can answer the call,
- * {@link Optional#empty()} otherwise.
+ * Interface for modular HTTP request dispatching in test scenarios. Enables reusable
+ * request handling components that can be combined to create complex test behaviors.
+ *
+ * <h2>Key Concepts</h2>
+ * <ul>
+ *   <li>Base URL filtering for request routing</li>
+ *   <li>Method-specific request handling</li>
+ *   <li>Optional responses for chain-of-responsibility pattern</li>
+ *   <li>Modular and reusable components</li>
+ * </ul>
+ *
+ * <h2>Usage Example</h2>
+ * <pre>
+ * public class UserApiDispatcher implements ModuleDispatcherElement {
+ *     &#64;Override
+ *     public String getBaseUrl() {
+ *         return "/api/users";
+ *     }
+ *
+ *     &#64;Override
+ *     public Optional<MockResponse> handleGet(RecordedRequest request) {
+ *         if (request.getPath().equals("/api/users/123")) {
+ *             return Optional.of(new MockResponse()
+ *                 .setResponseCode(200)
+ *                 .setBody("{'id': '123', 'name': 'John'}"));
+ *         }
+ *         return Optional.empty(); // Let other handlers try
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Integration with MockWebServer</h2>
+ * <pre>
+ * &#64;EnableMockWebServer
+ * class ApiTest implements MockWebServerHolder {
+ *     private final ModuleDispatcherElement dispatcher = new UserApiDispatcher();
+ *
+ *     &#64;Override
+ *     public Dispatcher getDispatcher() {
+ *         return new CombinedDispatcher(dispatcher);
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Design Notes</h2>
+ * <ul>
+ *   <li>Each dispatcher handles a specific URL path prefix</li>
+ *   <li>Return {@link Optional#empty()} to allow other dispatchers to handle the request</li>
+ *   <li>Can be combined using {@link CombinedDispatcher}</li>
+ *   <li>Supports all standard HTTP methods (GET, POST, PUT, DELETE)</li>
+ * </ul>
+ *
+ * @author Oliver Wolff
+ * @since 1.0
+ * @see CombinedDispatcher
+ * @see EnableMockWebServer
  */
-
 public interface ModuleDispatcherElement {
 
     /**
-     * @return the base URl for this Dispatcher part. The runtime will ensure that
-     *         only elements will be called, where the current url starts with the one
-     *         given here. If you want to filter yourself you may return '/'. The
-     *         {@link Optional} contract is unaffected by this.
+     * Returns the base URL path that this dispatcher handles.
+     * The runtime ensures that only requests matching this base URL are passed to this dispatcher.
+     *
+     * @return the base URL path, use "/" to handle all paths
      */
     String getBaseUrl();
 
     /**
-     * Handles Get-Requests
+     * Handles HTTP GET requests.
      *
-     * @param request providing all necessary Information for answering the request
-     * @return {@link MockResponse} if the concrete handle can answer the call,
-     *         {@link Optional#empty()} otherwise.
+     * @param request the incoming request with path, headers, and body
+     * @return {@link Optional} containing the response if this dispatcher can handle the request,
+     *         or {@link Optional#empty()} to let other dispatchers handle it
      */
     default Optional<MockResponse> handleGet(@NonNull RecordedRequest request) {
         return Optional.empty();
     }
 
     /**
-     * Handles Put-Requests
+     * Handles HTTP POST requests.
      *
-     * @param request providing all necessary Information for answering the request
-     * @return {@link MockResponse} if the concrete handle can answer the call,
-     *         {@link Optional#empty()} otherwise.
-     */
-    default Optional<MockResponse> handlePut(@NonNull RecordedRequest request) {
-        return Optional.empty();
-    }
-
-    /**
-     * Handles Post-Requests
-     *
-     * @param request providing all necessary Information for answering the request
-     * @return {@link MockResponse} if the concrete handle can answer the call,
-     *         {@link Optional#empty()} otherwise.
+     * @param request the incoming request with path, headers, and body
+     * @return {@link Optional} containing the response if this dispatcher can handle the request,
+     *         or {@link Optional#empty()} to let other dispatchers handle it
      */
     default Optional<MockResponse> handlePost(@NonNull RecordedRequest request) {
         return Optional.empty();
     }
 
     /**
-     * Handles Delete-Requests
+     * Handles HTTP PUT requests.
      *
-     * @param request providing all necessary Information for answering the request
-     * @return {@link MockResponse} if the concrete handle can answer the call,
-     *         {@link Optional#empty()} otherwise.
+     * @param request the incoming request with path, headers, and body
+     * @return {@link Optional} containing the response if this dispatcher can handle the request,
+     *         or {@link Optional#empty()} to let other dispatchers handle it
+     */
+    default Optional<MockResponse> handlePut(@NonNull RecordedRequest request) {
+        return Optional.empty();
+    }
+
+    /**
+     * Handles HTTP DELETE requests.
+     *
+     * @param request the incoming request with path, headers, and body
+     * @return {@link Optional} containing the response if this dispatcher can handle the request,
+     *         or {@link Optional#empty()} to let other dispatchers handle it
      */
     default Optional<MockResponse> handleDelete(@NonNull RecordedRequest request) {
         return Optional.empty();

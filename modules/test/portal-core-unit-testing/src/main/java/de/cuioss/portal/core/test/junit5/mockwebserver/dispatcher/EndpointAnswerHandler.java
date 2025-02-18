@@ -23,29 +23,71 @@ import mockwebserver3.MockResponse;
 import java.util.Optional;
 
 /**
- * Helper class simplifying the handling / resetting for responses.
+ * Utility class for managing HTTP responses in test scenarios. Provides pre-configured responses
+ * and methods for customizing response behavior during tests.
+ *
+ * <h2>Common Response Types</h2>
+ * <ul>
+ *   <li>{@link #RESPONSE_OK} - 200 OK response</li>
+ *   <li>{@link #RESPONSE_NO_CONTENT} - 204 No Content response</li>
+ *   <li>{@link #RESPONSE_FORBIDDEN} - 403 Forbidden response</li>
+ *   <li>{@link #RESPONSE_UNAUTHORIZED} - 401 Unauthorized response</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ * <pre>
+ * // Create handler with default GET response
+ * var handler = EndpointAnswerHandler.forPositiveGetRequest();
+ *
+ * // Set custom response
+ * handler.setResponse(new MockResponse()
+ *     .setResponseCode(200)
+ *     .setBody("{'status': 'success'}")
+ * );
+ *
+ * // Reset to default
+ * handler.resetToDefaultResponse();
+ *
+ * // Create handler with specific default response
+ * var customHandler = EndpointAnswerHandler.builder()
+ *     .defaultResponse(RESPONSE_NO_CONTENT)
+ *     .build();
+ * </pre>
+ *
+ * <h2>Factory Methods</h2>
+ * <ul>
+ *   <li>{@link #forPositiveGetRequest()} - Handler for GET requests (200 OK)</li>
+ *   <li>{@link #forPositivePostRequest()} - Handler for POST requests (201 Created)</li>
+ *   <li>{@link #forPositivePutRequest()} - Handler for PUT requests (204 No Content)</li>
+ *   <li>{@link #forPositiveDeleteRequest()} - Handler for DELETE requests (204 No Content)</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @since 1.0
  */
 public class EndpointAnswerHandler {
 
     /**
-     * Empty response transporting {@link HttpServletResponse#SC_FORBIDDEN}
+     * Empty response with status code 403 Forbidden.
+     * Use this for endpoints that require authentication/authorization.
      */
     public static final MockResponse RESPONSE_FORBIDDEN = new MockResponse(HttpServletResponse.SC_FORBIDDEN);
 
     /**
-     * Empty response transporting {@link HttpServletResponse#SC_UNAUTHORIZED}
+     * Empty response with status code 401 Unauthorized.
+     * Use this for endpoints that require valid credentials.
      */
     public static final MockResponse RESPONSE_UNAUTHORIZED = new MockResponse(HttpServletResponse.SC_UNAUTHORIZED);
 
     /**
-     * Empty response transporting {@link HttpServletResponse#SC_OK}
+     * Empty response with status code 200 OK.
+     * Standard success response for GET requests.
      */
     public static final MockResponse RESPONSE_OK = new MockResponse(HttpServletResponse.SC_OK);
 
     /**
-     * Empty response transporting {@link HttpServletResponse#SC_NO_CONTENT}
+     * Empty response with status code 204 No Content.
+     * Typically used for successful PUT/DELETE operations.
      */
     public static final MockResponse RESPONSE_NO_CONTENT = new MockResponse(HttpServletResponse.SC_NO_CONTENT);
 

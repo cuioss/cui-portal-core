@@ -15,9 +15,6 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,16 +22,53 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
- * Using this annotation at type-level of a junit 5 test will control an
- * instance of {@link MockWebServer}. The class where this annotation is used
- * must implement {@link MockWebServerHolder}.
- * <p>
- * As default the mock server will automatically be started before each test. To
- * disable this behavior and start the mock server manually please set
- * {@link #manualStart()} to true.
+ * JUnit 5 annotation that enables and configures a {@link MockWebServer} instance for HTTP interaction testing.
+ * The test class must implement {@link MockWebServerHolder} to receive the server instance.
+ *
+ * <h2>Basic Usage</h2>
+ * <pre>
+ * &#64;EnableMockWebServer
+ * class SimpleHttpTest implements MockWebServerHolder {
+ *     private MockWebServer server;
+ *
+ *     &#64;Override
+ *     public void setMockWebServer(MockWebServer mockWebServer) {
+ *         this.server = mockWebServer;
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Manual Server Control</h2>
+ * <pre>
+ * &#64;EnableMockWebServer(manualStart = true)
+ * class ControlledHttpTest implements MockWebServerHolder {
+ *     private MockWebServer server;
+ *
+ *     &#64;Test
+ *     void shouldTestWithCustomPort() {
+ *         server.start(8080);
+ *         // Test with specific port
+ *         server.shutdown();
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Automatic server startup before each test (default behavior)</li>
+ *   <li>Manual server control with {@link #manualStart()}</li>
+ *   <li>Integration with {@link MockWebServerHolder} for server access</li>
+ *   <li>Support for custom {@link mockwebserver3.Dispatcher} implementations</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @see MockWebServerHolder
+ * @see MockWebServerExtension
+ * @since 1.0
  */
 @Documented
 @Retention(RUNTIME)
@@ -43,8 +77,10 @@ import java.lang.annotation.Target;
 public @interface EnableMockWebServer {
 
     /**
-     * @return boolean indicating whether the infrastructure should start the server
-     *         automatically, default, or not
+     * Controls the automatic startup behavior of the MockWebServer.
+     *
+     * @return {@code true} if the server should be started manually, {@code false} for automatic
+     * startup before each test (default)
      */
     boolean manualStart() default false;
 

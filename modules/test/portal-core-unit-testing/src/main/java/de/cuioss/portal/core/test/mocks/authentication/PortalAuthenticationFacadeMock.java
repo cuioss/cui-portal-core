@@ -39,7 +39,72 @@ import lombok.ToString;
 import java.util.List;
 
 /**
+ * Mock implementation of the {@link FormBasedAuthenticationFacade} for unit testing.
+ * Provides a configurable authentication facade that simulates user authentication
+ * and session management in a test environment.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Form-based authentication simulation</li>
+ *   <li>Configurable authentication results</li>
+ *   <li>Pre-configured admin credentials</li>
+ *   <li>Custom user info support</li>
+ *   <li>Authentication source tracking</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Basic authentication:
+ * <pre>
+ * &#64;Inject
+ * &#64;PortalAuthenticationFacade
+ * private PortalAuthenticationFacadeMock authFacade;
+ *
+ * void testLogin() {
+ *     // Authenticate with default admin credentials
+ *     LoginCredentials credentials = new LoginCredentials("admin", "admin");
+ *     ResultObject<AuthenticatedUserInfo> result = authFacade.authenticate(credentials);
+ *     assertTrue(result.isValid());
+ * }
+ * </pre>
+ *
+ * Custom authentication behavior:
+ * <pre>
+ * // Configure custom authentication result
+ * AuthenticatedUserInfo customUser = BaseAuthenticatedUserInfo.builder()
+ *     .identifier("custom")
+ *     .displayName("Custom User")
+ *     .build();
+ * authFacade.setAuthenticatedUserInfo(customUser);
+ *
+ * // Configure authentication to fail
+ * authFacade.setAuthenticationResult(AuthenticationResults.invalidResultKey());
+ * </pre>
+ *
+ * Session management:
+ * <pre>
+ * // Check current authentication state
+ * Optional<AuthenticatedUserInfo> currentUser = authFacade.getCurrentAuthenticationContext();
+ *
+ * // Invalidate authentication
+ * authFacade.logout();
+ * assertFalse(authFacade.getCurrentAuthenticationContext().isPresent());
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Application scoped for consistent state during tests</li>
+ *   <li>Supports both form-based and context-based authentication</li>
+ *   <li>Provides default admin user with credentials admin/admin</li>
+ *   <li>Tracks authentication source for verification</li>
+ *   <li>Supports custom authentication result configuration</li>
+ * </ul>
+ *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see FormBasedAuthenticationFacade
+ * @see AuthenticatedUserInfo
+ * @see LoginCredentials
  */
 @ApplicationScoped
 @PortalAuthenticationFacade

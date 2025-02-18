@@ -27,15 +27,50 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 /**
- * Junit 5 {@link Extension} controlling the initialization process of a
- * unit-test annotated with {@link EnablePortalConfiguration}. The algorithm:
+ * JUnit 5 {@link Extension} that manages the configuration lifecycle for portal unit tests.
+ * This extension works in conjunction with the {@link EnablePortalConfiguration} annotation
+ * to provide a clean, isolated test environment for each test method.
+ *
+ * <h2>Features</h2>
  * <ul>
- * <li>Access the instance of {@link PortalTestConfiguration} by using
- * CDI.current().select()</li>
- * <li>Calling {@link PortalTestConfiguration#clear()}</li>
+ *   <li>Automatic configuration reset before each test</li>
+ *   <li>CDI context management</li>
+ *   <li>Property configuration support</li>
+ *   <li>Fail-fast validation</li>
+ * </ul>
+ *
+ * <h2>Usage Example</h2>
+ * <pre>
+ * &#64;EnablePortalConfiguration
+ * class PortalConfigTest {
+ *
+ *     &#64;Test
+ *     void shouldHaveCleanConfiguration() {
+ *         // Each test starts with a fresh configuration
+ *         assertNotNull(CDI.current().select(PortalTestConfiguration.class));
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Configuration Process</h2>
+ * <ol>
+ *   <li>Validates the test class is properly annotated</li>
+ *   <li>Retrieves {@link PortalTestConfiguration} from CDI context</li>
+ *   <li>Clears any existing configuration</li>
+ *   <li>Applies test-specific configuration if specified</li>
+ * </ol>
+ *
+ * <h2>Error Handling</h2>
+ * <ul>
+ *   <li>Throws {@link IllegalStateException} if test class cannot be determined</li>
+ *   <li>Throws {@link IllegalStateException} if CDI context is not available</li>
+ *   <li>Logs configuration process at debug level</li>
  * </ul>
  *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see EnablePortalConfiguration
+ * @see PortalTestConfiguration
  */
 public class PortalTestConfigurationExtension implements BeforeEachCallback {
 

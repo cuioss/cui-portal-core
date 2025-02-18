@@ -1,10 +1,4 @@
-/**
- *
- */
 package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
-
-import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
-import static de.cuioss.tools.collect.CollectionLiterals.mutableSortedSet;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,12 +10,48 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableSortedSet;
+
 /**
- * Base class returning sensible return positive values for all supported
- * methods
+ * Base dispatcher implementation that provides positive default responses for all supported HTTP methods.
+ * This dispatcher is useful for testing scenarios where you need basic HTTP endpoint simulation
+ * with the ability to customize responses per method.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Pre-configured positive responses for GET, POST, PUT, DELETE</li>
+ *   <li>Per-method response customization</li>
+ *   <li>Base URL path matching</li>
+ *   <li>Response reset capability</li>
+ * </ul>
+ *
+ * <h2>Usage Example</h2>
+ * <pre>
+ * // Create dispatcher for /api endpoints
+ * var dispatcher = new BaseAllAcceptDispatcher("/api");
+ *
+ * // Customize GET response
+ * dispatcher.getGetResult().setResponse(
+ *     new MockResponse().setBody("{'data': 'test'}")
+ * );
+ *
+ * // Reset to default responses
+ * dispatcher.reset();
+ * </pre>
+ *
+ * <h2>Default Responses</h2>
+ * <ul>
+ *   <li>GET: 200 OK with empty body</li>
+ *   <li>POST: 201 Created</li>
+ *   <li>PUT: 204 No Content</li>
+ *   <li>DELETE: 204 No Content</li>
+ * </ul>
  *
  * @author Oliver Wolff
- *
+ * @since 1.0
+ * @see EndpointAnswerHandler
+ * @see ModuleDispatcherElement
  */
 @RequiredArgsConstructor
 public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
@@ -42,7 +72,8 @@ public class BaseAllAcceptDispatcher implements ModuleDispatcherElement {
     private final EndpointAnswerHandler deleteResult = EndpointAnswerHandler.forPositiveDeleteRequest();
 
     /**
-     * Resets all contained {@link EndpointAnswerHandler}
+     * Resets all contained {@link EndpointAnswerHandler}s to their default responses.
+     * This is useful when you need to clear any custom responses between tests.
      */
     public void reset() {
         getResult.resetToDefaultResponse();

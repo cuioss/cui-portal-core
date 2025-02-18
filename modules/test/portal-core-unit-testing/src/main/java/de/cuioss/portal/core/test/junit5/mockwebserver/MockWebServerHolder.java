@@ -19,24 +19,79 @@ import mockwebserver3.Dispatcher;
 import mockwebserver3.MockWebServer;
 
 /**
- * Holder class for instances of {@link MockWebServer}. It provides an injection
- * point for the actual {@link MockWebServer} and provides an optional Callback
- * for a Dispatcher to be used within {@link MockWebServer}, see
- * {@link MockWebServer#setDispatcher(Dispatcher)}
+ * Interface for test classes that need access to a {@link MockWebServer} instance.
+ * This interface serves as a bridge between the test infrastructure and test classes,
+ * providing access to the server instance and optional request dispatching.
+ *
+ * <h2>Basic Implementation</h2>
+ * <pre>
+ * &#64;EnableMockWebServer
+ * class BasicHttpTest implements MockWebServerHolder {
+ *     private MockWebServer server;
+ *
+ *     &#64;Override
+ *     public void setMockWebServer(MockWebServer mockWebServer) {
+ *         this.server = mockWebServer;
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Custom Request Dispatching</h2>
+ * <pre>
+ * &#64;EnableMockWebServer
+ * class CustomDispatchTest implements MockWebServerHolder {
+ *     private MockWebServer server;
+ *
+ *     &#64;Override
+ *     public void setMockWebServer(MockWebServer mockWebServer) {
+ *         this.server = mockWebServer;
+ *     }
+ *
+ *     &#64;Override
+ *     public Dispatcher getDispatcher() {
+ *         return new Dispatcher() {
+ *             &#64;Override
+ *             public MockResponse dispatch(RecordedRequest request) {
+ *                 if ("/api/data".equals(request.getPath())) {
+ *                     return new MockResponse().setBody("{'data': 'test'}");
+ *                 }
+ *                 return new MockResponse().setResponseCode(404);
+ *             }
+ *         };
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Usage Notes</h2>
+ * <ul>
+ *   <li>The {@link #setMockWebServer(MockWebServer)} method must be implemented to receive the server instance</li>
+ *   <li>Implement {@link #getDispatcher()} to provide custom request handling logic</li>
+ *   <li>The server instance is managed by {@link MockWebServerExtension}</li>
+ *   <li>Default dispatcher returns null, meaning requests are handled by the default MockWebServer behavior</li>
+ * </ul>
  *
  * @author Oliver Wolff
- *
+ * @since 1.0
+ * @see EnableMockWebServer
+ * @see MockWebServerExtension
  */
 public interface MockWebServerHolder {
 
     /**
-     * @param mockWebServer to be set from
+     * Callback method to receive the {@link MockWebServer} instance.
+     * This method is called by the test infrastructure to provide the server instance.
+     *
+     * @param mockWebServer the server instance to be used in tests, never {@code null}
      */
     default void setMockWebServer(MockWebServer mockWebServer) {
     }
 
     /**
-     * @return a {@link Dispatcher} to be used if needed.
+     * Provides a custom {@link Dispatcher} for handling HTTP requests.
+     * Override this method to implement custom request handling logic.
+     *
+     * @return a {@link Dispatcher} instance, or {@code null} to use default request handling
+     * @see MockWebServer#setDispatcher(Dispatcher)
      */
     default Dispatcher getDispatcher() {
         return null;

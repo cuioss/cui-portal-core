@@ -33,27 +33,79 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Mock implementation of {@link FileWatcherService} that is solely capable of
- * managing paths. It is defined as an {@link Alternative}, therefore you need
- * to activate it like
+ * Mock implementation of {@link FileWatcherService} for testing file system monitoring.
+ * This mock provides a simplified version that tracks registered paths and allows
+ * manual triggering of file change events.
  *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Path registration and tracking</li>
+ *   <li>Manual event triggering</li>
+ *   <li>CDI alternative implementation</li>
+ *   <li>Application-scoped consistency</li>
+ *   <li>Thread-safe path management</li>
+ * </ul>
+ *
+ * <h2>Setup</h2>
+ * Activate the mock in your test class:
  * <pre>
- *  &#64;ActivatedAlternatives(FileWatcherServiceMock.class)
+ * &#64;EnablePortalConfiguration
+ * &#64;ActivatedAlternatives(FileWatcherServiceMock.class)
+ * class FileWatcherTest {
+ *     &#64;Inject
+ *     private FileWatcherService watcherService;
+ * }
  * </pre>
  *
- * In case your test needs {@link FileChangedEvent}s you can directly handle the
- * in you unit-test:
+ * <h2>Usage Examples</h2>
  *
+ * Path registration:
  * <pre>
+ * &#64;Inject
+ * private FileWatcherServiceMock watcherService;
+ *
+ * void testPathRegistration() {
+ *     Path testPath = Paths.get("/test/path");
+ *     watcherService.register(testPath);
+ *     assertTrue(watcherService.getRegisteredPaths().contains(testPath));
+ * }
+ * </pre>
+ *
+ * Triggering file change events:
+ * <pre>
+ * &#64;Inject
+ * private FileWatcherServiceMock watcherService;
  *
  * &#64;Inject
  * &#64;FileChangedEvent
  * private Event&lt;Path&gt; fileChangeEvent;
+ *
+ * void testFileChangeEvent() {
+ *     Path changedFile = Paths.get("/changed/file");
+ *     watcherService.register(changedFile);
+ *     
+ *     // Trigger event manually
+ *     watcherService.fireEvent(changedFile);
+ * }
  * </pre>
  *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Uses {@link HashSet} for thread-safe path storage</li>
+ *   <li>Implements {@link PortalFileWatcherService} interface</li>
+ *   <li>Provides direct access to registered paths</li>
+ *   <li>Supports varargs for bulk path operations</li>
+ *   <li>Events must be manually triggered via {@link #fireEvent}</li>
+ * </ul>
+ *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see FileWatcherService
+ * @see FileChangedEvent
+ * @see Path
  */
 @ApplicationScoped
+@Alternative
 @PortalFileWatcherService
 @ToString
 public class FileWatcherServiceMock implements FileWatcherService {
@@ -71,7 +123,7 @@ public class FileWatcherServiceMock implements FileWatcherService {
 
     @Override
     public void unregister(Path... paths) {
-        registeredPaths.removeAll(Arrays.asList(paths));
+        Arrays.asList(paths).forEach(registeredPaths::remove);
     }
 
     @Override
@@ -80,7 +132,7 @@ public class FileWatcherServiceMock implements FileWatcherService {
     }
 
     /**
-     * Shorthand for firing an @FileChangedEvent
+     * Shorthand for firing a @FileChangedEvent
      *
      * @param path
      */

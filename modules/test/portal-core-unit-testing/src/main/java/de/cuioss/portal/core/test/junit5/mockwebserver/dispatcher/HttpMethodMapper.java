@@ -21,12 +21,38 @@ import mockwebserver3.RecordedRequest;
 import java.util.Optional;
 
 /**
- * Simplifies the mapping from Http-Method to the actual method.
+ * Maps HTTP methods to their corresponding handler methods in {@link ModuleDispatcherElement}.
+ * This enum provides a type-safe way to handle different HTTP methods and route requests
+ * to the appropriate handler method.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Type-safe HTTP method mapping</li>
+ *   <li>Automatic method routing</li>
+ *   <li>Support for GET, POST, PUT, DELETE methods</li>
+ *   <li>Null-safe request handling</li>
+ * </ul>
+ *
+ * <h2>Usage Example</h2>
+ * <pre>
+ * RecordedRequest request = // ... from MockWebServer
+ * ModuleDispatcherElement dispatcher = // ... your dispatcher
+ *
+ * // Get the appropriate method mapper
+ * HttpMethodMapper mapper = HttpMethodMapper.of(request);
+ *
+ * // Handle the request with the correct method
+ * Optional<MockResponse> response = mapper.handleMethod(dispatcher, request);
+ * </pre>
+ *
+ * @author Oliver Wolff
+ * @since 1.0
+ * @see ModuleDispatcherElement
  */
 public enum HttpMethodMapper {
 
     /**
-     * Get
+     * Handles HTTP GET requests by delegating to {@link ModuleDispatcherElement#handleGet}.
      */
     GET {
 
@@ -36,7 +62,7 @@ public enum HttpMethodMapper {
         }
     },
     /**
-     * Post
+     * Handles HTTP POST requests by delegating to {@link ModuleDispatcherElement#handlePost}.
      */
     POST {
 
@@ -46,7 +72,7 @@ public enum HttpMethodMapper {
         }
     },
     /**
-     * Put
+     * Handles HTTP PUT requests by delegating to {@link ModuleDispatcherElement#handlePut}.
      */
     PUT {
 
@@ -56,7 +82,7 @@ public enum HttpMethodMapper {
         }
     },
     /**
-     * Delete
+     * Handles HTTP DELETE requests by delegating to {@link ModuleDispatcherElement#handleDelete}.
      */
     DELETE {
 
@@ -67,16 +93,24 @@ public enum HttpMethodMapper {
     };
 
     /**
-     * @param dispatcherElement must not be null
-     * @param request           must not be null
-     * @return see ModuleDispatcherElement
+     * Handles a request using the appropriate method from the dispatcher element.
+     *
+     * @param dispatcherElement the dispatcher to handle the request, must not be null
+     * @param request the request to handle, must not be null
+     * @return an Optional containing the response if the dispatcher can handle it,
+     *         or empty if the request should be handled by another dispatcher
+     * @throws NullPointerException if any parameter is null
      */
     public abstract Optional<MockResponse> handleMethod(ModuleDispatcherElement dispatcherElement,
             RecordedRequest request);
 
     /**
-     * @param request must not be null
-     * @return the {@link HttpMethodMapper} representing the provided Http-Method
+     * Creates an HttpMethodMapper from a RecordedRequest's method.
+     *
+     * @param request the request containing the HTTP method, must not be null
+     * @return the corresponding HttpMethodMapper for the request's method
+     * @throws IllegalArgumentException if the method is not supported
+     * @throws NullPointerException if request is null
      */
     public static HttpMethodMapper of(RecordedRequest request) {
         return HttpMethodMapper.valueOf(request.getMethod().toUpperCase());
