@@ -62,21 +62,32 @@ abstract class AbstractFileDescriptor {
     }
 
     /**
-     * @return true if the entity is updated.
+     * Updates the internal state that tracks file changes.
+     */
+    abstract void update();
+
+    /**
+     * Checks if the file or directory has been modified since the last update.
+     *
+     * @return true if the entity has been modified, false otherwise
      */
     abstract boolean isUpdated();
 
     /**
-     * Updates the information, whether the specified file changed.
-     */
-
-    abstract void update();
-
-    /**
-     * @return boolean indicating whether instance is wrapping a directory
+     * Determines if this descriptor represents a directory.
+     *
+     * @return true if this descriptor wraps a directory, false if it wraps a file
      */
     abstract boolean isDirectory();
 
+    /**
+     * Registers a watch key for the path with the given watch service. For files,
+     * the parent directory is watched. For directories, the directory itself is watched.
+     * If the path is already being watched, it will be ignored.
+     *
+     * @param watcherService the watch service to register with
+     * @param watchedPaths map of currently watched paths and their keys
+     */
     void addWatchKey(WatchService watcherService, Map<WatchKey, Path> watchedPaths) {
         var toBeWatched = getPath();
         if (!isDirectory()) {

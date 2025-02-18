@@ -13,7 +13,9 @@ All messages follow the format: PortalConfig-[identifier]: [message]
 
 | ID | Component | Message | Description |
 |----|-----------|---------|-------------|
-| PortalConfig-100 | CONFIG | Project stage 'development' detected. Set the property 'portal.stage' to 'production' for productive usage. | Warns about development mode being active |
+| PortalConfig-100 | AUTH | Unable to determine AuthenticationType for connection='%s' and properties, returning AuthenticationType.NONE | Logged when authentication type cannot be determined from configuration |
+| PortalConfig-101 | CONFIG | Project stage 'development' detected. Set the property 'portal.stage' to 'production' for productive usage. | Warns about development mode being active |
+| PortalConfig-102 | CONN | Invalid configuration found for .type, actual '%s', expected one of '%s', defaulting to 'ConnectionType.UNDEFINED' | Logged when an invalid connection type is specified in configuration |
 | PortalConfig-110 | CONFIG | Project stage 'test' detected. Set the property 'portal.stage' to 'production' for productive usage. | Warns about test mode being active |
 | PortalConfig-120 | CONFIG | Invalid configuration found for Locale: %s | Logged when an invalid locale configuration is detected |
 | PortalConfig-130 | CONFIG | Invalid element found, watchKey='%s', ignoring | Logged when an invalid watch key is encountered |

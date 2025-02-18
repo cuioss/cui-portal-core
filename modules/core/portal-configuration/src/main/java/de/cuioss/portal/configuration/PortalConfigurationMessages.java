@@ -52,11 +52,25 @@ public class PortalConfigurationMessages {
      */
     @UtilityClass
     public static final class WARN {
-        /** Development mode detected (100) */
-        public static final LogRecord PROJECT_STAGE_DEVELOPMENT_DETECTED = LogRecordModel.builder()
+        /** Unable to determine AuthenticationType for a connection (100) */
+        public static final LogRecord UNABLE_TO_DETERMINE_AUTH_TYPE = LogRecordModel.builder()
                 .prefix(PREFIX)
                 .identifier(100)
+                .template("Unable to determine AuthenticationType for connection='%s' and properties, returning AuthenticationType.NONE")
+                .build();
+
+        /** Development mode detected (101) */
+        public static final LogRecord PROJECT_STAGE_DEVELOPMENT_DETECTED = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(101)
                 .template("Project stage 'development' detected. Set the property '" + PortalConfigurationKeys.PORTAL_STAGE + "' to 'production' for productive usage.")
+                .build();
+
+        /** Invalid connection type configuration (102) */
+        public static final LogRecord INVALID_CONNECTION_TYPE = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(102)
+                .template("Invalid configuration found for .type, actual '%s', expected one of '%s', defaulting to 'ConnectionType.UNDEFINED'")
                 .build();
 
         /** Test mode detected (110) */

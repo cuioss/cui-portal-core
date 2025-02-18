@@ -15,8 +15,6 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -25,8 +23,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+
 /**
- * Provides some convenient methods for tracing detecting file-changes.
+ * Tracks changes to a single file by monitoring its last modification timestamp.
+ * This class provides methods to detect when a file has been modified.
  *
  * @author Oliver Wolff
  */
@@ -39,14 +40,20 @@ final class FileDescriptor extends AbstractFileDescriptor {
     private long modificationDate;
 
     /**
-     * @param path must not be null and derive an existing file
+     * Creates a new FileDescriptor for the given path.
+     *
+     * @param path absolute or relative path to an existing file, must not be null
+     * @throws NullPointerException if path is null
      */
     FileDescriptor(final Path path) {
         super(path);
     }
 
     /**
-     * Updates the internal modification date of the file.
+     * Updates the internal modification timestamp by reading the file's current
+     * last modified time.
+     * If the file cannot be read, a warning is logged and
+     * the timestamp remains unchanged.
      */
     @Override
     public void update() {
@@ -58,10 +65,11 @@ final class FileDescriptor extends AbstractFileDescriptor {
     }
 
     /**
-     * Checks if the file has been modified since the last update.
-     * 
-     * @return {@code true} if the file's modification date is newer than the stored date,
-     *         {@code false} otherwise
+     * Checks if the file has been modified by comparing its current modification
+     * timestamp with the stored timestamp.
+     *
+     * @return true if the file has been modified since the last update, false if
+     * unchanged or if the file cannot be read
      */
     @Override
     public boolean isUpdated() {
@@ -75,6 +83,12 @@ final class FileDescriptor extends AbstractFileDescriptor {
         return newdate > modificationDate;
     }
 
+    /**
+     * Retrieves the file's last modification timestamp in milliseconds.
+     *
+     * @return timestamp in milliseconds when the file was last modified
+     * @throws IOException if the file's attributes cannot be read
+     */
     private long retrieveModificationDate() throws IOException {
         return Files.getLastModifiedTime(getPath()).toMillis();
     }

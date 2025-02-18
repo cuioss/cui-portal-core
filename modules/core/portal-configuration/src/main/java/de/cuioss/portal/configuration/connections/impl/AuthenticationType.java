@@ -15,7 +15,6 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
-import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.AccessLevel;
@@ -26,8 +25,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+
 /**
- * Defines the kind of authorization needed for a certain connection.
+ * Defines the authentication methods available for external service connections.
+ * Each type represents a different authentication strategy with its own configuration
+ * requirements and security implications.
  *
  * @author Oliver Wolff
  */
@@ -36,35 +39,44 @@ public enum AuthenticationType {
 
     /**
      * No authentication required.
+     * Use this for public services or internal services in secure networks.
      */
     NONE("none", false),
 
     /**
-     * Username and password.
+     * HTTP Basic Authentication using username and password.
+     * Requires loginCredentials to be set in the connection configuration.
      */
     BASIC("basic", false),
 
     /**
-     * A certificate, usually chosen by name from a trust-store.
+     * Client certificate authentication using X.509 certificates.
+     * Requires a keystore configuration with the client certificate.
      */
     CERTIFICATE("certificate", false),
 
     /**
-     * Defines a static token for all connections.
+     * Static token authentication using a predefined application token.
+     * The token is configured in the connection properties and remains
+     * constant for all requests.
      */
     TOKEN_APPLICATION("token.application", true),
 
     /**
-     * Defines a token read from a specified field in AuthenticatedUserInfo.
-     * Caution: Currently Experimental / Not for productive use.
+     * Dynamic token authentication using the authenticated user's token.
+     * The token is retrieved from the user's authentication context for
+     * each request.
+     * <p>
+     * <strong>Note:</strong> This feature is experimental and not recommended
+     * for production use.
      */
     TOKEN_FROM_USER("token.user", true);
 
     private final String keyName;
 
     /**
-     * Flag whether the concrete {@link AuthenticationType} needs a token for
-     * Authorization.
+     * Indicates whether this authentication type uses token-based authentication.
+     * Token types require a {@link de.cuioss.portal.configuration.connections.TokenResolver} to be configured.
      */
     @Getter
     private final boolean tokenType;
@@ -72,26 +84,21 @@ public enum AuthenticationType {
     private static final CuiLogger LOGGER = new CuiLogger(AuthenticationType.class);
 
     /**
-     * Determines the authentication-type from a given map with connection related
-     * properties. The map contents should contain information as described in
-     * {@link ConfigAsConnectionMetadata} with 'basename' already been stripped,
-     * usually this is done by using
-     * {@link ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)}. The
-     * getFilteredPropertyMap also removes properties with empty values.
+     * Resolves the appropriate authentication type from a configuration map.
+     * The resolution process follows these steps:
+     * <ol>
+     *   <li>Check for null/empty configuration - returns {@link #NONE}</li>
+     *   <li>Look for token-specific configurations first</li>
+     *   <li>Extract authentication type from property keys</li>
+     *   <li>Fall back to direct 'authentication' property value</li>
+     *   <li>Default to {@link #NONE} if no match is found</li>
+     * </ol>
      *
-     * @param basename      for the properties, used for logging / tracing in case
-     *                      of errors
-     * @param configuration to be used for determining the concrete
-     *                      {@link AuthenticationType}
-     * @return the resolved {@link AuthenticationType} if it can be extracted,
-     * {@link AuthenticationType#NONE} otherwise. The algorithm checks the
-     * keys for containing corresponding token, saying in case of containing
-     * the substring "authentication.certificate" it will return
-     * {@link AuthenticationType#CERTIFICATE}, in case of containing the
-     * substring "authentication.basic" it will return
-     * {@link AuthenticationType#BASIC}. It will detect variants like
-     * 'authentication=certificate' as well. The first match of enum
-     * {@link AuthenticationType} is used.
+     * @param basename      identifier for the connection, used for logging
+     * @param configuration map of configuration properties, should be filtered to
+     *                      connection-specific properties
+     * @return resolved authentication type, never null
+     * @see ConfigurationHelper#getFilteredPropertyMap(Map, String, boolean)
      */
     public static AuthenticationType resolveFrom(String basename, Map<String, String> configuration) {
         if (null == configuration || configuration.isEmpty()) {
@@ -135,10 +142,7 @@ public enum AuthenticationType {
                 return type;
             }
         }
-        LOGGER.warn("""
-                Portal-131: Unable to determine AuthenticationType for connection='%s' and properties, returning \
-                AuthenticationType.NONE\
-                """, basename, configuration);
+        LOGGER.warn(WARN.UNABLE_TO_DETERMINE_AUTH_TYPE.format(basename));
         return AuthenticationType.NONE;
     }
 
