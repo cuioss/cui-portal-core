@@ -15,12 +15,7 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
-import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
-import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
 import de.cuioss.portal.configuration.schedule.FileChangedEvent;
@@ -37,7 +32,11 @@ import lombok.Getter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.ClosedWatchServiceException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,17 +44,28 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.SCHEDULER_FILE_SCAN_ENABLED;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+
 /**
- * Replacement for initial quartz based module (cdi-portal-core-scheduler). It
- * uses {@link WatchService} and {@link Executors} in order to work. It can be
- * dynamically switched on / without losing the registered {@link Path}
- * elements.
+ * Implementation of the Portal's file watching service using Java NIO's {@link WatchService}.
  * <p>
- * TODO owolff: Reconsider thread handling TODO owolff: Consider changing the
- * event / api contract in order to transport more precise information, like
- * "I'm interested in changed / added / removed files". TODO owolff consider api
- * changes in order to align with {@link WatchService} design, especially
- * regarding directory instead of file-based-handling
+ * Key features:
+ * <ul>
+ *   <li>Uses {@link WatchService} for efficient file system monitoring</li>
+ *   <li>Single-threaded executor for event processing</li>
+ *   <li>Support for both file and directory monitoring</li>
+ *   <li>CDI event-based change notifications</li>
+ *   <li>Configurable through {@link PortalConfigurationKeys#SCHEDULER_FILE_SCAN_ENABLED}</li>
+ * </ul>
+ * <p>
+ * Design considerations:
+ * <ul>
+ *   <li>Thread handling: Single executor thread for simplicity and reliability</li>
+ *   <li>Event granularity: Currently file-level, could be enhanced for more detail</li>
+ *   <li>Watch service alignment: Could be improved to better match {@link WatchService} design</li>
+ * </ul>
  *
  * @author Oliver Wolff
  */
@@ -81,9 +91,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     private ExecutorService executor;
 
     /**
-     * {@code true} if the service is configured to run
-     * {@link PortalConfigurationKeys#SCHEDULER_FILE_SCAN_ENABLED} at all and
-     * initialized properly.
+     * Service status indicator. True if the service is properly initialized and
+     * {@link PortalConfigurationKeys#SCHEDULER_FILE_SCAN_ENABLED} is true.
      */
     @Getter(AccessLevel.MODULE)
     private boolean upAndRunning = false;
@@ -153,9 +162,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     @Override
     public void register(Path... paths) {
-
         for (Path path : paths) {
-            LOGGER.trace("Register called for %s", path);
+            LOGGER.trace("Attempting to register path for monitoring: %s", path);
             var created = AbstractFileDescriptor.create(path);
             if (created.isPresent()) {
                 var absolute = created.get().getPath();
@@ -163,7 +171,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     LOGGER.debug("Adding Path '%s' to registeredPaths", absolute);
                     registeredPaths.put(absolute, created.get());
                 } else {
-                    LOGGER.debug("Path '%s' already registered, ignoring", absolute);
+                    LOGGER.debug("Path already registered, ignoring: %s", absolute);
                 }
             }
         }
@@ -230,24 +238,23 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             return;
         }
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Handling WatchKey-Events %s", events.stream().map(w -> w.context() + "-" + w.kind()).toList());
+            LOGGER.trace("Processing watch events: %s",
+                    events.stream().map(w -> w.context() + "-" + w.kind()).toList());
         }
         List<AbstractFileDescriptor> changed = registeredPaths.values().stream()
                 .filter(AbstractFileDescriptor::isUpdated).toList();
 
         if (changed.isEmpty()) {
-            LOGGER.debug("No actual changes found for path-change WatchKey-Events %s", events);
+            LOGGER.debug("No actual changes detected for events: %s", events);
+            return;
         }
+
         for (AbstractFileDescriptor element : changed) {
             LOGGER.debug("Delivering notification for path changes of: '%s'", element.getPath());
             try {
-                // Handling the event should not throw an exception.
-                // This will break the iteration over all event listeners - however,
-                // if it happens (it is a file system operation that
-                // may fail due to IO errors), it should at least not crash the service at all.
                 fileChangeEvent.fire(element.getPath());
             } catch (Exception e) {
-                LOGGER.error(e, ERROR.FILE_EVENT_HANDLING_ERROR.format(element.getPath().toString()));
+                LOGGER.error(e, ERROR.FILE_EVENT_HANDLING_ERROR.format(element.getPath()));
             }
             element.update();
         }

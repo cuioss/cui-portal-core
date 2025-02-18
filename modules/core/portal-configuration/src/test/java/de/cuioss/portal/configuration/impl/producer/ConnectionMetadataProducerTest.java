@@ -4,6 +4,7 @@ import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.connections.TokenResolver;
 import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
@@ -123,7 +124,7 @@ class ConnectionMetadataProducerTest {
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, "bla");
             configuration.fireEvent();
             assertEquals(AuthenticationType.NONE, metadataNotFailProvider.get().getAuthenticationType());
-            assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-131");
+            assertLogMessagePresentContaining(TestLogLevel.WARN, PortalConfigurationMessages.WARN.UNABLE_TO_DETERMINE_AUTH_TYPE.resolveIdentifierString());
         }
 
         @Test
@@ -157,7 +158,7 @@ class ConnectionMetadataProducerTest {
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TYPE_KEY, "bla");
             configuration.fireEvent();
             assertEquals(ConnectionType.UNDEFINED, metadataProvider.get().getConnectionType());
-            assertLogMessagePresentContaining(TestLogLevel.WARN, "Portal-131");
+            assertLogMessagePresentContaining(TestLogLevel.WARN, PortalConfigurationMessages.WARN.INVALID_CONNECTION_TYPE.resolveIdentifierString());
         }
 
         @Test

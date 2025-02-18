@@ -24,9 +24,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Defines Instances of {@link FileWatcherService}
+ * CDI qualifier for the Portal's implementation of {@link FileWatcherService}.
+ * This qualifier is used to identify the specific implementation that handles
+ * file system monitoring for the Portal configuration system.
+ * <p>
+ * Usage:
+ * <pre>
+ * &#64;Inject
+ * &#64;PortalFileWatcherService
+ * private FileWatcherService watcher;
+ * </pre>
+ * <p>
+ * The qualified implementation provides:
+ * <ul>
+ *   <li>Integration with Portal's configuration system</li>
+ *   <li>Configurable monitoring intervals</li>
+ *   <li>CDI event-based change notifications</li>
+ *   <li>Automatic cleanup and resource management</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @see FileWatcherService
+ * @see FileChangedEvent
  */
 @Qualifier
 @Retention(RUNTIME)
