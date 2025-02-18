@@ -16,15 +16,17 @@
 package de.cuioss.portal.core.test.mocks.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.cuioss.portal.core.storage.PortalClientStorage;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
 import lombok.Getter;
+
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,11 +43,6 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
     @PortalClientStorage
     private PortalClientStorageMock underTest;
 
-    @BeforeEach
-    void setUp() {
-        // No need to create a new instance, it's already injected
-    }
-
     @Nested
     @DisplayName("Storage Operations")
     class StorageOperationsTest {
@@ -56,20 +53,61 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
             underTest.put(KEY, VALUE);
             assertEquals(VALUE, underTest.get(KEY), 
                 "Should retrieve stored value");
-            assertNotNull(underTest.get(KEY, "default"), 
+            assertEquals(VALUE, underTest.get(KEY, "default"), 
                 "Should retrieve stored value with default");
+            assertTrue(underTest.containsKey(KEY),
+                "Should contain stored key");
         }
 
         @Test
         @DisplayName("Should handle value removal")
         void shouldHandleValueRemoval() {
             underTest.put(KEY, VALUE);
-            underTest.remove(KEY);
+            assertEquals(VALUE, underTest.remove(KEY),
+                "Should return removed value");
             
             assertNull(underTest.get(KEY), 
                 "Should not retrieve removed value");
             assertEquals("default", underTest.get(KEY, "default"), 
                 "Should return default value for removed key");
+            assertFalse(underTest.containsKey(KEY),
+                "Should not contain removed key");
+        }
+
+        @Test
+        @DisplayName("Should handle null values")
+        void shouldHandleNullValues() {
+            underTest.put(KEY, null);
+            assertNull(underTest.get(KEY), 
+                "Should not store null value");
+            assertEquals("default", underTest.get(KEY, "default"), 
+                "Should return default value for null stored value");
+            assertFalse(underTest.containsKey(KEY),
+                "Should not contain key with null value");
+        }
+
+        @Test
+        @DisplayName("Should handle empty string values")
+        void shouldHandleEmptyStringValues() {
+            underTest.put(KEY, "");
+            assertEquals("", underTest.get(KEY), 
+                "Should store and retrieve empty string");
+            assertEquals("", underTest.get(KEY, "default"), 
+                "Should return empty string instead of default");
+            assertTrue(underTest.containsKey(KEY),
+                "Should contain key with empty string value");
+        }
+
+        @Test
+        @DisplayName("Should handle null keys")
+        void shouldHandleNullKeys() {
+            underTest.put(null, VALUE);
+            assertNull(underTest.get(null),
+                "Should not store with null key");
+            assertEquals("default", underTest.get(null, "default"),
+                "Should return default for null key");
+            assertFalse(underTest.containsKey(null),
+                "Should not contain null key");
         }
     }
 
@@ -80,5 +118,7 @@ class PortalClientStorageMockTest implements ShouldBeNotNull<PortalClientStorage
             "Should return null for non-existent key");
         assertEquals("default", underTest.get(KEY, "default"), 
             "Should return default value for non-existent key");
+        assertFalse(underTest.containsKey(KEY),
+            "Should not contain non-existent key");
     }
 }
