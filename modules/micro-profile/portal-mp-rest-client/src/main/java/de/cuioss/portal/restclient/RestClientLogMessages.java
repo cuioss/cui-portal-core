@@ -37,7 +37,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class RestClientLogMessages {
 
-    private static final String PREFIX = "RestClient";
+    private static final String PREFIX = "PortalMPRestClient";
 
     @UtilityClass
     public static final class INFO {

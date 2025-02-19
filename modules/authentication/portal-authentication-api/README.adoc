@@ -120,19 +120,15 @@ public class DepartmentEnricher implements PortalUserEnricher {
 == Best Practices
 
 === Security Guidelines
-* Always validate user input
 * Use HTTPS for authentication
 * Implement proper session management
 * Follow least privilege principle
-* Regularly rotate credentials
 * Log security events
 
 === Implementation Guidelines
 * Extend BaseAuthenticationFacade for custom authentication
 * Use builder pattern for user info creation
 * Implement custom UserEnricher for additional attributes
-* Handle authentication failures gracefully
-* Validate configuration at startup
 
 == Technical Details
 
