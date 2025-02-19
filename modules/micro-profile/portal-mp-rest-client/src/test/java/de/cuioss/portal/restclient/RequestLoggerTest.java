@@ -22,32 +22,19 @@ import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
-import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientRequestContext;
-import jakarta.ws.rs.core.Configuration;
-import jakarta.ws.rs.core.Cookie;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
@@ -78,164 +65,32 @@ class RequestLoggerTest {
 
     @Test
     @DisplayName("Should properly log request details")
-    void shouldLogRequestDetails() throws IOException {
-        underTest.filter(new ClientRequestContext() {
-            @Override
-            public Object getProperty(String name) {
-                throw new UnsupportedOperationException("getProperty");
-            }
+    void shouldLogRequestDetails() throws IOException, URISyntaxException {
+        // Create mock
+        ClientRequestContext requestContext = EasyMock.createNiceMock(ClientRequestContext.class);
 
-            @Override
-            public Collection<String> getPropertyNames() {
-                throw new UnsupportedOperationException("getPropertyNames");
-            }
+        // Set up expectations
+        MultivaluedMap<String, String> stringHeaders = new MultivaluedHashMap<>();
+        stringHeaders.put("test", immutableList("test-value"));
 
-            @Override
-            public void setProperty(String name, Object object) {
-                throw new UnsupportedOperationException("setProperty");
-            }
+        EasyMock.expect(requestContext.getMethod()).andReturn(METHOD).anyTimes();
+        EasyMock.expect(requestContext.getUri()).andReturn(new URI(URI)).anyTimes();
+        EasyMock.expect(requestContext.getStringHeaders()).andReturn(stringHeaders).anyTimes();
+        EasyMock.expect(requestContext.hasEntity()).andReturn(HAS_BODY).anyTimes();
+        if (HAS_BODY) {
+            EasyMock.expect(requestContext.getEntity()).andReturn(testPojo).anyTimes();
+        }
 
-            @Override
-            public void removeProperty(String name) {
-                throw new UnsupportedOperationException("removeProperty");
-            }
+        // Replay
+        EasyMock.replay(requestContext);
 
-            @Override
-            public URI getUri() {
-                try {
-                    return new URI(URI);
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException("uri could not be set");
-                }
-            }
+        // Execute
+        underTest.filter(requestContext);
 
-            @Override
-            public void setUri(URI uri) {
-                throw new UnsupportedOperationException("setUri");
-            }
-
-            @Override
-            public String getMethod() {
-                return METHOD;
-            }
-
-            @Override
-            public void setMethod(String method) {
-                throw new UnsupportedOperationException("setMethod");
-            }
-
-            @Override
-            public MultivaluedMap<String, Object> getHeaders() {
-                var headers = new MultivaluedHashMap<String, Object>();
-                headers.put("test", immutableList("test"));
-                return headers;
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getStringHeaders() {
-                var headers = new MultivaluedHashMap<String, String>();
-                headers.put("test", immutableList("test"));
-                return headers;
-            }
-
-            @Override
-            public String getHeaderString(String name) {
-                return "test";
-            }
-
-            @Override
-            public Date getDate() {
-                return null;
-            }
-
-            @Override
-            public Locale getLanguage() {
-                return null;
-            }
-
-            @Override
-            public MediaType getMediaType() {
-                return null;
-            }
-
-            @Override
-            public List<MediaType> getAcceptableMediaTypes() {
-                return immutableList();
-            }
-
-            @Override
-            public List<Locale> getAcceptableLanguages() {
-                return immutableList();
-            }
-
-            @Override
-            public Map<String, Cookie> getCookies() {
-                return Map.of();
-            }
-
-            @Override
-            public boolean hasEntity() {
-                return HAS_BODY;
-            }
-
-            @Override
-            public Object getEntity() {
-                return testPojo;
-            }
-
-            @Override
-            public Class<?> getEntityClass() {
-                return TestPojo.class;
-            }
-
-            @Override
-            public Type getEntityType() {
-                return TestPojo.class;
-            }
-
-            @Override
-            public void setEntity(Object entity) {
-                throw new UnsupportedOperationException("setEntity");
-            }
-
-            @Override
-            public void setEntity(Object entity, Annotation[] annotations, MediaType mediaType) {
-                throw new UnsupportedOperationException("setEntity");
-            }
-
-            @Override
-            public Annotation[] getEntityAnnotations() {
-                return new Annotation[0];
-            }
-
-            @Override
-            public OutputStream getEntityStream() {
-                return new ByteArrayOutputStream();
-            }
-
-            @Override
-            public void setEntityStream(OutputStream outputStream) {
-                throw new UnsupportedOperationException("setEntityStream");
-            }
-
-            @Override
-            public Client getClient() {
-                throw new UnsupportedOperationException("getClient");
-            }
-
-            @Override
-            public Configuration getConfiguration() {
-                throw new UnsupportedOperationException("getConfiguration");
-            }
-
-            @Override
-            public void abortWith(Response response) {
-                throw new UnsupportedOperationException("abortWith");
-            }
-        });
-
+        // Verify
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: " + URI);
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers: test: [test]");
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: " + METHOD);
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "test: [test-value]");
         if (HAS_BODY) {
             LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Body: " + testPojo);
         }

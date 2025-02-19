@@ -15,30 +15,42 @@
  */
 package de.cuioss.portal.restclient;
 
+import de.cuioss.tools.string.MoreStrings;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
-import jakarta.ws.rs.core.HttpHeaders;
-import lombok.NonNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * Filter to set basic authentication header.
+ * A filter for adding Basic Authentication to REST client requests.
+ * Adds an Authorization header with the Basic authentication scheme.
  */
 public class BasicAuthenticationFilter implements ClientRequestFilter {
 
-    private final String headerValue;
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BASIC_PREFIX = "Basic ";
 
-    public BasicAuthenticationFilter(@NonNull String username, @NonNull String password) {
-        headerValue = "Basic "
-                + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.US_ASCII));
+    private final String authHeader;
+
+    /**
+     * Constructs a new BasicAuthenticationFilter with the given credentials.
+     *
+     * @param username the username for authentication, must not be null
+     * @param password the password for authentication, must not be null
+     * @throws IllegalArgumentException if username or password is null
+     */
+    public BasicAuthenticationFilter(String username, String password) {
+        MoreStrings.requireNotEmpty(username, "username");
+        MoreStrings.requireNotEmpty(password, "password");
+        String auth = username + ":" + password;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+        this.authHeader = BASIC_PREFIX + new String(encodedAuth, StandardCharsets.UTF_8);
     }
 
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
-        requestContext.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, headerValue);
-
+        requestContext.getHeaders().add(AUTHORIZATION, authHeader);
     }
 }

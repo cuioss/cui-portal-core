@@ -22,24 +22,17 @@ import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.client.ClientResponseContext;
-import jakarta.ws.rs.core.EntityTag;
-import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
@@ -69,133 +62,30 @@ class ResponseLoggerTest {
     @Test
     @DisplayName("Should properly log response details")
     void shouldLogResponseDetails() throws IOException {
-        underTest.filter(null, new ClientResponseContext() {
-            @Override
-            public int getStatus() {
-                return STATUS;
-            }
+        // Create mock
+        ClientResponseContext responseContext = EasyMock.createNiceMock(ClientResponseContext.class);
 
-            @Override
-            public void setStatus(int code) {
-                // Not needed for test
-            }
+        // Set up expectations
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.put("test", immutableList("test-value"));
 
-            @Override
-            public Response.StatusType getStatusInfo() {
-                return Response.Status.fromStatusCode(STATUS);
-            }
+        EasyMock.expect(responseContext.getStatus()).andReturn(STATUS).anyTimes();
+        EasyMock.expect(responseContext.getStatusInfo()).andReturn(Response.Status.fromStatusCode(STATUS)).anyTimes();
+        EasyMock.expect(responseContext.getHeaders()).andReturn(headers).anyTimes();
+        EasyMock.expect(responseContext.getAllowedMethods()).andReturn(Set.of("GET", "POST")).anyTimes();
+        EasyMock.expect(responseContext.getLanguage()).andReturn(Locale.ENGLISH).anyTimes();
+        EasyMock.expect(responseContext.getMediaType()).andReturn(MediaType.TEXT_PLAIN_TYPE).anyTimes();
 
-            @Override
-            public void setStatusInfo(Response.StatusType statusInfo) {
-                // Not needed for test
-            }
+        // Replay
+        EasyMock.replay(responseContext);
 
-            @Override
-            public InputStream getEntityStream() {
-                return new ByteArrayInputStream(TEST_BODY.getBytes());
-            }
+        // Execute
+        underTest.filter(null, responseContext);
 
-            @Override
-            public void setEntityStream(InputStream entityStream) {
-                // Not needed for test
-            }
-
-            @Override
-            public boolean hasEntity() {
-                return true;
-            }
-
-            @Override
-            public MediaType getMediaType() {
-                return MediaType.TEXT_PLAIN_TYPE;
-            }
-
-            public void setMediaType(MediaType mediaType) {
-                // Not needed for test
-            }
-
-            @Override
-            public Locale getLanguage() {
-                return Locale.ENGLISH;
-            }
-
-            public void setLanguage(Locale language) {
-                // Not needed for test
-            }
-
-            @Override
-            public int getLength() {
-                return TEST_BODY.length();
-            }
-
-            public void setLength(int length) {
-                // Not needed for test
-            }
-
-            @Override
-            public Set<String> getAllowedMethods() {
-                return Set.of("GET", "POST");
-            }
-
-            @Override
-            public Map<String, NewCookie> getCookies() {
-                return Map.of();
-            }
-
-            @Override
-            public EntityTag getEntityTag() {
-                return null;
-            }
-
-            @Override
-            public Date getDate() {
-                return null;
-            }
-
-            @Override
-            public Date getLastModified() {
-                return null;
-            }
-
-            @Override
-            public URI getLocation() {
-                return null;
-            }
-
-            @Override
-            public Set<Link> getLinks() {
-                return Set.of();
-            }
-
-            @Override
-            public boolean hasLink(String relation) {
-                return false;
-            }
-
-            @Override
-            public Link getLink(String relation) {
-                return null;
-            }
-
-            @Override
-            public Link.Builder getLinkBuilder(String relation) {
-                return null;
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getHeaders() {
-                var headers = new MultivaluedHashMap<String, String>();
-                headers.put("test", immutableList("test-value"));
-                return headers;
-            }
-
-            @Override
-            public String getHeaderString(String name) {
-                return "test-value";
-            }
-        });
-
+        // Verify
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Status: " + STATUS);
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers: {test=[test-value]}");
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "MediaType: text/plain");
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Language: en");
     }
 }
