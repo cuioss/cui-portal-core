@@ -19,8 +19,6 @@ import de.cuioss.tools.io.IOStreams;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.client.ClientResponseFilter;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.ReaderInterceptorContext;
 
@@ -30,27 +28,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * <p>
- * A {@link ReaderInterceptor} to log the response headers and body received
- * from the server using {@link CuiLogger#trace}.
- * </p>
- * <p>
- * To enable logging set package <code>de.cuioss.portal.core.restclient</code>
- * to <code>TRACE</code> in your logger configuration.
- * </p>
- * <p>
- * This is a {@link ReaderInterceptor} instead of a
- * {@link ClientResponseFilter}, because ReaderInterceptors are executed after
- * ClientResponseFilters. For logging we are interested in the data that is
- * actually coming from the server before hitting any subsequent processing.
- * Furthermore, this class is annotated with {@link Priority} with value
- * {@link Integer#MIN_VALUE} to ensure it is the very first reader interceptor
- * that is called.
- * <p>
- * <p>
- * This interceptor is executed when the client runs
- * {@link Response#readEntity}.
- * </p>
+ * Reader interceptor that logs message bodies in REST client communication.
+ * Provides detailed logging of request and response bodies while preserving
+ * the original content.
+ *
+ * <p>The interceptor is automatically configured by {@link CuiRestClientBuilder}
+ * and can be controlled through the Portal logging configuration.
+ *
+ * @see LogClientRequestFilter
+ * @see LogClientResponseFilter
+ * @see CuiRestClientBuilder
  */
 @Priority(Integer.MIN_VALUE)
 class LogReaderInterceptor implements ReaderInterceptor {
@@ -77,7 +64,7 @@ class LogReaderInterceptor implements ReaderInterceptor {
 
             givenLogger.info(logMsg.toString());
         } catch (final Exception e) {
-            givenLogger.error("Portal-529: Could not trace-log response data", e);
+            givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
         }
         return context.proceed();
     }

@@ -15,31 +15,31 @@
  */
 
 /**
- * Provides MicroProfile REST Client integration for the Portal Core.
+ * Provides Portal-specific REST client implementation based on MicroProfile REST Client.
  * 
  * <h2>Core Components</h2>
  * <ul>
- *   <li>{@link de.cuioss.portal.restclient.CuiRestClientBuilder} - The central builder for creating REST clients</li>
+ *   <li>{@link de.cuioss.portal.restclient.CuiRestClientBuilder} - Portal-specific REST client builder</li>
  *   <li>{@link de.cuioss.portal.restclient.RestClientProducer} - CDI producer for REST clients</li>
- *   <li>{@link de.cuioss.portal.restclient.PortalRestClient} - Qualifier for injecting configured REST clients</li>
+ *   <li>{@link de.cuioss.portal.restclient.PortalRestClient} - Qualifier for REST client injection</li>
  * </ul>
  * 
  * <h2>Authentication</h2>
  * <ul>
  *   <li>{@link de.cuioss.portal.restclient.BasicAuthenticationFilter} - HTTP Basic Authentication</li>
  *   <li>{@link de.cuioss.portal.restclient.BearerTokenAuthFilter} - Bearer Token Authentication</li>
- *   <li>{@link de.cuioss.portal.restclient.TokenFilter} - Base class for token-based authentication</li>
+ *   <li>{@link de.cuioss.portal.restclient.TokenFilter} - Token-based authentication</li>
  * </ul>
  * 
- * <h2>Logging</h2>
- * Provides comprehensive request/response logging support:
+ * <h2>Logging Support</h2>
  * <ul>
- *   <li>{@link de.cuioss.portal.restclient.LogClientRequestFilter} - Logs outgoing requests</li>
- *   <li>{@link de.cuioss.portal.restclient.LogClientResponseFilter} - Logs incoming responses</li>
- *   <li>{@link de.cuioss.portal.restclient.LogReaderInterceptor} - Intercepts and logs message bodies</li>
+ *   <li>{@link de.cuioss.portal.restclient.LogClientRequestFilter} - Request logging</li>
+ *   <li>{@link de.cuioss.portal.restclient.LogClientResponseFilter} - Response logging</li>
+ *   <li>{@link de.cuioss.portal.restclient.LogReaderInterceptor} - Message body logging</li>
  * </ul>
  * 
- * @see de.cuioss.portal.restclient.CuiRestClientBuilder
- * @see de.cuioss.portal.restclient.PortalRestClient
+ * <p>Configuration is provided through {@link de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata}
+ * 
+ * @see de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata
  */
 package de.cuioss.portal.restclient;

@@ -26,14 +26,20 @@ import java.io.IOException;
 import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
 /**
- * A {@linkplain ClientRequestFilter} to log the request uri, headers and body
- * sent by the rest-client. It will be the last filter that is called in the
- * filter chain to make sure the logged data is the actual request that is
- * hitting the server.
- * <p>
- * This class is annotated with {@link Priority} with value
- * {@link Integer#MAX_VALUE} to ensure it is the very last filter that is
- * called.
+ * Client filter that logs outgoing REST client requests.
+ * Provides detailed logging of request details including:
+ * <ul>
+ *   <li>Request URI and method</li>
+ *   <li>Headers (with sensitive information)</li>
+ *   <li>Request body (if enabled)</li>
+ * </ul>
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * and can be controlled through the Portal logging configuration.
+ *
+ * @see LogClientResponseFilter
+ * @see LogReaderInterceptor
+ * @see CuiRestClientBuilder
  */
 @Priority(Integer.MAX_VALUE)
 class LogClientRequestFilter implements ClientRequestFilter {

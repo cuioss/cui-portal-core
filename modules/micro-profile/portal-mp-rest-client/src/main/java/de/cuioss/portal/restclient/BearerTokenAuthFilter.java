@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.restclient;
 
+import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -24,8 +25,14 @@ import lombok.RequiredArgsConstructor;
 import static de.cuioss.tools.string.MoreStrings.isEmpty;
 
 /**
- * Client filter that will do token authentication. You must allocate it and
- * then register it with the Client or WebTarget.
+ * Client filter that implements Bearer Token Authentication for REST client requests.
+ * Adds the Bearer token as an Authorization header according to RFC 6750.
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * when Bearer Token Authentication is specified in the configuration.
+ *
+ * @see CuiRestClientBuilder
+ * @see ConfigAsConnectionMetadata
  */
 @RequiredArgsConstructor
 public class BearerTokenAuthFilter implements ClientRequestFilter {

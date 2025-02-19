@@ -24,35 +24,40 @@ import jakarta.ws.rs.client.ClientResponseFilter;
 import java.io.IOException;
 
 /**
- * A {@linkplain ClientResponseFilter} to log the response metadata received by
- * the rest-client.
- * <p>
- * This class is annotated with {@link Priority} with value
- * {@link Integer#MIN_VALUE} to ensure it is the very last filter that is
- * called.
- * <p>
- * This is an abstract class to allow multi-registering via anonymous class.
+ * Client filter that logs incoming REST client responses.
+ * Provides detailed logging of response details including:
+ * <ul>
+ *   <li>Response status and status info</li>
+ *   <li>Headers</li>
+ * </ul>
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * and can be controlled through the Portal logging configuration.
+ *
+ * @see LogClientRequestFilter
+ * @see LogReaderInterceptor
+ * @see CuiRestClientBuilder
  */
 @Priority(Integer.MIN_VALUE)
 abstract class LogClientResponseFilter implements ClientResponseFilter {
 
-    private final CuiLogger log;
+    private final CuiLogger givenLogger;
     private final String name;
 
-    protected LogClientResponseFilter(final CuiLogger logger) {
-        this(logger, "");
+    protected LogClientResponseFilter(final CuiLogger givenLogger) {
+        this(givenLogger, "");
     }
 
-    protected LogClientResponseFilter(final CuiLogger logger, final String name) {
-        log = logger;
+    protected LogClientResponseFilter(final CuiLogger givenLogger, final String name) {
+        this.givenLogger = givenLogger;
         this.name = "[" + name + "] ";
     }
 
     @Override
     public void filter(final ClientRequestContext clientRequestContext,
-            final ClientResponseContext clientResponseContext) throws IOException {
+                       final ClientResponseContext clientResponseContext) throws IOException {
         try {
-            log.info(RestClientLogMessages.INFO.RESPONSE_INFO.format(name, clientResponseContext.getStatus(),
+            givenLogger.info(RestClientLogMessages.INFO.RESPONSE_INFO.format(name, clientResponseContext.getStatus(),
                     clientResponseContext.getStatusInfo(), clientResponseContext.getAllowedMethods(),
                     clientResponseContext.getEntityTag(), clientResponseContext.getCookies(),
                     clientResponseContext.getDate(), clientResponseContext.getHeaders(),
@@ -60,7 +65,7 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
                     clientResponseContext.getLinks(), clientResponseContext.getLocation(),
                     clientResponseContext.getMediaType()));
         } catch (final Exception e) {
-            log.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
+            givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
         }
     }
 }

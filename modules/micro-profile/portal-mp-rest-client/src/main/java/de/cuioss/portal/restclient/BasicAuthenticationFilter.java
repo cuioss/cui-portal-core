@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.restclient;
 
+import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.tools.string.MoreStrings;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -24,8 +25,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * A filter for adding Basic Authentication to REST client requests.
- * Adds an Authorization header with the Basic authentication scheme.
+ * Client filter that adds HTTP Basic Authentication to outgoing requests.
+ * Credentials are provided through the Portal configuration system using
+ * {@link ConfigAsConnectionMetadata}.
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * when Basic Authentication is specified in the configuration.
+ *
+ * @see CuiRestClientBuilder
+ * @see ConfigAsConnectionMetadata
  */
 public class BasicAuthenticationFilter implements ClientRequestFilter {
 

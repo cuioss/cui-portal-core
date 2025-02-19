@@ -16,6 +16,7 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
+import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.base.Preconditions;
 import de.cuioss.tools.logging.CuiLogger;
@@ -36,29 +37,28 @@ import static de.cuioss.tools.lang.MoreObjects.requireType;
 import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 
 /**
- * CDI producer for REST clients in the Portal environment. This producer handles
- * the creation and configuration of REST clients based on the {@link PortalRestClient}
- * qualifier.
+ * CDI producer for REST client instances in the Portal environment.
+ * Creates and configures REST clients based on {@link PortalRestClient}
+ * configuration.
  *
- * <p>The producer:
- * <ul>
- *   <li>Reads connection configuration from the Portal configuration system</li>
- *   <li>Sets up appropriate authentication based on configuration</li>
- *   <li>Configures logging and monitoring</li>
- *   <li>Manages client lifecycle</li>
- * </ul>
- *
- * <p>To use the producer, simply inject your REST client interface with the
- * {@link PortalRestClient} qualifier:
- *
+ * <p>Usage:
  * <pre>
  * &#64;Inject
  * &#64;PortalRestClient(configPath = "my.service")
  * private MyServiceClient client;
  * </pre>
  *
+ * <p>The producer handles:
+ * <ul>
+ *   <li>Client creation via {@link CuiRestClientBuilder}</li>
+ *   <li>Configuration lookup</li>
+ *   <li>Authentication setup</li>
+ *   <li>Lifecycle management</li>
+ * </ul>
+ *
  * @see PortalRestClient
  * @see CuiRestClientBuilder
+ * @see ConfigAsConnectionMetadata
  */
 @ApplicationScoped
 public class RestClientProducer {

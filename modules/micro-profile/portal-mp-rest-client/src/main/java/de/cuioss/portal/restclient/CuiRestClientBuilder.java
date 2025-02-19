@@ -16,6 +16,7 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
+import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import jakarta.ws.rs.core.Configurable;
@@ -36,19 +37,21 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Portal-specific implementation of {@link RestClientBuilder} that provides
- * additional configuration and integration capabilities:
+ * Implementation of MicroProfile REST Client builder for the Portal environment.
+ * Provides configuration and integration with Portal's authentication and
+ * logging infrastructure.
  *
+ * <p>Supported features:
  * <ul>
- *   <li>Automatic configuration from Portal configuration system</li>
- *   <li>Built-in support for authentication filters (Basic, Bearer Token)</li>
- *   <li>Comprehensive logging of requests and responses</li>
- *   <li>Integration with Portal metrics and monitoring</li>
+ *   <li>Connection configuration via {@link ConfigAsConnectionMetadata}</li>
+ *   <li>Authentication (Basic, Bearer Token)</li>
+ *   <li>Request/Response logging</li>
+ *   <li>SSL configuration</li>
  * </ul>
  *
- * <p>This builder is typically not used directly but through the {@link RestClientProducer}
- * and {@link PortalRestClient} annotation.
- * For direct usage, obtain an instance through {@link RestClientBuilder#newBuilder()}.
+ * <p>This builder is typically used through {@link RestClientProducer}
+ * and {@link PortalRestClient}. For direct usage, obtain an instance via
+ * {@link RestClientBuilder#newBuilder()}.
  *
  * @see RestClientBuilder
  * @see PortalRestClient
@@ -424,6 +427,4 @@ public class CuiRestClientBuilder {
 
         return mpRestClientBuilder.build(clazz);
     }
-
-
 }

@@ -20,15 +20,19 @@ import de.cuioss.tools.logging.LogRecordModel;
 import lombok.experimental.UtilityClass;
 
 /**
- * Centralized log messages for the portal-mp-rest-client module using a DSL-style approach.
- * Messages are organized by package, then by log level, making them easily discoverable
- * and maintainable.
- * <p>
- * Message Identifiers:
- * - INFO: 001-099 (Request/Response metadata)
- * - ERROR: 200-299 (Errors and exceptions)
- * - DEBUG: 500-599 (Initialization and configuration details)
- * - TRACE: 600-609 (Detailed request/response content)
+ * Centralized message bundle for REST client logging.
+ * Provides structured message templates for logging requests, responses,
+ * and error conditions.
+ *
+ * <p>Messages are organized into categories:
+ * <ul>
+ *   <li>INFO - Informational messages about normal operation</li>
+ *   <li>ERROR - Error messages and exceptional conditions</li>
+ * </ul>
+ *
+ * @see LogClientRequestFilter
+ * @see LogClientResponseFilter
+ * @see LogReaderInterceptor
  */
 @UtilityClass
 public final class RestClientLogMessages {
