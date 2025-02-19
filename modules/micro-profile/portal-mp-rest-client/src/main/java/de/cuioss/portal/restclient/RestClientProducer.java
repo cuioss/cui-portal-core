@@ -63,12 +63,14 @@ import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 @ApplicationScoped
 public class RestClientProducer {
 
-    private static final CuiLogger log = new CuiLogger(RestClientProducer.class);
+    private static final CuiLogger LOGGER = new CuiLogger(RestClientProducer.class);
 
     @Produces
     @Dependent
     @PortalRestClient(baseName = "unused")
-    <T extends Closeable> RestClientHolder<T> produceRestClient(final InjectionPoint injectionPoint) {
+    public <T extends Closeable> RestClientHolder<T> produceRestClient(final InjectionPoint injectionPoint) {
+        LOGGER.debug("Producing REST client for injection point: %s", injectionPoint.getMember());
+
         final var annotationMetaData = ConfigurationHelper.resolveAnnotation(injectionPoint, PortalRestClient.class)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Expected injectionPoint annotated with @PortalRestClient, but was not:" + injectionPoint));
@@ -83,7 +85,7 @@ public class RestClientProducer {
         // Basename must be present
         final var baseName = suffixNameWithDot(requireNotEmpty(annotationMetaData.baseName(), MISSING_BASENAME_MSG));
 
-        log.debug(RestClientLogMessages.DEBUG.PRODUCING_CLIENT.format(baseName));
+        LOGGER.debug("Producing RestClient for baseName ='%s'", baseName);
 
         final var failOnInvalidConfiguration = annotationMetaData.failOnInvalidConfiguration();
         try {
@@ -92,7 +94,7 @@ public class RestClientProducer {
             return new RestClientHolder<>(new CuiRestClientBuilder(resolveCuiLogger(injectionPoint, serviceInterface))
                     .connectionMetadata(connectionMetadata).build(serviceInterface));
         } catch (IllegalArgumentException e) {
-            log.error(e, RestClientLogMessages.ERROR.INITIALIZATION_FAILED.format());
+            LOGGER.error(e, RestClientLogMessages.ERROR.INITIALIZATION_FAILED.format());
             return new RestClientHolder<>(null);
         }
     }
@@ -111,7 +113,7 @@ public class RestClientProducer {
             // works only due to @Dependent scope injection point!
             final Class<?> clazz = ip.getMember().getDeclaringClass();
             if (clazz.getName().contains("$Proxy$")) { // checking for the sake of a peaceful mind
-                log.debug(RestClientLogMessages.DEBUG.SKIP_PROXY_CLASS.format(clazz.getName()));
+                LOGGER.debug("Not using class %s as it seems to be a Weld CDI proxy", clazz.getName());
                 return Optional.empty();
             }
             return Optional.of(clazz);
@@ -121,7 +123,7 @@ public class RestClientProducer {
 
     private CuiLogger resolveCuiLogger(InjectionPoint ip, Class<?> fallback) {
         final var clazz = resolveCallerClass(ip).orElse(fallback);
-        log.debug(RestClientLogMessages.DEBUG.USING_LOGGER_CLASS.format(clazz.getName()));
+        LOGGER.debug("Using logger class: %s", clazz.getName());
         return new CuiLogger(clazz);
     }
 }

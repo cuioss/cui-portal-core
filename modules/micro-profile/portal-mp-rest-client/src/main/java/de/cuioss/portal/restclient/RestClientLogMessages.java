@@ -20,15 +20,18 @@ import de.cuioss.tools.logging.LogRecordModel;
 import lombok.experimental.UtilityClass;
 
 /**
- * Centralized message bundle for REST client logging.
- * Provides structured message templates for logging requests, responses,
- * and error conditions.
+ * Centralized message bundle for Portal MicroProfile REST client logging.
+ * Messages are organized into categories based on severity level.
  *
- * <p>Messages are organized into categories:
+ * <h2>Message Categories</h2>
  * <ul>
- *   <li>INFO - Informational messages about normal operation</li>
- *   <li>ERROR - Error messages and exceptional conditions</li>
+ *   <li>INFO - Normal operational events (identifiers 001-099)</li>
+ *   <li>ERROR - Error conditions and exceptions (identifiers 200-299)</li>
  * </ul>
+ *
+ * <p>Debug and trace level logging is handled directly by the respective components
+ * without using {@link LogRecord} to allow for more flexible and detailed logging
+ * when needed.
  *
  * @see LogClientRequestFilter
  * @see LogClientResponseFilter
@@ -105,98 +108,6 @@ public final class RestClientLogMessages {
                 .template("Could not load Default exception Handler, tried: %s")
                 .prefix(PREFIX)
                 .identifier(202)
-                .build();
-    }
-
-    @UtilityClass
-    public static final class DEBUG {
-        /**
-         * Logged when producing a new client instance.
-         */
-        public static final LogRecord PRODUCING_CLIENT = LogRecordModel.builder()
-                .template("Producing DsmlClient for baseName ='%s'")
-                .prefix(PREFIX)
-                .identifier(500)
-                .build();
-
-        /**
-         * Logged when skipping a class that appears to be a Weld CDI proxy.
-         */
-        public static final LogRecord SKIP_PROXY_CLASS = LogRecordModel.builder()
-                .template("Not using class %s as it seems to be a Weld CDI proxy")
-                .prefix(PREFIX)
-                .identifier(501)
-                .build();
-
-        /**
-         * Logged when resolving the logger class.
-         */
-        public static final LogRecord USING_LOGGER_CLASS = LogRecordModel.builder()
-                .template("Using logger class: %s")
-                .prefix(PREFIX)
-                .identifier(502)
-                .build();
-
-        /**
-         * Logged when debugging a response.
-         */
-        public static final LogRecord DEBUG_RESPONSE = LogRecordModel.builder()
-                .template("""
-                        -- Client response filter --
-                        Status: %s
-                        StatusInfo: %s
-                        Allowed Methods: %s
-                        EntityTag: %s
-                        Cookies: %s
-                        Date: %s
-                        Headers: %s
-                        Language: %s
-                        LastModified: %s
-                        Links: %s
-                        Location: %s
-                        MediaType: %s""")
-                .prefix(PREFIX)
-                .identifier(503)
-                .build();
-
-        /**
-         * Logged when a CuiRestClientBuilder is created.
-         */
-        public static final LogRecord CUI_REST_CLIENT_BUILDER_CREATED = LogRecordModel.builder()
-                .template("CuiRestClientBuilder created")
-                .prefix(PREFIX)
-                .identifier(504)
-                .build();
-
-        /**
-         * Logged when a CuiRestClientBuilder is used to build a client.
-         */
-        public static final LogRecord CUI_REST_CLIENT_BUILDER_USED = LogRecordModel.builder()
-                .template("CuiRestClientBuilder used to build client")
-                .prefix(PREFIX)
-                .identifier(505)
-                .build();
-    }
-
-    @UtilityClass
-    public static final class TRACE {
-        /**
-         * Logged when reading response body content, including media type, properties,
-         * headers and body.
-         */
-        public static final LogRecord RESPONSE_BODY = LogRecordModel.builder()
-                .template("""
-                        -- Client response info --
-                        MediaType: %s
-                        GenericType: %s
-                        Properties:
-                        %s
-                        Headers:
-                        %s
-                        Body:
-                        %s""")
-                .prefix(PREFIX)
-                .identifier(600)
                 .build();
     }
 }

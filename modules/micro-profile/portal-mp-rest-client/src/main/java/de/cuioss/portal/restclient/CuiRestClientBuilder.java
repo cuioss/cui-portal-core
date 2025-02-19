@@ -102,11 +102,24 @@ public class CuiRestClientBuilder {
      * @param givenLogger must not be null
      */
     public static void debugResponse(final Response response, final CuiLogger givenLogger) {
-        givenLogger.debug(RestClientLogMessages.DEBUG.DEBUG_RESPONSE.format(
+        givenLogger.debug("""
+                        -- Client response filter --
+                        Status: %s
+                        StatusInfo: %s
+                        Allowed Methods: %s
+                        EntityTag: %s
+                        Cookies: %s
+                        Date: %s
+                        Headers: %s
+                        Language: %s
+                        LastModified: %s
+                        Links: %s
+                        Location: %s
+                        MediaType: %s""",
                 response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
                 response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
                 response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
-                response.getMediaType()));
+                response.getMediaType());
     }
 
     /**
@@ -411,6 +424,7 @@ public class CuiRestClientBuilder {
      * @return T the service class
      */
     public <T extends Closeable> T build(final Class<T> clazz) {
+        LOGGER.debug("Building REST client for class: %s", clazz.getName());
         if (traceLogEnabled) {
             LOGGER.debug("Configuring trace-logging");
             register(new LogClientRequestFilter(givenLogger));

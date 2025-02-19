@@ -16,6 +16,7 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
+import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -37,6 +38,7 @@ import java.util.Base64;
  */
 public class BasicAuthenticationFilter implements ClientRequestFilter {
 
+    private static final CuiLogger LOGGER = new CuiLogger(BasicAuthenticationFilter.class);
     private static final String AUTHORIZATION = "Authorization";
     private static final String BASIC_PREFIX = "Basic ";
 
@@ -55,6 +57,7 @@ public class BasicAuthenticationFilter implements ClientRequestFilter {
         String auth = username + ":" + password;
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
         this.authHeader = BASIC_PREFIX + new String(encodedAuth, StandardCharsets.UTF_8);
+        LOGGER.trace("Using auth header %s", this.authHeader);
     }
 
     @Override
