@@ -15,15 +15,39 @@
  */
 package de.cuioss.portal.restclient;
 
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Tests for the {@link BasicAuthenticationFilter} class focusing on parameter validation
+ * and error handling.
+ */
+@EnableTestLogger
+@DisplayName("BasicAuthenticationFilter Tests")
 class BasicAuthenticationFilterTest {
 
+
     @Test
-    void nullValues() {
-        assertThrows(NullPointerException.class, () -> new BasicAuthenticationFilter(null, null));
+    @DisplayName("Should throw NPE for null constructor parameters")
+    void shouldHandleNullValues() {
+        assertThrows(NullPointerException.class, () -> new BasicAuthenticationFilter(null, null),
+                "Should throw NPE for null username and password");
+        
+        assertThrows(NullPointerException.class, () -> new BasicAuthenticationFilter("user", null),
+                "Should throw NPE for null password");
+                
+        assertThrows(NullPointerException.class, () -> new BasicAuthenticationFilter(null, "pass"),
+                "Should throw NPE for null username");
     }
 
+    @Test
+    @DisplayName("Should create filter with valid parameters")
+    void shouldCreateFilterWithValidParameters() {
+        var filter = new BasicAuthenticationFilter("testUser", "testPass");
+        assertNotNull(filter, "Filter should be created with valid parameters");
+    }
 }

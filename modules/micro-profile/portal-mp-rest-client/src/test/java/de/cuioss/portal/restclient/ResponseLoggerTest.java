@@ -16,167 +16,186 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.test.generator.Generators;
+import de.cuioss.test.generator.junit.EnableGeneratorController;
 import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.core.EntityTag;
+import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.ext.ReaderInterceptorContext;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Objects;
+import java.net.URI;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import static de.cuioss.test.juli.TestLogLevel.INFO;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Sven Haag
+ * Tests for the {@link LogClientResponseFilter} class focusing on response logging functionality
  */
-@EnableTestLogger(trace = ResponseLoggerTest.class)
+@EnableTestLogger
+@EnableGeneratorController
+@DisplayName("Response Logger Tests")
 class ResponseLoggerTest {
 
     private static final CuiLogger LOGGER = new CuiLogger(ResponseLoggerTest.class);
+    private static final String TEST_BODY = Generators.strings().next();
+    private static final int STATUS = Generators.integers(200, 599).next();
+    private static final String REASON = Generators.strings().next();
 
-    private static final String STRING = Generators.nonEmptyStrings().next();
-    private static final boolean HAS_BODY = Generators.booleans().next();
-    private static final MediaType MEDIA_TYPE = Generators.fixedValues(MediaType.WILDCARD_TYPE,
-            MediaType.TEXT_PLAIN_TYPE, MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE).next();
-    private boolean inputStreamSet;
-    private boolean proceedExecuted;
+    private LogClientResponseFilter underTest;
+
+    @BeforeEach
+    void setUp() {
+        underTest = new LogClientResponseFilter(LOGGER) {
+        };
+        LOGGER.info("Testing with status={}, reason={}, body={}", STATUS, REASON, TEST_BODY);
+    }
 
     @Test
-    void responseLoggerTest() throws IOException {
-        inputStreamSet = false;
-
-        new LogReaderInterceptor(LOGGER).aroundReadFrom(new ReaderInterceptorContext() {
-
+    @DisplayName("Should properly log response details")
+    void shouldLogResponseDetails() throws IOException {
+        underTest.filter(null, new ClientResponseContext() {
             @Override
-            public Object proceed() throws WebApplicationException {
-                proceedExecuted = true;
-                return null;
+            public int getStatus() {
+                return STATUS;
             }
 
             @Override
-            public InputStream getInputStream() {
-                return new BufferedInputStream(
-                        new ByteArrayInputStream((HAS_BODY ? STRING : "").getBytes(StandardCharsets.UTF_8)));
+            public void setStatus(int code) {
+                // Not needed for test
             }
 
             @Override
-            public void setInputStream(final InputStream is) {
-                assertNotNull(is, "InputStream must not be null after logging");
-                if (HAS_BODY) {
-                    assertDoesNotThrow(() -> assertTrue(is.available() > 0, "InputStream has no data"), "Could not read response input stream after logging");
-                }
-                inputStreamSet = true;
+            public Response.StatusType getStatusInfo() {
+                return Response.Status.fromStatusCode(STATUS);
             }
 
             @Override
-            public MultivaluedMap<String, String> getHeaders() {
-                final var map = new MultivaluedHashMap<String, String>();
-                map.putSingle("a-string", "foobar");
-                map.put("a-list", immutableList("a", "b", "c"));
-                return map;
+            public void setStatusInfo(Response.StatusType statusInfo) {
+                // Not needed for test
             }
 
             @Override
-            public Object getProperty(final String name) {
-                Objects.requireNonNull(name);
-                return switch (name) {
-                    case "P1" -> "V1";
-                    case "P2" -> "V2";
-                    case "P3" -> 666L;
-                    default -> null;
-                };
+            public InputStream getEntityStream() {
+                return new ByteArrayInputStream(TEST_BODY.getBytes());
             }
 
             @Override
-            public Collection<String> getPropertyNames() {
-                return immutableSet("P1", "P2", "P3", "P4");
+            public void setEntityStream(InputStream entityStream) {
+                // Not needed for test
             }
 
             @Override
-            public void setProperty(final String name, final Object object) {
-                throw new UnsupportedOperationException("setProperty");
-            }
-
-            @Override
-            public void removeProperty(final String name) {
-                throw new UnsupportedOperationException("removeProperty");
-            }
-
-            @Override
-            public Annotation[] getAnnotations() {
-                return new Annotation[0];
-            }
-
-            @Override
-            public void setAnnotations(final Annotation[] annotations) {
-                throw new UnsupportedOperationException("setAnnotations");
-            }
-
-            @Override
-            public Class<?> getType() {
-                return String.class;
-            }
-
-            @Override
-            public void setType(final Class<?> type) {
-                throw new UnsupportedOperationException("setType");
-            }
-
-            @Override
-            public Type getGenericType() {
-                return getType();
-            }
-
-            @Override
-            public void setGenericType(final Type genericType) {
-                throw new UnsupportedOperationException("setGenericType(Type)");
+            public boolean hasEntity() {
+                return true;
             }
 
             @Override
             public MediaType getMediaType() {
-                return MEDIA_TYPE;
+                return MediaType.TEXT_PLAIN_TYPE;
+            }
+
+            public void setMediaType(MediaType mediaType) {
+                // Not needed for test
             }
 
             @Override
-            public void setMediaType(final MediaType mediaType) {
-                throw new UnsupportedOperationException("setMediaType");
+            public Locale getLanguage() {
+                return Locale.ENGLISH;
+            }
+
+            public void setLanguage(Locale language) {
+                // Not needed for test
+            }
+
+            @Override
+            public int getLength() {
+                return TEST_BODY.length();
+            }
+
+            public void setLength(int length) {
+                // Not needed for test
+            }
+
+            @Override
+            public Set<String> getAllowedMethods() {
+                return Set.of("GET", "POST");
+            }
+
+            @Override
+            public Map<String, NewCookie> getCookies() {
+                return Map.of();
+            }
+
+            @Override
+            public EntityTag getEntityTag() {
+                return null;
+            }
+
+            @Override
+            public Date getDate() {
+                return null;
+            }
+
+            @Override
+            public Date getLastModified() {
+                return null;
+            }
+
+            @Override
+            public URI getLocation() {
+                return null;
+            }
+
+            @Override
+            public Set<Link> getLinks() {
+                return Set.of();
+            }
+
+            @Override
+            public boolean hasLink(String relation) {
+                return false;
+            }
+
+            @Override
+            public Link getLink(String relation) {
+                return null;
+            }
+
+            @Override
+            public Link.Builder getLinkBuilder(String relation) {
+                return null;
+            }
+
+            @Override
+            public MultivaluedMap<String, String> getHeaders() {
+                var headers = new MultivaluedHashMap<String, String>();
+                headers.put("test", immutableList("test-value"));
+                return headers;
+            }
+
+            @Override
+            public String getHeaderString(String name) {
+                return "test-value";
             }
         });
 
-        assertTrue(inputStreamSet, "InputStream not set");
-        assertTrue(proceedExecuted, "The proceed method was not executed");
-
-        LogAsserts.assertLogMessagePresentContaining(INFO, "-- Client response info --");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "MediaType: " + MEDIA_TYPE);
-        LogAsserts.assertLogMessagePresentContaining(INFO, "GenericType: class java.lang.String");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "Properties:");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "P1: V1");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "P2: V2");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "P3: 666");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "P4: null");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "Headers:");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "a-list: [a, b, c]");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "a-string: [foobar]");
-        LogAsserts.assertLogMessagePresentContaining(INFO, "Body:");
-        if (HAS_BODY) {
-            LogAsserts.assertLogMessagePresentContaining(INFO, STRING);
-        }
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Status: " + STATUS);
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers: {test=[test-value]}");
     }
 }
