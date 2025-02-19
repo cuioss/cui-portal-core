@@ -80,25 +80,6 @@ public interface AuthenticationFacade {
 
 == Usage Examples
 
-=== Basic Authentication Flow
-
-[source,java]
-----
-@Inject
-private AuthenticationFacade authFacade;
-
-public void authenticate(HttpServletRequest request, String username, 
-                        String password) {
-    var credentials = new LoginCredentials(username, password);
-    var result = authFacade.login(request, credentials);
-    
-    if (result.isValid()) {
-        var user = result.getUserInfo();
-        // Process authenticated user
-    }
-}
-----
-
 === Role-Based Access Control
 
 [source,java]
@@ -136,44 +117,6 @@ public class DepartmentEnricher implements PortalUserEnricher {
 }
 ----
 
-== Configuration
-
-=== Core Properties
-
-[cols="2,2,1"]
-|===
-|Property |Description |Default
-
-|portal.authentication.enabled
-|Enables authentication subsystem
-|true
-
-|portal.authentication.session.timeout
-|Session timeout in seconds
-|3600
-
-|portal.authentication.allowed-roles
-|Comma-separated list of valid roles
-|USER,ADMIN
-|===
-
-=== Security Configuration
-
-[source,properties]
-----
-# Authentication settings
-portal.authentication.enabled=true
-portal.authentication.session.timeout=1800
-
-# Role configuration
-portal.authentication.allowed-roles=USER,ADMIN,MANAGER
-portal.authentication.default-role=USER
-
-# Session management
-portal.authentication.session.cookie-name=PORTAL_SESSION
-portal.authentication.session.secure-only=true
-----
-
 == Best Practices
 
 === Security Guidelines
@@ -203,7 +146,6 @@ portal.authentication.session.secure-only=true
 * User info objects are cached per request
 * Enrichment chain is optimized
 * Role checks use Set implementation
-* Attribute access is O(1)
 
 == Related Documentation
 
