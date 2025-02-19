@@ -36,7 +36,29 @@ import static de.cuioss.tools.lang.MoreObjects.requireType;
 import static de.cuioss.tools.string.MoreStrings.requireNotEmpty;
 
 /**
- * Produces a {@link RestClientHolder} to the given service interface.
+ * CDI producer for REST clients in the Portal environment. This producer handles
+ * the creation and configuration of REST clients based on the {@link PortalRestClient}
+ * qualifier.
+ *
+ * <p>The producer:
+ * <ul>
+ *   <li>Reads connection configuration from the Portal configuration system</li>
+ *   <li>Sets up appropriate authentication based on configuration</li>
+ *   <li>Configures logging and monitoring</li>
+ *   <li>Manages client lifecycle</li>
+ * </ul>
+ *
+ * <p>To use the producer, simply inject your REST client interface with the
+ * {@link PortalRestClient} qualifier:
+ *
+ * <pre>
+ * &#64;Inject
+ * &#64;PortalRestClient(configPath = "my.service")
+ * private MyServiceClient client;
+ * </pre>
+ *
+ * @see PortalRestClient
+ * @see CuiRestClientBuilder
  */
 @ApplicationScoped
 public class RestClientProducer {

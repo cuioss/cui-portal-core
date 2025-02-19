@@ -36,12 +36,24 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Builder for a JAVA MicroProfile based REST client.
- * <p>
- * To enable log debugging / tracing set package
- * de.cuioss.portal.core.restclient to TRACE level in your logger configuration.
+ * Portal-specific implementation of {@link RestClientBuilder} that provides
+ * additional configuration and integration capabilities:
+ *
+ * <ul>
+ *   <li>Automatic configuration from Portal configuration system</li>
+ *   <li>Built-in support for authentication filters (Basic, Bearer Token)</li>
+ *   <li>Comprehensive logging of requests and responses</li>
+ *   <li>Integration with Portal metrics and monitoring</li>
+ * </ul>
+ *
+ * <p>This builder is typically not used directly but through the {@link RestClientProducer}
+ * and {@link PortalRestClient} annotation.
+ * For direct usage, obtain an instance through {@link RestClientBuilder#newBuilder()}.
+ *
+ * @see RestClientBuilder
+ * @see PortalRestClient
+ * @see RestClientProducer
  */
-@SuppressWarnings("UnusedReturnValue")
 public class CuiRestClientBuilder {
 
     private static final CuiLogger LOGGER = new CuiLogger(CuiRestClientBuilder.class);

@@ -29,9 +29,22 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * <p>
- * Marker identifying concrete instances of {@link RestClientHolder}. The connection-specific metadata is derived by a number of properties derived by
- * {@link PortalRestClient#baseName()}. Expected is a structure as defined within {@link ConfigAsConnectionMetadata}. </ p>
+ * Qualifier for injecting configured REST clients in the Portal environment.
+ * Used in conjunction with {@link ConfigAsConnectionMetadata} to provide
+ * connection details for the client.
+ *
+ * <p>Example usage:
+ * <pre>
+ * &#64;Inject
+ * &#64;PortalRestClient(configPath = "my.service")
+ * private MyServiceClient client;
+ * </pre>
+ *
+ * <p>The configuration path must point to a valid connection metadata configuration
+ * that provides the necessary connection details like URL, authentication, etc.
+ *
+ * @see ConfigAsConnectionMetadata
+ * @see CuiRestClientBuilder
  */
 @Qualifier
 @Retention(RUNTIME)
