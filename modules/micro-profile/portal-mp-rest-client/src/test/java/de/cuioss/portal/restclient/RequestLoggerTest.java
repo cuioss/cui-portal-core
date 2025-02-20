@@ -88,8 +88,9 @@ class RequestLoggerTest {
         underTest.filter(requestContext);
 
         // Verify
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: " + URI);
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: " + METHOD);
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: " + nullToEmpty(METHOD));
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "test: [test-value]");
         if (HAS_BODY) {
             LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Body: " + testPojo);
@@ -101,5 +102,9 @@ class RequestLoggerTest {
     static class TestPojo {
         private String string;
         private int integer;
+    }
+
+    private String nullToEmpty(String value) {
+        return value == null ? "" : value;
     }
 }
