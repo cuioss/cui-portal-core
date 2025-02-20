@@ -62,8 +62,6 @@ public class ConnectionMetadata implements Serializable {
 
     private static final CuiLogger LOGGER = new CuiLogger(ConnectionMetadata.class);
 
-    private static final String PORTAL_510 = "Portal-510: Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration";
-
     @Serial
     private static final long serialVersionUID = -8168073688801716947L;
 
