@@ -1,75 +1,63 @@
-= portal-mp-rest-client
+= Portal MicroProfile REST Client
 
-== What is it?
-
-A builder to build a micro-profile based rest client for a given service interface.
-
-Expects javax.ws.rs.* annotations at the service interface.
-
-Has no dependency to a specific implementation, assumes that a matching implementation
-(like RestEasy or JaxRS) is part of the classpath (for assembly or module unit test,
-will be done automatically when using cui parent poms).
+Module providing a builder-based approach for creating and configuring MicroProfile REST clients with enhanced features like logging, authentication, and error handling.
 
 == Maven Coordinates
 
 [source,xml]
 ----
 <dependency>
-     <groupId>de.cuioss.portal.core.micro-profile</groupId>
-     <artifactId>portal-mp-rest-client</artifactId>
+    <groupId>de.cuioss.portal.core.micro-profile</groupId>
+    <artifactId>portal-mp-rest-client</artifactId>
 </dependency>
 ----
 
-== How to use in general
+== Core Concepts
+
+=== REST Client Builder
+* link:src/main/java/de/cuioss/portal/restclient/CuiRestClientBuilder.java[CuiRestClientBuilder] - Core builder for REST clients
+* Fluent API for client configuration
+* Built on MicroProfile REST Client specification
+* Integrated logging and monitoring
+
+=== Authentication Support
+* Basic Authentication via link:src/main/java/de/cuioss/portal/restclient/BasicAuthenticationFilter.java[BasicAuthenticationFilter]
+* Bearer Token via link:src/main/java/de/cuioss/portal/restclient/BearerTokenAuthFilter.java[BearerTokenAuthFilter]
+* OAuth2 support with automatic token handling
+
+=== Logging and Monitoring
+* Structured logging of requests and responses
+* Configurable trace logging
+* Error tracking and reporting
+* See link:doc/LogMessages.md[Log Messages Documentation]
+
+== Usage Examples
+
+=== Basic REST Client
 
 [source,java]
 ----
-CuiRestClientBuilder restClientBuilder = new CuiRestClientBuilder(log).connectionMetadata(connectionMeta)
-        .registerExceptionMapper(new CodeSystemErrorDecoder());
-try (CodeSystemRestResource resource = restClientBuilder.build(CodeSystemRestResource.class)) {
-    log.debug("value-set-client: Configured to \ntype: svs\nconnection: {}\nwarnOnMissingLanguage: {}",
-            connectionMeta,
-            warnOnMissingLanguage);
-    final SvsValueSet localeValueSet = resource.retrieveValueSet(codeCategory, locale).getValueSet();
-    eventProducer.logSuccessfulImport(url, user, Collections.singleton(codeCategory));
-    final List<SvsConceptList> conceptLists = localeValueSet.getConceptLists();
-    if (!conceptLists.isEmpty()) {
-        mappedLanguages.put(locale, conceptLists.iterator().next().getConcepts());
-    }
-} catch (RuntimeException e) {
-    log.error(ValueSetClientImpl.PORTAL_511, e);
-    configurationValid = false;
+CuiRestClientBuilder restClientBuilder = new CuiRestClientBuilder(LOGGER)
+    .connectionMetadata(connectionMeta);
+
+try (MyRestResource resource = restClientBuilder.build(MyRestResource.class)) {
+    return resource.getData();
 }
 ----
 
-== How to use for oauth2 infrastructure including token handling according to RFC 6750
+== Configuration Properties
 
-[source,java]
-----
-CuiRestClientBuilder restClientBuilder = new CuiRestClientBuilder(log)
-        .url(facadeUri.get())
-        .registerExceptionMapper(new MissingScopesErrorDecoder())
-        .token(token);
+=== Connection Settings
+* `portal.rest.client.connect.timeout`: Connection timeout in milliseconds
+* `portal.rest.client.read.timeout`: Read timeout in milliseconds
+* `portal.rest.client.follow.redirects`: Whether to follow HTTP redirects
 
-try (OnboardingEndpoint onboardingEndpoint = restClientBuilder.build(OnboardingEndpoint.class)) {
-    OnboardingStatus onboardingStatus = onboardingEndpoint.getOnboardingStatus();
-    if (null == onboardingStatus) {
-        throw new IllegalStateException("Backend ErrorOnboardingService getOnboardingStatus onboardingStatus null");
-    }
-    return resultBuilder.result(onboardingStatus).state(ResultState.VALID).build();
-} catch (MissingScopesException e) {
-    log.debug("OnboardingService getOnboardingStatus MissingScopes", e);
-    return resultBuilder.state(ResultState.ERROR).resultDetail(new ResultDetail(MESSAGE_ERROR_BACKEND))
-            .errorCode(ErrorCodes.MISSING_SCOPES).build();
-} catch (WebApplicationException e) {
-    log.error("OnboardingService getOnboardingStatus Exception", e);
-    CuiRestClientBuilder.debugResponse(e.getResponse(), log);
-    return resultBuilder.state(ResultState.ERROR).resultDetail(new ResultDetail(MESSAGE_ERROR_BACKEND)).build();
-} catch (IOException e) {
-    log.error("OnboardingService getOnboardingStatus Exception", e);
-    return resultBuilder.state(ResultState.ERROR).resultDetail(new ResultDetail(MESSAGE_ERROR_BACKEND)).build();
-}
-----
+=== Authentication
+* `portal.rest.client.auth.type`: Authentication type (BASIC, BEARER, OAUTH2)
+* `portal.rest.client.auth.username`: Username for basic auth
+* `portal.rest.client.auth.password`: Password for basic auth
+* `portal.rest.client.auth.token`: Bearer token for token auth
 
-
-Copy and change scope to test for module unit tests.
+=== Logging
+* `portal.rest.client.trace.enabled`: Enable detailed request/response tracing
+* `portal.rest.client.log.level`: Logging level for client operations
