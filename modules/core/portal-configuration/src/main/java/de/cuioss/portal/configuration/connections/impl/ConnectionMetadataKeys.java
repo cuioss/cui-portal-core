@@ -100,7 +100,7 @@ public class ConnectionMetadataKeys {
      * Property key for the certificate keystore's private key password.
      * Complete key: "authentication.certificate.keystore.keypassword"
      */
-    public static final String AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + KEY_PASSWORD;
+    public static final String AUTH_CERTIFICATE_KEYSTORE_KEY_PASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + KEY_PASSWORD;
 
     /** Base prefix for transport security configuration */
     static final String TRANSPORT_BASE = "transport.secure.";
@@ -128,7 +128,7 @@ public class ConnectionMetadataKeys {
      * Used to access individual keys within the keystore.
      * Complete key: "transport.secure.keystore.keypassword"
      */
-    public static final String TRANSPORT_KEYSTORE_KEYPASSWORD = TRANSPORT_KEYSTORE_BASE + KEY_PASSWORD;
+    public static final String TRANSPORT_KEYSTORE_KEY_PASSWORD = TRANSPORT_KEYSTORE_BASE + KEY_PASSWORD;
 
     /**
      * Property key for the transport security truststore location.

@@ -46,18 +46,3 @@ try (MyRestResource resource = restClientBuilder.build(MyRestResource.class)) {
 ----
 
 == Configuration Properties
-
-=== Connection Settings
-* `portal.rest.client.connect.timeout`: Connection timeout in milliseconds
-* `portal.rest.client.read.timeout`: Read timeout in milliseconds
-* `portal.rest.client.follow.redirects`: Whether to follow HTTP redirects
-
-=== Authentication
-* `portal.rest.client.auth.type`: Authentication type (BASIC, BEARER, OAUTH2)
-* `portal.rest.client.auth.username`: Username for basic auth
-* `portal.rest.client.auth.password`: Password for basic auth
-* `portal.rest.client.auth.token`: Bearer token for token auth
-
-=== Logging
-* `portal.rest.client.trace.enabled`: Enable detailed request/response tracing
-* `portal.rest.client.log.level`: Logging level for client operations

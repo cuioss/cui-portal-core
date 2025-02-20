@@ -250,7 +250,7 @@ public class ConnectionMetadataProducer {
         final var keystoreLocation = extractKeystoreLocation(filteredProperties);
         final var keystorePassword = extractFirstKeyValue(filteredProperties,
                 ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
-                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD);
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEY_PASSWORD);
 
         if (keystoreLocation.isEmpty() || keystorePassword.isEmpty()) {
             if (LOGGER.isDebugEnabled()) {
@@ -265,8 +265,8 @@ public class ConnectionMetadataProducer {
         }
 
         final var keyPassword = extractFirstKeyValue(filteredProperties,
-                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
-                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD).orElse(keystorePassword.get());
+                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEY_PASSWORD,
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEY_PASSWORD).orElse(keystorePassword.get());
 
         return Optional.of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
                 .location(new File(keystoreLocation.get())).storePassword(keystorePassword.get())

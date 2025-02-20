@@ -96,6 +96,70 @@ private FileLoader configFile;
 private List<FileLoader> configFiles;
 ----
 
+=== Connection Metadata Configuration Example
+
+The `@ConfigAsConnectionMetadata` annotation allows you to configure connection metadata through properties. Here's a complete example:
+
+[source,properties]
+----
+# Basic Connection Settings
+my.connection.url=https://api.example.com/v1
+my.connection.description=Production API Connection
+my.connection.type=REST
+
+# Authentication Configuration
+my.connection.authentication.type=BASIC
+my.connection.authentication.basic.username=apiuser
+my.connection.authentication.basic.password=secret123
+
+# -- OR --
+my.connection.authentication.type=TOKEN
+my.connection.authentication.token.key=X-API-Key
+my.connection.authentication.token.value=your-api-token
+
+# -- OR --
+my.connection.authentication.type=CERTIFICATE
+my.connection.authentication.certificate.keystore.location=/path/to/keystore.jks
+my.connection.authentication.certificate.keystore.password=keystorepass
+my.connection.authentication.certificate.keystore.keypassword=keypass
+
+# SSL/TLS Configuration (Optional)
+my.connection.transport.truststore.location=/path/to/truststore.jks
+my.connection.transport.truststore.password=truststorepass
+
+# Timeout Settings (Optional)
+my.connection.timeout=5000
+my.connection.read.timeout=30000
+
+# Proxy Configuration (Optional)
+my.connection.proxy.host=proxy.company.com
+my.connection.proxy.port=8080
+----
+
+Usage in code:
+
+[source,java]
+----
+@Inject
+@ConfigAsConnectionMetadata(baseName = "my.connection")
+private Provider<ConnectionMetadata> connectionMetadata;
+
+// Or with fail-fast disabled
+@Inject
+@ConfigAsConnectionMetadata(baseName = "my.connection", failOnInvalidConfiguration = false)
+private Provider<ConnectionMetadata> connectionMetadata;
+----
+
+Configuration Notes:
+
+* `baseName`: The prefix for all configuration properties (e.g., "my.connection")
+* `authentication.type`: Supported values: `NONE`, `BASIC`, `TOKEN`, `CERTIFICATE`
+* `type`: Supported values: `REST`, `SOAP`, `UNDEFINED`
+* All timeout values are in milliseconds
+* For certificate authentication, both keystore and truststore configurations are supported
+* Proxy configuration is optional and requires both host and port to be set
+* Use `failOnInvalidConfiguration = false` to handle missing or invalid configuration gracefully
+
 == Best Practices
 
 === Key Naming
