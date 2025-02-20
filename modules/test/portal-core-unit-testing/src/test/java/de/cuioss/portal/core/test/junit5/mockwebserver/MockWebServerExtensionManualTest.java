@@ -15,42 +15,36 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
+import lombok.Getter;
 import lombok.Setter;
-import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.IOException;
-
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * Test class for verifying that the {@link MockWebServerExtension} works correctly
+ * when manually registered with {@link ExtendWith}.
+ */
+@ExtendWith(MockWebServerExtension.class)
 @EnableMockWebServer(manualStart = true)
 class MockWebServerExtensionManualTest implements MockWebServerHolder {
 
+    @Getter
     @Setter
     private MockWebServer mockWebServer;
 
     @Test
-    void shouldHandleMockWebServer() throws IOException {
-        assertNotNull(mockWebServer);
-        mockWebServer.start(0);
-    }
+    void shouldProvideServerNotStartedServer() throws Exception {
+        assertNotNull(mockWebServer, "Server should be injected even for manual start");
 
-    @Override
-    public Dispatcher getDispatcher() {
-        return new Dispatcher() {
+        // Now start the server manually
+        assertDoesNotThrow(() ->mockWebServer.start());
 
-            @Override
-            public @NotNull MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
-                assert request.getPath() != null;
-                return switch (request.getPath()) {
-                    case "/index" -> new MockResponse(200);
-                    default -> new MockResponse(403);
-                };
-            }
-        };
+        // Clean up
+        mockWebServer.shutdown();
     }
 }

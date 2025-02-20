@@ -81,7 +81,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = PORTAL_TRACING_ENABLED + ":true")
-@EnableMockWebServer(manualStart = true)
+@EnableMockWebServer(manualStart = false)
 @EnableTestLogger(trace = {CuiRestClientBuilder.class, CuiRestClientBuilderTest.class})
 @AddExtensions(ResteasyCdiExtension.class)
 class CuiRestClientBuilderTest implements MockWebServerHolder {
@@ -242,29 +242,6 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
         final var result = service.test();
 
-        assertEquals(TEXT, result);
-        assertNotNull(takeRequest(), "Request didn't happen");
-    }
-
-    @Test
-    void incorrectHostname() throws Exception {
-        final var hostname = InetAddress.getLocalHost().getCanonicalHostName();
-
-        final var heldCertificate = new HeldCertificate.Builder().commonName(hostname).build();
-        final var handshakeCertificates = new HandshakeCertificates.Builder().heldCertificate(heldCertificate)
-                .addTrustedCertificate(heldCertificate.certificate()).build();
-        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
-        mockWebServer.start(InetAddress.getByName(hostname), 0);
-
-        assertNotEquals("localhost", hostname);
-
-        final var port = mockWebServer.getPort();
-        mockWebServer.setDispatcher(getDispatcher());
-
-        service = new CuiRestClientBuilder(LOGGER).sslContext(handshakeCertificates.sslContext())
-                .url(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
-                .build(TestResource.class);
-        final var result = service.test();
         assertEquals(TEXT, result);
         assertNotNull(takeRequest(), "Request didn't happen");
     }

@@ -15,84 +15,87 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 import de.cuioss.tools.logging.CuiLogger;
 import mockwebserver3.MockWebServer;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-import org.junit.platform.commons.support.AnnotationSupport;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
- * Handle the lifetime of an instance of {@link MockWebServer}, see
- * {@link EnableMockWebServer} for details on using
- *
- * @author Oliver Wolff
+ * JUnit 5 extension that provides {@link MockWebServer} support for tests. It will
+ * create a new {@link MockWebServer} instance for each test method and close it
+ * afterwards. Supports nested test classes by sharing the parent's MockWebServer instance.
  */
-public class MockWebServerExtension implements TestInstancePostProcessor, AfterEachCallback {
+public class MockWebServerExtension implements BeforeEachCallback, AfterEachCallback {
 
     private static final CuiLogger LOGGER = new CuiLogger(MockWebServerExtension.class);
 
-    /**
-     * Identifies the {@link Namespace} under which the concrete instance of
-     * {@link MockWebServer} is stored.
-     */
-    public static final Namespace NAMESPACE = Namespace.create("test", "portal", "MockWebServer");
+    private MockWebServer server;
 
-    @SuppressWarnings({"squid:S2095"}) // owolff: Will be closed after all tests
     @Override
-    public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) throws Exception {
+        var testInstance = context.getRequiredTestInstance();
+        var testClass = testInstance.getClass();
+        var annotation = testClass.getAnnotation(EnableMockWebServer.class);
+        boolean manualStart = annotation != null && annotation.manualStart();
 
-        var mockWebServer = new MockWebServer();
-
-        assertInstanceOf(MockWebServerHolder.class, testInstance, "In order to use within a test the test-class must implement de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder "
-                + testInstance);
-
-        var holder = (MockWebServerHolder) testInstance;
-        holder.setMockWebServer(mockWebServer);
-        Optional.ofNullable(holder.getDispatcher()).ifPresent(mockWebServer::setDispatcher);
-        if (extractAnnotation(testInstance.getClass()).map(annotation -> !annotation.manualStart())
-                .orElse(Boolean.FALSE)) {
-            mockWebServer.start();
-            LOGGER.info("Started MockWebServer at %s", mockWebServer.url("/"));
+        // For manual start tests, create a new server instance but don't start it
+        if (manualStart && testInstance instanceof MockWebServerHolder holder) {
+            LOGGER.debug("Creating new MockWebServer instance for manual start");
+            server = new MockWebServer();
+            // Configure dispatcher if provided
+            var dispatcher = holder.getDispatcher();
+            if (dispatcher != null) {
+                LOGGER.debug("Using custom dispatcher for MockWebServer");
+                server.setDispatcher(dispatcher);
+            }
+            holder.setMockWebServer(server);
+            return;
         }
-        put(mockWebServer, context);
+
+        // For non-manual tests, create and start the server if needed
+        if (!manualStart && server == null) {
+            LOGGER.debug("Initializing new MockWebServer instance");
+            server = new MockWebServer();
+            
+            // Configure dispatcher if provided
+            if (testInstance instanceof MockWebServerHolder holder) {
+                var dispatcher = holder.getDispatcher();
+                if (dispatcher != null) {
+                    LOGGER.debug("Using custom dispatcher for MockWebServer");
+                    server.setDispatcher(dispatcher);
+                }
+            }
+
+            // Start server for non-manual tests
+            LOGGER.debug("Starting MockWebServer on random port");
+            server.start();
+        }
+
+        // Inject server for non-manual tests
+        if (!manualStart && testInstance instanceof MockWebServerHolder holder) {
+            LOGGER.debug("Test class implements MockWebServerHolder, injecting server instance");
+            holder.setMockWebServer(server);
+        }
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        var server = get(context);
-        if (server.isPresent()) {
-            LOGGER.info("Shutting down MockWebServer at %s", server.get().url("/"));
-            server.get().shutdown();
-        } else {
-            LOGGER.error("Server not present, therefore can not be shutdown");
+        var testInstance = context.getRequiredTestInstance();
+        var testClass = testInstance.getClass();
+        var annotation = testClass.getAnnotation(EnableMockWebServer.class);
+        boolean manualStart = annotation != null && annotation.manualStart();
+
+        // For manual start, don't try to shut down the server
+        if (manualStart) {
+            return;
         }
 
-    }
-
-    private static void put(MockWebServer mockWebServer, ExtensionContext context) {
-        context.getStore(NAMESPACE).put(MockWebServer.class.getName(), mockWebServer);
-    }
-
-    private Optional<MockWebServer> get(ExtensionContext context) {
-        return Optional.ofNullable((MockWebServer) context.getStore(NAMESPACE).get(MockWebServer.class.getName()));
-    }
-
-    private static Optional<EnableMockWebServer> extractAnnotation(Class<?> testClass) {
-        Optional<EnableMockWebServer> annotation = AnnotationSupport.findAnnotation(testClass,
-                EnableMockWebServer.class);
-        if (annotation.isPresent()) {
-            return annotation;
+        if (server != null) {
+            LOGGER.debug("Shutting down MockWebServer at %s", server.url("/"));
+            server.shutdown();
+            server = null;
         }
-        if (Object.class.equals(testClass.getClass())) {
-            return Optional.empty();
-        }
-        return extractAnnotation(testClass.getSuperclass());
     }
-
 }

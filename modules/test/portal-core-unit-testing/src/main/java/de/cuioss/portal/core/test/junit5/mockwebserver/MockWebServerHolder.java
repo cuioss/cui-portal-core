@@ -27,12 +27,10 @@ import mockwebserver3.MockWebServer;
  * <pre>
  * &#64;EnableMockWebServer
  * class BasicHttpTest implements MockWebServerHolder {
+ *     &#64;Getter
+ *     &#64;Setter
  *     private MockWebServer server;
  *
- *     &#64;Override
- *     public void setMockWebServer(MockWebServer mockWebServer) {
- *         this.server = mockWebServer;
- *     }
  * }
  * </pre>
  *
@@ -40,12 +38,9 @@ import mockwebserver3.MockWebServer;
  * <pre>
  * &#64;EnableMockWebServer
  * class CustomDispatchTest implements MockWebServerHolder {
+ *     &#64;Getter
+ *     &#64;Setter
  *     private MockWebServer server;
- *
- *     &#64;Override
- *     public void setMockWebServer(MockWebServer mockWebServer) {
- *         this.server = mockWebServer;
- *     }
  *
  *     &#64;Override
  *     public Dispatcher getDispatcher() {
@@ -65,6 +60,7 @@ import mockwebserver3.MockWebServer;
  * <h2>Usage Notes</h2>
  * <ul>
  *   <li>The {@link #setMockWebServer(MockWebServer)} method must be implemented to receive the server instance</li>
+ *   <li>The {@link #getMockWebServer()} method must be implemented to retrieve the server instance</li>
  *   <li>Implement {@link #getDispatcher()} to provide custom request handling logic</li>
  *   <li>The server instance is managed by {@link MockWebServerExtension}</li>
  *   <li>Default dispatcher returns null, meaning requests are handled by the default MockWebServer behavior</li>
@@ -78,20 +74,33 @@ import mockwebserver3.MockWebServer;
 public interface MockWebServerHolder {
 
     /**
-     * Callback method to receive the {@link MockWebServer} instance.
-     * This method is called by the test infrastructure to provide the server instance.
+     * Returns the {@link MockWebServer} instance used in tests.
+     * The default implementation returns null. This method can be overridden
+     * to provide custom access to the server instance.
      *
-     * @param mockWebServer the server instance to be used in tests, never {@code null}
+     * @return the server instance, may be {@code null} if not yet initialized
      */
-    default void setMockWebServer(MockWebServer mockWebServer) {
+    default MockWebServer getMockWebServer() {
+        return null;
     }
 
     /**
-     * Provides a custom {@link Dispatcher} for handling HTTP requests.
-     * Override this method to implement custom request handling logic.
+     * Callback method to receive the {@link MockWebServer} instance.
+     * The default implementation does nothing. Override this method if you need
+     * to store the server instance for later use.
      *
-     * @return a {@link Dispatcher} instance, or {@code null} to use default request handling
-     * @see MockWebServer#setDispatcher(Dispatcher)
+     * @param mockWebServer The server instance to be used
+     */
+    default void setMockWebServer(MockWebServer mockWebServer) {
+        // Default implementation does nothing
+    }
+
+    /**
+     * Provides a custom {@link Dispatcher} for the {@link MockWebServer}.
+     * The default implementation returns null, which means the default dispatcher will be used.
+     * Override this method to provide custom request handling logic.
+     *
+     * @return the dispatcher to be used, or {@code null} to use the default dispatcher
      */
     default Dispatcher getDispatcher() {
         return null;
