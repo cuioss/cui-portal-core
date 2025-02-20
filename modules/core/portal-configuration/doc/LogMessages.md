@@ -1,48 +1,191 @@
-# Log Messages for Portal Configuration Module
+# Portal Configuration Module Log Messages
 
-All messages follow the format: PortalConfig-[identifier]: [message]
+## Message Categories
 
-## INFO Level (001-099)
+- INFO (001-099): Informational messages about normal operation
+- WARN (100-199): Warning messages about potential issues
+- ERROR (200-299): Error messages about operational failures
+- FATAL (300-399): Critical system failures
 
-| ID | Component | Message | Description |
-|----|-----------|---------|-------------|
-| PortalConfig-001 | CONFIG | Running in Production-Mode | Logged when the application is running in production mode |
-| PortalConfig-020 | CONFIG | Watching for file changes at path: %s | Logged when file watching is started for configuration changes |
+## INFO Messages (001-099)
 
-## WARN Level (100-199)
+### Project Stage Messages
+- **001**: Running in Production-Mode
+  - Logged when the system is running in production mode
+  - Level: INFO
 
-| ID | Component | Message | Description |
-|----|-----------|---------|-------------|
-| PortalConfig-100 | AUTH | Unable to determine AuthenticationType for connection='%s' and properties, returning AuthenticationType.NONE | Logged when authentication type cannot be determined from configuration |
-| PortalConfig-101 | CONFIG | Project stage 'development' detected. Set the property 'portal.stage' to 'production' for productive usage. | Warns about development mode being active |
-| PortalConfig-102 | CONN | Invalid configuration found for .type, actual '%s', expected one of '%s', defaulting to 'ConnectionType.UNDEFINED' | Logged when an invalid connection type is specified in configuration |
-| PortalConfig-110 | CONFIG | Project stage 'test' detected. Set the property 'portal.stage' to 'production' for productive usage. | Warns about test mode being active |
-| PortalConfig-120 | CONFIG | Invalid configuration found for Locale: %s | Logged when an invalid locale configuration is detected |
-| PortalConfig-130 | CONFIG | Invalid element found, watchKey='%s', ignoring | Logged when an invalid watch key is encountered |
-| PortalConfig-140 | CONFIG | Path '%s' %s, therefore it can not be watched | Logged when a path cannot be watched for changes |
-| PortalConfig-141 | CONFIG | Unable to read metadata for file %s | Logged when file metadata cannot be read |
-| PortalConfig-142 | CONFIG | Directory %s could not be read | Logged when a directory cannot be read |
-| PortalConfig-150 | CONFIG | Unable to construct ConnectionMetadata, due to %s | Logged when connection metadata construction fails |
-| PortalConfig-160 | CONFIG | Configuration setting for baseName is missing. | Logged when required baseName configuration is missing |
-| PortalConfig-161 | CONFIG | Missing configuration for %s detected. | Logged when required configuration is missing |
-| PortalConfig-170 | CONFIG | Configuration for basic authentication is incomplete. Missing: %s | Logged when basic auth configuration is incomplete |
-| PortalConfig-171 | CONFIG | Configuration for token based authentication is incomplete. Missing: %s | Logged when token auth configuration is incomplete |
+### System Configuration Messages
+- **003**: JVM Configuration:\n%s
+  - Logged when displaying system JVM configuration
+  - Parameters: Configuration properties as string
+  - Level: INFO
 
-## ERROR Level (200-299)
+- **004**: Environment Configuration:\n%s
+  - Logged when displaying environment configuration
+  - Parameters: Environment variables as string
+  - Level: INFO
 
-| ID | Component | Message | Description |
-|----|-----------|---------|-------------|
-| PortalConfig-200 | CONFIG | Invalid content for '%s%s', expected a number but was '%s' | Logged when a number configuration value is invalid |
-| PortalConfig-210 | CONFIG | Invalid content for '%s%s', expected one of %s but was '%s' | Logged when a time unit configuration value is invalid |
-| PortalConfig-220 | CONFIG | Invalid content for '%s%s', expected a boolean but was '%s' | Logged when a boolean configuration value is invalid |
-| PortalConfig-230 | CONFIG | Invalid content for '%s', expected a number but was '%s' | Logged when a numeric value is invalid |
-| PortalConfig-240 | CONFIG | Unable to access File-system for detecting changes, due to '%s', use the configuration property '%s' to disable this feature | Logged when file system access fails |
-| PortalConfig-241 | CONFIG | Error while polling / accessing the file-system | Logged when file system polling fails |
-| PortalConfig-242 | CONFIG | Handling fileChangedEvent failed for file %s | Logged when file change event handling fails |
-| PortalConfig-250 | CONFIG | Connection error for %s: %s | Logged when a connection error occurs |
-| PortalConfig-251 | CONFIG | Connection timeout for %s: %s | Logged when a connection timeout occurs |
-| PortalConfig-252 | CONFIG | Connection refused for %s: %s | Logged when a connection is refused |
-| PortalConfig-260 | CONFIG | Missing connection metadata for %s | Logged when connection metadata is missing |
-| PortalConfig-261 | CONFIG | Invalid connection metadata for %s | Logged when connection metadata is invalid |
-| PortalConfig-270 | CONFIG | Unable to schedule given Path for tracking for changes, due to '%s' | Logged when path scheduling fails |
-| PortalConfig-280 | CONFIG | Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration | Logged when SSL context creation fails |
+- **005**: Portal Configuration:\n%s
+  - Logged when displaying portal configuration
+  - Parameters: Portal properties as string
+  - Level: INFO
+
+### File System Messages
+- **020**: Watching for file changes at path: %s
+  - Logged when file watching is initialized for a path
+  - Parameters: Absolute path being watched
+  - Level: INFO
+
+## WARN Messages (100-199)
+
+### Authentication Messages
+- **100**: Unable to determine AuthenticationType for connection='%s' and properties, returning AuthenticationType.NONE
+  - Logged when authentication type cannot be determined
+  - Parameters: Connection name
+  - Level: WARN
+
+### Project Stage Messages
+- **101**: Project stage 'development' detected. Set the property 'portal.stage' to 'production' for productive usage.
+  - Logged when development mode is detected
+  - Level: WARN
+
+- **110**: Project stage 'test' detected. Set the property 'portal.stage' to 'production' for productive usage.
+  - Logged when test mode is detected
+  - Level: WARN
+
+### Configuration Messages
+- **102**: Invalid configuration found for .type, actual '%s', expected one of '%s', defaulting to 'ConnectionType.UNDEFINED'
+  - Logged when invalid connection type is configured
+  - Parameters: Actual type, Expected types
+  - Level: WARN
+
+- **120**: Invalid configuration found for Locale: %s
+  - Logged when invalid locale configuration is found
+  - Parameters: Invalid locale string
+  - Level: WARN
+
+### File System Messages
+- **130**: Invalid element found, watchKey='%s', ignoring
+  - Logged when invalid watch key is encountered
+  - Parameters: Watch key
+  - Level: WARN
+
+- **140**: Path '%s' %s, therefore it can not be watched
+  - Logged when path cannot be watched
+  - Parameters: Path, Reason
+  - Level: WARN
+
+- **141**: Unable to read metadata for file %s
+  - Logged when file metadata cannot be read
+  - Parameters: File path
+  - Level: WARN
+
+- **142**: Directory %s could not be read
+  - Logged when directory cannot be read
+  - Parameters: Directory path
+  - Level: WARN
+
+### Connection Messages
+- **150**: Unable to construct ConnectionMetadata, due to %s
+  - Logged when connection metadata construction fails
+  - Parameters: Error message
+  - Level: WARN
+
+### Missing Configuration Messages
+- **160**: Configuration setting for baseName is missing.
+  - Logged when base name configuration is missing
+  - Level: WARN
+
+- **161**: Missing configuration for %s detected.
+  - Logged when required configuration is missing
+  - Parameters: Configuration key
+  - Level: WARN
+
+- **170**: Configuration for basic authentication is incomplete. Missing: %s
+  - Logged when basic auth configuration is incomplete
+  - Parameters: Missing fields
+  - Level: WARN
+
+- **171**: Configuration for token based authentication is incomplete. Missing: %s
+  - Logged when token auth configuration is incomplete
+  - Parameters: Missing fields
+  - Level: WARN
+
+## ERROR Messages (200-299)
+
+### Configuration Errors
+- **200**: Invalid content for '%s%s', expected a number but was '%s'
+  - Logged when number configuration is invalid
+  - Parameters: Config prefix, Key, Invalid value
+  - Level: ERROR
+
+- **210**: Invalid content for '%s%s', expected one of %s but was '%s'
+  - Logged when time unit configuration is invalid
+  - Parameters: Config prefix, Key, Valid values, Invalid value
+  - Level: ERROR
+
+- **212**: Could not convert input value '%s' to enum of type: %s. Reason: %s
+  - Logged when enum conversion fails
+  - Parameters: Input value, Enum class, Error reason
+  - Level: ERROR
+
+- **220**: Invalid content for '%s%s', expected a boolean but was '%s'
+  - Logged when boolean configuration is invalid
+  - Parameters: Config prefix, Key, Invalid value
+  - Level: ERROR
+
+- **230**: Invalid content for '%s', expected a number but was '%s'
+  - Logged when number value is invalid
+  - Parameters: Key, Invalid value
+  - Level: ERROR
+
+### File System Errors
+- **240**: Unable to access File-system for detecting changes, due to '%s', use the configuration property '%s' to disable this feature
+  - Logged when file system access fails
+  - Parameters: Error message, Configuration property
+  - Level: ERROR
+
+- **241**: Error while polling / accessing the file-system
+  - Logged when file system polling fails
+  - Level: ERROR
+
+- **242**: Handling fileChangedEvent failed for file %s
+  - Logged when file change event handling fails
+  - Parameters: File path
+  - Level: ERROR
+
+### Connection Errors
+- **250**: Connection error for %s: %s
+  - Logged when general connection error occurs
+  - Parameters: Connection name, Error message
+  - Level: ERROR
+
+- **251**: Connection timeout for %s: %s
+  - Logged when connection timeout occurs
+  - Parameters: Connection name, Error message
+  - Level: ERROR
+
+- **252**: Connection refused for %s: %s
+  - Logged when connection is refused
+  - Parameters: Connection name, Error message
+  - Level: ERROR
+
+- **260**: Missing connection metadata for %s
+  - Logged when connection metadata is missing
+  - Parameters: Connection name
+  - Level: ERROR
+
+- **261**: Invalid connection metadata for %s
+  - Logged when connection metadata is invalid
+  - Parameters: Connection name
+  - Level: ERROR
+
+- **270**: Unable to schedule given Path for tracking for changes, due to '%s'
+  - Logged when path scheduling fails
+  - Parameters: Error message
+  - Level: ERROR
+
+- **280**: Unable to create SSLContext for connection '%s', due to '%s', defaulting to default ssl configuration
+  - Logged when SSL context creation fails
+  - Parameters: Connection ID, Error message
+  - Level: ERROR

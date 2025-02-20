@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
 import static java.lang.Boolean.parseBoolean;
 import static java.util.Objects.requireNonNull;
@@ -58,16 +59,9 @@ public class ConnectionMetadataProducer {
 
     private static final CuiLogger LOGGER = new CuiLogger(ConnectionMetadataProducer.class);
 
-    private static final String UNABLE_TO_CONSTRUCT_MSG = "Portal-116: Unable to construct ConnectionMetadata, due to ";
-
-    /**
-     * "Portal-117: Configuration setting for baseName is missing."
-     */
-    public static final String MISSING_BASENAME_MSG = "Portal-117: Configuration setting for baseName is missing.";
-    private static final String MISSING_CONFIG_MSG = "Portal-119: Missing configuration for %s detected.";
-    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: %s";
-    private static final String MISSING_TOKEN_CONFIG_MSG = "Portal-120: Configuration for token based authentication is incomplete. Missing: %s";
-    private static final String INVALID_NUMBER_VALUE = "Portal-526: Invalid content for '%s', expected a number but was '%s'";
+    public static final String MISSING_BASENAME_MSG = "Configuration setting for baseName is missing.";
+    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Configuration for basic authentication is incomplete. Missing: %s";
+    private static final String MISSING_TOKEN_CONFIG_MSG = "Configuration for token based authentication is incomplete. Missing: %s";
 
     /**
      * Try to create {@linkplain ConnectionMetadata}<br>
@@ -110,7 +104,7 @@ public class ConnectionMetadataProducer {
      * @return the created {@link ConnectionMetadata}
      */
     public static ConnectionMetadata createConnectionMetadata(final String baseName,
-            final boolean failOnInvalidConfiguration) {
+                                                              final boolean failOnInvalidConfiguration) {
         LOGGER.trace("Creating ConnectionMetadata for '%s'", baseName);
         final var builder = ConnectionMetadata.builder();
         // Basename must be present
@@ -156,7 +150,7 @@ public class ConnectionMetadataProducer {
             meta.validate();
             return meta;
         } catch (final ConnectionConfigurationException e) {
-            LOGGER.warn(UNABLE_TO_CONSTRUCT_MSG + e.getMessage());
+            LOGGER.warn(e, WARN.UNABLE_TO_CONSTRUCT.format(e.getMessage()));
             throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
@@ -171,7 +165,7 @@ public class ConnectionMetadataProducer {
     @SuppressWarnings("squid:S1301") // We will use the switch soon, Delete this if the switch is
     // extended
     private static void handleAuthentication(final String baseName, final boolean failOnInvalidConfiguration,
-            final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
+                                             final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
         LOGGER.trace("Determining AuthenticationType for '%s'", baseName);
         // Determine Authentication
         final var authenticationType = AuthenticationType.resolveFrom(baseName, filteredProperties);
@@ -218,8 +212,8 @@ public class ConnectionMetadataProducer {
     }
 
     private static void handleMissingProperty(final String propertyName, final String exceptionMessage,
-            final boolean failOnInvalidConfiguration) {
-        LOGGER.warn(MISSING_CONFIG_MSG, propertyName);
+                                              final boolean failOnInvalidConfiguration) {
+        LOGGER.warn(WARN.MISSING_CONFIG.format(propertyName));
         if (failOnInvalidConfiguration) {
             throw new IllegalArgumentException(exceptionMessage);
         }
@@ -289,7 +283,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<String> extractFirstKeyValue(final Map<String, String> filteredProperties,
-            final String... keys) {
+                                                         final String... keys) {
         for (final String key : keys) {
             final var value = filteredProperties.get(key);
             if (!MoreStrings.isEmpty(value)) {
@@ -309,7 +303,7 @@ public class ConnectionMetadataProducer {
      * @throws IllegalArgumentException if the value cannot be parsed
      */
     private static Optional<Long> getPositiveLong(final String key, final String value,
-            final boolean failOnInvalidConfiguration) {
+                                                  final boolean failOnInvalidConfiguration) {
         if (MoreStrings.isEmpty(value)) {
             LOGGER.trace("No value present for '%s', returning empty-value", key);
             return Optional.empty();
@@ -326,7 +320,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<Integer> getPositiveInt(final String key, final String value,
-            final boolean failOnInvalidConfiguration) {
+                                                    final boolean failOnInvalidConfiguration) {
         if (MoreStrings.isEmpty(value)) {
             LOGGER.trace("No value present for '%s', returning empty-value", key);
             return Optional.empty();

@@ -16,6 +16,7 @@
 package de.cuioss.portal.configuration.util;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.tools.collect.MapBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
@@ -447,7 +448,7 @@ public final class ConfigurationHelper {
             }
             result = Enum.valueOf(enumClass, value);
         } catch (final IllegalArgumentException ex) {
-            LOGGER.error("Portal-512: Could not convert input value '{}' to enum of type: {}. Reason: {}", inputValue, enumClass, ex.getMessage());
+            LOGGER.error(PortalConfigurationMessages.ERROR.ENUM_CONVERSION.format(inputValue, enumClass, ex.getMessage()));
             if (explodeOnInvalidInput) {
                 throw ex;
             }

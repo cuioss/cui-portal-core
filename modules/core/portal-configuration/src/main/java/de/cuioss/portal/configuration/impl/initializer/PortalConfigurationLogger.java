@@ -17,6 +17,7 @@ package de.cuioss.portal.configuration.impl.initializer;
 
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.INFO;
 import static de.cuioss.tools.string.MoreStrings.isEmpty;
 import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
@@ -53,10 +55,9 @@ public class PortalConfigurationLogger implements ApplicationInitializer {
             return;
         }
 
-        LOGGER.info("JVM Configuration:\n" + Joiner.on('\n').join(extractSystemProperties()));
-        LOGGER.info("Environment Configuration:\n" + Joiner.on('\n').join(extractProperties(System.getenv())));
-        LOGGER.info("Portal Configuration:\n"
-                + Joiner.on('\n').join(extractProperties(ConfigurationHelper.resolveConfigProperties())));
+        LOGGER.info(INFO.SYSTEM_CONFIG.format(Joiner.on('\n').join(extractSystemProperties())));
+        LOGGER.info(INFO.ENV_CONFIG.format(Joiner.on('\n').join(extractProperties(System.getenv()))));
+        LOGGER.info(INFO.PORTAL_CONFIG.format(Joiner.on('\n').join(extractProperties(ConfigurationHelper.resolveConfigProperties()))));
     }
 
     private List<String> extractProperties(final Map<String, String> input) {

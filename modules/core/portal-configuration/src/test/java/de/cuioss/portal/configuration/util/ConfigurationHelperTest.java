@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.configuration.util;
 
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.enterprise.inject.spi.Annotated;
@@ -120,7 +121,7 @@ class ConfigurationHelperTest {
         void shouldConvertToEnumUsingDefault() {
             TestLogLevel.ERROR.addLogger(ConfigurationHelper.class);
             assertEquals(TestEnum.TWO, ConfigurationHelper.convertToEnum("invalid", TestEnum.class, TestEnum.TWO));
-            assertLogMessagePresentContaining(TestLogLevel.ERROR, "Portal-512");
+            assertLogMessagePresentContaining(TestLogLevel.ERROR, PortalConfigurationMessages.ERROR.ENUM_CONVERSION.resolveIdentifierString());
         }
 
         @Test

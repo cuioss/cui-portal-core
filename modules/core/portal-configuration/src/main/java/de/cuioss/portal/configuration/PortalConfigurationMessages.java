@@ -92,6 +92,27 @@ public class PortalConfigurationMessages {
                 .template("Running in Production-Mode")
                 .build();
 
+        /** System configuration information (003) */
+        public static final LogRecord SYSTEM_CONFIG = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(3)
+                .template("JVM Configuration:\n%s")
+                .build();
+
+        /** Environment configuration information (004) */
+        public static final LogRecord ENV_CONFIG = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(4)
+                .template("Environment Configuration:\n%s")
+                .build();
+
+        /** Portal configuration information (005) */
+        public static final LogRecord PORTAL_CONFIG = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(5)
+                .template("Portal Configuration:\n%s")
+                .build();
+
         /** Watching for file changes at path (020) */
         public static final LogRecord FILE_WATCH_STARTED = LogRecordModel.builder()
                 .prefix(PREFIX)
@@ -221,6 +242,13 @@ public class PortalConfigurationMessages {
                 .prefix(PREFIX)
                 .identifier(210)
                 .template("Invalid content for '%s%s', expected one of %s but was '%s'")
+                .build();
+
+        /** Error converting enum value (212) */
+        public static final LogRecord ENUM_CONVERSION = LogRecordModel.builder()
+                .prefix(PREFIX)
+                .identifier(212)
+                .template("Could not convert input value '%s' to enum of type: %s. Reason: %s")
                 .build();
 
         /** Invalid boolean configuration (220) */
