@@ -46,3 +46,30 @@ try (MyRestResource resource = restClientBuilder.build(MyRestResource.class)) {
 ----
 
 == Configuration Properties
+
+=== Connection Configuration
+The REST client uses ConnectionMetadata for configuration.
+For a complete configuration example,
+see the link:../../core/portal-configuration/README.adoc#connection-metadata-configuration-example[Connection Metadata Configuration Example].
+
+Example usage:
+
+[source,properties]
+----
+# Basic connection settings
+my.rest.client.url=https://api.example.com
+my.rest.client.authentication.type=BASIC
+my.rest.client.authentication.basic.username=user
+my.rest.client.authentication.basic.password=secret
+
+# Timeouts
+my.rest.client.timeout=5000
+my.rest.client.read.timeout=30000
+----
+
+[source,java]
+----
+@Inject
+@ConfigAsConnectionMetadata(baseName = "my.rest.client")
+private Provider<ConnectionMetadata> connectionConfig;
+----
