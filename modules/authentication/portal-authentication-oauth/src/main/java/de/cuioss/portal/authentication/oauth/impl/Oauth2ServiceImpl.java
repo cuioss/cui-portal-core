@@ -55,9 +55,45 @@ import static java.net.URLEncoder.encode;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Default implementation of {@link Oauth2Service}.
+ * Default implementation of {@link Oauth2Service} that handles OAuth2 authentication flows.
+ * This service implementation manages token requests, user information retrieval,
+ * and authenticated user creation.
  *
- * @author Matthias Walliczek
+ * <p>Core responsibilities:
+ * <ul>
+ *   <li>Token Management
+ *     <ul>
+ *       <li>Authorization code exchange</li>
+ *       <li>Client credentials flow</li>
+ *       <li>Token refresh</li>
+ *     </ul>
+ *   </li>
+ *   <li>User Information
+ *     <ul>
+ *       <li>Userinfo endpoint integration</li>
+ *       <li>Role/claim mapping</li>
+ *       <li>User object creation</li>
+ *     </ul>
+ *   </li>
+ *   <li>OAuth2 Flow Management
+ *     <ul>
+ *       <li>State validation</li>
+ *       <li>PKCE support</li>
+ *       <li>Redirect URI handling</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <p>Implementation notes:
+ * <ul>
+ *   <li>Thread-safe and application-scoped</li>
+ *   <li>Uses MicroProfile Rest Client for HTTP operations</li>
+ *   <li>Supports standard OAuth2 error responses</li>
+ * </ul>
+ *
+ * @see Oauth2Service
+ * @see Oauth2Configuration
+ * @see Token
  */
 @ApplicationScoped
 public class Oauth2ServiceImpl implements Oauth2Service {
@@ -73,8 +109,8 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
         Token requestToken(@FormParam("grant_type") String grantType, @FormParam("code") String code,
-                @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
-                @FormParam("redirect_uri") String redirectUri);
+                           @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
+                           @FormParam("redirect_uri") String redirectUri);
     }
 
     public interface RequestRefreshToken extends Closeable {
@@ -119,7 +155,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,
-            final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
+                                                             final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
 
         requireNonNull(servletRequest);
         requireNonNull(code);
@@ -168,7 +204,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
     }
 
     private AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Oauth2Configuration configuration,
-            Token token, int tokenTimestamp) {
+                                                            Token token, int tokenTimestamp) {
 
         final String userInfoUri = configuration.getUserInfoUri().trim();
         final CuiRestClientBuilder builder = new CuiRestClientBuilder(LOGGER)

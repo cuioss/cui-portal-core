@@ -44,10 +44,31 @@ import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
 import static de.cuioss.tools.string.MoreStrings.isBlank;
 
 /**
- * Produces {@link Oauth2Configuration} using the new config params
- * ({@see OAuthConfigKeys}).
- *
- * @author Matthias Walliczek
+ * CDI producer for {@link Oauth2Configuration} that supports OpenID Connect Discovery.
+ * This producer automatically configures OAuth2 settings by fetching configuration
+ * from the OpenID Connect provider's discovery endpoint.
+ * 
+ * <p>Configuration sources in order of precedence:
+ * <ul>
+ *   <li>OpenID Connect Discovery document (.well-known/openid-configuration)</li>
+ *   <li>Fallback to manual configuration via application properties</li>
+ * </ul>
+ * 
+ * <p>Required configuration properties:
+ * <ul>
+ *   <li>{@code authentication.oidc.server.baseUrl} - Base URL of the OIDC provider</li>
+ *   <li>{@code authentication.oidc.client.id} - OAuth2 client ID</li>
+ *   <li>{@code authentication.oidc.client.secret} - OAuth2 client secret</li>
+ * </ul>
+ * 
+ * <p>Optional configuration:
+ * <ul>
+ *   <li>{@code authentication.oidc.server.discoveryPath} - Custom discovery path</li>
+ *   <li>{@code authentication.oidc.client.role_mapper_claim} - Role mapping claim</li>
+ * </ul>
+ * 
+ * @see OAuthConfigKeys
+ * @see Oauth2Configuration
  */
 @ApplicationScoped
 public class Oauth2DiscoveryConfigurationProducer {

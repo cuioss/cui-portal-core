@@ -27,9 +27,29 @@ import java.util.List;
 import static de.cuioss.tools.base.Preconditions.checkState;
 
 /**
- * Default implementation.
- *
- * @author Matthias Walliczek
+ * Default implementation of {@link Oauth2Configuration}.
+ * This class provides a complete implementation of the OAuth2 configuration
+ * contract, supporting all standard OAuth2 configuration properties.
+ * 
+ * <p>Features:
+ * <ul>
+ *   <li>Immutable after construction</li>
+ *   <li>Builder pattern for flexible instantiation</li>
+ *   <li>Serializable for configuration storage</li>
+ *   <li>Validation of required configuration properties</li>
+ * </ul>
+ * 
+ * <p>The configuration includes all standard OAuth2 endpoints and properties:
+ * <ul>
+ *   <li>Client credentials (ID and secret)</li>
+ *   <li>Authorization endpoint</li>
+ *   <li>Token endpoint</li>
+ *   <li>User info endpoint</li>
+ *   <li>Role mapping configuration</li>
+ *   <li>Redirect URI handling</li>
+ * </ul>
+ * 
+ * @see Oauth2Configuration
  */
 @Data
 @Builder
@@ -40,14 +60,18 @@ public class Oauth2ConfigurationImpl implements Oauth2Configuration {
     @Serial
     private static final long serialVersionUID = 6666334248327168722L;
 
+    /** OAuth2 client identifier assigned by the authorization server */
     private String clientId;
 
+    /** OAuth2 client secret for client authentication */
     private String clientSecret;
 
     /**
-     * Used by the client to obtain authorization from the resource owner via user-agent redirection.
+     * Authorization endpoint URI used by the client to obtain authorization
+     * from the resource owner via user-agent redirection.
      *
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth 2.0 Authorization Request</a>
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-3.1">
+     *      OAuth 2.0 Authorization Endpoint</a>
      */
     private String authorizeUri;
 

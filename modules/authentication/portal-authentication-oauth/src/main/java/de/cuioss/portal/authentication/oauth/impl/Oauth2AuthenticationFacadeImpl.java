@@ -61,16 +61,57 @@ import static java.net.URLEncoder.encode;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Default implementation of {@link Oauth2AuthenticationFacade}. Uses
- * {@link Oauth2Service} to access the oauth2 rest interface.
- * <p>
- * Stores the requested and confirmed scopes with key SCOPES_KEY in the current
- * session.
- * <p>
- * Other internal values like STATE_KEY, NONCE_KEY and PKCE_CODE_KEY are also
- * stored in the current session.
+ * Default implementation of {@link Oauth2AuthenticationFacade} that manages
+ * the complete OAuth2 authentication lifecycle.
  *
- * @author Matthias Walliczek
+ * <p>Core features:
+ * <ul>
+ *   <li>Session Management
+ *     <ul>
+ *       <li>Scope storage and validation</li>
+ *       <li>State parameter handling</li>
+ *       <li>PKCE code verifier management</li>
+ *       <li>Nonce validation for OpenID Connect</li>
+ *     </ul>
+ *   </li>
+ *   <li>Authentication Flow
+ *     <ul>
+ *       <li>Initial authentication redirect</li>
+ *       <li>Token exchange and validation</li>
+ *       <li>Automatic token refresh</li>
+ *       <li>Logout handling with RP-initiated logout</li>
+ *     </ul>
+ *   </li>
+ *   <li>Security Features
+ *     <ul>
+ *       <li>CSRF protection via state parameter</li>
+ *       <li>PKCE for enhanced security</li>
+ *       <li>Secure random number generation</li>
+ *       <li>Token expiration checking</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <p>Session storage keys:
+ * <ul>
+ *   <li>{@code AuthenticatedUserInfo} - Current authenticated user</li>
+ *   <li>{@code State} - OAuth2 state parameter</li>
+ *   <li>{@code Nonce} - OpenID Connect nonce</li>
+ *   <li>{@code Scopes} - Requested OAuth2 scopes</li>
+ *   <li>{@code PKCE_CODE} - PKCE code verifier</li>
+ * </ul>
+ *
+ * <p>Implementation notes:
+ * <ul>
+ *   <li>Thread-safe and application-scoped</li>
+ *   <li>Uses {@link Oauth2Service} for OAuth2 operations</li>
+ *   <li>Integrates with {@link OauthRedirector} for navigation</li>
+ *   <li>Supports standard OAuth2 error responses</li>
+ * </ul>
+ *
+ * @see Oauth2AuthenticationFacade
+ * @see Oauth2Service
+ * @see OauthRedirector
  */
 @PortalAuthenticationFacade
 @ApplicationScoped
@@ -163,7 +204,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     }
 
     private Optional<AuthenticatedUserInfo> triggerAuthenticate(final List<UrlParameter> parameters,
-            final String scopes) {
+                                                                final String scopes) {
         final var code = parameters.stream().filter(parameter -> "code".equals(parameter.getName())).findAny();
         final var state = parameters.stream().filter(parameter -> "state".equals(parameter.getName())).findAny();
         final var error = parameters.stream().filter(parameter -> "error".equals(parameter.getName())).findAny();
@@ -189,7 +230,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @SuppressWarnings("squid:S3655") // already checked
     private Optional<AuthenticatedUserInfo> handleTriggerAuthenticate(final String scopes, final UrlParameter code,
-            final UrlParameter state) {
+                                                                      final UrlParameter state) {
         final var servletRequest = servletRequestProvider.get();
         LOGGER.debug("code and state parameter are present");
         final AuthenticatedUserInfo sessionUser;
