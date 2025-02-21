@@ -15,19 +15,6 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.net.InetAddress;
-import java.io.Closeable;
-
-import org.jboss.weld.junit5.auto.AddExtensions;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
@@ -42,16 +29,26 @@ import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import mockwebserver3.RecordedRequest;
 import okhttp3.Headers;
-import okhttp3.tls.HeldCertificate;
 import okhttp3.tls.HandshakeCertificates;
+import okhttp3.tls.HeldCertificate;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
+import java.io.Closeable;
+import java.net.InetAddress;
+
+import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = PORTAL_TRACING_ENABLED + ":true")
 @EnableTestLogger
-@AddExtensions({ ResteasyCdiExtension.class })
+@AddExtensions({ResteasyCdiExtension.class})
 @EnableMockWebServer(manualStart = true)
-public class HostnameVerificationTest implements MockWebServerHolder {
+class HostnameVerificationTest implements MockWebServerHolder {
 
     private static final CuiLogger LOGGER = new CuiLogger(HostnameVerificationTest.class);
 
@@ -69,6 +66,7 @@ public class HostnameVerificationTest implements MockWebServerHolder {
             }
         };
     }
+
     @Test
     void incorrectHostname() throws Exception {
         final var hostname = InetAddress.getLocalHost().getCanonicalHostName();

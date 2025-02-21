@@ -15,17 +15,6 @@
  */
 package de.cuioss.portal.authentication.dummy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.easymock.EasyMock;
-import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
@@ -33,6 +22,13 @@ import de.cuioss.uimodel.application.LoginCredentials;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
+import org.easymock.EasyMock;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @DisplayName("Tests DummyAuthenticationFacade behavior")
@@ -46,12 +42,12 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
     @Nested
     @DisplayName("Authentication Context Tests")
     class AuthenticationContextTests {
-        
+
         @Test
         @DisplayName("Should return NOT_LOGGED_IN for null request")
         void shouldHandleNullRequest() {
-            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, 
-                underTest.retrieveCurrentAuthenticationContext(null));
+            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN,
+                    underTest.retrieveCurrentAuthenticationContext(null));
         }
 
         @Test
@@ -59,15 +55,15 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
         void shouldHandleMockRequest() {
             HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
             EasyMock.replay(request);
-            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, 
-                underTest.retrieveCurrentAuthenticationContext(request));
+            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN,
+                    underTest.retrieveCurrentAuthenticationContext(request));
         }
     }
 
     @Nested
     @DisplayName("Login Tests")
     class LoginTests {
-        
+
         @Test
         @DisplayName("Should return NOT_LOGGED_IN for null request and credentials")
         void shouldHandleNullCredentials() {
@@ -83,7 +79,7 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
             credentials.setUsername("user");
             credentials.setPassword("pass");
             EasyMock.replay(request);
-            
+
             var result = underTest.login(request, credentials);
             assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, result.getResult());
         }
@@ -92,7 +88,7 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
     @Nested
     @DisplayName("Logout Tests")
     class LogoutTests {
-        
+
         @Test
         @DisplayName("Should return false for logout attempt")
         void shouldHandleLogout() {
@@ -111,7 +107,7 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
     @Nested
     @DisplayName("Default Configuration Tests")
     class DefaultConfigurationTests {
-        
+
         @Test
         @DisplayName("Should provide NOT_LOGGED_IN with expected properties")
         void shouldProvideNotLoggedInDefaults() {

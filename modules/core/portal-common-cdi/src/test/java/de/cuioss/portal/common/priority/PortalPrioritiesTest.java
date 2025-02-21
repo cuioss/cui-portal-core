@@ -28,10 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Tests the PortalPriorities utility class")
 class PortalPrioritiesTest {
@@ -88,7 +85,7 @@ class PortalPrioritiesTest {
         @Test
         @DisplayName("Should handle single element list")
         void shouldHandleSingleElementList() {
-            final List<SomeInterface> elements = Collections.singletonList(new HighPriorityClass());
+            final List<SomeInterface> elements = List.of(new HighPriorityClass());
             final List<SomeInterface> sorted = PortalPriorities.sortByPriority(elements);
 
             assertAll("Single element list verification",

@@ -19,10 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Tests PortalResourceLoader utility")
 class PortalResourceLoaderTest {
@@ -51,7 +48,7 @@ class PortalResourceLoaderTest {
 
         @Test
         @DisplayName("Should handle deprecated method")
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings({"deprecation", "squid:S5738"}) // owolff will be removed in 1.3.0
         void shouldHandleDeprecatedMethod() {
             var resource = PortalResourceLoader.getRessource(EXISTING_RESOURCE, getClass());
             assertTrue(resource.isPresent(), "Should find existing resource using deprecated method");

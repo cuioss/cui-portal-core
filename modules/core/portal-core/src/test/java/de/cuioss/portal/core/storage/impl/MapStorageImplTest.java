@@ -31,10 +31,7 @@ import java.util.stream.Stream;
 
 import static de.cuioss.test.generator.Generators.integers;
 import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the {@link MapStorageImpl} which provides a basic key-value storage implementation.

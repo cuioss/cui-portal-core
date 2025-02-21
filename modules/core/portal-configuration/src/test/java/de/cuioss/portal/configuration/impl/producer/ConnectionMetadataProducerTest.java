@@ -43,10 +43,7 @@ import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link ConnectionMetadataProducer} verifying connection metadata configuration
@@ -124,7 +121,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle default configuration")
         void shouldNotFailWithDefaultConfiguration() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.fireEvent();
             assertNotNull(metadataProvider.get());
         }
@@ -171,7 +168,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should use default on invalid connection type")
         void shouldUseDefaultOnInvalidConnectionType() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TYPE_KEY, "bla");
             configuration.fireEvent();
             assertEquals(ConnectionType.UNDEFINED, metadataProvider.get().getConnectionType());
@@ -181,7 +178,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should use default on missing connection type")
         void shouldUseDefaultOnMissingConnectionType() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.TYPE_KEY);
             configuration.fireEvent();
             assertEquals(ConnectionType.UNDEFINED, metadataProvider.get().getConnectionType());
@@ -227,7 +224,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle missing service URL")
         void shouldFailOnMissingServiceUrl() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY);
             configuration.fireEvent();
             assertThrows(IllegalArgumentException.class, () -> metadataProvider.get());
@@ -247,7 +244,7 @@ class ConnectionMetadataProducerTest {
             System.setProperty(PROPERTY_TRUSTSTORE_PASSWORD, TRUSTSTORE_PASSWORD);
 
             // Configure certificate authentication requiring truststore
-            defaultConfig();
+            basicAuthConfig();
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, AuthenticationType.CERTIFICATE.name());
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_LOCATION, keystoreLocation);
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD, KEYSTORE_PASSWORD);
@@ -284,7 +281,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle invalid connection timeout")
         void shouldHandleInvalidConnectionTimeout() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.CONNECTION_TIMEOUT, "b00m");
             configuration.fireEvent();
             assertEquals(0, metadataNotFailProvider.get().getConnectionTimeout());
@@ -299,7 +296,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle valid connection timeout")
         void shouldHandleValidConnectionTimeout() {
-            defaultConfig();
+            basicAuthConfig();
             assertEquals(0, metadataNotFailProvider.get().getConnectionTimeout());
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.CONNECTION_TIMEOUT, "666666");
             configuration.fireEvent();
@@ -310,7 +307,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle valid read timeout")
         void shouldHandleValidReadTimeout() {
-            defaultConfig();
+            basicAuthConfig();
             assertEquals(0, metadataNotFailProvider.get().getReadTimeout());
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.READ_TIMEOUT, "666666");
             configuration.fireEvent();
@@ -321,7 +318,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle invalid read timeout")
         void shouldHandleInvalidReadTimeout() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.READ_TIMEOUT, "b00m");
             configuration.fireEvent();
             assertEquals(0, metadataNotFailProvider.get().getReadTimeout());
@@ -341,7 +338,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle proxy")
         void shouldHandleProxy() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.fireEvent();
             assertNull(metadataProvider.get().getProxyHost());
 
@@ -354,7 +351,7 @@ class ConnectionMetadataProducerTest {
         @Test
         @DisplayName("Should handle invalid proxy")
         void shouldHandleInvalidProxy() {
-            defaultConfig();
+            basicAuthConfig();
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.PROXY_HOST, "proxy.example.com");
             configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.PROXY_PORT, "b00m");
             configuration.fireEvent();
@@ -374,17 +371,6 @@ class ConnectionMetadataProducerTest {
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY, DESCRIPTION);
 
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTHENTICATION_TYPE, "none");
-    }
-
-    private void defaultConfig() {
-
-        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME, USER);
-
-        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD, PASSWORD3);
-
-        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY, CONNECTION_URL);
-
-        configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.DESCRIPTION_KEY, DESCRIPTION);
     }
 
     private void applicationTokenConfig() {

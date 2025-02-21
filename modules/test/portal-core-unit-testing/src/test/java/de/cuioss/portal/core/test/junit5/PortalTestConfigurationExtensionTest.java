@@ -24,9 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration
@@ -79,7 +77,7 @@ class PortalTestConfigurationExtensionTest {
             assertTrue(configuration.getPropertyNames().contains("temp.key"));
 
             configuration.remove("temp.key");
-            assertTrue(!configuration.getPropertyNames().contains("temp.key"));
+            assertFalse(configuration.getPropertyNames().contains("temp.key"));
         }
     }
 

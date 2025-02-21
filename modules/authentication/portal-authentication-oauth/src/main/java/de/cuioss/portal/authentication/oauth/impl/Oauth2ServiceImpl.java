@@ -109,8 +109,8 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
         Token requestToken(@FormParam("grant_type") String grantType, @FormParam("code") String code,
-                           @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
-                           @FormParam("redirect_uri") String redirectUri);
+                @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
+                @FormParam("redirect_uri") String redirectUri);
     }
 
     public interface RequestRefreshToken extends Closeable {
@@ -155,7 +155,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,
-                                                             final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
+            final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
 
         requireNonNull(servletRequest);
         requireNonNull(code);
@@ -204,7 +204,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
     }
 
     private AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Oauth2Configuration configuration,
-                                                            Token token, int tokenTimestamp) {
+            Token token, int tokenTimestamp) {
 
         final String userInfoUri = configuration.getUserInfoUri().trim();
         final CuiRestClientBuilder builder = new CuiRestClientBuilder(LOGGER)

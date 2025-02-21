@@ -15,12 +15,11 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.DEFAULT_TOKEN_PARSER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import de.cuioss.test.generator.Generators;
+import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import de.cuioss.tools.logging.CuiLogger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,11 +27,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import de.cuioss.test.generator.Generators;
-import de.cuioss.test.juli.LogAsserts;
-import de.cuioss.test.juli.TestLogLevel;
-import de.cuioss.test.juli.junit5.EnableTestLogger;
-import de.cuioss.tools.logging.CuiLogger;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
 @DisplayName("Tests ParsedToken functionality")

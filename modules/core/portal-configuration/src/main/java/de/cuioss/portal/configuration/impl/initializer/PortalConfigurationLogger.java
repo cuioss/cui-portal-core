@@ -17,7 +17,6 @@ package de.cuioss.portal.configuration.impl.initializer;
 
 import de.cuioss.portal.configuration.initializer.ApplicationInitializer;
 import de.cuioss.portal.configuration.initializer.PortalInitializer;
-import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Joiner;

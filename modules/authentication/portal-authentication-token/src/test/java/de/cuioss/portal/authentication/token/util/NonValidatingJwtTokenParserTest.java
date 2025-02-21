@@ -33,16 +33,10 @@ import java.util.Base64;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.ISSUER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_NAME;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableTestLogger(debug = NonValidatingJwtTokenParser.class)
 @DisplayName("Tests NonValidatingJwtTokenParser functionality")
@@ -128,7 +122,7 @@ class NonValidatingJwtTokenParserTest {
                 assertLogMessagePresentContaining(TestLogLevel.DEBUG, "Token is empty or null");
             } else {
                 assertLogMessagePresentContaining(TestLogLevel.DEBUG,
-                        String.format("Invalid JWT token format: expected 3 parts but got %d",
+                        "Invalid JWT token format: expected 3 parts but got %d".formatted(
                                 Splitter.on('.').splitToList(invalidToken).size()));
             }
         }

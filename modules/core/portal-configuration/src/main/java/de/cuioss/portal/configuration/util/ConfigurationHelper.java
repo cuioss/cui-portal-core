@@ -46,9 +46,7 @@ import java.util.stream.Collectors;
 import static de.cuioss.portal.configuration.PortalConfigurationKeys.CONTEXT_PARAM_SEPARATOR;
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static de.cuioss.tools.string.MoreStrings.isEmpty;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
+import static de.cuioss.tools.string.MoreStrings.*;
 import static java.util.Objects.requireNonNull;
 
 /**

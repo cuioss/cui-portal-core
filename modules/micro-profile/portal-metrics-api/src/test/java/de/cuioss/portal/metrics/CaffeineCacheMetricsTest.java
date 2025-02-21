@@ -27,11 +27,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableTestLogger
 @DisplayName("CaffeineCacheMetrics Tests")
@@ -73,7 +72,7 @@ class CaffeineCacheMetricsTest {
             final var customTag = new Tag("env", "test");
 
             // When
-            new CaffeineCacheMetrics(CACHE_PREFIX, cache, cacheConfig, java.util.Collections.singleton(customTag))
+            new CaffeineCacheMetrics(CACHE_PREFIX, cache, cacheConfig, Set.of(customTag))
                     .bindTo(registry);
 
             // Then: Only check for logging, bis our mock is rudimentary

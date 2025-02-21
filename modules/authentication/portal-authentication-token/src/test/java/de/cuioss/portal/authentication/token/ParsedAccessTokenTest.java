@@ -15,26 +15,18 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.DEFAULT_TOKEN_PARSER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_NAME;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_ROLES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedEmptyJWT;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Set;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.domain.EmailGenerator;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableTestLogger
 @DisplayName("Tests ParsedAccessToken functionality")
@@ -63,23 +55,23 @@ class ParsedAccessTokenTest {
             assertTrue(parsedAccessToken.getScopes().contains(EXISTING_SCOPE), "Should contain email scope");
             assertFalse(parsedAccessToken.getScopes().contains(DEFINITELY_NO_SCOPE), "Should not contain invalid scope");
 
-            assertTrue(parsedAccessToken.providesScopes(Set.of(EXISTING_SCOPE)), 
-                "Should provide existing scope");
-            assertFalse(parsedAccessToken.providesScopes(Set.of(DEFINITELY_NO_SCOPE)), 
-                "Should not provide non-existent scope");
-            assertFalse(parsedAccessToken.providesScopes(Set.of(DEFINITELY_NO_SCOPE, EXISTING_SCOPE)), 
-                "Should not provide mixed scopes when one is invalid");
+            assertTrue(parsedAccessToken.providesScopes(Set.of(EXISTING_SCOPE)),
+                    "Should provide existing scope");
+            assertFalse(parsedAccessToken.providesScopes(Set.of(DEFINITELY_NO_SCOPE)),
+                    "Should not provide non-existent scope");
+            assertFalse(parsedAccessToken.providesScopes(Set.of(DEFINITELY_NO_SCOPE, EXISTING_SCOPE)),
+                    "Should not provide mixed scopes when one is invalid");
 
             assertTrue(parsedAccessToken.providesScopesAndDebugIfScopesAreMissing(
-                Set.of(EXISTING_SCOPE), TEST_CONTEXT, LOGGER), 
-                "Should provide scope with debug logging");
+                            Set.of(EXISTING_SCOPE), TEST_CONTEXT, LOGGER),
+                    "Should provide scope with debug logging");
             assertFalse(parsedAccessToken.providesScopesAndDebugIfScopesAreMissing(
-                Set.of(EXISTING_SCOPE, DEFINITELY_NO_SCOPE), TEST_CONTEXT, LOGGER), 
-                "Should not provide scopes with debug logging when one is invalid");
+                            Set.of(EXISTING_SCOPE, DEFINITELY_NO_SCOPE), TEST_CONTEXT, LOGGER),
+                    "Should not provide scopes with debug logging when one is invalid");
 
             Set<String> missingScopes = parsedAccessToken.determineMissingScopes(Set.of(EXISTING_SCOPE));
             assertTrue(missingScopes.isEmpty(), "Should have no missing scopes for valid scope");
-            
+
             missingScopes = parsedAccessToken.determineMissingScopes(Set.of(DEFINITELY_NO_SCOPE));
             assertEquals(1, missingScopes.size(), "Should have one missing scope");
             assertTrue(missingScopes.contains(DEFINITELY_NO_SCOPE), "Should contain invalid scope as missing");
@@ -204,8 +196,8 @@ class ParsedAccessTokenTest {
 
             var parsedAccessToken = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
             assertTrue(parsedAccessToken.isPresent(), "Token should be present");
-            assertEquals("world", parsedAccessToken.get().getPreferredUsername().get(), 
-                "Preferred username should match");
+            assertEquals("world", parsedAccessToken.get().getPreferredUsername().get(),
+                    "Preferred username should match");
         }
 
         @Test
@@ -215,8 +207,8 @@ class ParsedAccessTokenTest {
 
             var parsedAccessToken = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
             assertTrue(parsedAccessToken.isPresent(), "Token should be present");
-            assertFalse(parsedAccessToken.get().getPreferredUsername().isPresent(), 
-                "Preferred username should not be present");
+            assertFalse(parsedAccessToken.get().getPreferredUsername().isPresent(),
+                    "Preferred username should not be present");
         }
     }
 }

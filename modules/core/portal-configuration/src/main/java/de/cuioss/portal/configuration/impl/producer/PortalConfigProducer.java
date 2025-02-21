@@ -52,21 +52,13 @@ import java.util.concurrent.TimeUnit;
 import static de.cuioss.portal.configuration.MetricsConfigKeys.PORTAL_METRICS_ENABLED;
 import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
 import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
-import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_KEY;
-import static de.cuioss.portal.configuration.cache.CacheConfig.EXPIRATION_UNIT_KEY;
-import static de.cuioss.portal.configuration.cache.CacheConfig.SIZE_KEY;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.appendPropertySeparator;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveAnnotationOrThrow;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigPropertyAsList;
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveFilteredConfigProperties;
+import static de.cuioss.portal.configuration.cache.CacheConfig.*;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.*;
 import static de.cuioss.tools.base.BooleanOperations.isValidBoolean;
 import static de.cuioss.tools.base.Preconditions.checkArgument;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableSet;
-import static de.cuioss.tools.string.MoreStrings.emptyToNull;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
-import static de.cuioss.tools.string.MoreStrings.requireNotEmptyTrimmed;
+import static de.cuioss.tools.string.MoreStrings.*;
 
 /**
  * Provides specific producer methods for elements not covered by the standard

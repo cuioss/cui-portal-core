@@ -23,15 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.EXTERNAL_HOSTNAME;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_ID;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_CLIENT_SECRET;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -53,14 +45,14 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
     @Override
     public List<String> getKeysIgnoreList() {
         return immutableList(
-            OPEN_ID_CLIENT_ID,
-            OPEN_ID_CLIENT_SECRET,
-            OPEN_ID_SERVER_BASE_URL,
-            EXTERNAL_HOSTNAME,
-            OPEN_ID_SERVER_TOKEN_URL,
-            OPEN_ID_SERVER_USER_INFO_URL,
-            OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI,
-            OPEN_ID_ROLE_MAPPER_CLAIM
+                OPEN_ID_CLIENT_ID,
+                OPEN_ID_CLIENT_SECRET,
+                OPEN_ID_SERVER_BASE_URL,
+                EXTERNAL_HOSTNAME,
+                OPEN_ID_SERVER_TOKEN_URL,
+                OPEN_ID_SERVER_USER_INFO_URL,
+                OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI,
+                OPEN_ID_ROLE_MAPPER_CLAIM
         );
     }
 
@@ -72,7 +64,7 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
     @Nested
     @DisplayName("Validate Configuration Keys")
     class ConfigurationKeyTests {
-        
+
         @Test
         @DisplayName("Should provide valid client configuration keys")
         void shouldProvideClientConfigKeys() {

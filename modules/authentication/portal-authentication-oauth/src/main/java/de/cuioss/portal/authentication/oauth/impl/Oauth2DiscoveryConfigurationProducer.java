@@ -35,9 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_DISCOVER_PATH;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
 import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
 import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
 import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;

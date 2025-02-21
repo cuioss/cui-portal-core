@@ -104,7 +104,7 @@ public class ConnectionMetadataProducer {
      * @return the created {@link ConnectionMetadata}
      */
     public static ConnectionMetadata createConnectionMetadata(final String baseName,
-                                                              final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         LOGGER.trace("Creating ConnectionMetadata for '%s'", baseName);
         final var builder = ConnectionMetadata.builder();
         // Basename must be present
@@ -165,7 +165,7 @@ public class ConnectionMetadataProducer {
     @SuppressWarnings("squid:S1301") // We will use the switch soon, Delete this if the switch is
     // extended
     private static void handleAuthentication(final String baseName, final boolean failOnInvalidConfiguration,
-                                             final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
+            final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
         LOGGER.trace("Determining AuthenticationType for '%s'", baseName);
         // Determine Authentication
         final var authenticationType = AuthenticationType.resolveFrom(baseName, filteredProperties);
@@ -212,7 +212,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static void handleMissingProperty(final String propertyName, final String exceptionMessage,
-                                              final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         LOGGER.warn(WARN.MISSING_CONFIG.format(propertyName));
         if (failOnInvalidConfiguration) {
             throw new IllegalArgumentException(exceptionMessage);
@@ -283,7 +283,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<String> extractFirstKeyValue(final Map<String, String> filteredProperties,
-                                                         final String... keys) {
+            final String... keys) {
         for (final String key : keys) {
             final var value = filteredProperties.get(key);
             if (!MoreStrings.isEmpty(value)) {
@@ -303,7 +303,7 @@ public class ConnectionMetadataProducer {
      * @throws IllegalArgumentException if the value cannot be parsed
      */
     private static Optional<Long> getPositiveLong(final String key, final String value,
-                                                  final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         if (MoreStrings.isEmpty(value)) {
             LOGGER.trace("No value present for '%s', returning empty-value", key);
             return Optional.empty();
@@ -320,7 +320,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<Integer> getPositiveInt(final String key, final String value,
-                                                    final boolean failOnInvalidConfiguration) {
+            final boolean failOnInvalidConfiguration) {
         if (MoreStrings.isEmpty(value)) {
             LOGGER.trace("No value present for '%s', returning empty-value", key);
             return Optional.empty();

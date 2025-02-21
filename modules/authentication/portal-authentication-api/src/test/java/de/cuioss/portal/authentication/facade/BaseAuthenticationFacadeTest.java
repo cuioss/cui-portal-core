@@ -31,10 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for {@link BaseAuthenticationFacade} focusing on user enrichment,

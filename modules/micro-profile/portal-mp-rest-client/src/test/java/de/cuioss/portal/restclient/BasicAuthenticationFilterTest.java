@@ -18,9 +18,7 @@ package de.cuioss.portal.restclient;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -89,22 +87,22 @@ class BasicAuthenticationFilterTest {
             EasyMock.verify(requestContext);
             var authHeader = headers.getFirst(AUTH_HEADER).toString();
             assertTrue(authHeader.startsWith(BASIC_PREFIX), "Header should start with 'Basic '");
-            
+
             // Verify Base64 encoding
             String credentials = new String(Base64.getDecoder().decode(
-                    authHeader.substring(BASIC_PREFIX.length())), 
+                            authHeader.substring(BASIC_PREFIX.length())),
                     StandardCharsets.UTF_8);
-            assertEquals(VALID_USERNAME + ":" + VALID_PASSWORD, credentials, 
+            assertEquals(VALID_USERNAME + ":" + VALID_PASSWORD, credentials,
                     "Decoded credentials should match input");
         }
 
         @ParameterizedTest(name = "Should handle special characters in username: {0}")
         @ValueSource(strings = {
-            "user@domain.com",
-            "user.name",
-            "user+name",
-            "user name",
-            "user123"
+                "user@domain.com",
+                "user.name",
+                "user+name",
+                "user name",
+                "user123"
         })
         void shouldHandleSpecialCharactersInUsername(String username) throws IOException {
             // Given
@@ -121,19 +119,19 @@ class BasicAuthenticationFilterTest {
             EasyMock.verify(requestContext);
             var authHeader = headers.getFirst(AUTH_HEADER).toString();
             String credentials = new String(Base64.getDecoder().decode(
-                    authHeader.substring(BASIC_PREFIX.length())), 
+                            authHeader.substring(BASIC_PREFIX.length())),
                     StandardCharsets.UTF_8);
-            assertEquals(username + ":" + VALID_PASSWORD, credentials, 
+            assertEquals(username + ":" + VALID_PASSWORD, credentials,
                     "Should handle special characters in username");
         }
 
         @ParameterizedTest(name = "Should handle special characters in password: {0}")
         @ValueSource(strings = {
-            "pass@word123",
-            "pass.word123",
-            "pass word 123",
-            "pass123",
-            "pass!@#$%^&*()"
+                "pass@word123",
+                "pass.word123",
+                "pass word 123",
+                "pass123",
+                "pass!@#$%^&*()"
         })
         void shouldHandleSpecialCharactersInPassword(String password) throws IOException {
             // Given
@@ -150,22 +148,22 @@ class BasicAuthenticationFilterTest {
             EasyMock.verify(requestContext);
             var authHeader = headers.getFirst(AUTH_HEADER).toString();
             String credentials = new String(Base64.getDecoder().decode(
-                    authHeader.substring(BASIC_PREFIX.length())), 
+                            authHeader.substring(BASIC_PREFIX.length())),
                     StandardCharsets.UTF_8);
-            assertEquals(VALID_USERNAME + ":" + password, credentials, 
+            assertEquals(VALID_USERNAME + ":" + password, credentials,
                     "Should handle special characters in password");
         }
 
         @ParameterizedTest(name = "Should handle empty strings - username: {0}, password: {1}")
         @CsvSource({
-            "'',validpass",
-            "validuser,''",
-            "'',''"
+                "'',validpass",
+                "validuser,''",
+                "'',''"
         })
         void shouldHandleEmptyStrings(String username, String password) {
             assertThrows(IllegalArgumentException.class,
-                () -> new BasicAuthenticationFilter(username, password),
-                "Should not allow empty/null credentials");
+                    () -> new BasicAuthenticationFilter(username, password),
+                    "Should not allow empty/null credentials");
         }
     }
 }

@@ -15,14 +15,13 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import org.junit.jupiter.api.Test;
-
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.MockWebServer;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MockWebServerHolderTest {
 

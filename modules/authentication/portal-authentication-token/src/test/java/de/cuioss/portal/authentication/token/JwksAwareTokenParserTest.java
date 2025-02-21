@@ -34,13 +34,8 @@ import org.junit.jupiter.api.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.ISSUER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableTestLogger(debug = JwksAwareTokenParser.class, info = JwksAwareTokenParser.class)
 @DisplayName("Tests JwksAwareTokenParser functionality")

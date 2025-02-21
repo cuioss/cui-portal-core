@@ -41,7 +41,7 @@ public class PortalResourceLoader {
      * @return The {@link Optional} {@link URL} identifying the resource
      * @deprecated Use {@link #getResource(String, Class)} instead. This method will be removed in a future version.
      */
-    @Deprecated(since = "2.0", forRemoval = true)
+    @Deprecated(since = "1.2", forRemoval = true)
     public static <T> Optional<URL> getRessource(String resourcePath, Class<T> callingClass) {
         return getResource(resourcePath, callingClass);
     }
