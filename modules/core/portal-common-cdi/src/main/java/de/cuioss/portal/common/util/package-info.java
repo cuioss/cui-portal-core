@@ -37,7 +37,7 @@
  * boolean exists = PortalResourceLoader.resourceExists("templates/email.html");
  * 
  * // Load multiple resources
- * List<URL> templates = PortalResourceLoader.getResources("templates/*.html");
+ * List&lt;URL&gt; templates = PortalResourceLoader.getResources("templates/*.html");
  * </pre>
  * 
  * <h2>Resource Resolution</h2>

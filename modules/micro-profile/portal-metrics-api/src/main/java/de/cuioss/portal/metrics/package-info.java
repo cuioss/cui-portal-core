@@ -19,7 +19,7 @@
  * 
  * <pre>
  * // Create cache with stats enabled
- * Cache<String, String> cache = Caffeine.newBuilder()
+ * Cache&lt;String, String&gt; cache = Caffeine.newBuilder()
  *     .maximumSize(1000)
  *     .recordStats()
  *     .build();

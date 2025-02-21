@@ -20,18 +20,18 @@
  * <h3>Basic Sorting</h3>
  * <pre>
  * // Sort a list of beans by their priority annotation
- * List<MyBean> beans = new ArrayList<>();
- * List<MyBean> sortedBeans = PortalPriorities.sortByPriority(beans);
+ * List&lt;MyBean&gt; beans = new ArrayList&lt;&gt;();
+ * List&lt;MyBean&gt; sortedBeans = PortalPriorities.sortByPriority(beans);
  * </pre>
  * 
  * <h3>Custom Comparator Usage</h3>
  * <pre>
  * // Create a priority-based comparator
- * PriorityComparator<MyBean> comparator = new PriorityComparator<>();
+ * PriorityComparator&lt;MyBean&gt; comparator = new PriorityComparator&lt;&gt;();
  * 
  * // Use with Java collections
  * Collections.sort(beans, comparator);
- * TreeSet<MyBean> orderedSet = new TreeSet<>(comparator);
+ * TreeSet&lt;MyBean&gt; orderedSet = new TreeSet&lt;&gt;(comparator);
  * </pre>
  *
  * <h2>Priority Guidelines</h2>

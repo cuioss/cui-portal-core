@@ -51,14 +51,14 @@ import java.util.Objects;
  * Priority priority = AnnotationInstanceProvider.of(Priority.class);
  * 
  * // Create with custom values
- * Map<String, Object> values = new HashMap<>();
+ * Map&lt;String, Object&gt; values = new HashMap&lt;&gt;();
  * values.put("value", 100);
  * Priority customPriority = AnnotationInstanceProvider.of(Priority.class, values);
  * 
  * // Load annotation class dynamically
  * String className = "jakarta.annotation.Priority";
- * Class<? extends Annotation> annotationClass = 
- *     (Class<? extends Annotation>) Class.forName(className);
+ * Class&lt;? extends Annotation&gt; annotationClass = 
+ *     (Class&lt;? extends Annotation&gt;) Class.forName(className);
  * Annotation annotation = AnnotationInstanceProvider.of(annotationClass);
  * </pre>
  * 

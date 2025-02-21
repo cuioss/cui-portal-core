@@ -59,10 +59,10 @@ import static java.util.Objects.requireNonNull;
  * MyBean bean = PortalBeanManager.getBean(MyBean.class, MyQualifier.class);
  * 
  * // Get all beans of a type, sorted by priority
- * List<MyInterface> beans = PortalBeanManager.getBeans(MyInterface.class);
+ * List&lt;MyInterface&gt; beans = PortalBeanManager.getBeans(MyInterface.class);
  * 
  * // Create bean instance with specific qualifiers
- * Set<Annotation> qualifiers = new HashSet<>();
+ * Set&lt;Annotation&gt; qualifiers = new HashSet&lt;&gt;();
  * qualifiers.add(new MyQualifierLiteral());
  * MyBean bean = PortalBeanManager.create(beanManager, MyBean.class, qualifiers);
  * </pre>

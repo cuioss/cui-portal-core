@@ -41,8 +41,8 @@ import java.util.List;
  * <h2>Usage</h2>
  * <pre>
  * // Sort components by priority
- * List<MyComponent> components = new ArrayList<>();
- * List<MyComponent> sorted = PortalPriorities.sortByPriority(components);
+ * List&lt;MyComponent&gt; components = new ArrayList&lt;&gt;();
+ * List&lt;MyComponent&gt; sorted = PortalPriorities.sortByPriority(components);
  * 
  * // Define component priority
  * &#064;Priority(PortalPriorities.PORTAL_MODULE_LEVEL)
@@ -95,7 +95,7 @@ public final class PortalPriorities {
      *
      * @param toBeSorted the list to be sorted, must not be null
      * @param <T> the type of objects in the list, must be annotatable with {@link Priority}
-     * @return a new sorted list in descending priority order, or the original list if size < 2
+     * @return a new sorted list in descending priority order, or the original list if size &lt; 2
      * @throws NullPointerException if toBeSorted is null
      */
     @SuppressWarnings("unchecked")
