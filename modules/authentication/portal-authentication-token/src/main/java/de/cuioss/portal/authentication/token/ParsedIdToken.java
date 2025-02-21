@@ -23,9 +23,29 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import java.util.Optional;
 
 /**
- * Variant of {@link ParsedToken} representing an id-token
+ * Represents a parsed OpenID Connect ID token.
+ * Provides access to identity information claims as specified by the OpenID Connect Core specification.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Email claim access</li>
+ *   <li>Token validation and parsing</li>
+ *   <li>Type verification (expects "ID" type claim)</li>
+ * </ul>
+ * <p>
+ * Note: This implementation is primarily tested with Keycloak ID tokens.
+ * While it follows OpenID Connect standards, some behavior may be specific to Keycloak.
+ * <p>
+ * Usage example:
+ * <pre>
+ * Optional<ParsedIdToken> token = ParsedIdToken.fromTokenString(tokenString, parser);
+ * token.flatMap(ParsedIdToken::getEmail).ifPresent(email -> {
+ *     // Process user's email
+ * });
+ * </pre>
  *
  * @author Oliver Wolff
+ * @see ParsedToken
  */
 @ToString
 public class ParsedIdToken extends ParsedToken {

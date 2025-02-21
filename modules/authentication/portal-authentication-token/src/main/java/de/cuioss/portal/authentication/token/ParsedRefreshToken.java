@@ -24,14 +24,28 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Variant of {@link ParsedToken} representing a refresh-token.
+ * Represents a parsed OAuth2 refresh token with basic validation support.
+ * Unlike access and ID tokens, refresh tokens are treated as opaque strings
+ * as per OAuth2 specification, though some implementations (like Keycloak) may use JWTs.
  * <p>
- * <em>Caution:</em> This is only tested for keycloak.
- * The usage of JWTs for a refresh-token is not from the oauth spec.
+ * Key features:
+ * <ul>
+ *   <li>Simple token string validation</li>
+ *   <li>Type-safe token representation</li>
+ *   <li>Immutable and thread-safe implementation</li>
+ * </ul>
  * <p>
- * This class provides a simple wrapper around refresh tokens with basic validation
- * and type information.
- * It is immutable and thread-safe.
+ * Note: While OAuth2 specification treats refresh tokens as opaque strings,
+ * this implementation supports Keycloak's JWT-based refresh tokens.
+ * The validation is minimal and does not include JWT signature verification.
+ * <p>
+ * Usage example:
+ * <pre>
+ * ParsedRefreshToken token = ParsedRefreshToken.fromTokenString(tokenString);
+ * if (!token.isEmpty()) {
+ *     // Use the token
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
  */

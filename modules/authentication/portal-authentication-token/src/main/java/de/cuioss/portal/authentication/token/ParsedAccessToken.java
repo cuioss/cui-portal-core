@@ -35,8 +35,32 @@ import java.util.TreeSet;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * Represents an Access Token with corresponding information. In essence, it is a convenience type
- * for accessing concrete instances of {@link JsonWebToken}
+ * Represents a parsed OAuth2 access token with enhanced functionality for scope and role management.
+ * Provides convenient access to standard OAuth2 claims as well as additional OpenID Connect claims.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Scope management and validation</li>
+ *   <li>Role-based access control</li>
+ *   <li>User identity information (subject ID, email, name)</li>
+ * </ul>
+ * <p>
+ * The token supports the following claims:
+ * <ul>
+ *   <li>{@link #CLAIM_NAME_SCOPE}: Space-separated list of OAuth2 scopes</li>
+ *   <li>{@link #CLAIM_NAME_ROLES}: JSON array of assigned roles</li>
+ *   <li>{@link #CLAIM_NAME_NAME}: User's display name</li>
+ *   <li>{@link Claims#email}: User's email address</li>
+ *   <li>{@link Claims#preferred_username}: User's preferred username</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * Optional<ParsedAccessToken> token = ParsedAccessToken.fromTokenString(tokenString, parser);
+ * if (token.isPresent() && token.get().providesScopes(requiredScopes)) {
+ *     // Token is valid and has required scopes
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
  */
@@ -202,14 +226,7 @@ public class ParsedAccessToken extends ParsedToken {
      * @return an optional containing the potential name
      */
     public Optional<String> getName() {
-        LOGGER.debug("Retrieving name from token");
-        if (!jsonWebToken.containsClaim(CLAIM_NAME_NAME)) {
-            LOGGER.debug("No name claim found in token");
-            return Optional.empty();
-        }
-        String name = jsonWebToken.getClaim(CLAIM_NAME_NAME);
-        LOGGER.debug("Found name in token: %s", name);
-        return Optional.ofNullable(name);
+        return Optional.ofNullable(jsonWebToken.getClaim(CLAIM_NAME_NAME));
     }
 
     /**
@@ -220,5 +237,4 @@ public class ParsedAccessToken extends ParsedToken {
     public Optional<String> getPreferredUsername() {
         return Optional.ofNullable(jsonWebToken.getClaim(Claims.preferred_username));
     }
-
 }

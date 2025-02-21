@@ -35,16 +35,37 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * A simplified JWT parser that can extract claims from a token without validating
- * its signature. This is useful for inspecting token content, like the issuer,
- * before deciding which actual validator to use.
+ * Utility class for inspecting JWT token content without signature validation.
+ * This parser is designed for preliminary token analysis to extract claims and metadata
+ * before full validation, particularly useful in multi-issuer scenarios.
+ * <p>
+ * Security features:
+ * <ul>
+ *   <li>Token size validation (max 16KB) to prevent memory exhaustion</li>
+ *   <li>Payload size validation (max 16KB) for JSON parsing</li>
+ *   <li>Standard Base64 decoding for JWT parts</li>
+ *   <li>Proper character encoding handling</li>
+ * </ul>
+ * <p>
+ * Important security note: This parser does NOT validate token signatures.
+ * It should only be used for:
+ * <ul>
+ *   <li>Extracting issuer information to select the appropriate validator</li>
+ *   <li>Preliminary token inspection and debugging</li>
+ *   <li>Token format validation</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * NonValidatingJwtTokenParser parser = new NonValidatingJwtTokenParser();
+ * Optional<JsonWebToken> token = parser.unsecured(tokenString);
+ * token.ifPresent(t -> {
+ *     String issuer = t.getIssuer();
+ *     // Use issuer to select appropriate validator
+ * });
+ * </pre>
  *
- * <p>Security considerations:
- * - Implements size checks to prevent overflow attacks
- * - Uses standard Java Base64 decoder
- * - Does not validate signatures, only for inspection
- *
- * @author Generated
+ * @author Oliver Wolff
  */
 @ToString
 @EqualsAndHashCode

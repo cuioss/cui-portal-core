@@ -21,8 +21,21 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Defines a specific token-type.
- * Currently, they are derived / work for keycloak
+ * Defines the supported token types within the authentication system.
+ * Each type represents a specific OAuth2/OpenID Connect token category with its corresponding type claim name.
+ * <p>
+ * The supported token types are:
+ * <ul>
+ *   <li>{@link #ACCESS_TOKEN}: Standard OAuth2 access token with "Bearer" type claim</li>
+ *   <li>{@link #ID_TOKEN}: OpenID Connect ID token with "ID" type claim</li>
+ *   <li>{@link #REFRESH_TOKEN}: OAuth2 refresh token with "Refresh" type claim</li>
+ *   <li>{@link #UNKNOWN}: Fallback type for unrecognized or missing type claims</li>
+ * </ul>
+ * <p>
+ * Note: The type claim implementation is specific to Keycloak and uses the "typ" claim 
+ * which is not part of the standard OAuth2/OpenID Connect specifications.
+ * 
+ * @author Oliver Wolff
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum TokenType {

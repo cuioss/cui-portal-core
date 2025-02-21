@@ -28,8 +28,29 @@ import lombok.ToString;
 import lombok.experimental.Delegate;
 
 /**
- * Variant of {@link JWTParser} that will be configured for remote loading of the public-keys.
- * They are necessary to verify the signature or the token.
+ * JWT parser implementation with support for remote JWKS (JSON Web Key Set) loading.
+ * This parser extends the standard {@link JWTParser} functionality by adding the ability
+ * to fetch and manage public keys from a JWKS endpoint for token signature verification.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Remote JWKS endpoint configuration</li>
+ *   <li>Automatic key refresh support</li>
+ *   <li>TLS certificate configuration for secure key loading</li>
+ *   <li>Issuer-based token validation</li>
+ * </ul>
+ * <p>
+ * The parser can be configured using the builder pattern:
+ * <pre>
+ * JwksAwareTokenParser parser = JwksAwareTokenParser.builder()
+ *     .jwksIssuer("https://auth.example.com")
+ *     .jwksEndpoint("https://auth.example.com/.well-known/jwks.json")
+ *     .jwksRefreshIntervall(60)
+ *     .build();
+ * </pre>
+ * <p>
+ * This implementation is thread-safe and handles automatic key rotation
+ * based on the configured refresh interval.
  *
  * @author Oliver Wolff
  */

@@ -20,7 +20,32 @@ import de.cuioss.tools.logging.LogRecordModel;
 import lombok.experimental.UtilityClass;
 
 /**
- * Defines the log messages for the Portal Token module.
+ * Defines the standardized log messages for the Portal Token module.
+ * Follows the CUI logging standards for consistent message formatting and categorization.
+ * <p>
+ * Message categories:
+ * <ul>
+ *   <li>INFO (001-099): Configuration and successful operations</li>
+ *   <li>WARN (100-199): Non-critical issues and potential problems</li>
+ * </ul>
+ * <p>
+ * Available messages:
+ * <ul>
+ *   <li>INFO:
+ *     <ul>
+ *       <li>{@link #CONFIGURED_JWKS}: JWKS configuration details</li>
+ *     </ul>
+ *   </li>
+ *   <li>WARN:
+ *     <ul>
+ *       <li>{@link #TOKEN_SIZE_EXCEEDED}: Token size limit violation</li>
+ *       <li>{@link #TOKEN_IS_EMPTY}: Empty token handling</li>
+ *       <li>{@link #COULD_NOT_PARSE_TOKEN}: Token parsing failures</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ * <p>
+ * All messages use the prefix "PortalToken" for module identification.
  */
 @UtilityClass
 public class PortalTokenLogMessages {

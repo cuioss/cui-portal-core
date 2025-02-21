@@ -28,11 +28,32 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Manages multiple {@link JwksAwareTokenParser} instances for different issuers.
- * Provides functionality to inspect JWT tokens and determine the appropriate parser
- * based on the issuer.
+ * Manages multiple JWT token parsers for different token issuers in a multi-tenant environment.
+ * This class provides functionality to inspect JWT tokens, determine their issuer, and select
+ * the appropriate parser based on the issuer information.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Multi-issuer support for token validation</li>
+ *   <li>Safe token inspection without signature validation</li>
+ *   <li>Dynamic parser selection based on token issuer</li>
+ *   <li>Thread-safe implementation</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * MultiIssuerTokenParser parser = MultiIssuerTokenParser.builder()
+ *     .addParser(issuer1Parser)
+ *     .addParser(issuer2Parser)
+ *     .build();
+ * 
+ * Optional<JWTParser> selectedParser = parser.getParserForToken(tokenString);
+ * </pre>
+ * <p>
+ * The class uses {@link NonValidatingJwtTokenParser} internally for initial token inspection
+ * to determine the issuer before selecting the appropriate validating parser.
  *
- * @author Generated
+ * @author Oliver Wolff
  */
 @ToString
 @EqualsAndHashCode

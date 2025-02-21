@@ -25,7 +25,28 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 /**
- * Factory for creating different types of tokens with support for multiple issuers.
+ * Factory for creating and validating OAuth2/OpenID Connect tokens with multi-issuer support.
+ * Provides a centralized way to create different types of tokens while handling token parsing
+ * and validation through configurable token parsers.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Support for multiple token issuers</li>
+ *   <li>Automatic parser selection based on token characteristics</li>
+ *   <li>Creation of typed token instances ({@link ParsedAccessToken}, {@link ParsedIdToken}, {@link ParsedRefreshToken})</li>
+ *   <li>Thread-safe token creation and validation</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * TokenFactory factory = TokenFactory.of(parser1, parser2);
+ * Optional<ParsedAccessToken> token = factory.createAccessToken(tokenString);
+ * </pre>
+ * <p>
+ * The factory uses {@link MultiIssuerTokenParser} internally to manage multiple token parsers
+ * and select the appropriate one based on the token's issuer and format.
+ *
+ * @author Oliver Wolff
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenFactory {

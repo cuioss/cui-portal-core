@@ -32,7 +32,27 @@ import java.util.Optional;
 import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 
 /**
- * Wrapper around {@link JsonWebToken}
+ * Abstract base class for parsed JWT token representations.
+ * Provides common functionality for working with {@link JsonWebToken} instances
+ * including token validation, expiration checking, and type determination.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Token parsing and validation</li>
+ *   <li>Expiration time management</li>
+ *   <li>Token type determination via "typ" claim</li>
+ *   <li>Access to raw token string and JWT claims</li>
+ * </ul>
+ * <p>
+ * Concrete implementations are available for specific token types:
+ * <ul>
+ *   <li>{@link ParsedAccessToken}: For OAuth2 access tokens</li>
+ *   <li>{@link ParsedIdToken}: For OpenID Connect ID tokens</li>
+ *   <li>{@link ParsedRefreshToken}: For OAuth2 refresh tokens</li>
+ * </ul>
+ * <p>
+ * Note: The implementation is primarily tested with Keycloak tokens.
+ * Some features may be specific to Keycloak's token format.
  *
  * @author Oliver Wolff
  */
