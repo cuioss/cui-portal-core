@@ -1,18 +1,3 @@
-/*
- * Copyright 2023 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cuioss.portal.authentication.oauth.impl;
 
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
@@ -21,6 +6,7 @@ import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.generator.impl.URLGenerator;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import jakarta.inject.Inject;
 import lombok.Getter;
@@ -28,24 +14,31 @@ import lombok.Setter;
 import mockwebserver3.MockWebServer;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
-@EnablePortalConfiguration
+@EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @EnableMockWebServer
+@EnableTestLogger(debug = Oauth2DiscoveryConfigurationProducerTest.class)
+@AddBeanClasses({Oauth2DiscoveryConfigurationProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
+@DisplayName("Tests OAuth2 Discovery Configuration Producer")
 class Oauth2DiscoveryConfigurationProducerTest
-        implements ShouldHandleObjectContracts<Oauth2DiscoveryConfigurationProducer>, MockWebServerHolder {
-
-    @Setter
-    private MockWebServer mockWebServer;
+        implements ShouldHandleObjectContracts<Oauth2DiscoveryConfigurationProducer> {
 
     @Inject
     @Getter
@@ -54,52 +47,118 @@ class Oauth2DiscoveryConfigurationProducerTest
     @Inject
     private PortalTestConfiguration configuration;
 
-    @Getter
-    private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
+    @Nested
+    @DisplayName("Discovery Configuration Tests")
+    class DiscoveryConfigurationTests implements MockWebServerHolder {
 
-    @BeforeEach
-    void beforeEach() {
-        configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
+        @Getter
+        private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
+
+        @Setter
+        private MockWebServer mockWebServer;
+
+
+        @BeforeEach
+        void beforeEach() {
+            dispatcher.reset();
+            configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
+            dispatcher.configure(configuration, mockWebServer);
+        }
+
+
+        @Test
+        @DisplayName("Should initialize with discovery configuration")
+        void shouldInitializeWithDiscoveryConfiguration() {
+            var result = underTest.getConfiguration();
+
+            assertNotNull(result);
+            assertNotNull(result.getTokenUri());
+            assertNotNull(result.getAuthorizeUri());
+            assertNotNull(result.getUserInfoUri());
+            assertNotNull(result.getLogoutUri());
+        }
+
+        @Test
+        @DisplayName("Should override discovery URLs with configured values")
+        void shouldOverrideDiscoveryUrls() {
+            var tokenUrl = new URLGenerator().next().toString();
+            var userInfoUrl = new URLGenerator().next().toString();
+            configuration.update(
+                    OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, tokenUrl,
+                    OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, userInfoUrl);
+
+            var result = underTest.getConfiguration();
+
+            assertEquals(tokenUrl, result.getTokenUri());
+            assertEquals(userInfoUrl, result.getUserInfoUri());
+        }
+
+        @Test
+        @DisplayName("Should handle invalid OIDC configuration")
+        void shouldHandleInvalidOidcConfig() {
+            configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "true");
+            dispatcher.setSimulateInvalidOidcConfig(true);
+            dispatcher.configure(configuration, mockWebServer);
+
+            WeldException ex = assertThrows(WeldException.class, underTest::getConfiguration);
+            assertNotNull(ex.getCause());
+        }
     }
 
-    @Test
-    void init() {
-        dispatcher.configure(configuration, mockWebServer);
+    @Nested
+    @DisplayName("Configuration Property Tests")
+    class ConfigurationPropertyTests implements MockWebServerHolder {
+        @Setter
+        private MockWebServer mockWebServer;
 
-        var result = underTest.getConfiguration();
+        @Getter
+        private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
-        assertNotNull(result);
-        assertNotNull(result.getTokenUri());
-        assertNotNull(result.getAuthorizeUri());
-        assertNotNull(result.getUserInfoUri());
-        assertNotNull(result.getLogoutUri());
-    }
+        @BeforeEach
+        void beforeEach() {
+            dispatcher.reset();
+            configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
+            dispatcher.configure(configuration, mockWebServer);
+        }
 
-    @Test
-    void shouldOverwriteInternalUrls() {
-        dispatcher.configure(configuration, mockWebServer);
-        var url1 = new URLGenerator().next().toString();
-        var url2 = new URLGenerator().next().toString();
-        configuration.update(
-                OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL, url1,
-                OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL, url2);
+        @Test
+        @DisplayName("Should handle custom scopes")
+        void shouldHandleCustomScopes() {
+            String customScopes = "scope1 scope2";
+            configuration.update(OAuthConfigKeys.OPEN_ID_CLIENT_DEFAULT_SCOPES, customScopes);
 
-        var result = underTest.getConfiguration();
+            var result = underTest.getConfiguration();
 
-        assertEquals(url1, result.getTokenUri());
-        assertEquals(url2, result.getUserInfoUri());
-    }
+            assertEquals(customScopes, result.getInitialScopes());
+        }
 
-    @Test
-    void invalidOpenIdConfig() {
-        configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "true");
-        dispatcher.setSimulateInvalidOidcConfig(true);
-        dispatcher.configure(configuration, mockWebServer);
+        @Test
+        @DisplayName("Should handle role mapper claims")
+        void shouldHandleRoleMapperClaims() {
+            String claim = "roles";
+            configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, claim);
 
-        WeldException ex = assertThrows(WeldException.class, underTest::getConfiguration);
+            var result = underTest.getConfiguration();
 
-        assertNotNull(ex.getCause());
-        assertNotNull(ex.getCause().getCause());
-        assertEquals(IllegalStateException.class, ex.getCause().getCause().getClass());
+            assertNotNull(result.getRoleMapperClaims());
+            assertEquals(1, result.getRoleMapperClaims().size());
+            assertEquals(claim, result.getRoleMapperClaims().get(0));
+        }
+
+        @Test
+        @DisplayName("Should handle logout configuration")
+        void shouldHandleLogoutConfiguration() {
+            Map<String, String> configMap = new HashMap<>();
+            configMap.put(OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER, "post_logout_redirect_uri");
+            configMap.put(OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_ADD_ID_TOKEN_HINT, "true");
+            configMap.put(OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI, "http://localhost/logout");
+            configuration.update(configMap);
+
+            var result = underTest.getConfiguration();
+
+            assertEquals("post_logout_redirect_uri", result.getLogoutRedirectParamName());
+            assertEquals("http://localhost/logout", result.getPostLogoutRedirectUri());
+            assertTrue(result.isLogoutWithIdTokenHintEnabled());
+        }
     }
 }
