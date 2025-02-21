@@ -15,26 +15,54 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@DisplayName("Tests the TokenType enum functionality")
 class TokenTypeTest {
 
-    @Test
-    void shouldHandleHappyCase() {
-        for (TokenType tokenType : TokenType.values()) {
-            assertEquals(tokenType, TokenType.fromTypClaim(tokenType.getTypeClaimName()));
+    @Nested
+    @DisplayName("TokenType.fromTypClaim() Tests")
+    class FromTypClaimTests {
+
+        @ParameterizedTest
+        @EnumSource(TokenType.class)
+        @DisplayName("Should correctly parse valid type claims")
+        void shouldHandleValidTokenTypes(TokenType tokenType) {
+            assertNotNull(tokenType.getTypeClaimName(), "Type claim name should not be null");
+            assertEquals(tokenType, TokenType.fromTypClaim(tokenType.getTypeClaimName()),
+                    "Should correctly parse " + tokenType.name());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {"invalid", "unknown", "not_a_token_type"})
+        @DisplayName("Should return UNKNOWN for invalid type claims")
+        void shouldDefaultToUnknown(String invalidType) {
+            assertEquals(TokenType.UNKNOWN, TokenType.fromTypClaim(invalidType),
+                    "Should return UNKNOWN for invalid type: " + invalidType);
         }
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"invalid", "unknown", "not_a_token_type"})
-    void shouldDefaultToUnknown(String invalidType) {
-        assertEquals(TokenType.UNKNOWN, TokenType.fromTypClaim(invalidType));
+    @Nested
+    @DisplayName("TokenType Enum Properties Tests")
+    class EnumPropertiesTests {
+
+        @Test
+        @DisplayName("Should have non-null type claim names for all enum values")
+        void shouldHaveValidTypeClaimNames() {
+            for (TokenType tokenType : TokenType.values()) {
+                assertNotNull(tokenType.getTypeClaimName(),
+                        "Type claim name should not be null for " + tokenType.name());
+            }
+        }
     }
 }
