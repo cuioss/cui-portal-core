@@ -97,7 +97,7 @@ public class NonValidatingJwtTokenParser {
      *
      * @param token the JWT token string to parse, must not be null
      * @return an Optional containing the JsonWebToken if parsing is successful,
-     *         or empty if the token is invalid or cannot be parsed
+     * or empty if the token is invalid or cannot be parsed
      */
     public Optional<JsonWebToken> unsecured(String token) {
         if (MoreStrings.isEmpty(token)) {
@@ -106,7 +106,7 @@ public class NonValidatingJwtTokenParser {
         }
 
         if (token.getBytes(StandardCharsets.UTF_8).length > MAX_TOKEN_SIZE) {
-            LOGGER.warn(PortalTokenLogMessages.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
+            LOGGER.warn(PortalTokenLogMessages.WARN.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
             return Optional.empty();
         }
 

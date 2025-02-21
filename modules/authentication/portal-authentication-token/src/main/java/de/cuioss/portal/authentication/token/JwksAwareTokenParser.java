@@ -26,6 +26,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Delegate;
+import static de.cuioss.portal.authentication.token.PortalTokenLogMessages.INFO;
 
 /**
  * JWT parser implementation with support for remote JWKS (JSON Web Key Set) loading.
@@ -137,7 +138,7 @@ public class JwksAwareTokenParser implements JWTParser {
                 containedContextInfo.setJwksRefreshInterval(180);
             }
 
-            LOGGER.info(PortalTokenLogMessages.CONFIGURED_JWKS.format(
+            LOGGER.info(INFO.CONFIGURED_JWKS.format(
                     containedContextInfo.getPublicKeyLocation(),
                     containedContextInfo.getJwksRefreshInterval(),
                     containedContextInfo.getIssuedBy()));

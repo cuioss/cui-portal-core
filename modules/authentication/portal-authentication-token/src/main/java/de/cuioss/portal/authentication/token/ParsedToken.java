@@ -70,13 +70,13 @@ public abstract class ParsedToken {
     protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger givenLogger) {
         givenLogger.trace("Parsing token '%s'", tokenString);
         if (MoreStrings.isEmpty(trimOrNull(tokenString))) {
-            givenLogger.warn(PortalTokenLogMessages.TOKEN_IS_EMPTY::format);
+            givenLogger.warn(PortalTokenLogMessages.WARN.TOKEN_IS_EMPTY::format);
             return Optional.empty();
         }
         try {
             return Optional.ofNullable(tokenParser.parse(tokenString));
         } catch (ParseException e) {
-            givenLogger.warn(e, PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN::format);
+            givenLogger.warn(e, PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.format(e.getMessage()));
             givenLogger.trace("Offending token '%s'", tokenString);
             return Optional.empty();
         }

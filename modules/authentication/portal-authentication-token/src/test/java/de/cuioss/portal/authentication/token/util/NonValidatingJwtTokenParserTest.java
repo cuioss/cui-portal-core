@@ -33,10 +33,16 @@ import java.util.Base64;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.ISSUER;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_NAME;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger(debug = NonValidatingJwtTokenParser.class)
 @DisplayName("Tests NonValidatingJwtTokenParser functionality")
@@ -148,18 +154,18 @@ class NonValidatingJwtTokenParserTest {
             var result = parser.unsecured(largeToken);
             assertTrue(result.isEmpty(), "Result should be empty for oversized token");
             assertLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalTokenLogMessages.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
+                    PortalTokenLogMessages.WARN.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
         }
 
         @ParameterizedTest(name = "Should reject payload of size {0}KB")
         @ValueSource(ints = {17, 20, 24, 32})
         @DisplayName("Should reject tokens with oversized payload")
-        void shouldRejectOversizedPayload(int sizeInKb) {
+        void shouldRejectLargePayload(int sizeInKb) {
             String tokenWithLargePayload = createTokenWithLargePayload(sizeInKb);
             var result = parser.unsecured(tokenWithLargePayload);
             assertTrue(result.isEmpty(), "Result should be empty for token with oversized payload");
             assertLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalTokenLogMessages.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
+                    PortalTokenLogMessages.WARN.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
         }
     }
 

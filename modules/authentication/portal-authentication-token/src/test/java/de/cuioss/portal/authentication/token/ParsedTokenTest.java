@@ -38,7 +38,7 @@ class ParsedTokenTest {
     private static final CuiLogger LOGGER = new CuiLogger(ParsedTokenTest.class);
 
     @Nested
-    @DisplayName("Token Parsing Error Cases")
+    @DisplayName("Token Parsing ERROR Cases")
     class TokenParsingErrorTests {
 
         @ParameterizedTest
@@ -50,46 +50,46 @@ class ParsedTokenTest {
                     TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
             assertFalse(jsonWebToken.isPresent(), "Token should not be present for empty input");
             LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalTokenLogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
+                    PortalTokenLogMessages.WARN.TOKEN_IS_EMPTY.resolveIdentifierString());
         }
 
         @Test
         @DisplayName("Should handle invalid token format")
-        void shouldProvideEmptyFallbackOnParseError() {
-            String initialTokenString = Generators.letterStrings(10, 20).next();
+        void shouldHandleInvalidTokenFormat() {
+            var initialTokenString = Generators.letterStrings(10, 20).next();
 
             var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
                     TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
 
             assertFalse(jsonWebToken.isPresent(), "Token should not be present for invalid format");
             LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+                    PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
         }
 
         @Test
         @DisplayName("Should handle invalid issuer")
-        void shouldProvideEmptyFallbackOnInvalidIssuer() {
-            String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
+        void shouldHandleInvalidIssuer() {
+            var initialTokenString = validSignedJWTWithClaims(SOME_SCOPES);
 
             var jsonWebToken = ParsedToken
                     .jsonWebTokenFrom(initialTokenString, TestTokenProducer.WRONG_ISSUER_TOKEN_PARSER, LOGGER);
 
             assertFalse(jsonWebToken.isPresent(), "Token should not be present for invalid issuer");
             LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+                    PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
         }
 
         @Test
         @DisplayName("Should handle invalid signature")
-        void shouldProvideEmptyFallbackOnWrongPublicKey() {
-            String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
+        void shouldHandleInvalidSignature() {
+            var initialTokenString = validSignedJWTWithClaims(SOME_SCOPES);
 
             var jsonWebToken = ParsedToken
                     .jsonWebTokenFrom(initialTokenString,
                             TestTokenProducer.WRONG_SIGNATURE_TOKEN_PARSER, LOGGER);
             assertFalse(jsonWebToken.isPresent(), "Token should not be present for invalid signature");
             LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                    PortalTokenLogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+                    PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
         }
     }
 
