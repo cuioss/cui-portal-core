@@ -60,6 +60,7 @@ import lombok.experimental.Delegate;
 public class JwksAwareTokenParser implements JWTParser {
 
     private static final CuiLogger LOGGER = new CuiLogger(JwksAwareTokenParser.class);
+    public static final int DEFAULT_REFRESH_INTERVAL = 180;
 
     @Delegate
     private final JWTParser tokenParser;
@@ -135,11 +136,14 @@ public class JwksAwareTokenParser implements JWTParser {
                 LOGGER.debug("Using default jwksRefreshInterval: %s", 180);
                 containedContextInfo.setJwksRefreshInterval(180);
             }
-            LOGGER.info(() -> PortalTokenLogMessages.CONFIGURED_JWKS.format(
+
+            LOGGER.info(PortalTokenLogMessages.CONFIGURED_JWKS.format(
                     containedContextInfo.getPublicKeyLocation(),
                     containedContextInfo.getJwksRefreshInterval(),
                     containedContextInfo.getIssuedBy()));
-            return new JwksAwareTokenParser(new DefaultJWTParser(containedContextInfo), containedContextInfo.getIssuedBy());
+
+            return new JwksAwareTokenParser(new DefaultJWTParser(containedContextInfo),
+                    containedContextInfo.getIssuedBy());
         }
     }
 

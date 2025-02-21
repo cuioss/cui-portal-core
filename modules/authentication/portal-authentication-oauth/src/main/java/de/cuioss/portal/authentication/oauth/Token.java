@@ -51,35 +51,35 @@ public class Token implements Serializable {
      * Contains claims about the authentication event and user identity.
      * Only present when using OpenID Connect flows.
      */
-    private String idToken;
+    private String id_token;
 
     /**
      * The OAuth2 access token used to access protected resources.
      * Required for all OAuth2 flows and must be included in resource requests
      * using the specified token type (usually "Bearer").
      */
-    private String accessToken;
+    private String access_token;
 
     /**
      * The OAuth2 refresh token used to obtain new access tokens.
      * Optional and only present when the refresh_token scope was requested
      * and granted. Should be securely stored for token renewal.
      */
-    private String refreshToken;
+    private String refresh_token;
 
     /**
      * The type of access token issued, typically "Bearer".
      * Specifies how the access token must be used in resource requests,
      * usually in the HTTP Authorization header.
      */
-    private String tokenType;
+    private String token_type;
 
     /**
      * Time in seconds until the access token expires.
      * Applications should refresh the token before expiration
      * using the refresh token if available.
      */
-    private Integer expiresIn;
+    private String expires_in;
 
     /**
      * The state parameter used for CSRF protection.

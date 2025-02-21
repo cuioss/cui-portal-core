@@ -109,7 +109,7 @@ public interface Oauth2Service {
      * @throws OauthAuthenticationException if token retrieval fails
      * @throws IllegalArgumentException if the scopes are invalid
      */
-    Token retrieveClientToken(String scopes);
+    String retrieveClientToken(String scopes);
 
     /**
      * Refreshes an existing access token for the authenticated user.
@@ -121,5 +121,5 @@ public interface Oauth2Service {
      * @throws OauthAuthenticationException if token refresh fails
      * @throws IllegalArgumentException if the user or refresh token is invalid
      */
-    Token refreshToken(OauthAuthenticatedUserInfo currentUser);
+    String refreshToken(OauthAuthenticatedUserInfo currentUser);
 }

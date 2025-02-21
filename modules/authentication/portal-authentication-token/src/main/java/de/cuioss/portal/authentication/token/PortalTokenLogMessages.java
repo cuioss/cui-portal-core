@@ -23,29 +23,13 @@ import lombok.experimental.UtilityClass;
  * Defines the standardized log messages for the Portal Token module.
  * Follows the CUI logging standards for consistent message formatting and categorization.
  * <p>
- * Message categories:
+ * Message categories and IDs:
  * <ul>
  *   <li>INFO (001-099): Configuration and successful operations</li>
  *   <li>WARN (100-199): Non-critical issues and potential problems</li>
+ *   <li>ERROR (200-299): Critical failures and security issues</li>
+ *   <li>DEBUG (500-599): Detailed operation information</li>
  * </ul>
- * <p>
- * Available messages:
- * <ul>
- *   <li>INFO:
- *     <ul>
- *       <li>{@link #CONFIGURED_JWKS}: JWKS configuration details</li>
- *     </ul>
- *   </li>
- *   <li>WARN:
- *     <ul>
- *       <li>{@link #TOKEN_SIZE_EXCEEDED}: Token size limit violation</li>
- *       <li>{@link #TOKEN_IS_EMPTY}: Empty token handling</li>
- *       <li>{@link #COULD_NOT_PARSE_TOKEN}: Token parsing failures</li>
- *     </ul>
- *   </li>
- * </ul>
- * <p>
- * All messages use the prefix "PortalToken" for module identification.
  */
 @UtilityClass
 public class PortalTokenLogMessages {
@@ -56,25 +40,57 @@ public class PortalTokenLogMessages {
     public static final LogRecord CONFIGURED_JWKS = LogRecordModel.builder()
             .prefix(PREFIX)
             .identifier(1)
-            .template("Initializing JWKS lookup, jwks-endpoint='%s', refresh-interval='%s', issuer = '%s'")
+            .template("Initializing JWKS lookup, jwks-endpoint='%s', refresh-interval='%s', issuer='%s'")
+            .build();
+
+    public static final LogRecord TOKEN_VALIDATED = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(2)
+            .template("Successfully validated token from issuer='%s'")
             .build();
 
     // Warn-Level (100-199)
     public static final LogRecord TOKEN_SIZE_EXCEEDED = LogRecordModel.builder()
             .prefix(PREFIX)
             .identifier(100)
-            .template("Token exceeds maximum size limit of %s bytes")
+            .template("Token exceeds maximum size limit of %s bytes, token will be rejected")
             .build();
 
     public static final LogRecord TOKEN_IS_EMPTY = LogRecordModel.builder()
             .prefix(PREFIX)
             .identifier(101)
-            .template("The given token was empty")
+            .template("The given token was empty, request will be rejected")
             .build();
 
     public static final LogRecord COULD_NOT_PARSE_TOKEN = LogRecordModel.builder()
             .prefix(PREFIX)
             .identifier(102)
-            .template("Unable to parse token due to ParseException")
+            .template("Unable to parse token due to ParseException: %s")
             .build();
+
+    public static final LogRecord MISSING_REQUIRED_SCOPES = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(103)
+            .template("Token missing required scopes - Expected: %s, Present: %s")
+            .build();
+
+    // Error-Level (200-299)
+    public static final LogRecord JWKS_FETCH_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(200)
+            .template("Failed to fetch JWKS from endpoint='%s': %s")
+            .build();
+
+    public static final LogRecord TOKEN_VALIDATION_ERROR = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(201)
+            .template("Token validation failed for issuer='%s': %s")
+            .build();
+
+    public static final LogRecord INVALID_TOKEN_FORMAT = LogRecordModel.builder()
+            .prefix(PREFIX)
+            .identifier(202)
+            .template("Invalid token format: %s")
+            .build();
+
 }
