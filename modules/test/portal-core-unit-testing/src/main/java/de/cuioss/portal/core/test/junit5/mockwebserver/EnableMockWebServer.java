@@ -65,6 +65,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *   <li>Support for custom {@link mockwebserver3.Dispatcher} implementations</li>
  * </ul>
  *
+ * <h2>MockWebServerHolder Nesting</h2>
+ * <em>Caution: </em> In case of Nesting unit-tests, the {@link MockWebServerHolder} interface is not inherited by the nested classes.
+ * Therefore, you must implement it in each nested class that should receive the server instance.
+ *
  * @author Oliver Wolff
  * @see MockWebServerHolder
  * @see MockWebServerExtension

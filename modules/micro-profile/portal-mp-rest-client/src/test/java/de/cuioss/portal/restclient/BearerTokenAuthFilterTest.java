@@ -18,21 +18,21 @@ package de.cuioss.portal.restclient;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
+import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher;
+import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import lombok.Getter;
+import lombok.Setter;
 import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
-import org.easymock.EasyMock;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -42,9 +42,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,12 +61,13 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
     private static final String TEST_TOKEN = "test-token-123";
     private static final int CONCURRENT_THREADS = 5;
 
+    @Getter
+    @Setter
     private MockWebServer mockWebServer;
     private CuiRestClientBuilder builder;
 
     @BeforeEach
     void setUp() {
-        mockWebServer.enqueue(new MockResponse());
         builder = new CuiRestClientBuilder(LOGGER);
     }
 
@@ -105,10 +103,6 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
         ExecutorService executor = Executors.newFixedThreadPool(CONCURRENT_THREADS);
         CountDownLatch latch = new CountDownLatch(CONCURRENT_THREADS);
 
-        // Enqueue responses for all threads
-        for (int i = 0; i < CONCURRENT_THREADS; i++) {
-            mockWebServer.enqueue(new MockResponse());
-        }
 
         // Execute concurrent requests
         for (int i = 0; i < CONCURRENT_THREADS; i++) {
@@ -194,12 +188,7 @@ class BearerTokenAuthFilterTest implements MockWebServerHolder {
     }
 
     @Override
-    public void setMockWebServer(MockWebServer mockWebServer) {
-        this.mockWebServer = mockWebServer;
-    }
-
-    @Override
     public Dispatcher getDispatcher() {
-        return null; // Use default dispatcher
+        return new CombinedDispatcher(new BaseAllAcceptDispatcher("/success"));
     }
 }
