@@ -20,78 +20,93 @@ import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.DEFAULT_TOKEN_PARSER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableTestLogger
+@DisplayName("Tests ParsedToken functionality")
 class ParsedTokenTest {
 
     private static final CuiLogger LOGGER = new CuiLogger(ParsedTokenTest.class);
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = "  ")
-    void shouldProvideEmptyFallbackOnEmptyInput(String initialTokenString) {
-        var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
-                TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
-        assertFalse(jsonWebToken.isPresent());
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.TOKEN_IS_EMPTY.resolveIdentifierString());
+    @Nested
+    @DisplayName("Token Parsing ERROR Cases")
+    class TokenParsingErrorTests {
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = "  ")
+        @DisplayName("Should handle empty or blank token strings")
+        void shouldProvideEmptyFallbackOnEmptyInput(String initialTokenString) {
+            var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
+                    TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
+            assertFalse(jsonWebToken.isPresent(), "Token should not be present for empty input");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalTokenLogMessages.WARN.TOKEN_IS_EMPTY.resolveIdentifierString());
+        }
+
+        @Test
+        @DisplayName("Should handle invalid token format")
+        void shouldHandleInvalidTokenFormat() {
+            var initialTokenString = Generators.letterStrings(10, 20).next();
+
+            var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
+                    TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
+
+            assertFalse(jsonWebToken.isPresent(), "Token should not be present for invalid format");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+        }
+
+        @Test
+        @DisplayName("Should handle invalid issuer")
+        void shouldHandleInvalidIssuer() {
+            var initialTokenString = validSignedJWTWithClaims(SOME_SCOPES);
+
+            var jsonWebToken = ParsedToken
+                    .jsonWebTokenFrom(initialTokenString, TestTokenProducer.WRONG_ISSUER_TOKEN_PARSER, LOGGER);
+
+            assertFalse(jsonWebToken.isPresent(), "Token should not be present for invalid issuer");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+        }
+
+        @Test
+        @DisplayName("Should handle invalid signature")
+        void shouldHandleInvalidSignature() {
+            var initialTokenString = validSignedJWTWithClaims(SOME_SCOPES);
+
+            var jsonWebToken = ParsedToken
+                    .jsonWebTokenFrom(initialTokenString,
+                            TestTokenProducer.WRONG_SIGNATURE_TOKEN_PARSER, LOGGER);
+            assertFalse(jsonWebToken.isPresent(), "Token should not be present for invalid signature");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
+        }
     }
 
-    @Test
-    void shouldProvideEmptyFallbackOnParseError() {
-        String initialTokenString = Generators.letterStrings(10, 20).next();
+    @Nested
+    @DisplayName("Token Expiration Tests")
+    class TokenExpirationTests {
 
-        var jsonWebToken = ParsedToken.jsonWebTokenFrom(initialTokenString,
-                TestTokenProducer.DEFAULT_TOKEN_PARSER, LOGGER);
+        @Test
+        @DisplayName("Should correctly handle token expiration checks")
+        void shouldHandleNotExpiredToken() {
+            String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
 
-        assertFalse(jsonWebToken.isPresent());
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
-    }
-
-    @Test
-    void shouldProvideEmptyFallbackOnInvalidIssuer() {
-        String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
-
-        var jsonWebToken = ParsedToken
-                .jsonWebTokenFrom(initialTokenString, TestTokenProducer.WRONG_ISSUER_TOKEN_PARSER, LOGGER);
-
-        assertFalse(jsonWebToken.isPresent());
-
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
-    }
-
-    @Test
-    void shouldProvideEmptyFallbackOnWrongPublicKey() {
-        String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_SCOPES);
-
-        var jsonWebToken = ParsedToken
-                .jsonWebTokenFrom(initialTokenString,
-                        TestTokenProducer.WRONG_SIGNATURE_TOKEN_PARSER, LOGGER);
-        assertFalse(jsonWebToken.isPresent());
-        LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.WARN,
-                LogMessages.COULD_NOT_PARSE_TOKEN.resolveIdentifierString());
-    }
-
-    @Test
-    void shouldHandleNotExpiredToken() {
-        String initialToken = validSignedJWTWithClaims(SOME_SCOPES);
-
-        var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
-        assertTrue(token.isPresent());
-        assertFalse(token.get().isExpired());
-        assertFalse(token.get().willExpireInSeconds(5));
-        assertTrue(token.get().willExpireInSeconds(500));
+            var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertTrue(token.isPresent(), "Token should be present for valid input");
+            assertFalse(token.get().isExpired(), "Token should not be expired");
+            assertFalse(token.get().willExpireInSeconds(5), "Token should not expire in 5 seconds");
+            assertTrue(token.get().willExpireInSeconds(500), "Token should expire in 500 seconds");
+        }
     }
 }

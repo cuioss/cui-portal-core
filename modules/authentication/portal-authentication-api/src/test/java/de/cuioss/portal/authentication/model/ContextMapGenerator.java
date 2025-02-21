@@ -15,14 +15,14 @@
  */
 package de.cuioss.portal.authentication.model;
 
+import de.cuioss.test.generator.Generators;
+import de.cuioss.test.generator.TypedGenerator;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.cuioss.test.generator.Generators;
-import de.cuioss.test.generator.TypedGenerator;
-
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({"rawtypes"})
 public class ContextMapGenerator implements TypedGenerator<Map> {
 
     private final TypedGenerator<String> stringGenerator = Generators.nonEmptyStrings();

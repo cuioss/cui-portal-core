@@ -15,28 +15,47 @@
  */
 package de.cuioss.portal.configuration.schedule;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.nio.file.Path;
 
-import jakarta.inject.Qualifier;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Defines events that will be fired from implementations of
- * {@link FileWatcherService} in case a {@link Path} was modified. The payload
- * is the actual {@link Path} representing the file being changed
+ * CDI qualifier for events fired when a monitored file or directory changes.
+ * This event system is a core part of the Portal's dynamic configuration update mechanism.
+ * <p>
+ * The event payload is the {@link Path} that was modified. Event observers can use this
+ * path to:
+ * <ul>
+ *   <li>Reload configuration files</li>
+ *   <li>Update cached resources</li>
+ *   <li>Trigger application reconfiguration</li>
+ *   <li>Log configuration changes</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * public class ConfigurationObserver {
+ *     
+ *     private static final CuiLogger log = new CuiLogger(ConfigurationObserver.class);
+ *     
+ *     public void onFileChanged(&#64;Observes &#64;FileChangedEvent Path path) {
+ *         log.info(INFO.CONFIG_FILE_CHANGED.format(path));
+ *         // Handle configuration update
+ *     }
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
+ * @see FileWatcherService
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface FileChangedEvent {
 
 }

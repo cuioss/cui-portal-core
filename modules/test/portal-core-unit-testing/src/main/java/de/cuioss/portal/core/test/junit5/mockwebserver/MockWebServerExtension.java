@@ -16,16 +16,22 @@
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
 import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.Joiner;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * Handle the lifetime of an instance of {@link MockWebServer}, see
@@ -33,9 +39,78 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
  *
  * @author Oliver Wolff
  */
-public class MockWebServerExtension implements TestInstancePostProcessor, AfterEachCallback {
+public class MockWebServerExtension implements AfterEachCallback, BeforeEachCallback {
 
     private static final CuiLogger LOGGER = new CuiLogger(MockWebServerExtension.class);
+
+    @Override
+    @SuppressWarnings({"squid:S2095"}) // owolff: Will be closed after all tests
+    public void beforeEach(ExtensionContext context) throws Exception {
+        var server = new MockWebServer();
+
+        var testInstance = context.getRequiredTestInstance();
+
+        var classModel = extractTestClasses(testInstance);
+        Optional<EnableMockWebServer> enableMockWebServerAnnotation = classModel.stream().filter(holder -> holder.getAnnotation().isPresent()).findFirst().map(holder -> holder.getAnnotation().get());
+
+        boolean manualStart = false;
+        if (enableMockWebServerAnnotation.isPresent()) {
+            manualStart = enableMockWebServerAnnotation.get().manualStart();
+        }
+        setMockWebServer(testInstance, server, context);
+
+        if (!manualStart) {
+            server.start();
+            LOGGER.info("Started MockWebServer at %s", server.url("/"));
+        } else {
+            LOGGER.info("Manual start requested, server not started");
+        }
+        put(server, context);
+    }
+
+    private void setMockWebServer(Object testInstance, MockWebServer mockWebServer, ExtensionContext context) {
+        Optional<MockWebServerHolder> holder = findMockWebServerHolder(testInstance, context);
+        if (holder.isPresent()) {
+            holder.get().setMockWebServer(mockWebServer);
+            Optional.ofNullable(holder.get().getDispatcher()).ifPresent(mockWebServer::setDispatcher);
+            LOGGER.info("Fulfilled interface contract of MockWebServerHolder on %s", holder.get().getClass().getName());
+        } else {
+            LOGGER.warn("No instance of %s found. Is this intentional?", MockWebServerHolder.class.getName());
+        }
+    }
+
+    private Optional<MockWebServerHolder> findMockWebServerHolder(Object testInstance, ExtensionContext context) {
+        if (testInstance instanceof MockWebServerHolder holder) {
+            LOGGER.debug("Found MockWebServerHolder in test instance %s", holder.getClass().getName());
+            return Optional.of(holder);
+        }
+
+        Optional<ExtensionContext> parentContext = context.getParent();
+        while (parentContext.isPresent()) {
+            var parentTestInstanceOptional = parentContext.get().getTestInstance();
+            if (parentTestInstanceOptional.isPresent()) {
+                Object parentTestInstance = parentTestInstanceOptional.get();
+                if (parentTestInstance instanceof MockWebServerHolder holder) {
+                    LOGGER.debug("Found MockWebServerHolder in parent test instance %s", holder.getClass().getName());
+                    return Optional.of(holder);
+                }
+            } else {
+                /*
+                 * According Copilot:
+                 * The issue you're encountering is related to how JUnit handles nested test classes and their contexts.
+                 * Specifically, the parentContext.get().getTestInstance() returning an empty Optional despite parentContext.isPresent()
+                 * being true can be confusing.
+                 * This behavior is not necessarily a bug but rather a consequence of how JUnit manages test instances and their lifecycle.
+                 * In JUnit 5, nested test classes are treated as separate test instances, and their contexts are managed independently.
+                 * This can lead to situations where the parent context is present, but the test instance is not yet available or initialized.*/
+                LOGGER.debug("Parent test instance is not present although context is present %s", parentContext.get().getDisplayName());
+            }
+            parentContext = parentContext.get().getParent();
+        }
+        LOGGER.debug("Found no MockWebServerHolder in test instance %s", testInstance.getClass().getName());
+
+        return Optional.empty();
+    }
 
     /**
      * Identifies the {@link Namespace} under which the concrete instance of
@@ -43,34 +118,19 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
      */
     public static final Namespace NAMESPACE = Namespace.create("test", "portal", "MockWebServer");
 
-    @SuppressWarnings({"squid:S2095"}) // owolff: Will be closed after all tests
-    @Override
-    public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
-
-        var mockWebServer = new MockWebServer();
-
-        assertInstanceOf(MockWebServerHolder.class, testInstance, "In order to use within a test the test-class must implement de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder "
-                + testInstance);
-
-        var holder = (MockWebServerHolder) testInstance;
-        holder.setMockWebServer(mockWebServer);
-        Optional.ofNullable(holder.getDispatcher()).ifPresent(mockWebServer::setDispatcher);
-        if (extractAnnotation(testInstance.getClass()).map(annotation -> !annotation.manualStart())
-                .orElse(Boolean.FALSE)) {
-            mockWebServer.start();
-            LOGGER.info(() -> "Started MockWebServer at " + mockWebServer.url("/"));
-        }
-        put(mockWebServer, context);
-    }
-
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        var server = get(context);
-        if (server.isPresent()) {
-            LOGGER.info(() -> "Shutting down MockWebServer at " + server.get().url("/"));
-            server.get().shutdown();
+        var optionalMockWebServer = get(context);
+        if (optionalMockWebServer.isPresent()) {
+            var server = optionalMockWebServer.get();
+            if (optionalMockWebServer.get().getStarted()) {
+                LOGGER.info("Shutting down MockWebServer at %s", server.url("/"));
+                server.shutdown();
+            } else {
+                LOGGER.warn("Server was not started, therefore can not be shutdown");
+            }
         } else {
-            LOGGER.error(() -> "Server not present, therefore can not be shutdown");
+            LOGGER.error("Server not present, therefore can not be shutdown");
         }
 
     }
@@ -83,16 +143,52 @@ public class MockWebServerExtension implements TestInstancePostProcessor, AfterE
         return Optional.ofNullable((MockWebServer) context.getStore(NAMESPACE).get(MockWebServer.class.getName()));
     }
 
-    private static Optional<EnableMockWebServer> extractAnnotation(Class<?> testClass) {
-        Optional<EnableMockWebServer> annotation = AnnotationSupport.findAnnotation(testClass,
-                EnableMockWebServer.class);
-        if (annotation.isPresent()) {
-            return annotation;
+
+    private static List<TestClassHolder> extractTestClasses(Object testInstance) {
+        List<TestClassHolder> parentClassmodel = new ArrayList<>();
+        if (null != testInstance.getClass().getEnclosingClass()) {
+            parentClassmodel = extractTestClassesRecursive(testInstance.getClass().getEnclosingClass(), new ArrayList<>());
         }
-        if (Object.class.equals(testClass.getClass())) {
-            return Optional.empty();
+        var model = extractTestClassesRecursive(testInstance.getClass(), new ArrayList<>());
+
+        parentClassmodel.addAll(model);
+        LOGGER.debug("Extracted model form %s, resulting in:\n\t-%s", testInstance.getClass(), Joiner.on("\n\t-").join(parentClassmodel));
+        return parentClassmodel;
+    }
+
+    private static List<TestClassHolder> extractTestClassesRecursive(Class<?> testClass, List<TestClassHolder> holderList) {
+        LOGGER.debug("Extract TestClassHolder %s", testClass);
+        if (Object.class.equals(testClass)) {
+            LOGGER.debug("Reached java.lang.Object, returning list");
+            return holderList;
         }
-        return extractAnnotation(testClass.getSuperclass());
+        LOGGER.debug("Extracting TestClassHolder for %s", testClass);
+        holderList.add(TestClassHolder.from(testClass));
+        return extractTestClassesRecursive(testClass.getSuperclass(), holderList);
+    }
+
+
+    /**
+     * Represents a tuple of the concrete class and the optional annotation
+     */
+    @AllArgsConstructor
+    @ToString
+    private static class TestClassHolder {
+        @NonNull
+        @Getter
+        Class<?> testInstance;
+        @Nullable
+        EnableMockWebServer annotation;
+
+        Optional<EnableMockWebServer> getAnnotation() {
+            return Optional.ofNullable(annotation);
+        }
+
+        static TestClassHolder from(Class<?> testClass) {
+            EnableMockWebServer annotation = AnnotationSupport.findAnnotation(testClass,
+                    EnableMockWebServer.class).orElse(null);
+            return new TestClassHolder(testClass, annotation);
+        }
     }
 
 }

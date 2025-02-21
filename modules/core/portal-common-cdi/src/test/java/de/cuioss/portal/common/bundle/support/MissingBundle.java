@@ -15,14 +15,16 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
-import java.io.Serial;
-import java.util.Optional;
-
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import jakarta.annotation.Priority;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.io.Serial;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Priority(PortalPriorities.PORTAL_ASSEMBLY_LEVEL)
 @EqualsAndHashCode
@@ -34,6 +36,12 @@ public class MissingBundle implements ResourceBundleLocator {
 
     @Override
     public Optional<String> getBundlePath() {
+        return Optional.of("non.existent.bundle");
+    }
+
+    @Override
+    public Optional<ResourceBundle> getBundle(Locale locale) {
+        // Force warning by always returning empty
         return Optional.empty();
     }
 }

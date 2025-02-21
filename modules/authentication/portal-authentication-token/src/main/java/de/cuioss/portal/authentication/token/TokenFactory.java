@@ -17,6 +17,7 @@ package de.cuioss.portal.authentication.token;
 
 import de.cuioss.portal.authentication.token.util.MultiIssuerTokenParser;
 import de.cuioss.tools.base.Preconditions;
+import de.cuioss.tools.logging.CuiLogger;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,33 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 /**
- * Factory for creating different types of tokens with support for multiple issuers.
+ * Factory for creating and validating OAuth2/OpenID Connect tokens with multi-issuer support.
+ * Provides a centralized way to create different types of tokens while handling token parsing
+ * and validation through configurable token parsers.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Support for multiple token issuers</li>
+ *   <li>Automatic parser selection based on token characteristics</li>
+ *   <li>Creation of typed token instances ({@link ParsedAccessToken}, {@link ParsedIdToken}, {@link ParsedRefreshToken})</li>
+ *   <li>Thread-safe token creation and validation</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * TokenFactory factory = TokenFactory.of(parser1, parser2);
+ * Optional<ParsedAccessToken> token = factory.createAccessToken(tokenString);
+ * </pre>
+ * <p>
+ * The factory uses {@link MultiIssuerTokenParser} internally to manage multiple token parsers
+ * and select the appropriate one based on the token's issuer and format.
+ *
+ * @author Oliver Wolff
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenFactory {
+
+    private static final CuiLogger LOGGER = new CuiLogger(TokenFactory.class);
 
     private final MultiIssuerTokenParser tokenParser;
 
@@ -38,13 +62,14 @@ public class TokenFactory {
      * @return A new TokenFactory instance
      */
     public static TokenFactory of(@NonNull JwksAwareTokenParser... tokenParser) {
-
         Preconditions.checkArgument(tokenParser.length > 0, "tokenParser must be set");
         var builder = MultiIssuerTokenParser.builder();
         for (JwksAwareTokenParser jwksAwareTokenParser : tokenParser) {
             builder.addParser(jwksAwareTokenParser);
         }
-        return new TokenFactory(builder.build());
+        var factory = new TokenFactory(builder.build());
+        LOGGER.debug("Created TokenFactory with %s parser(s)", tokenParser.length);
+        return factory;
     }
 
     /**
@@ -54,10 +79,13 @@ public class TokenFactory {
      * @return The parsed access token, which may be empty if the token is invalid or no parser is found
      */
     public Optional<ParsedAccessToken> createAccessToken(@NonNull String tokenString) {
+        LOGGER.debug("Creating access token");
         var parser = tokenParser.getParserForToken(tokenString);
         if (parser.isPresent()) {
+            LOGGER.debug("Found parser for token, attempting to create access token");
             return ParsedAccessToken.fromTokenString(tokenString, parser.get());
         }
+        LOGGER.debug("No suitable parser found for token");
         return Optional.empty();
     }
 
@@ -68,10 +96,13 @@ public class TokenFactory {
      * @return The parsed ID token, which may be empty if the token is invalid or no parser is found
      */
     public Optional<ParsedIdToken> createIdToken(@NonNull String tokenString) {
+        LOGGER.debug("Creating ID token");
         var parser = tokenParser.getParserForToken(tokenString);
         if (parser.isPresent()) {
+            LOGGER.debug("Found parser for token, attempting to create ID token");
             return ParsedIdToken.fromTokenString(tokenString, parser.get());
         }
+        LOGGER.debug("No suitable parser found for token");
         return Optional.empty();
     }
 
@@ -82,8 +113,11 @@ public class TokenFactory {
      * @return The parsed refresh token, which may be empty if the token is invalid or no parser is found
      */
     public Optional<ParsedRefreshToken> createRefreshToken(@NonNull String tokenString) {
-
+        LOGGER.debug("Creating refresh token");
         return tokenParser.getParserForToken(tokenString)
-                .map(parser -> ParsedRefreshToken.fromTokenString(tokenString));
+                .map(parser -> {
+                    LOGGER.debug("Found parser for token, creating refresh token");
+                    return ParsedRefreshToken.fromTokenString(tokenString);
+                });
     }
 }

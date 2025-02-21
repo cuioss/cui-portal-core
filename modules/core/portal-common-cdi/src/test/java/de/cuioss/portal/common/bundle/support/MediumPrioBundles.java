@@ -15,14 +15,14 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
-import java.io.Serial;
-import java.util.Optional;
-
 import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import jakarta.annotation.Priority;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.io.Serial;
+import java.util.Optional;
 
 @Priority(PortalPriorities.PORTAL_MODULE_LEVEL)
 @EqualsAndHashCode

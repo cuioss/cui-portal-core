@@ -15,7 +15,21 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
+import de.cuioss.portal.common.PortalCommonLogMessages;
+import de.cuioss.portal.common.locale.LocaleChangeEvent;
+import de.cuioss.portal.common.locale.PortalLocale;
+import de.cuioss.tools.collect.CollectionBuilder;
+import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.Joiner;
+import de.cuioss.tools.string.MoreStrings;
+import de.cuioss.uimodel.application.CuiProjectStage;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import lombok.EqualsAndHashCode;
+import lombok.Synchronized;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.util.Collections;
@@ -28,20 +42,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
-import de.cuioss.portal.common.locale.LocaleChangeEvent;
-import de.cuioss.portal.common.locale.PortalLocale;
-import de.cuioss.tools.collect.CollectionBuilder;
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.string.Joiner;
-import de.cuioss.uimodel.application.CuiProjectStage;
-import lombok.EqualsAndHashCode;
-import lombok.Synchronized;
-import lombok.ToString;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableSet;
 
 /**
  * It can do the following tricks:
@@ -50,7 +51,7 @@ import lombok.ToString;
  * {@link java.util.ResourceBundle}s</li>
  * <li>Listens and acts on {@link de.cuioss.portal.common.locale.LocaleChangeEvent}s</li>
  * </ul>
- *
+ * <p>
  * Handling of Missing Keys: On {@link de.cuioss.portal.common.stage.ProjectStage#DEVELOPMENT} it will throw a
  * {@link java.util.MissingResourceException}. Otherwise, it will return the requested key,
  * surrounded with Question-Marks
@@ -81,9 +82,20 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private final List<String> keyList = new CopyOnWriteArrayList<>();
 
-    /** {@inheritDoc} */
+    /**
+     * Resolves a message for the given key.
+     * 
+     * @param key to be looked up, must not be blank
+     * @return the resolved message if key is defined, otherwise returns "??[key]??"
+     *         and logs a warning. Returns null if key is blank.
+     * @throws MissingResourceException in development stage if key is not found
+     */
     @Override
     public String getString(final String key) {
+        if (MoreStrings.isBlank(key)) {
+            LOGGER.warn(PortalCommonLogMessages.WARN.BUNDLE_IGNORING_EMPTY_KEY::format);
+            return null;
+        }
 
         for (final ResourceBundle bundle : getResolvedBundles()) {
             if (bundle.containsKey(key)) {
@@ -91,16 +103,15 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
             }
         }
 
-        final var errMsg = "Portal-003 : No key '" + key + "' defined within any of the configured bundles: "
-                + resourceBundleRegistry.getResolvedPaths();
-
         if (projectStage.get().isDevelopment()) {
-            throw new MissingResourceException(errMsg, "ResourceBundleWrapperImpl", key);
+            throw new MissingResourceException(
+                    PortalCommonLogMessages.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()),
+                    getClass().getName(),
+                    key);
         }
 
-        LOGGER.warn(errMsg);
+        LOGGER.warn(PortalCommonLogMessages.WARN.KEY_NOT_FOUND.format(key, resourceBundleRegistry.getResolvedPaths()));
         return "??" + key + "??";
-
     }
 
     /**
@@ -111,28 +122,35 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
      * @param newLocale
      */
     void actOnLocaleChangeEven(@Observes @LocaleChangeEvent final Locale newLocale) {
+        LOGGER.debug("Locale changed to '%s', clearing bundle cache", newLocale);
         resolvedBundles = null;
     }
 
     private List<ResourceBundle> getResolvedBundles() {
         if (null == resolvedBundles) {
             var builder = new CollectionBuilder<ResourceBundle>();
+            var currentLocale = localeProvider.get();
 
             for (final ResourceBundleLocator path : resourceBundleRegistry.getResolvedPaths()) {
-                path.getBundle(localeProvider.get()).ifPresent(builder::add);
+                path.getBundle(currentLocale).ifPresent(builder::add);
             }
             resolvedBundles = builder.toImmutableList();
+            LOGGER.debug("Resolved %d resource bundles for locale '%s'", resolvedBundles.size(), currentLocale);
         }
         return resolvedBundles;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Enumeration<String> getKeys() {
         return Collections.enumeration(keySet());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Synchronized
     public Set<String> keySet() {
@@ -146,7 +164,9 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
         return mutableSet(keyList);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getBundleContent() {
         return Joiner.on(", ").join(resourceBundleRegistry.getResolvedPaths());

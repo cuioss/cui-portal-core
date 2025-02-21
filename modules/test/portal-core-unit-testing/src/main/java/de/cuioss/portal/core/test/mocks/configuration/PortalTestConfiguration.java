@@ -35,47 +35,86 @@ import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static java.util.Collections.synchronizedMap;
 
 /**
- * Mock variant of configuration, overwriting all other configuration elements.
- * <em>Caution:</em> The described Configuration only works in the context of junit
- * 5
- * <h2>Test Setup</h2>
- * <p>
- * In order to activate you add {@link EnablePortalConfiguration} to your test
- * class
- * <p>
- * Now you can inject the {@link PortalTestConfiguration}
+ * Mock implementation of the Portal configuration system for unit testing.
+ * This class provides a high-priority configuration source that overrides all other
+ * configuration elements in a test environment.
  *
- * <pre>
- * <code>
- *   &#64;Inject
- *   &#64;PortalConfigurationSource
- *   private PortalTestConfiguration configuration;
- * </code>
- * </pre>
- * <p>
- * and use it like:
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Dynamic configuration updates during tests</li>
+ *   <li>High-priority overrides (above standard config sources)</li>
+ *   <li>Project stage management</li>
+ *   <li>Property removal support</li>
+ *   <li>Thread-safe operations</li>
+ * </ul>
  *
+ * <h2>Setup</h2>
+ * Add {@link EnablePortalConfiguration} to your test class:
  * <pre>
- * <code>
- *   configuration.update("key1", "value1");
- *   configuration.update("key2", "value2");
- * </code>
+ * &#64;EnablePortalConfiguration
+ * class ConfigurationTest {
+ *     &#64;Inject
+ *     &#64;PortalConfigurationSource
+ *     private PortalTestConfiguration configuration;
+ * }
  * </pre>
- * <p>
- * or like
  *
+ * <h2>Usage Examples</h2>
+ *
+ * Single property update:
  * <pre>
- * <code>
- *   configuration.update("key1", "value1");
- *   configuration.update("key1", "value1", "key2", "value2");
- * </code>
+ * configuration.update("portal.some.key", "value");
  * </pre>
- * <p>
- * To explicitly remove/erase a property use {@link #remove(String)} or
- * {@link #removeAll()}. This sets the given property value to an empty string,
- * which in MP-Config terms defines the removal of a property.
+ *
+ * Multiple property updates:
+ * <pre>
+ * // Method 1: Key-value pairs
+ * configuration.update("key1", "value1", "key2", "value2");
+ *
+ * // Method 2: Map-based
+ * Map<String, String> properties = new HashMap<>();
+ * properties.put("key1", "value1");
+ * properties.put("key2", "value2");
+ * configuration.update(properties);
+ * </pre>
+ *
+ * Project stage management:
+ * <pre>
+ * // Set to development mode
+ * configuration.development();
+ *
+ * // Set to production mode
+ * configuration.production();
+ *
+ * // Set custom stage
+ * configuration.setPortalProjectStage(ProjectStage.STAGING);
+ * </pre>
+ *
+ * Property removal:
+ * <pre>
+ * // Remove single property
+ * configuration.remove("portal.some.key");
+ *
+ * // Remove all properties
+ * configuration.removeAll();
+ *
+ * // Clear configuration (for test setup)
+ * configuration.clear();
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Thread-safe using synchronized collections</li>
+ *   <li>High priority (PORTAL_ASSEMBLY_LEVEL + 20) to override other sources</li>
+ *   <li>Property removal is handled by setting empty string value</li>
+ *   <li>Implements MicroProfile Config {@link ConfigSource} interface</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see EnablePortalConfiguration
+ * @see ConfigSource
+ * @see ProjectStage
  */
 @ApplicationScoped
 @Priority(PortalTestConfiguration.PRIORITY)

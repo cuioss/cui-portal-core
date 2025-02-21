@@ -15,17 +15,16 @@
  */
 package de.cuioss.portal.core.servlet;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @ApplicationScoped
 public class MockPortalServlet extends AbstractPortalServlet {

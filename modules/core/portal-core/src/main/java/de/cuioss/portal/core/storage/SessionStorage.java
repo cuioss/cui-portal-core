@@ -18,7 +18,41 @@ package de.cuioss.portal.core.storage;
 import java.io.Serializable;
 
 /**
- * @author Matthias Walliczek
+ * Provides session-scoped storage capabilities for serializable objects within the portal.
+ * This interface extends {@link MapStorage} with session-specific semantics, ensuring
+ * that stored data persists only for the duration of a user's session.
+ *
+ * <p><strong>Key characteristics:</strong></p>
+ * <ul>
+ *   <li>Session-scoped persistence</li>
+ *   <li>Automatic cleanup on session expiration</li>
+ *   <li>Thread-safe operations</li>
+ *   <li>Serializable storage for session replication</li>
+ * </ul>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;Inject
+ * SessionStorage storage;
+ *
+ * // Store user preferences
+ * UserPreferences prefs = new UserPreferences();
+ * storage.put("userPrefs", prefs);
+ *
+ * // Retrieve with default value
+ * UserPreferences stored = storage.get("userPrefs", new UserPreferences());
+ * </pre>
+ *
+ * <p><strong>Implementation notes:</strong></p>
+ * <ul>
+ *   <li>All keys and values must be {@link Serializable}</li>
+ *   <li>Implementations should handle concurrent access</li>
+ *   <li>Large objects should be used with caution to avoid session bloat</li>
+ * </ul>
+ *
+ * @see MapStorage
+ * @see Serializable
+ * @since 1.0
  */
 public interface SessionStorage extends MapStorage<Serializable, Serializable> {
 

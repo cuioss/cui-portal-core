@@ -15,13 +15,13 @@
  */
 package de.cuioss.portal.core.servlet;
 
+import jakarta.inject.Qualifier;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import jakarta.inject.Qualifier;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Identifier for the Context Path. Provides the context path from the
@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 public @interface CuiContextPath {
 
 }

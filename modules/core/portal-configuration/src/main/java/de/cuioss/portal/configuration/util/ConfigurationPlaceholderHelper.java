@@ -15,24 +15,52 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
-import static java.util.regex.Matcher.quoteReplacement;
+import de.cuioss.tools.logging.CuiLogger;
+import de.cuioss.tools.string.Joiner;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import de.cuioss.tools.logging.CuiLogger;
-import de.cuioss.tools.string.Joiner;
+import static de.cuioss.portal.configuration.util.ConfigurationHelper.resolveConfigProperty;
+import static java.util.regex.Matcher.quoteReplacement;
 
 /**
- * Processes a map with configuration key/values. If a value contains a
- * placeholder, e.g. <code>${a.key}</code>, its value is looked up in the same
- * configuration map. If present, the placeholder is replaced with the value. If
- * the configuration key contains multiple placeholders, even with the same key,
- * all placeholders are replaced correspondingly.
- *
+ * Helper class for processing configuration placeholders in property values.
+ * Handles resolution of placeholders, including nested placeholders and default values,
+ * with protection against excessive nesting depth.
+ * 
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Resolves placeholders in configuration values</li>
+ *   <li>Supports default values using {@code ${key:default}} syntax</li>
+ *   <li>Handles nested placeholders up to 5 levels deep</li>
+ *   <li>Protects against circular dependencies</li>
+ * </ul>
+ * 
+ * <h2>Examples</h2>
+ * <pre>
+ * // Simple placeholder
+ * value = "${app.home}"
+ * result = "/opt/app"
+ * 
+ * // Placeholder with default
+ * value = "${app.port:8080}"
+ * result = "8080" (if app.port is not defined)
+ * 
+ * // Nested placeholders
+ * value = "${app.${env.name}.config}"
+ * result = "production-settings" (if env.name="prod" and app.prod.config="production-settings")
+ * </pre>
+ * 
+ * <h2>Error Handling</h2>
+ * <ul>
+ *   <li>Missing keys: Logged as warnings, throws exception if configured</li>
+ *   <li>Excessive nesting: Throws {@link ConfigKeyNestingException}</li>
+ *   <li>Invalid syntax: Throws {@link IllegalArgumentException}</li>
+ * </ul>
+ * 
  * @author Sven Haag
  */
 class ConfigurationPlaceholderHelper {
@@ -46,15 +74,15 @@ class ConfigurationPlaceholderHelper {
      * "${key1:${key2}crap}".
      */
     static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{" + // find start of a config placeholder.
-                                                                          // escaped, because these are regexp special
-                                                                          // chars.
+            // escaped, because these are regexp special
+            // chars.
             "[^:]" + // ignore placeholder if it starts with a double-colon and therefore has no
-                     // config-key.
+            // config-key.
             ".*?" + // allow any character between curly braces. however,
             // we need to stop at the first sight of a placeholders suffix.
             // therefore, we use a lazy mode quantifier - the question mark.
             "}+" // find at least 1 suffix character, but as many as possible to account for
-                 // nested placeholders.
+    // nested placeholders.
     );
 
     private ConfigurationPlaceholderHelper() {

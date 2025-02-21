@@ -16,6 +16,7 @@
 package de.cuioss.portal.test.keycloakit;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
+import lombok.experimental.UtilityClass;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -28,8 +29,9 @@ import java.util.Map;
 @Testcontainers
 public class KeycloakITBase {
 
-    public enum TokenTypes {
-        ;
+    @UtilityClass
+    public static final class TokenTypes {
+
         public static final String ACCESS = "access_token";
         public static final String REFRESH = "refresh_token";
         public static final String ID_TOKEN = "id_token";
@@ -37,7 +39,7 @@ public class KeycloakITBase {
 
     @Container
     KeycloakContainer keycloak = new KeycloakContainer().withRealmImportFile(TestRealm.REALM_CONFIGURATION).
-            withAdminUsername(TestRealm.administrator.NAME).withAdminPassword(TestRealm.administrator.PASSWORD)
+            withAdminUsername(TestRealm.Administrator.NAME).withAdminPassword(TestRealm.Administrator.PASSWORD)
             .useTls();
 
     /**
@@ -47,12 +49,12 @@ public class KeycloakITBase {
      */
     protected Map<String, String> parameterForScopedToken(String requestedScopes) {
         return Map.of(
-                "username", TestRealm.testUser.NAME,
-                "password", TestRealm.testUser.PASSWORD,
+                "username", TestRealm.TestUser.NAME,
+                "password", TestRealm.TestUser.PASSWORD,
                 "grant_type", "password",
                 "scope", requestedScopes,
-                "client_id", TestRealm.client.ID,
-                "client_secret", TestRealm.client.PASSWORD
+                "client_id", TestRealm.Client.ID,
+                "client_secret", TestRealm.Client.PASSWORD
         );
     }
 

@@ -18,83 +18,175 @@ package de.cuioss.portal.restclient;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
 import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
+import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher;
+import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher;
 import de.cuioss.tools.logging.CuiLogger;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import lombok.NonNull;
+import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.Closeable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import static de.cuioss.portal.configuration.TracingConfigKeys.PORTAL_TRACING_ENABLED;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for the Bearer Token Authentication filter functionality in the REST client.
+ * Verifies the proper handling of authentication headers and token values.
+ */
 @EnableAutoWeld
-@EnableMockWebServer
-@EnablePortalConfiguration(configuration = PORTAL_TRACING_ENABLED + ":false")
 @AddExtensions(ResteasyCdiExtension.class)
+@EnablePortalConfiguration(configuration = "portal.tracing.enabled:false")
+@EnableMockWebServer
+@DisplayName("BearerTokenAuthFilter Tests")
 class BearerTokenAuthFilterTest implements MockWebServerHolder {
 
-    private static final CuiLogger log = new CuiLogger(BearerTokenAuthFilterTest.class);
+    private static final CuiLogger LOGGER = new CuiLogger(BearerTokenAuthFilterTest.class);
+    private static final String TEST_TOKEN = "test-token-123";
+    private static final int CONCURRENT_THREADS = 5;
 
+    @Getter
+    @Setter
+    private MockWebServer mockWebServer;
+    private CuiRestClientBuilder builder;
+
+    @BeforeEach
+    void setUp() {
+        builder = new CuiRestClientBuilder(LOGGER);
+    }
+
+    @Path("/")
     public interface TestResource extends Closeable {
-
         @GET
-        @Path("test")
-        @jakarta.ws.rs.Produces("application/json")
+        @Path("success")
         String test();
     }
 
-    @Setter
-    private MockWebServer mockWebServer;
+    @Test
+    @DisplayName("Should provide valid authorization header")
+    void shouldProvideAuthorizationHeader() throws InterruptedException {
+        var client = builder.url(mockWebServer.url("success").toString())
+                .bearerAuthToken(TEST_TOKEN)
+                .build(TestResource.class);
+
+        client.test();
+        var request = mockWebServer.takeRequest();
+        var authHeader = request.getHeaders().values("Authorization");
+        assertFalse(authHeader.isEmpty(), "Authorization header should be present");
+        assertEquals("Bearer " + TEST_TOKEN, authHeader.get(0), "Authorization header should have correct format");
+    }
+
+    @Test
+    @DisplayName("Should handle concurrent requests properly")
+    void shouldHandleConcurrentRequests() throws InterruptedException {
+        var client = builder.url(mockWebServer.url("success").toString())
+                .bearerAuthToken(TEST_TOKEN)
+                .build(TestResource.class);
+
+        // Setup concurrent requests
+        ExecutorService executor = Executors.newFixedThreadPool(CONCURRENT_THREADS);
+        CountDownLatch latch = new CountDownLatch(CONCURRENT_THREADS);
+
+
+        // Execute concurrent requests
+        for (int i = 0; i < CONCURRENT_THREADS; i++) {
+            executor.execute(() -> {
+                client.test();
+                latch.countDown();
+            });
+        }
+
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "All requests should complete");
+
+        // Verify all requests had correct headers
+        for (int i = 0; i < CONCURRENT_THREADS; i++) {
+            var request = mockWebServer.takeRequest();
+            var authHeader = request.getHeaders().values("Authorization");
+            assertFalse(authHeader.isEmpty(), "Authorization header should be present");
+            assertEquals("Bearer " + TEST_TOKEN, authHeader.get(0),
+                    "Authorization header should have correct format for all requests");
+        }
+
+        executor.shutdown();
+    }
+
+    @Test
+    @DisplayName("Should handle null token values appropriately")
+    void shouldHandleNullTokenValue() throws InterruptedException {
+        var client = builder.url(mockWebServer.url("success").toString())
+                .bearerAuthToken(null)
+                .build(TestResource.class);
+
+        client.test();
+        var request = mockWebServer.takeRequest();
+        var authHeader = request.getHeaders().values("Authorization");
+        assertTrue(authHeader.isEmpty(), "Authorization header should be empty for null token");
+    }
+
+    @Test
+    @DisplayName("Should handle empty token appropriately")
+    void shouldHandleEmptyToken() throws InterruptedException {
+        var client = builder.url(mockWebServer.url("success").toString())
+                .bearerAuthToken("")
+                .build(TestResource.class);
+
+        client.test();
+        var request = mockWebServer.takeRequest();
+        var authHeader = request.getHeaders().values("Authorization");
+        assertTrue(authHeader.isEmpty(), "Authorization header should be empty for empty token");
+    }
+
+    @ParameterizedTest(name = "Should handle token with special characters: {0}")
+    @ValueSource(strings = {
+            "token with spaces",
+            "token\nwith\nnewlines",
+            "token@#$%^&*"
+    })
+    void shouldHandleTokensWithSpecialCharacters(String token) throws InterruptedException {
+        var client = builder.url(mockWebServer.url("success").toString())
+                .bearerAuthToken(token)
+                .build(TestResource.class);
+
+        client.test();
+        var request = mockWebServer.takeRequest();
+        var authHeader = request.getHeaders().values("Authorization");
+        assertFalse(authHeader.isEmpty(), "Authorization header should be present");
+        assertEquals("Bearer " + token.replaceAll("[\n\r\t]", " ").trim(),
+                authHeader.get(0), "Authorization header should handle special characters");
+    }
+
+    @Test
+    @DisplayName("Should handle very long token")
+    void shouldHandleVeryLongToken() throws InterruptedException {
+        String longToken = "x".repeat(4096); // 4KB token
+        var client = builder.url(mockWebServer.url("success").toString())
+                .bearerAuthToken(longToken)
+                .build(TestResource.class);
+
+        client.test();
+        var request = mockWebServer.takeRequest();
+        var authHeader = request.getHeaders().values("Authorization");
+        assertFalse(authHeader.isEmpty(), "Authorization header should be present");
+        assertEquals("Bearer " + longToken, authHeader.get(0),
+                "Authorization header should handle long tokens");
+    }
 
     @Override
     public Dispatcher getDispatcher() {
-        return new Dispatcher() {
-
-            @Override
-            public @NotNull MockResponse dispatch(final @NonNull @NotNull RecordedRequest request) {
-                if ("/success/test" .equals(request.getPath())) {
-                    return new MockResponse(HttpServletResponse.SC_OK);
-                }
-                return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
-            }
-        };
-    }
-
-    @Test
-    void shouldProviderAuthorizationHeader() throws InterruptedException {
-        final var underTest = new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString())
-                .bearerAuthToken("abcToken");
-        underTest.build(CuiRestClientBuilderTest.TestResource.class).test();
-        var request = mockWebServer.takeRequest();
-        var authHeader = request.getHeaders().values("Authorization");
-        assertFalse(authHeader.isEmpty());
-        assertEquals("Bearer abcToken", authHeader.get(0));
-    }
-
-    @Test
-    void shouldProviderAuthorizationHeaderWithInvalidValues() throws InterruptedException {
-        new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken(null)
-                .build(CuiRestClientBuilderTest.TestResource.class).test();
-        var request = mockWebServer.takeRequest();
-        var authHeader = request.getHeaders().values("Authorization");
-        assertTrue(authHeader.isEmpty());
-        new CuiRestClientBuilder(log).url(mockWebServer.url("success").toString()).bearerAuthToken("123\ntest: test2")
-                .build(CuiRestClientBuilderTest.TestResource.class).test();
-        request = mockWebServer.takeRequest();
-        authHeader = request.getHeaders().values("Authorization");
-        assertFalse(authHeader.isEmpty());
-        assertEquals("Bearer 123 test: test2", authHeader.get(0));
+        return new CombinedDispatcher(new BaseAllAcceptDispatcher("/success"));
     }
 }

@@ -29,7 +29,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Aggregates a number of {@link ModuleDispatcherElement}s to reuse functionality
+ * Combines multiple {@link ModuleDispatcherElement}s into a single dispatcher for handling HTTP requests
+ * in test scenarios. This dispatcher implements a chain-of-responsibility pattern, trying each module
+ * dispatcher in sequence until one handles the request.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Combines multiple dispatchers into a single unit</li>
+ *   <li>Supports dynamic addition of dispatchers</li>
+ *   <li>Configurable 404/418 response for unhandled requests</li>
+ *   <li>Path-based request routing</li>
+ * </ul>
+ *
+ * <h2>Usage Example</h2>
+ * <pre>
+ * var dispatcher = new CombinedDispatcher()
+ *     .addDispatcher(new UserApiDispatcher())
+ *     .addDispatcher(new ProductApiDispatcher())
+ *     .setEndWithTeapot(false); // Use 404 for unhandled requests
+ *
+ * &#64;EnableMockWebServer
+ * class ApiTest implements MockWebServerHolder {
+ *     &#64;Override
+ *     public Dispatcher getDispatcher() {
+ *         return dispatcher;
+ *     }
+ * }
+ * </pre>
+ *
+ * <h2>Request Handling</h2>
+ * <ul>
+ *   <li>Requests are matched against each dispatcher's base URL</li>
+ *   <li>First matching dispatcher handles the request</li>
+ *   <li>Unhandled requests return 418 (default) or 404</li>
+ *   <li>Supports all standard HTTP methods</li>
+ * </ul>
+ *
+ * @author Oliver Wolff
+ * @see ModuleDispatcherElement
+ * @see de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer
+ * @since 1.0
  */
 @NoArgsConstructor
 public class CombinedDispatcher extends Dispatcher {

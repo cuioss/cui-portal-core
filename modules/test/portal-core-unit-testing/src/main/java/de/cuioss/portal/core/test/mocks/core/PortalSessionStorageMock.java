@@ -15,23 +15,93 @@
  */
 package de.cuioss.portal.core.test.mocks.core;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import jakarta.enterprise.context.ApplicationScoped;
-
 import de.cuioss.portal.core.storage.PortalSessionStorage;
 import de.cuioss.portal.core.storage.SessionStorage;
 import de.cuioss.portal.core.storage.impl.MapStorageImpl;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * Mock Variant of {@link PortalSessionStorage}
+ * Mock implementation of {@link PortalSessionStorage} for testing session-based storage functionality.
+ * Provides an in-memory map-based storage implementation that simulates session storage
+ * with additional testing capabilities for error scenarios.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>In-memory session storage simulation</li>
+ *   <li>Support for any Serializable objects</li>
+ *   <li>Configurable error simulation</li>
+ *   <li>Application-scoped persistence</li>
+ *   <li>Thread-safe operations</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Basic storage operations:
+ * <pre>
+ * &#64;Inject
+ * &#64;PortalSessionStorage
+ * private SessionStorage storage;
+ *
+ * void testStorage() {
+ *     // Store serializable object
+ *     storage.put("user", new User("John"));
+ *
+ *     // Retrieve object
+ *     User user = (User) storage.get("user");
+ *     assertEquals("John", user.getName());
+ * }
+ * </pre>
+ *
+ * Error simulation:
+ * <pre>
+ * &#64;Inject
+ * private PortalSessionStorageMock storage;
+ *
+ * void testErrorScenario() {
+ *     // Configure to throw exception on next access
+ *     storage.setThrowIllegalStateOnAccessOnce(true);
+ *
+ *     assertThrows(IllegalStateException.class, () -> {
+ *         storage.get("any-key");
+ *     });
+ *
+ *     // Next access works fine (one-time error)
+ *     storage.put("key", "value");
+ *     assertEquals("value", storage.get("key"));
+ * }
+ *
+ * void testPermanentError() {
+ *     // Configure to always throw exception
+ *     storage.setThrowIllegalStateOnAccess(true);
+ *
+ *     assertThrows(IllegalStateException.class, () -> {
+ *         storage.get("key");
+ *     });
+ * }
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Extends {@link MapStorageImpl} for base functionality</li>
+ *   <li>Supports any Serializable key-value pairs</li>
+ *   <li>Provides error simulation for testing error handling</li>
+ *   <li>Thread-safe through synchronized operations</li>
+ *   <li>Maintains state during application lifecycle</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see PortalSessionStorage
+ * @see SessionStorage
+ * @see MapStorageImpl
+ * @see Serializable
  */
 @ApplicationScoped
 @PortalSessionStorage

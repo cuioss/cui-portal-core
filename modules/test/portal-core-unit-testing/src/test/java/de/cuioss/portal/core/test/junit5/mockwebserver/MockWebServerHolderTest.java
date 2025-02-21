@@ -15,16 +15,26 @@
  */
 package de.cuioss.portal.core.test.junit5.mockwebserver;
 
+import lombok.Getter;
+import lombok.Setter;
+import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MockWebServerHolderTest {
 
     @Test
-    void shouldImplementDefaultMethods() {
-        var holder = new MockWebServerHolder() {};
-        assertDoesNotThrow(() -> holder.setMockWebServer(null));
+    void shouldHandleDefaultMethods() {
+        var holder = new MockWebServerHolder() {
+            @Getter
+            @Setter
+            private MockWebServer mockWebServer;
+        };
+
         assertNull(holder.getDispatcher());
+        holder.setMockWebServer(new MockWebServer());
+        assertNotNull(holder.getMockWebServer());
     }
 }

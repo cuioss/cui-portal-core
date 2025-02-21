@@ -15,6 +15,12 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.cdi.PortalBeanManager;
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.ToString;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
@@ -22,75 +28,97 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import de.cuioss.portal.common.cdi.PortalBeanManager;
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
 /**
- * <p>
- * Portal variant of {@link java.util.ResourceBundle}. It delegates to
- * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} that does the actual heavy lifting.
- * </p>
- * <p>
- * It usage is for cases where there is technically a {@link java.util.ResourceBundle}
- * needed. Sadly there is no corresponding interface, solely an Abstract-Class
- * that can not be proxied by CDI. Currently it's sole use is the context of the
- * PortalApplication, that it exposes it on
- * {@link jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)}
- * with the name "msgs"
- * </p><p>
- * It can be used directly in jsf views: {@code #{msgs['page.401.title']}}
- * </p>
+ * Portal-specific implementation of {@link ResourceBundle} that delegates to
+ * {@link ResourceBundleWrapper} for actual resource resolution.
+ *
+ * <h2>Overview</h2>
+ * This class bridges the gap between JSF's resource bundle requirements and
+ * Portal's unified bundle management system.
+ * It is primarily used to expose Portal's resource bundles to JSF views under the name "msgs".
+ *
+ * <h2>Technical Background</h2>
+ * Since {@link ResourceBundle} is an abstract class and not an interface, it
+ * cannot be directly proxied by CDI.
+ * This implementation provides the necessary bridge while maintaining CDI compatibility.
+ *
+ * <h2>Usage in JSF Views</h2>
+ * Access bundle messages directly in JSF views:
+ * <pre>
+ * // Basic message access
+ * #{msgs['page.title']}
+ *
+ * // With parameters
+ * #{msgs['welcome.message'].format(user.name)}
+ * </pre>
+ *
+ * <h2>Thread Safety</h2>
+ * This implementation is thread-safe.
+ * All resource resolution is delegated to the thread-safe {@link ResourceBundleWrapper}.
  *
  * @author Oliver Wolff
+ * @see ResourceBundleWrapper
+ * @see jakarta.faces.application.Application#getResourceBundle
  */
-@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class PortalResourceBundleBean extends ResourceBundle implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3953649686127640297L;
+    private static final long serialVersionUID = -4996798647652125L;
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalResourceBundleBean.class);
 
-    /** Lookup name for el-expression within views: "msgs" */
+    /**
+     * Lookup name for el-expression within views: "msgs"
+     */
     public static final String BUNDLE_NAME = "msgs";
 
-    private final ResourceBundleWrapper resourceBundleWrapper;
+    private ResourceBundleWrapper resourceBundleWrapper;
 
-    private String allBundleNames;
-
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the given key is {@code null}
+     */
     @Override
-    protected Object handleGetObject(final String key) {
-        return resourceBundleWrapper.getString(key);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Enumeration<String> getKeys() {
-        return Collections.enumeration(keySet());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> keySet() {
-        return resourceBundleWrapper.keySet();
+    protected Object handleGetObject(@NonNull final String key) {
+        return getResourceBundleWrapper().getString(key);
     }
 
     /**
-     * Factory Method creating a new instance with loading the contained
-     * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper}, {@link jakarta.enterprise.context.SessionScoped} from the CDR-COntext
+     * {@inheritDoc}
      *
-     * @return a {@link de.cuioss.portal.common.bundle.PortalResourceBundleBean} object
+     * @return a non-null enumeration of the keys in this resource bundle
      */
-    public static PortalResourceBundleBean resolveFromCDIContext() {
-        LOGGER.debug("Resolving PortalResourceBundleBean from CDI-Context");
-        var resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
-        return new PortalResourceBundleBean(resourceBundleWrapper);
+    @Override
+    @NonNull
+    public Enumeration<String> getKeys() {
+        return Collections.enumeration(getResourceBundleWrapper().keySet());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a non-null set of the keys in this resource bundle
+     */
+    @Override
+    @NonNull
+    public Set<String> keySet() {
+        return getResourceBundleWrapper().keySet();
+    }
+
+    /**
+     * Retrieves the wrapped ResourceBundleWrapper instance, creating it if necessary.
+     *
+     * @return the non-null ResourceBundleWrapper instance
+     */
+    @NonNull
+    private ResourceBundleWrapper getResourceBundleWrapper() {
+        if (null == resourceBundleWrapper) {
+            LOGGER.debug("Resolving ResourceBundleWrapper");
+            resourceBundleWrapper = PortalBeanManager.resolveRequiredBean(ResourceBundleWrapper.class);
+        }
+        return resourceBundleWrapper;
+    }
 }

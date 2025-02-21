@@ -25,16 +25,38 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Default Implementation of {@link MapStorage}
- * <p>
- * Map like wrapper around session storage. Analogous to
- * {@link de.cuioss.portal.core.storage.SessionStorage}
- * </p>
- * the actual map is backed by {@link ConcurrentHashMap} therefore, there is no
- * need to synchronize the access.
+ * Thread-safe implementation of {@link MapStorage} providing key-value storage capabilities.
+ * 
+ * <p>This implementation:</p>
+ * <ul>
+ *   <li>Is backed by {@link ConcurrentHashMap} for thread-safe operations without explicit synchronization</li>
+ *   <li>Handles null keys and values gracefully</li>
+ *   <li>Provides atomic operations for common map functions</li>
+ *   <li>Ensures type-safety through generic parameters</li>
+ * </ul>
  *
- * @param <T> type of key. Must implement at least {@link Serializable}
- * @param <V> value must implement at least {@link Serializable}
+ * <p><strong>Key features:</strong></p>
+ * <ul>
+ *   <li>Thread-safe operations</li>
+ *   <li>Null-safe implementations</li>
+ *   <li>Serializable storage</li>
+ *   <li>Default value support</li>
+ * </ul>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * MapStorage<String, UserData> storage = new MapStorageImpl<>();
+ * storage.put("user123", userData);
+ * UserData data = storage.get("user123", new UserData()); // With default value
+ * </pre>
+ *
+ * @param <T> type of key, must implement {@link Serializable}
+ * @param <V> type of value, must implement {@link Serializable}
+ *
+ * @see MapStorage
+ * @see de.cuioss.portal.core.storage.SessionStorage
+ * @see Serializable
+ * @since 1.0
  */
 @EqualsAndHashCode
 @ToString
@@ -87,5 +109,4 @@ public class MapStorageImpl<T extends Serializable, V extends Serializable> impl
         }
         return storage.containsKey(key);
     }
-
 }

@@ -18,6 +18,17 @@ package de.cuioss.portal.authentication.oauth;
 import java.io.Serial;
 
 /**
+ * Thrown to indicate that an OAuth2 authentication operation has failed.
+ * This exception is used to wrap OAuth2-specific authentication failures such as:
+ * <ul>
+ *   <li>Invalid state parameter in the OAuth2 callback</li>
+ *   <li>Missing or invalid tokens</li>
+ *   <li>Authorization server errors</li>
+ * </ul>
+ *
+ * <p>The exception message typically contains a message key that can be
+ * resolved to a user-friendly error message.
+ *
  * @author Matthias Walliczek
  */
 public class OauthAuthenticationException extends RuntimeException {
@@ -25,8 +36,12 @@ public class OauthAuthenticationException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = -2351542706407596661L;
 
-    public OauthAuthenticationException(final String string) {
-        super(string);
+    /**
+     * Constructs a new OAuth authentication exception with the specified message key.
+     *
+     * @param messageKey The key identifying the specific authentication failure
+     */
+    public OauthAuthenticationException(final String messageKey) {
+        super(messageKey);
     }
-
 }

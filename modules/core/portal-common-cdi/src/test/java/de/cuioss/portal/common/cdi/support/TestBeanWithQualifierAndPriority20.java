@@ -15,16 +15,15 @@
  */
 package de.cuioss.portal.common.cdi.support;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import jakarta.enterprise.context.RequestScoped;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.RequestScoped;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * @author Oliver Wolff

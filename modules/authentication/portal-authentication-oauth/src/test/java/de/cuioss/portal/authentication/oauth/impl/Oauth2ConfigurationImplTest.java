@@ -17,63 +17,142 @@ package de.cuioss.portal.authentication.oauth.impl;
 
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.TypedGenerator;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("LombokBuilder")
+@EnableTestLogger(debug = Oauth2ConfigurationImplTest.class)
+@DisplayName("Tests OAuth2 Configuration Implementation")
 class Oauth2ConfigurationImplTest {
 
     private static final TypedGenerator<String> nonEmptyLetterStringGenerator = Generators.letterStrings(1, 5);
 
-    @Test
-    void validConfig() {
-        Oauth2ConfigurationImpl config = createConfig();
+    @Nested
+    @DisplayName("Configuration Validation Tests")
+    class ConfigurationValidationTests {
+        @Test
+        @DisplayName("Should validate valid configuration")
+        void validConfig() {
+            Oauth2ConfigurationImpl config = createConfig();
+            assertDoesNotThrow(config::validate);
+        }
 
-        assertDoesNotThrow(config::validate);
+        @Test
+        @DisplayName("Should require token URI")
+        void missingTokenUri() {
+            Oauth2ConfigurationImpl config = createConfig();
+            config.setTokenUri(null);
+            IllegalStateException exception = assertThrows(IllegalStateException.class, config::validate);
+            assertEquals("OAuth tokenUri missing", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("Should require client ID")
+        void missingClientId() {
+            Oauth2ConfigurationImpl config = createConfig();
+            config.setClientId(null);
+            IllegalStateException exception = assertThrows(IllegalStateException.class, config::validate);
+            assertEquals("OAuth clientId missing", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("Should require authorize URI")
+        void missingAuthorizeUri() {
+            Oauth2ConfigurationImpl config = createConfig();
+            config.setAuthorizeUri(null);
+            IllegalStateException exception = assertThrows(IllegalStateException.class, config::validate);
+            assertEquals("OAuth authorizeUri missing", exception.getMessage());
+        }
     }
 
-    @Test
-    void missingTokenUri() {
-        Oauth2ConfigurationImpl config = createConfig();
-        config.setTokenUri(null);
+    @Nested
+    @DisplayName("Builder Tests")
+    class BuilderTests {
+        @Test
+        @DisplayName("Should build complete configuration")
+        void shouldBuildCompleteConfiguration() {
+            String clientId = nonEmptyLetterStringGenerator.next();
+            String clientSecret = nonEmptyLetterStringGenerator.next();
+            String initialScopes = nonEmptyLetterStringGenerator.next();
+            String logoutUri = nonEmptyLetterStringGenerator.next();
+            String authorizeUri = nonEmptyLetterStringGenerator.next();
+            String tokenUri = nonEmptyLetterStringGenerator.next();
+            String userInfoUri = nonEmptyLetterStringGenerator.next();
+            String externalContextPath = nonEmptyLetterStringGenerator.next();
+            String logoutRedirectParamName = nonEmptyLetterStringGenerator.next();
+            String postLogoutRedirectUri = nonEmptyLetterStringGenerator.next();
+            List<String> roleMapperClaims = List.of(nonEmptyLetterStringGenerator.next());
 
-        assertThrows(IllegalStateException.class, config::validate);
-    }
+            Oauth2ConfigurationImpl config = Oauth2ConfigurationImpl.builder()
+                    .clientId(clientId)
+                    .clientSecret(clientSecret)
+                    .initialScopes(initialScopes)
+                    .logoutUri(logoutUri)
+                    .authorizeUri(authorizeUri)
+                    .tokenUri(tokenUri)
+                    .userInfoUri(userInfoUri)
+                    .externalContextPath(externalContextPath)
+                    .logoutRedirectParamName(logoutRedirectParamName)
+                    .postLogoutRedirectUri(postLogoutRedirectUri)
+                    .roleMapperClaims(roleMapperClaims)
+                    .logoutWithIdTokenHintEnabled(true)
+                    .build();
 
-    @Test
-    void missingClientId() {
-        Oauth2ConfigurationImpl config = createConfig();
-        config.setClientId(null);
+            assertNotNull(config);
+            assertEquals(clientId, config.getClientId());
+            assertEquals(clientSecret, config.getClientSecret());
+            assertEquals(initialScopes, config.getInitialScopes());
+            assertEquals(logoutUri, config.getLogoutUri());
+            assertEquals(authorizeUri, config.getAuthorizeUri());
+            assertEquals(tokenUri, config.getTokenUri());
+            assertEquals(userInfoUri, config.getUserInfoUri());
+            assertEquals(externalContextPath, config.getExternalContextPath());
+            assertEquals(logoutRedirectParamName, config.getLogoutRedirectParamName());
+            assertEquals(postLogoutRedirectUri, config.getPostLogoutRedirectUri());
+            assertEquals(roleMapperClaims, config.getRoleMapperClaims());
+            assertTrue(config.isLogoutWithIdTokenHintEnabled());
+        }
 
-        assertThrows(IllegalStateException.class, config::validate);
-    }
+        @Test
+        @DisplayName("Should build minimal configuration")
+        void shouldBuildMinimalConfiguration() {
+            String clientId = nonEmptyLetterStringGenerator.next();
+            String authorizeUri = nonEmptyLetterStringGenerator.next();
+            String tokenUri = nonEmptyLetterStringGenerator.next();
 
-    @Test
-    void missingAuthorizeUri() {
-        Oauth2ConfigurationImpl config = createConfig();
-        config.setAuthorizeUri(null);
+            Oauth2ConfigurationImpl config = Oauth2ConfigurationImpl.builder()
+                    .clientId(clientId)
+                    .authorizeUri(authorizeUri)
+                    .tokenUri(tokenUri)
+                    .build();
 
-        assertThrows(IllegalStateException.class, config::validate);
+            assertNotNull(config);
+            assertEquals(clientId, config.getClientId());
+            assertEquals(authorizeUri, config.getAuthorizeUri());
+            assertEquals(tokenUri, config.getTokenUri());
+            assertFalse(config.isLogoutWithIdTokenHintEnabled());
+            assertDoesNotThrow(config::validate);
+        }
     }
 
     private Oauth2ConfigurationImpl createConfig() {
-        Oauth2ConfigurationImpl.Oauth2ConfigurationImplBuilder configBuilder = Oauth2ConfigurationImpl.builder();
-        configBuilder.clientId(nonEmptyLetterStringGenerator.next());
-        configBuilder.clientSecret(nonEmptyLetterStringGenerator.next());
-        configBuilder.initialScopes(nonEmptyLetterStringGenerator.next());
-        configBuilder.logoutUri(nonEmptyLetterStringGenerator.next());
-        configBuilder.externalContextPath(nonEmptyLetterStringGenerator.next());
-        configBuilder.authorizeUri(nonEmptyLetterStringGenerator.next());
-        configBuilder.logoutRedirectParamName(nonEmptyLetterStringGenerator.next());
-        configBuilder.postLogoutRedirectUri(nonEmptyLetterStringGenerator.next());
-        configBuilder.roleMapperClaims(Collections.singletonList(nonEmptyLetterStringGenerator.next()));
-        configBuilder.tokenUri(nonEmptyLetterStringGenerator.next());
-        configBuilder.externalContextPath(nonEmptyLetterStringGenerator.next());
-        configBuilder.userInfoUri(nonEmptyLetterStringGenerator.next());
-        return configBuilder.build();
+        return Oauth2ConfigurationImpl.builder()
+                .clientId(nonEmptyLetterStringGenerator.next())
+                .clientSecret(nonEmptyLetterStringGenerator.next())
+                .initialScopes(nonEmptyLetterStringGenerator.next())
+                .logoutUri(nonEmptyLetterStringGenerator.next())
+                .authorizeUri(nonEmptyLetterStringGenerator.next())
+                .tokenUri(nonEmptyLetterStringGenerator.next())
+                .userInfoUri(nonEmptyLetterStringGenerator.next())
+                .externalContextPath(nonEmptyLetterStringGenerator.next())
+                .logoutRedirectParamName(nonEmptyLetterStringGenerator.next())
+                .postLogoutRedirectUri(nonEmptyLetterStringGenerator.next())
+                .roleMapperClaims(List.of(nonEmptyLetterStringGenerator.next()))
+                .build();
     }
 }

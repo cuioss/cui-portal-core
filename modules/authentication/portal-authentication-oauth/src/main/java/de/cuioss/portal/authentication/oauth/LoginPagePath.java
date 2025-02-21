@@ -15,23 +15,33 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.inject.Qualifier;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * String containing the path to the login page
+ * Qualifier annotation for injecting the OAuth2 login page path.
+ * This qualifier is used to identify the string value representing the path
+ * to the application's login page, which is used as the redirect target
+ * after OAuth2 authentication.
+ * 
+ * <p>Usage:
+ * <pre>
+ * &#64;Inject
+ * &#64;LoginPagePath
+ * private String loginPath;
+ * </pre>
+ * 
+ * <p>The injected path should be relative to the application context and
+ * will be used to construct the complete OAuth2 redirect URI.
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface LoginPagePath {
 
 }

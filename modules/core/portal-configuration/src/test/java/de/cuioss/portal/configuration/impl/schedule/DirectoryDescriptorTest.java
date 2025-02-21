@@ -15,19 +15,14 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DirectoryDescriptorTest {
 
@@ -45,7 +40,7 @@ class DirectoryDescriptorTest {
 
     @Test
     void shouldHandleFactory() {
-        Assertions.assertFalse(AbstractFileDescriptor.create(null).isPresent());
+        assertFalse(AbstractFileDescriptor.create(null).isPresent());
         assertFalse(AbstractFileDescriptor.create(testFileHandler.getNonExistingFile()).isPresent());
         assertTrue(AbstractFileDescriptor.create(testFileHandler.getBaseDir()).isPresent());
         assertTrue(AbstractFileDescriptor.create(testFileHandler.getBaseDir()).isPresent());

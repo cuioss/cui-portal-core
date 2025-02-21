@@ -15,43 +15,100 @@
  */
 package de.cuioss.portal.configuration.types;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import de.cuioss.tools.io.FileLoader;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
-
-import de.cuioss.tools.io.FileLoader;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Injects a config property as a {@link FileLoader}. In case the path is not
- * there / empty the corresponding producer will throw an
- * {@link IllegalArgumentException}. See {@link #failOnNotAccessible()} for
- * details regarding handling of not accessible files.
+ * CDI qualifier for injecting file resources as {@link FileLoader} instances.
+ * This qualifier provides type-safe injection of file resources with support
+ * for existence validation and error handling.
+ * <p>
+ * Features:
+ * <ul>
+ *   <li>Type-safe file resource injection</li>
+ *   <li>Configurable validation behavior</li>
+ *   <li>Automatic resource loading</li>
+ *   <li>Error handling options</li>
+ * </ul>
+ * <p>
+ * Usage examples:
+ * <pre>
+ * // Basic usage - fails if file not found
+ * &#64;Inject
+ * &#64;ConfigAsFileLoader(name = "app.config.file")
+ * private FileLoader configFile;
+ * 
+ * // Optional file - won't fail if not found
+ * &#64;Inject
+ * &#64;ConfigAsFileLoader(
+ *     name = "app.template.file",
+ *     failOnNotAccessible = false
+ * )
+ * private FileLoader templateFile;
+ * </pre>
+ * <p>
+ * Example configuration:
+ * <pre>
+ * # Configuration properties
+ * app.config.file=/path/to/config.json
+ * app.template.file=classpath:/templates/email.html
+ * </pre>
+ * <p>
+ * Error Handling:
+ * <ul>
+ *   <li>Throws {@link IllegalArgumentException} if property is missing/empty</li>
+ *   <li>Throws {@link IllegalArgumentException} if file not accessible (when failOnNotAccessible=true)</li>
+ *   <li>Returns non-accessible FileLoader instance (when failOnNotAccessible=false)</li>
+ * </ul>
  *
  * @author Oliver Wolff
  */
 @Qualifier
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface ConfigAsFileLoader {
 
     /**
-     * @return the name of the property
+     * The configuration property key that specifies the file path.
+     * <p>
+     * The value associated with this key should be a valid file path.
+     * Supported formats:
+     * <ul>
+     *   <li>Absolute paths: "/path/to/file"</li>
+     *   <li>Relative paths: "path/to/file"</li>
+     *   <li>Classpath resources: "classpath:/path/to/file"</li>
+     * </ul>
+     *
+     * @return the configuration key for the file path
      */
     @Nonbinding
     String name();
 
     /**
-     * @return boolean indicating whether the corresponding producer should throw an
-     *         {@link IllegalArgumentException} in case the file-path derived by the
-     *         property is not accessible. Defaults to {@code true}.
+     * Controls validation behavior when the specified file is not accessible.
+     * <p>
+     * When true:
+     * <ul>
+     *   <li>Throws {@link IllegalArgumentException} if file cannot be accessed</li>
+     *   <li>Ensures file exists before injection</li>
+     *   <li>Guarantees file is available when injected</li>
+     * </ul>
+     * When false:
+     * <ul>
+     *   <li>Returns FileLoader instance even if file is not accessible</li>
+     *   <li>Allows for delayed/conditional file access</li>
+     *   <li>Useful for optional resources</li>
+     * </ul>
+     *
+     * @return {@code true} to throw exception on inaccessible files,
+     *         {@code false} to allow non-accessible files
      */
     @Nonbinding
     boolean failOnNotAccessible() default true;

@@ -15,12 +15,15 @@
  */
 package de.cuioss.portal.authentication;
 
+import de.cuioss.tools.logging.CuiLogger;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
 import java.io.Serial;
 import java.io.Serializable;
+
+import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
 
 /**
  * To signal successful / failed login and logout events (e.g., to the audit-logger).
@@ -56,4 +59,25 @@ public class LoginEvent implements Serializable {
 
     @NonNull
     Action action;
+
+    private static final CuiLogger LOGGER = new CuiLogger(LoginEvent.class);
+
+    /**
+     * Logs the login event based on the action type.
+     */
+    public void logEvent() {
+        switch (action) {
+            case LOGIN_SUCCESS:
+                LOGGER.info(AUTH.INFO.LOGIN_SUCCESS.format(username));
+                break;
+            case LOGIN_FAILED:
+                LOGGER.warn(AUTH.WARN.LOGIN_FAILED.format(username));
+                break;
+            case LOGOUT:
+                LOGGER.info(AUTH.INFO.LOGOUT.format(username));
+                break;
+            default:
+                throw new IllegalStateException("Unknown action: " + action);
+        }
+    }
 }

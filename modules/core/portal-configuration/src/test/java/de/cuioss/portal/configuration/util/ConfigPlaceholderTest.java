@@ -15,15 +15,11 @@
  */
 package de.cuioss.portal.configuration.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("el-syntax")
 class ConfigPlaceholderTest {
@@ -93,8 +89,8 @@ class ConfigPlaceholderTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "${key:default}, key, default", "${key:${key2}}, key, ${key2}", "${key:${key2}crap}, key, ${key2}crap",
-            "${key:foo:bar}, key, foo:bar" })
+    @CsvSource({"${key:default}, key, default", "${key:${key2}}, key, ${key2}", "${key:${key2}crap}, key, ${key2}crap",
+            "${key:foo:bar}, key, foo:bar"})
     void splitPlaceholderWithDefault(String full, String expected1, String expected2) {
         var result = ConfigPlaceholder.split(full);
 

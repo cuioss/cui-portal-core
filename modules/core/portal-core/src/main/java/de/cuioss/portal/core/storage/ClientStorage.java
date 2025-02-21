@@ -16,10 +16,41 @@
 package de.cuioss.portal.core.storage;
 
 /**
- * Used for storing information to the client. The default implementation uses
- * cookies, but other implementations like LocalStorage are possible.
+ * Provides client-side storage capabilities for string-based key-value pairs.
+ * This interface extends {@link MapStorage} specifically for client-side data
+ * persistence, typically implemented using browser storage mechanisms.
  *
- * @author Matthias Walliczek
+ * <p><strong>Key characteristics:</strong></p>
+ * <ul>
+ *   <li>Client-side persistence</li>
+ *   <li>String-based storage only</li>
+ *   <li>Browser storage integration</li>
+ *   <li>Cross-request data preservation</li>
+ * </ul>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;Inject
+ * ClientStorage storage;
+ *
+ * // Store user preference
+ * storage.put("theme", "dark");
+ *
+ * // Retrieve with default
+ * String theme = storage.get("theme", "light");
+ * </pre>
+ *
+ * <p><strong>Implementation notes:</strong></p>
+ * <ul>
+ *   <li>Storage is limited to string values only</li>
+ *   <li>Data persists across browser sessions</li>
+ *   <li>Storage capacity depends on browser limitations</li>
+ *   <li>Sensitive data should not be stored</li>
+ * </ul>
+ *
+ * @see MapStorage
+ * @see SessionStorage
+ * @since 1.0
  */
 public interface ClientStorage extends MapStorage<String, String> {
 }

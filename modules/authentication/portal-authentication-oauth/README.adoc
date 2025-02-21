@@ -1,28 +1,92 @@
-= portal-authentication-mock
+# Portal Authentication OAuth2
 
-== What is it?
+## Overview
 
-Implementation of 'link:../portal-authentication-api/[portal-authentication-api]'.
-It is the current default implementation for production variants the cuioss-portal.
+Production-ready implementation of the link:../portal-authentication-api/[portal-authentication-api] using OAuth2 and OpenID Connect.
+Provides secure authentication and authorization for portal applications through standard OAuth2 flows.
 
-It must always be used in conjunction with a concrete ui-module, currently this is https://github.com/cuioss/cui-portal-ui/tree/main/modules/portal-ui-oauth[portal-ui-oauth]
+## Key Features
 
-== Maven Coordinates
+* Complete OAuth2 authorization code flow with PKCE
+* OpenID Connect integration for enhanced user information
+* Automatic token management and refresh
+* Role mapping from OAuth2 claims
+* RP-Initiated Logout support
+* Session integration and state management
+
+## Maven Coordinates
 
 [source,xml]
 ----
-    <dependency>
-        <groupId>de.cuioss.portal.authentication</groupId>
-        <artifactId>portal-authentication-oauth</artifactId>
-    </dependency>
+<dependency>
+    <groupId>de.cuioss.portal.authentication</groupId>
+    <artifactId>portal-authentication-oauth</artifactId>
+</dependency>
 ----
 
-== Configuration
+## Configuration
 
-See link:src/main/resources/META-INF/microprofile-config.properties[microprofile-config.properties]
+The module uses MicroProfile Config for configuration. Key properties include:
 
-== Usage
+[source,properties]
+----
+# OAuth2 Endpoints
+portal.oauth2.authorize.uri=https://auth-server/oauth2/authorize
+portal.oauth2.token.uri=https://auth-server/oauth2/token
+portal.oauth2.userinfo.uri=https://auth-server/oauth2/userinfo
 
-In addition to the injection of the `AuthenticatedUserInfo` it provides the link:src/main/java/de/cuioss/portal/authentication/oauth/Oauth2AuthenticationFacade.java[Oauth2AuthenticationFacade]
-that gives you access on advanced OIDC feature like handling of the RefreshToken, scope-step-up and https://openid.net/specs/openid-connect-rpinitiated-1_0.html[OpenID Connect RP-Initiated Logout].
-See the javadoc for details.
+# Client Configuration
+portal.oauth2.client.id=portal-client
+portal.oauth2.client.secret=secret
+
+# Role Mapping
+portal.oauth2.role.mapper.claims=roles,groups
+
+# Additional settings in META-INF/microprofile-config.properties
+----
+
+See link:src/main/resources/META-INF/microprofile-config.properties[microprofile-config.properties] for all available options.
+
+## Usage
+
+=== Basic Authentication
+
+The module provides authenticated user information through CDI:
+
+[source,java]
+----
+@Inject
+AuthenticatedUserInfo userInfo;
+----
+
+=== Advanced Features
+
+For advanced OAuth2/OIDC features, use the `Oauth2AuthenticationFacade`:
+
+[source,java]
+----
+@Inject
+Oauth2AuthenticationFacade oauth2Facade;
+
+// Token refresh
+oauth2Facade.refreshUserinfo();
+
+// Scope step-up
+oauth2Facade.sendRedirect("additional_scope");
+
+// RP-Initiated Logout
+oauth2Facade.logout(request);
+----
+
+See link:src/main/java/de/cuioss/portal/authentication/oauth/Oauth2AuthenticationFacade.java[Oauth2AuthenticationFacade] for details.
+
+## UI Integration
+
+Must be used with a compatible UI module, currently:
+link:https://github.com/cuioss/cui-portal-ui/tree/main/modules/portal-ui-oauth[portal-ui-oauth]
+
+## Documentation
+
+* link:src/main/java/de/cuioss/portal/authentication/oauth/package-info.java[API Documentation]
+* link:src/main/java/de/cuioss/portal/authentication/oauth/impl/package-info.java[Implementation Details]
+* https://openid.net/specs/openid-connect-rpinitiated-1_0.html[OpenID Connect RP-Initiated Logout Specification]

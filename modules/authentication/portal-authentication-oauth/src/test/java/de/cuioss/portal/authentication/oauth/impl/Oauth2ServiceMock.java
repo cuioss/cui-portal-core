@@ -15,18 +15,17 @@
  */
 package de.cuioss.portal.authentication.oauth.impl;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import jakarta.servlet.http.HttpServletRequest;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.Oauth2Service;
 import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.tools.net.UrlParameter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 public class Oauth2ServiceMock implements Oauth2Service, Serializable {
 

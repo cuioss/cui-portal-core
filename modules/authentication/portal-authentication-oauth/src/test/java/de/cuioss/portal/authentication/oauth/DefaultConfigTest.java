@@ -16,13 +16,20 @@
 package de.cuioss.portal.authentication.oauth;
 
 import de.cuioss.portal.core.test.tests.configuration.AbstractConfigurationKeyVerifierTest;
-import org.eclipse.microprofile.config.spi.ConfigSource;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@EnableTestLogger(debug = DefaultConfigTest.class)
+@DisplayName("Tests OAuth Configuration Keys")
 class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 
     @Override
@@ -30,10 +37,6 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
         return OAuthConfigKeys.class;
     }
 
-    /**
-     * @return the name of {@link ConfigSource} that will be checked against the
-     * derived keys.
-     */
     @Override
     public String getConfigSourceName() {
         return "portal-authentication-oauth";
@@ -41,12 +44,68 @@ class DefaultConfigTest extends AbstractConfigurationKeyVerifierTest {
 
     @Override
     public List<String> getKeysIgnoreList() {
-        return immutableList(OPEN_ID_CLIENT_ID, OPEN_ID_CLIENT_SECRET, OPEN_ID_SERVER_BASE_URL, EXTERNAL_HOSTNAME,
-                OPEN_ID_SERVER_TOKEN_URL, OPEN_ID_SERVER_USER_INFO_URL, OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI, OPEN_ID_ROLE_MAPPER_CLAIM);
+        return immutableList(
+                OPEN_ID_CLIENT_ID,
+                OPEN_ID_CLIENT_SECRET,
+                OPEN_ID_SERVER_BASE_URL,
+                EXTERNAL_HOSTNAME,
+                OPEN_ID_SERVER_TOKEN_URL,
+                OPEN_ID_SERVER_USER_INFO_URL,
+                OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI,
+                OPEN_ID_ROLE_MAPPER_CLAIM
+        );
     }
 
     @Override
     public List<String> getConfigurationKeysIgnoreList() {
         return immutableList(OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER);
+    }
+
+    @Nested
+    @DisplayName("Validate Configuration Keys")
+    class ConfigurationKeyTests {
+
+        @Test
+        @DisplayName("Should provide valid client configuration keys")
+        void shouldProvideClientConfigKeys() {
+            assertNotNull(OPEN_ID_CLIENT_ID);
+            assertNotNull(OPEN_ID_CLIENT_SECRET);
+            assertEquals("authentication.oidc.client.id", OPEN_ID_CLIENT_ID);
+            assertEquals("authentication.oidc.client.password", OPEN_ID_CLIENT_SECRET);
+        }
+
+        @Test
+        @DisplayName("Should provide valid server configuration keys")
+        void shouldProvideServerConfigKeys() {
+            assertNotNull(OPEN_ID_SERVER_BASE_URL);
+            assertNotNull(OPEN_ID_SERVER_TOKEN_URL);
+            assertNotNull(OPEN_ID_SERVER_USER_INFO_URL);
+            assertEquals("authentication.oidc.server.url", OPEN_ID_SERVER_BASE_URL);
+            assertEquals("authentication.oidc.server.token_endpoint_url", OPEN_ID_SERVER_TOKEN_URL);
+            assertEquals("authentication.oidc.server.userinfo_endpoint_url", OPEN_ID_SERVER_USER_INFO_URL);
+        }
+
+        @Test
+        @DisplayName("Should provide valid logout configuration keys")
+        void shouldProvideLogoutConfigKeys() {
+            assertNotNull(OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
+            assertNotNull(OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER);
+            assertEquals("authentication.oidc.client.logout.redirect_uri", OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI);
+            assertEquals("authentication.oidc.client.logout_redirect_parameter", OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER);
+        }
+
+        @Test
+        @DisplayName("Should provide valid role mapper configuration key")
+        void shouldProvideRoleMapperConfigKey() {
+            assertNotNull(OPEN_ID_ROLE_MAPPER_CLAIM);
+            assertEquals("authentication.oidc.client.role_mapper_claim", OPEN_ID_ROLE_MAPPER_CLAIM);
+        }
+
+        @Test
+        @DisplayName("Should provide valid external hostname configuration key")
+        void shouldProvideExternalHostnameConfigKey() {
+            assertNotNull(EXTERNAL_HOSTNAME);
+            assertEquals("authentication.externalHostname", EXTERNAL_HOSTNAME);
+        }
     }
 }

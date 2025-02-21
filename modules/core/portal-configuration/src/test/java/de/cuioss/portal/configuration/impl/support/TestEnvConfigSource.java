@@ -15,15 +15,15 @@
  */
 package de.cuioss.portal.configuration.impl.support;
 
+import de.cuioss.tools.collect.MapBuilder;
+import io.smallrye.config.common.AbstractConfigSource;
+import lombok.Getter;
+
 import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import de.cuioss.tools.collect.MapBuilder;
-import io.smallrye.config.common.AbstractConfigSource;
-import lombok.Getter;
 
 /**
  * Copy of SmallRye EnvConfigSource. Allows additional properties. Objective:

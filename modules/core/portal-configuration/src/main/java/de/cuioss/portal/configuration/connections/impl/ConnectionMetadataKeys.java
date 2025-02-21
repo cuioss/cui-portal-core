@@ -18,19 +18,28 @@ package de.cuioss.portal.configuration.connections.impl;
 import lombok.experimental.UtilityClass;
 
 /**
- * Holder class for keys used in the context of {@link ConnectionMetadata}
+ * Defines the configuration property keys used in {@link ConnectionMetadata}.
+ * This class provides a centralized registry of all valid configuration keys
+ * for connection settings, including authentication, transport security, and
+ * general connection properties.
+ * <p>
+ * The keys are organized into several categories:
+ * <ul>
+ *   <li>Authentication (basic, certificate, token)</li>
+ *   <li>Transport Security (keystore, truststore)</li>
+ *   <li>Connection Properties (timeout, proxy)</li>
+ *   <li>Client Configuration</li>
+ * </ul>
  *
  * @author Oliver Wolff
- *
  */
 @UtilityClass
-@SuppressWarnings("squid:S2068") // owolff: These are not hardcoded passwords but keys for the
-                                 // lookup
+@SuppressWarnings("squid:S2068") // These are not hardcoded passwords but configuration property keys
 public class ConnectionMetadataKeys {
 
     private static final String TRUSTSTORE_PREFIX = "truststore.";
     private static final String KEYSTORE_PREFIX = "keystore.";
-    private static final String KEYPASSWORD = "keypassword";
+    private static final String KEY_PASSWORD = "keypassword";
     private static final String PASSWORD = "password";
     private static final String LOCATION = "location";
     private static final String AUTH_BASE = "authentication.";
@@ -40,46 +49,60 @@ public class ConnectionMetadataKeys {
     private static final String AUTH_CERTIFICATE_KEYSTORE_BASE = AUTH_CERTIFICATE_BASE + KEYSTORE_PREFIX;
 
     /**
-     * Prefix for configuring token based authentication:
-     * "authentication.token.application."
+     * Base prefix for application-wide token authentication configuration.
+     * Complete prefix: "authentication.token.application."
      */
     private static final String AUTH_TOKEN_APPLICATION_BASE = AUTH_TOKEN_BASE + "application.";
 
-    /** Prefix for configuring token based authentication */
+    /**
+     * Base prefix for user-specific token authentication configuration.
+     * Complete prefix: "authentication.token.user."
+     */
     private static final String AUTH_TOKEN_USER_BASE = AUTH_TOKEN_BASE + "user.";
 
-    /** "authentication.token.application.token". */
+    /**
+     * Property key for the application-wide authentication token.
+     * Complete key: "authentication.token.application.token"
+     */
     public static final String AUTH_TOKEN_APPLICATION_TOKEN = AUTH_TOKEN_APPLICATION_BASE + "token";
 
-    /** "authentication.token.application.key". */
+    /**
+     * Property key for the token key name in application-wide authentication.
+     * Complete key: "authentication.token.application.key"
+     */
     public static final String AUTH_TOKEN_APPLICATION_KEY = AUTH_TOKEN_APPLICATION_BASE + "key";
 
     /**
-     * User password for BASIC authentication type ("authentication.basic.password")
+     * Property key for the basic authentication password.
+     * Complete key: "authentication.basic.password"
      */
     public static final String AUTH_BASIC_USER_PASSWORD = AUTH_BASIC_BASE + PASSWORD;
 
-    /** Username for BASIC authentication type ("authentication.basic.username") */
+    /**
+     * Property key for the basic authentication username.
+     * Complete key: "authentication.basic.username"
+     */
     public static final String AUTH_BASIC_USER_NAME = AUTH_BASIC_BASE + "username";
 
     /**
-     * Key store location for CERTIFICATE authentication type
-     * ("authentication.certificate.keystore.location")
+     * Property key for the certificate keystore location.
+     * Complete key: "authentication.certificate.keystore.location"
      */
     public static final String AUTH_CERTIFICATE_KEYSTORE_LOCATION = AUTH_CERTIFICATE_KEYSTORE_BASE + LOCATION;
 
     /**
-     * Key store password for CERTIFICATE authentication type
-     * ("authentication.certificate.keystore.password")
+     * Property key for the certificate keystore password.
+     * Complete key: "authentication.certificate.keystore.password"
      */
     public static final String AUTH_CERTIFICATE_KEYSTORE_PASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + PASSWORD;
 
     /**
-     * Private key password for accessing the key-store keys using CERTIFICATE
-     * authentication type ("authentication.certificate.keystore.keypassword")
+     * Property key for the certificate keystore's private key password.
+     * Complete key: "authentication.certificate.keystore.keypassword"
      */
-    public static final String AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + KEYPASSWORD;
+    public static final String AUTH_CERTIFICATE_KEYSTORE_KEY_PASSWORD = AUTH_CERTIFICATE_KEYSTORE_BASE + KEY_PASSWORD;
 
+    /** Base prefix for transport security configuration */
     static final String TRANSPORT_BASE = "transport.secure.";
 
     private static final String TRANSPORT_KEYSTORE_BASE = TRANSPORT_BASE + KEYSTORE_PREFIX;
@@ -87,79 +110,129 @@ public class ConnectionMetadataKeys {
     private static final String TRANSPORT_TRUSTSTORE_BASE = TRANSPORT_BASE + TRUSTSTORE_PREFIX;
 
     /**
-     * Key store location for Transport-level ("transport.secure.keystore.location")
+     * Property key for the transport security keystore location.
+     * Used for client certificates in SSL/TLS connections.
+     * Complete key: "transport.secure.keystore.location"
      */
     public static final String TRANSPORT_KEYSTORE_LOCATION = TRANSPORT_KEYSTORE_BASE + LOCATION;
 
     /**
-     * Key store password for Transport-level ("transport.secure.keystore.password")
+     * Property key for the transport security keystore password.
+     * Used to access the keystore file.
+     * Complete key: "transport.secure.keystore.password"
      */
     public static final String TRANSPORT_KEYSTORE_PASSWORD = TRANSPORT_KEYSTORE_BASE + PASSWORD;
 
     /**
-     * Key store key-password for Transport-level
-     * ("transport.secure.keystore.keypassword")
+     * Property key for the transport security keystore's private key password.
+     * Used to access individual keys within the keystore.
+     * Complete key: "transport.secure.keystore.keypassword"
      */
-    public static final String TRANSPORT_KEYSTORE_KEYPASSWORD = TRANSPORT_KEYSTORE_BASE + KEYPASSWORD;
+    public static final String TRANSPORT_KEYSTORE_KEY_PASSWORD = TRANSPORT_KEYSTORE_BASE + KEY_PASSWORD;
 
     /**
-     * Trust-store location for Transport-level
-     * ("transport.secure.truststore.location")
+     * Property key for the transport security truststore location.
+     * Used to verify server certificates in SSL/TLS connections.
+     * Complete key: "transport.secure.truststore.location"
      */
     public static final String TRANSPORT_TRUSTSTORE_LOCATION = TRANSPORT_TRUSTSTORE_BASE + LOCATION;
 
     /**
-     * Trust-store password for Transport-level
-     * ("transport.secure.truststore.password")
+     * Property key for the transport security truststore password.
+     * Used to access the truststore file.
+     * Complete key: "transport.secure.truststore.password"
      */
     public static final String TRANSPORT_TRUSTSTORE_PASSWORD = TRANSPORT_TRUSTSTORE_BASE + PASSWORD;
 
     /**
-     * Disable Verification of hostnames
-     * ("transport.secure.disableHostNameVerification")
+     * Property key to disable hostname verification in SSL/TLS connections.
+     * <p>
+     * <strong>Warning:</strong> Disabling hostname verification reduces security
+     * and should only be used in controlled environments.
+     * Complete key: "transport.secure.disableHostNameVerification"
      */
     public static final String TRANSPORT_DISABLE_HOSTNAME_VALIDATION = TRANSPORT_BASE + "disableHostNameVerification";
 
-    /** Authentication type */
+    /**
+     * Property key for the authentication type setting.
+     * Valid values are defined in {@link AuthenticationType}.
+     */
     public static final String AUTHENTICATION_TYPE = "authentication";
 
-    /** URL to connect to */
+    /**
+     * Property key for the service endpoint URL.
+     * Should be a valid URL including protocol and path.
+     */
     public static final String URL_KEY = "url";
 
-    /** Connection type */
+    /**
+     * Property key for the connection type setting.
+     * Valid values are defined in {@link ConnectionType}.
+     */
     public static final String TYPE_KEY = "type";
 
-    /** Description for the connection configuration */
+    /**
+     * Property key for the human-readable connection description.
+     * Used for documentation and logging purposes.
+     */
     public static final String DESCRIPTION_KEY = "description";
 
     /**
-     * ID for this connection configuration. Usually the name of the service that is
-     * called, e.g. <code>provider-directory</code> or <code>app-gateway</code>.
-     * This ID is also eventually used in distributed tracing.
+     * Property key for the connection identifier.
+     * Used to uniquely identify the connection in logs, metrics, and tracing.
+     * Examples: "provider-directory", "app-gateway"
      */
     public static final String ID_KEY = "id";
 
-    /** Prefix for additional config-elements */
+    /**
+     * Base prefix for additional configuration properties.
+     * Used to namespace connection-specific settings.
+     */
     public static final String CONFIG_KEY = "config";
 
-    /** Prefix for configuring the REST-client */
+    /**
+     * Property key prefix for REST client configuration.
+     * Used to specify client-specific settings.
+     */
     public static final String CONFIG_CLIENT_KEY = "client";
 
-    /** Value for configuring the REST-client: okclient */
+    /**
+     * Value indicating the use of OkHttp client implementation.
+     * Used with {@link #CONFIG_CLIENT_KEY}.
+     */
     public static final String CONFIG_CLIENT_OKHTTP = "okclient";
 
     private static final String TIMEOUT_BASE = "timeout.";
 
-    /** Timeout in seconds to establish a connection ("timeout.connection") */
+    /**
+     * Property key for connection timeout in seconds.
+     * Specifies the maximum time to establish a connection.
+     * Complete key: "timeout.connection"
+     */
     public static final String CONNECTION_TIMEOUT = TIMEOUT_BASE + "connection";
 
-    /** Timeout in seconds to read a response ("timeout.read") */
+    /**
+     * Property key for read timeout in seconds.
+     * Specifies the maximum time to wait for a response.
+     * Complete key: "timeout.read"
+     */
     public static final String READ_TIMEOUT = TIMEOUT_BASE + "read";
 
-    /** Enable|Disable distributed tracing */
+    /**
+     * Property key to enable/disable distributed tracing.
+     * When enabled, generates trace data for monitoring and debugging.
+     */
     public static final String TRACING = "tracing";
 
+    /**
+     * Property key for HTTP proxy host.
+     * Used when connections need to be routed through a proxy server.
+     */
     public static final String PROXY_HOST = "proxyHost";
 
+    /**
+     * Property key for HTTP proxy port.
+     * Used in conjunction with {@link #PROXY_HOST} to configure proxy settings.
+     */
     public static final String PROXY_PORT = "proxyPort";
 }

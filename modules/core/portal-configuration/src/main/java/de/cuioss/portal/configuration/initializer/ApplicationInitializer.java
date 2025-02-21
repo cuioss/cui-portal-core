@@ -20,37 +20,116 @@ import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Defines lifecycle methods and the (relative order) when this should
- * happen. To be used for {@link ApplicationScoped} beans only that need to be
- * initialized in a specific order.
+ * Contract for {@link ApplicationScoped} beans requiring deterministic initialization order.
+ * This interface replaces the standard {@link PostConstruct} approach with a more
+ * controlled initialization mechanism.
+ * 
+ * <h2>Key Features</h2>
  * <ul>
- * <li>The {@link #initialize()} replaces any {@link PostConstruct} method</li>
- * <li>The {@link #destroy()} replaces the {@link PreDestroy} method. The
- * default implementation for this method is NOOP</li>
- * <li>The {@link #getOrder()} defines an initialization method and the
- * (relative order) when this should happen. The default implementation returns
- * {@link #ORDER_INTERMEDIATE}
+ *   <li>Ordered initialization through {@link #getOrder()}</li>
+ *   <li>Explicit initialization via {@link #initialize()}</li>
+ *   <li>Optional cleanup with {@link #destroy()}</li>
+ *   <li>Natural ordering through {@link Comparable}</li>
  * </ul>
+ * 
+ * <h2>Initialization Order Constants</h2>
+ * <ul>
+ *   <li>{@link #ORDER_EARLY} = 100: Early initialization phase</li>
+ *   <li>{@link #ORDER_INTERMEDIATE} = 50: Standard initialization phase</li>
+ *   <li>{@link #ORDER_LATE} = 10: Late initialization phase</li>
+ * </ul>
+ * Higher values indicate earlier initialization. Custom values between these constants
+ * can be used for fine-grained control.
+ * 
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Must be used with {@link ApplicationScoped} beans only</li>
+ *   <li>Should be qualified with {@link PortalInitializer}</li>
+ *   <li>Implement {@link #initialize()} for initialization logic</li>
+ *   <li>Override {@link #getOrder()} to control initialization order</li>
+ *   <li>Override {@link #destroy()} if cleanup is needed</li>
+ * </ul>
+ * 
+ * <h2>Example Usage</h2>
+ * <pre>
+ * &#64;ApplicationScoped
+ * &#64;PortalInitializer
+ * public class EarlyInitializer implements ApplicationInitializer {
+ *     
+ *     &#64;Override
+ *     public void initialize() {
+ *         // Early initialization logic
+ *     }
+ *     
+ *     &#64;Override
+ *     public Integer getOrder() {
+ *         return ORDER_EARLY;
+ *     }
+ *     
+ *     &#64;Override
+ *     public void destroy() {
+ *         // Cleanup logic
+ *     }
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
  */
-@SuppressWarnings("squid:S1214") // owolff: constants in interfaces are OK for us
+@SuppressWarnings("squid:S1214") // Constants in interfaces are acceptable for this use case
 public interface ApplicationInitializer extends Comparable<ApplicationInitializer> {
 
     /**
-     * Actually initializes the specified bean. Analogous to {@link PostConstruct}
+     * Performs the actual initialization of the bean. This method replaces any
+     * {@link PostConstruct} annotated methods and provides deterministic ordering.
+     * <p>
+     * Implementation Notes:
+     * <ul>
+     *   <li>Will be called exactly once during application startup</li>
+     *   <li>Should handle its own error cases</li>
+     *   <li>Should not depend on other beans' initialization state</li>
+     * </ul>
      */
     void initialize();
 
     /**
-     * Destroys / cleans up the bean, analogous to {@link PreDestroy}. The default
-     * implementation by this interface is a NOOP implementation.
+     * Performs cleanup operations when the application is shutting down.
+     * Analogous to {@link PreDestroy} but with deterministic ordering.
+     * <p>
+     * The default implementation is a no-op. Override this method to:
+     * <ul>
+     *   <li>Close resources</li>
+     *   <li>Flush caches</li>
+     *   <li>Persist state</li>
+     *   <li>Perform other cleanup tasks</li>
+     * </ul>
      */
     default void destroy() {
     }
 
     /**
-     * The default implementation of {@link Comparable#compareTo(Object)}
+     * Defines the initialization order relative to other initializers.
+     * Higher values indicate earlier initialization.
+     * <p>
+     * Standard values:
+     * <ul>
+     *   <li>{@link #ORDER_EARLY} (100): Early initialization</li>
+     *   <li>{@link #ORDER_INTERMEDIATE} (50): Standard initialization</li>
+     *   <li>{@link #ORDER_LATE} (10): Late initialization</li>
+     * </ul>
+     * Custom values can be used for fine-grained control.
+     *
+     * @return the initialization order, defaults to {@link #ORDER_INTERMEDIATE}
+     */
+    default Integer getOrder() {
+        return ORDER_INTERMEDIATE;
+    }
+
+    /**
+     * Implements natural ordering based on {@link #getOrder()}.
+     * Higher order values are initialized first.
+     *
+     * @param other the other initializer to compare with
+     * @return comparison result based on order values
      */
     @Override
     default int compareTo(final ApplicationInitializer other) {
@@ -58,30 +137,23 @@ public interface ApplicationInitializer extends Comparable<ApplicationInitialize
     }
 
     /**
-     * @return an {@link Integer} defining the order the individual implementations
-     * will be {@link #initialize()}. The higher the number, the earlier the
-     * bean will be initialized. Always use the provided constants. The
-     * default implementation returns {@link #ORDER_INTERMEDIATE}
-     */
-    default Integer getOrder() {
-        return ORDER_INTERMEDIATE;
-    }
-
-    /**
-     * Defines a high order, saying the initializing will be done quite early in the
-     * process.
+     * Indicates early initialization phase. Beans with this order will be
+     * initialized before beans with {@link #ORDER_INTERMEDIATE} or {@link #ORDER_LATE}.
+     * Use this for core infrastructure components that other beans depend on.
      */
     Integer ORDER_EARLY = 100;
 
     /**
-     * Defines a medium order, saying the initializing will be done somewhere in
-     * between the initialization process.
+     * Indicates standard initialization phase. This is the default order
+     * used when {@link #getOrder()} is not overridden. Use this for beans
+     * that don't have specific ordering requirements.
      */
     Integer ORDER_INTERMEDIATE = 50;
 
     /**
-     * Defines a low order, saying the initializing will be done at the end of the
-     * initialization process.
+     * Indicates late initialization phase. Beans with this order will be
+     * initialized after beans with {@link #ORDER_EARLY} or {@link #ORDER_INTERMEDIATE}.
+     * Use this for beans that depend on other initialized components.
      */
     Integer ORDER_LATE = 10;
 }

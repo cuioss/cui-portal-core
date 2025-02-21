@@ -189,9 +189,9 @@ class PortalConfigSourceTest {
         final var ENV_KEY = PREFIX.toUpperCase() + "_" + "PORTAL_TEST_ENV";
 
         assertTrue(
-            StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
-                .anyMatch(clazz -> clazz instanceof TestEnvConfigSource),
-            "TestEnvConfigSource class not available in configuration system");
+                StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
+                        .anyMatch(clazz -> clazz instanceof TestEnvConfigSource),
+                "TestEnvConfigSource class not available in configuration system");
 
         TestEnvConfigSource.getAdditionalProperties().put(ENV_KEY, "ENV");
         TestEnvConfigSource.getAdditionalProperties().put("PLACEHOLDER", "${" + ENV_KEY + ":}"); // indirection
@@ -209,7 +209,7 @@ class PortalConfigSourceTest {
          * );
          */
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER").orElse(null),
-            "expanded value expected");
+                "expanded value expected");
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER_YAML").orElse(null));
 
         // adding system property which has higher priority than env property

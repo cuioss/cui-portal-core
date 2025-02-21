@@ -15,35 +15,47 @@
  */
 package de.cuioss.portal.common.priority;
 
+import jakarta.annotation.Priority;
+import lombok.experimental.UtilityClass;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.annotation.Priority;
-import lombok.experimental.UtilityClass;
-
 /**
- * <p>
- * Provides constants and methods for ordering portal related elements.
- * </p>
- * <h2>Design</h2>
- * <p>
- * Some items at the portal need an explicit ordering in order to check the
- * priority. For e.g. instances of {@link de.cuioss.portal.common.bundle.ResourceBundleLocator} can have a
- * higher priority for overwriting portal defined messages. The ordering relies
- * on the {@link jakarta.annotation.Priority} annotation on the corresponding elements. The higher
- * the {@link jakarta.annotation.Priority#value()} the higher is the priority. If the corresponding
- * element has not annotated with {@link jakarta.annotation.Priority} the order will be defaulted
- * to {@link #DEFAULT_LEVEL}
- * </p>
- * <h2>Implementation</h2>
- * <p>
- * In order to have a better structure this class provides some constants
- * defining the general range of portal applications. In addition there is the
- * helper method {@link #sortByPriority(List)} simplifying the task of sorting.
- * </p>
+ * Utility class for managing priority-based ordering of portal components.
+ * 
+ * <h2>Overview</h2>
+ * Provides constants and methods for ordering components based on the
+ * {@link jakarta.annotation.Priority} annotation. Components without the annotation
+ * default to {@link #DEFAULT_LEVEL}.
+ * 
+ * <h2>Priority Levels</h2>
+ * <ul>
+ *   <li>{@link #PORTAL_CORE_LEVEL}: Core portal components (10)</li>
+ *   <li>{@link #PORTAL_MODULE_LEVEL}: Standard portal modules (50)</li>
+ *   <li>{@link #PORTAL_ASSEMBLY_LEVEL}: Assembly-specific components (100)</li>
+ *   <li>{@link #PORTAL_INSTALLATION_LEVEL}: Installation-specific components (150)</li>
+ * </ul>
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * // Sort components by priority
+ * List&lt;MyComponent&gt; components = new ArrayList&lt;&gt;();
+ * List&lt;MyComponent&gt; sorted = PortalPriorities.sortByPriority(components);
+ * 
+ * // Define component priority
+ * &#064;Priority(PortalPriorities.PORTAL_MODULE_LEVEL)
+ * public class MyComponent {
+ *     // Implementation
+ * }
+ * </pre>
+ * 
+ * <p>Higher priority values indicate higher precedence in the ordering.
+ * Components are sorted in descending order of priority.
  *
  * @author Oliver Wolff
+ * @see jakarta.annotation.Priority
  */
 @UtilityClass
 public final class PortalPriorities {
@@ -78,19 +90,17 @@ public final class PortalPriorities {
     public static final int PORTAL_INSTALLATION_LEVEL = 150;
 
     /**
-     * Helper method that sorts a number of given objects regarding their
-     * priority. The Priority is assumed to be defined by the {@link jakarta.annotation.Priority}
-     * annotation at class level. If it is not set, the priority is defaulted to
-     * {@value #DEFAULT_LEVEL}
+     * Sorts a list of objects based on their {@link jakarta.annotation.Priority} annotation.
+     * Objects without the annotation are assigned {@link #DEFAULT_LEVEL} priority.
      *
-     * @param toBeSorted must not be null
-     * @return the sorted list. In case of {@link java.util.List#size()} is lower than 2 the
-     *         original list will be returned.
-     * @param <T> a T class
+     * @param toBeSorted the list to be sorted, must not be null
+     * @param <T> the type of objects in the list, must be annotatable with {@link Priority}
+     * @return a new sorted list in descending priority order, or the original list if size &lt; 2
+     * @throws NullPointerException if toBeSorted is null
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> sortByPriority(final List<T> toBeSorted) {
-        if (toBeSorted.size() < 2) {
+        if (null == toBeSorted || toBeSorted.size() < 2) {
             return toBeSorted;
         }
         final List<PriorityComparator> wrapperList = new ArrayList<>();

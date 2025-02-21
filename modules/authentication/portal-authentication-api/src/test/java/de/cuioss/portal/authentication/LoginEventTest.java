@@ -15,10 +15,132 @@
  */
 package de.cuioss.portal.authentication;
 
+import de.cuioss.test.generator.Generators;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-@VerifyBuilder(required = { "action" })
+import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
+import static de.cuioss.test.juli.LogAsserts.assertSingleLogMessagePresent;
+
+/**
+ * Test cases for {@link LoginEvent} focusing on logging behavior and builder validation.
+ */
+@VerifyBuilder(required = {"action"})
+@EnableTestLogger
 class LoginEventTest extends ValueObjectTest<LoginEvent> {
 
+    @Nested
+    @DisplayName("Logging Behavior Tests")
+    class LoggingTests {
+
+        @Test
+        @DisplayName("Should log successful login with username")
+        void shouldLogLoginSuccess() {
+            // given
+            var username = Generators.nonEmptyStrings().next();
+            var event = LoginEvent.builder()
+                    .action(LoginEvent.Action.LOGIN_SUCCESS)
+                    .username(username)
+                    .build();
+
+            // when
+            event.logEvent();
+
+            // then
+            assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format(username));
+        }
+
+        @Test
+        @DisplayName("Should log failed login with username")
+        void shouldLogLoginFailed() {
+            // given
+            var username = Generators.nonEmptyStrings().next();
+            var event = LoginEvent.builder()
+                    .action(LoginEvent.Action.LOGIN_FAILED)
+                    .username(username)
+                    .build();
+
+            // when
+            event.logEvent();
+
+            // then
+            assertSingleLogMessagePresent(TestLogLevel.WARN, AUTH.WARN.LOGIN_FAILED.format(username));
+        }
+
+        @Test
+        @DisplayName("Should log logout with username")
+        void shouldLogLogout() {
+            // given
+            var username = Generators.nonEmptyStrings().next();
+            var event = LoginEvent.builder()
+                    .action(LoginEvent.Action.LOGOUT)
+                    .username(username)
+                    .build();
+
+            // when
+            event.logEvent();
+
+            // then
+            assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGOUT.format(username));
+        }
+    }
+
+    @Nested
+    @DisplayName("Edge Case Tests")
+    class EdgeCaseTests {
+
+        @Test
+        @DisplayName("Should handle null username by logging 'null'")
+        void shouldHandleNullUsername() {
+            // given
+            var event = LoginEvent.builder()
+                    .action(LoginEvent.Action.LOGIN_SUCCESS)
+                    .username(null)
+                    .build();
+
+            // when
+            event.logEvent();
+
+            // then
+            assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format("null"));
+        }
+
+        @Test
+        @DisplayName("Should handle empty username")
+        void shouldHandleEmptyUsername() {
+            // given
+            var event = LoginEvent.builder()
+                    .action(LoginEvent.Action.LOGIN_SUCCESS)
+                    .username("")
+                    .build();
+
+            // when
+            event.logEvent();
+
+            // then
+            assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format(""));
+        }
+
+        @Test
+        @DisplayName("Should handle username with special characters")
+        void shouldHandleSpecialCharacters() {
+            // given
+            var username = "user@domain.com";
+            var event = LoginEvent.builder()
+                    .action(LoginEvent.Action.LOGIN_SUCCESS)
+                    .username(username)
+                    .build();
+
+            // when
+            event.logEvent();
+
+            // then
+            assertSingleLogMessagePresent(TestLogLevel.INFO, AUTH.INFO.LOGIN_SUCCESS.format(username));
+        }
+    }
 }

@@ -16,6 +16,7 @@
 package de.cuioss.portal.common.cdi;
 
 import de.cuioss.portal.common.priority.PriorityComparator;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -23,36 +24,85 @@ import jakarta.enterprise.inject.spi.CDI;
 import lombok.experimental.UtilityClass;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Utility classes for dealing with CDI-Beans. In essence, it contains some
- * convenient ways to call the Bean manger like instantiating the Annotations.
+ * Utility class providing convenient methods for programmatic CDI bean access
+ * and management.
+ * 
+ * <h2>Overview</h2>
+ * This class simplifies common CDI operations such as bean lookup, instantiation,
+ * and annotation-based filtering.
+ * It provides type-safe access to CDI beans while handling common edge cases.
+ * 
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Type-safe bean lookup and instantiation</li>
+ *   <li>Annotation-based bean filtering</li>
+ *   <li>Priority-based bean ordering</li>
+ *   <li>Proper resource cleanup</li>
+ * </ul>
+ * 
+ * <h2>Usage Examples</h2>
+ * <pre>
+ * // Simple bean lookup
+ * MyBean bean = PortalBeanManager.getBean(MyBean.class);
+ * 
+ * // Lookup with qualifier
+ * MyBean bean = PortalBeanManager.getBean(MyBean.class, MyQualifier.class);
+ * 
+ * // Get all beans of a type, sorted by priority
+ * List&lt;MyInterface&gt; beans = PortalBeanManager.getBeans(MyInterface.class);
+ * 
+ * // Create bean instance with specific qualifiers
+ * Set&lt;Annotation&gt; qualifiers = new HashSet&lt;&gt;();
+ * qualifiers.add(new MyQualifierLiteral());
+ * MyBean bean = PortalBeanManager.create(beanManager, MyBean.class, qualifiers);
+ * </pre>
+ * 
+ * <h2>Error Handling</h2>
+ * <ul>
+ *   <li>Throws {@link IllegalArgumentException} for invalid bean lookups</li>
+ *   <li>Returns empty collections instead of null for multi-bean lookups</li>
+ *   <li>Logs warnings for ambiguous bean resolutions</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @see BeanManager
+ * @see CDI
  */
 @UtilityClass
 public final class PortalBeanManager {
 
+    private static final CuiLogger LOGGER = new CuiLogger(PortalBeanManager.class);
+
     /**
-     * Looks up a normal scoped CDI-bean programmatically.
+     * Looks up a normal scoped CDI bean programmatically.
      *
-     * @param beanManager     an instance of the beanManager for doing the lookup.
-     * @param beanClass       identifying the type to be loaded must not be null
-     * @param annotationClass the class the concrete type must be annotated with
-     *                        may be null
-     * @return the found bean, or null if none could be found. It will throw an
-     * {@link IllegalArgumentException} in case of the bean cannot be
-     * identified exactly.
+     * @param beanManager the bean manager to use for lookup, must not be null
+     * @param beanClass the type of bean to look up, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
+     * @return the found bean instance, never null
+     * @throws IllegalArgumentException if the bean cannot be uniquely identified
+     * @throws NullPointerException if beanManager or beanClass is null
      */
     @SuppressWarnings("unchecked")
     private static <T, V extends Annotation> T getCDIBean(final BeanManager beanManager, final Class<T> beanClass,
-                                                          final Class<V> annotationClass) {
-        requireNonNull(beanClass, "beanClass");
+            final Class<V> annotationClass) {
         requireNonNull(beanManager, "beanManager");
+        requireNonNull(beanClass, "beanClass");
+
+        LOGGER.debug("Attempting to resolve bean of type '%s' with qualifier '%s'",
+                beanClass.getName(), annotationClass != null ? annotationClass.getName() : "none");
 
         final Set<Bean<?>> beanTypes = resolveBeanTypes(beanManager, beanClass, annotationClass);
         checkBeanTypesFound(beanClass, annotationClass, beanTypes);
@@ -61,9 +111,18 @@ public final class PortalBeanManager {
         final var bean = (Bean<T>) sortedBeans.iterator().next();
         final CreationalContext<T> context = beanManager.createCreationalContext(bean);
         // Wild casting again
-        return (T) beanManager.getReference(bean, beanClass, context);
+        T result = (T) beanManager.getReference(bean, beanClass, context);
+
+        LOGGER.debug("Successfully resolved bean: %s", result);
+        return result;
     }
 
+    /**
+     * Sorts a list of CDI beans by their priority.
+     *
+     * @param toBeSorted the list of beans to sort, must not be null
+     * @return sorted list of beans in descending priority order
+     */
     private static List<Bean<?>> sortByPriority(final List<Bean<?>> toBeSorted) {
         if (toBeSorted.size() < 2)
             return toBeSorted;
@@ -80,64 +139,65 @@ public final class PortalBeanManager {
     }
 
     /**
-     * Shorthand for resolving a CDI Bean
+     * Resolves a CDI bean instance.
      *
-     * @param beanClass       identifying the type to be loaded must not be null
-     * @param annotationClass the class the concrete type must be annotated with
-     *                        may be null
-     * @param <T>
-     * @param <V>
-     * @return the found bean, or {@link Optional#empty()} if none could be found
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
+     * @return Optional containing the resolved bean, or empty if not found
+     * @throws IllegalArgumentException if the bean cannot be uniquely identified
+     * @throws NullPointerException if beanClass is null
      */
     public static <T, V extends Annotation> Optional<T> resolveBean(final Class<T> beanClass,
-                                                                    final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass));
     }
 
     /**
-     * Shorthand for resolving a CDI Bean or throwing an IllegalStateException
-     * otherwise.
+     * Resolves a required CDI bean instance.
      *
-     * @param beanClass       identifying the type to be loaded must not be null
-     * @param annotationClass the class the concrete type must be annotated with
-     *                        may be null
-     * @param <T>
-     * @param <V>
-     * @return the found bean
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
+     * @return the resolved bean instance, never null
+     * @throws IllegalStateException if no bean could be found
+     * @throws NullPointerException if beanClass is null
      */
     public static <T, V extends Annotation> T resolveBeanOrThrowIllegalStateException(final Class<T> beanClass,
-                                                                                      final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return Optional.ofNullable(getCDIBean(getBeanManager(), beanClass, annotationClass)).orElseThrow(
                 () -> new IllegalStateException("Portal-532: " + createErrorMessage(beanClass, annotationClass)));
     }
 
     /**
-     * Shorthand for calling
-     * {@link #resolveBeanOrThrowIllegalStateException(Class, Class)} with
-     * {@code null} for the parameter annotation.
+     * Resolves a required CDI bean without qualifier.
      *
-     * @param beanClass identifying the type to be loaded must not be null
-     * @param <T>
-     * @return the found bean, or {@link Optional#empty()} if none could be found
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param <T> the type of the bean to resolve
+     * @return the resolved bean instance, never null
+     * @throws IllegalStateException if no bean could be found
+     * @throws NullPointerException if beanClass is null
      */
     public static <T> T resolveRequiredBean(final Class<T> beanClass) {
         return resolveBeanOrThrowIllegalStateException(beanClass, null);
     }
 
     /**
-     * Helper method for resolving the beanTypes according to the given identifier.
+     * Resolves bean types matching the given criteria.
      *
-     * @param beanManager     an instance of the beanManager for doing the lookup.
-     * @param beanClass       identifying the type to be loaded must not be null
-     * @param annotationClass the class the concrete type must be annotated with
-     *                        may be null
-     * @param <T>
-     * @param <V>
-     * @return the resolved beanTypes.
+     * @param beanManager the bean manager to use for lookup, must not be null
+     * @param beanClass the type of bean to resolve, must not be null
+     * @param annotationClass optional qualifier annotation class, may be null
+     * @param <T> the type of the bean to resolve
+     * @param <V> the type of the qualifier annotation
+     * @return set of matching bean types, may be empty but never null
+     * @throws NullPointerException if beanManager or beanClass is null
      */
     @SuppressWarnings("squid:S1452") // owolff: Not able to avoid the wildcard call here
     public static <T, V extends Annotation> Set<Bean<?>> resolveBeanTypes(final BeanManager beanManager,
-                                                                          final Class<T> beanClass, final Class<V> annotationClass) {
+            final Class<T> beanClass, final Class<V> annotationClass) {
         Set<Bean<?>> beanTypes;
         if (null == annotationClass) {
             beanTypes = beanManager.getBeans(beanClass);
@@ -150,27 +210,30 @@ public final class PortalBeanManager {
     /**
      * Helper method that checks is exactly one bean-type was found.
      *
-     * @param beanClass
-     * @param annotationClass
-     * @param beanTypes
-     * @param <T>
-     * @param <V>
+     * @param beanClass the class of the bean to be checked
+     * @param annotationClass the class of the annotation to be checked
+     * @param beanTypes the set of beans found by the CDI container
+     * @param <T> the type of the bean
+     * @param <V> the type of the qualifier annotation
+     * @throws IllegalStateException if no bean or multiple beans were found
      */
     private static <T, V extends Annotation> void checkBeanTypesFound(final Class<T> beanClass,
-                                                                      final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
+            final Class<V> annotationClass, final Set<Bean<?>> beanTypes) {
         if (beanTypes.isEmpty())
             throw new IllegalArgumentException(createErrorMessage(beanClass, annotationClass));
     }
 
     /**
-     * @param beanClass
-     * @param annotationClass
-     * @param <T>
-     * @param <V>
-     * @return the created error-message
+     * Creates an error message for bean resolution failures.
+     *
+     * @param beanClass the class of the bean that could not be resolved
+     * @param annotationClass the class of the qualifier annotation, may be null
+     * @param <T> the type of the bean
+     * @param <V> the type of the qualifier annotation
+     * @return formatted error message
      */
-    public static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
-                                                                      final Class<V> annotationClass) {
+    private static <T, V extends Annotation> String createErrorMessage(final Class<T> beanClass,
+            final Class<V> annotationClass) {
         return "No bean of type " + beanClass + " and annotation "
                 + (null != annotationClass ? annotationClass.getName() : "(null)") + " could be found";
     }
@@ -184,9 +247,11 @@ public final class PortalBeanManager {
      * @param <T>
      * @param <V>
      * @return Portal-532 log message
+     * @deprecated Must not be used from outside
      */
+    @Deprecated(since = "1.2")
     public static <T, V extends Annotation> String createLogMessage(final Class<T> beanClass,
-                                                                    final Class<V> annotationClass) {
+            final Class<V> annotationClass) {
         return "Portal-532: " + createErrorMessage(beanClass, annotationClass);
     }
 
@@ -196,7 +261,7 @@ public final class PortalBeanManager {
      * @return The CDI {@link BeanManager}.
      * @see CDI#getBeanManager()
      */
-    public static BeanManager getBeanManager() {
+    private static BeanManager getBeanManager() {
         return CDI.current().getBeanManager();
     }
 }

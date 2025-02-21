@@ -15,11 +15,11 @@
  */
 package de.cuioss.portal.core.test.support;
 
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
-
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.uimodel.nameprovider.DisplayName;
 import de.cuioss.uimodel.nameprovider.IDisplayNameProvider;
+
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
 
 /**
  * Typed generator for {@link IDisplayNameProvider}

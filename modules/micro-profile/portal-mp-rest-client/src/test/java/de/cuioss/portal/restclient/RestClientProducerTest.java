@@ -67,7 +67,7 @@ class RestClientProducerTest implements MockWebServerHolder {
                 assert request.getPath() != null;
                 return switch (request.getPath()) {
                     case "/success/test" ->
-                            new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml", "ETag", "W/123"), "test");
+                        new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml", "ETag", "W/123"), "test");
                     case "/error/test" -> new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     default -> new MockResponse(HttpServletResponse.SC_NOT_FOUND);
                 };
@@ -87,13 +87,13 @@ class RestClientProducerTest implements MockWebServerHolder {
     private MockWebServer mockWebServer;
 
     @Test
-    void testServiceNotAvailable() {
+    void serviceNotAvailable() {
         assertNotNull(underTestProvider.get());
         assertFalse(underTestProvider.get().isServiceAvailable());
     }
 
     @Test
-    void testServiceAvailable() {
+    void serviceAvailable() {
         configuration.update("abc.url", mockWebServer.url("success").toString());
         assertNotNull(underTestProvider.get());
         assertTrue(underTestProvider.get().isServiceAvailable());

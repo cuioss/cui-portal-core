@@ -33,7 +33,7 @@ class KeycloakITBaseTest extends KeycloakITBase {
     void initTls() {
         // Configure RestAssured to use the keystore used / provided by testcontainers-keycloak
         RestAssured.config = RestAssured.config().sslConfig(
-                SSLConfig.sslConfig().trustStore(TestRealm.providedKeyStore.KEYSTORE_PATH, TestRealm.providedKeyStore.PASSWORD)
+                SSLConfig.sslConfig().trustStore(TestRealm.ProvidedKeyStore.KEYSTORE_PATH, TestRealm.ProvidedKeyStore.PASSWORD)
         );
     }
 

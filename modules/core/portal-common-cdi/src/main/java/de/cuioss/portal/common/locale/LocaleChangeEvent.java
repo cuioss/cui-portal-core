@@ -15,27 +15,46 @@
  */
 package de.cuioss.portal.common.locale;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.inject.Qualifier;
-
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Defines events that will be fired on LocaleChange, its payload is
- * Locale newLocale
+ * CDI event qualifier for locale change notifications.
+ * 
+ * <p>This event is fired when a user's locale changes, carrying the new
+ * {@link java.util.Locale} as its payload.
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * &#064;Inject
+ * private Event<Locale> localeChangeEvent;
+ * 
+ * public void changeLocale(Locale newLocale) {
+ *     localeChangeEvent.fire(newLocale);
+ * }
+ * </pre>
+ * 
+ * <h2>Observing Changes</h2>
+ * <pre>
+ * public void onLocaleChange(&#064;Observes &#064;LocaleChangeEvent Locale newLocale) {
+ *     // Handle locale change
+ * }
+ * </pre>
+ * 
+ * <p>Note: The event is fired synchronously to ensure all observers process the
+ * change before continuing.
  *
  * @author Oliver Wolff
+ * @see PortalLocale
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface LocaleChangeEvent {
 
 }

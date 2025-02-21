@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.configuration.connections.impl;
 
+import org.junit.jupiter.api.Test;
+
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
 
 class AuthenticationTypeTest {
 

@@ -15,25 +15,36 @@
  */
 package de.cuioss.portal.common.locale;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import jakarta.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.inject.Qualifier;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Marker for the concrete client-specific Locale to be injected
+ * CDI qualifier for injecting the client-specific {@link java.util.Locale}.
+ * 
+ * <p>This qualifier enables the injection of the current user's locale, which is
+ * dynamically determined based on client preferences and portal configuration.
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * &#064;Inject
+ * &#064;PortalLocale
+ * private Locale userLocale;
+ * </pre>
+ * 
+ * <p>The injected locale will automatically update when the user changes their
+ * language preference.
+ * To be notified of such changes, observe the {@link LocaleChangeEvent}.
  *
  * @author Oliver Wolff
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD, FIELD, PARAMETER })
+@Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface PortalLocale {
 
 }

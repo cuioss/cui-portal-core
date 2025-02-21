@@ -132,14 +132,14 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         if (null == request.getPath()) {
             LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-            new MockResponse(HttpServletResponse.SC_NOT_FOUND);
+            return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
         }
 
         return switch (request.getPath()) {
             case "/" + OIDC_DISCOVERY_PATH ->
-                    new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
-                            ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
-                            : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
+                new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
+                        ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
+                        : toStringUnchecked(CONFIGURATION).replaceAll("5602", currentPort));
             case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
             case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
             default -> {

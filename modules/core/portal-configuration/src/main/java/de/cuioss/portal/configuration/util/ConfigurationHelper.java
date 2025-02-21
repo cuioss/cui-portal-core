@@ -16,6 +16,7 @@
 package de.cuioss.portal.configuration.util;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.tools.collect.MapBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
@@ -28,7 +29,17 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -39,7 +50,49 @@ import static de.cuioss.tools.string.MoreStrings.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides some utilities for interacting with configuration elements
+ * Utility class providing core functionality for configuration handling in the Portal.
+ * Offers methods for filtering properties, resolving configuration values, and
+ * processing configuration data.
+ *
+ * <h2>Key Features</h2>
+ * <ul>
+ *   <li>Property filtering by prefix</li>
+ *   <li>Environment variable resolution</li>
+ *   <li>Configuration value type conversion</li>
+ *   <li>Injection point handling</li>
+ * </ul>
+ *
+ * <h2>Common Use Cases</h2>
+ *
+ * <h3>Property Filtering</h3>
+ * <pre>
+ * // Filter properties starting with "app.module"
+ * Map<String, String> filtered = ConfigurationHelper.getFilteredPropertyMap(
+ *     properties,
+ *     "app.module.",
+ *     true  // Strip prefix from keys
+ * );
+ * </pre>
+ *
+ * <h3>Environment Variable Resolution</h3>
+ * <pre>
+ * // Resolve value with environment fallback
+ * String value = ConfigurationHelper.resolveConfigProperty(
+ *     "app.home",     // Config key
+ *     "/opt/app",     // Default value
+ *     true           // Allow environment lookup
+ * );
+ * </pre>
+ *
+ * <h3>Configuration Value Processing</h3>
+ * <pre>
+ * // Convert configuration value to typed list
+ * List<Integer> ports = ConfigurationHelper.resolveConfigList(
+ *     "app.ports",           // Config key
+ *     "8080,8443",          // Default value
+ *     Integer::parseInt      // Value converter
+ * );
+ * </pre>
  *
  * @author Oliver Wolff
  */
@@ -393,7 +446,7 @@ public final class ConfigurationHelper {
             }
             result = Enum.valueOf(enumClass, value);
         } catch (final IllegalArgumentException ex) {
-            LOGGER.error("Portal-512: Could not convert input value '{}' to enum of type: {}. Reason: {}", inputValue, enumClass, ex.getMessage());
+            LOGGER.error(PortalConfigurationMessages.ERROR.ENUM_CONVERSION.format(inputValue, enumClass, ex.getMessage()));
             if (explodeOnInvalidInput) {
                 throw ex;
             }
@@ -413,7 +466,7 @@ public final class ConfigurationHelper {
      * @param name config key
      * @return the list of configProperties
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name) {
+    public static List<String> resolveConfigPropertyAsList(@NonNull final String name) {
         return resolveConfigPropertyAsList(name, null);
     }
 
@@ -424,7 +477,7 @@ public final class ConfigurationHelper {
      * @param defaultValue string representing default config value. can be null.
      * @return the list of configProperties
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue) {
+    public static List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue) {
         return resolveConfigPropertyAsList(name, defaultValue, CONTEXT_PARAM_SEPARATOR);
     }
 
@@ -437,7 +490,7 @@ public final class ConfigurationHelper {
      * @return list with configured values, separated via
      * {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
-    public List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue, final char separator) {
+    public static List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue, final char separator) {
         final var configuredValue = resolveConfigProperty(name).orElse(emptyToNull(defaultValue));
         return immutableList(resolveListFromString(configuredValue, separator));
     }

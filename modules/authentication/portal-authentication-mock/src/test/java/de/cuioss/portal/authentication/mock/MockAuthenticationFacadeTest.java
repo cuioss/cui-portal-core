@@ -98,7 +98,7 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
         var name = letterStrings(3, 8).next();
         var password = letterStrings(3, 8).next();
         var result = underTest.login(servletRequest,
-            LoginCredentials.builder().username(name).password(password).build());
+                LoginCredentials.builder().username(name).password(password).build());
         assertEquals(ResultState.ERROR, result.getState());
         // Incomplete Credentials
         result = underTest.login(servletRequest, LoginCredentials.builder().username(name).build());

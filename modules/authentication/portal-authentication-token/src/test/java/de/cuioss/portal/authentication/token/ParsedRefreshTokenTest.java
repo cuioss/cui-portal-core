@@ -15,7 +15,10 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeSerializable;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static de.cuioss.portal.authentication.token.TestTokenProducer.REFRESH_TOKEN;
@@ -23,18 +26,33 @@ import static de.cuioss.portal.authentication.token.TestTokenProducer.validSigne
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@EnableTestLogger
+@DisplayName("Tests ParsedRefreshToken functionality")
 class ParsedRefreshTokenTest implements ShouldBeSerializable<ParsedRefreshToken> {
 
-    @Test
-    void shouldHandleHappyCase() {
 
-        String initialToken = validSignedJWTWithClaims(REFRESH_TOKEN);
-        var parsedRefreshToken = ParsedRefreshToken.fromTokenString(initialToken);
+    @Nested
+    @DisplayName("Token Parsing Tests")
+    class TokenParsingTests {
 
-        assertEquals(initialToken, parsedRefreshToken.getTokenString());
-        assertFalse(parsedRefreshToken.isEmpty());
+        @Test
+        @DisplayName("Should handle valid token")
+        void shouldHandleValidToken() {
+            String initialToken = validSignedJWTWithClaims(REFRESH_TOKEN);
+            var parsedRefreshToken = ParsedRefreshToken.fromTokenString(initialToken);
 
-        assertEquals(TokenType.REFRESH_TOKEN, parsedRefreshToken.getType());
+            assertEquals(initialToken, parsedRefreshToken.getTokenString(), "Token string should match original");
+            assertFalse(parsedRefreshToken.isEmpty(), "Token should be present");
+            assertEquals(TokenType.REFRESH_TOKEN, parsedRefreshToken.getType(), "Token type should be REFRESH_TOKEN");
+        }
+
+        @Test
+        @DisplayName("Should handle invalid token")
+        void shouldHandleInvalidToken() {
+            var parsedRefreshToken = ParsedRefreshToken.fromTokenString("invalid-token");
+            assertFalse(parsedRefreshToken.isEmpty(), "Invalid token should still be wrapped");
+            assertEquals("invalid-token", parsedRefreshToken.getTokenString(), "Token string should match original");
+        }
     }
 
     @Override
