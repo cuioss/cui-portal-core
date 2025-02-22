@@ -9,7 +9,7 @@
     </parent>
     <groupId>de.cuioss.portal</groupId>
     <artifactId>cui-portal-core</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>cui portal core</name>
     <description>The core modules of the cui-portal incorporating
@@ -24,7 +24,7 @@
         <url>https://github.com/cuioss/cui-portal-core/</url>
         <connection>scm:git:https://github.com/cuioss/cui-portal-core.git</connection>
         <developerConnection>scm:git:https://github.com/cuioss/cui-portal-core/</developerConnection>
-        <tag>1.2.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <issueManagement>
         <url>https://github.com/cuioss/cui-portal-core/issues</url>
