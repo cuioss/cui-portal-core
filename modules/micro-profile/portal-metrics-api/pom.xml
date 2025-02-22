@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>portal-metrics-api</artifactId>
-    <parent>
-        <groupId>de.cuioss.portal.mirco-profile</groupId>
-        <artifactId>micro-profile</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
-    </parent>
-    <properties>
-        <maven.jar.plugin.automatic.module.name>
-            de.cuioss.portal.metrics</maven.jar.plugin.automatic.module.name>
-    </properties>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.cuioss.portal.mirco-profile</groupId>
+    <artifactId>micro-profile</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>portal-metrics-api</artifactId>
+  <properties>
+    <maven.jar.plugin.automatic.module.name>
+      de.cuioss.portal.metrics</maven.jar.plugin.automatic.module.name>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
@@ -24,13 +24,13 @@
       <groupId>jakarta.ws.rs</groupId>
       <artifactId>jakarta.ws.rs-api</artifactId>
     </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+    </dependency>
+  </dependencies>
 </project>

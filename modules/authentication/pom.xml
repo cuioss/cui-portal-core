@@ -1,63 +1,63 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>de.cuioss.portal</groupId>
-        <artifactId>modules</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
-    </parent>
-    <groupId>de.cuioss.portal.authentication</groupId>
-    <artifactId>authentication</artifactId>
-    <packaging>pom</packaging>
-    <description>Groups all authentication modules of the portal</description>
-    <name>Portal authentication modules</name>
-    <modules>
-        <module>portal-authentication-api</module>
-        <module>portal-authentication-mock</module>
-        <module>portal-authentication-oauth</module>
-        <module>portal-authentication-dummy</module>
-        <module>portal-authentication-token</module>
-    </modules>
-    <dependencies>
-        <!-- Provided -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-web-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile.config</groupId>
-            <artifactId>microprofile-config-api</artifactId>
-        </dependency>
-        <!-- cuioss-->
-        <dependency>
-            <groupId>de.cuioss</groupId>
-            <artifactId>cui-java-tools</artifactId>
-        </dependency>
-        <!-- Test related -->
-        <dependency>
-            <groupId>de.cuioss.test</groupId>
-            <artifactId>cui-test-juli-logger</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.cuioss.test</groupId>
-            <artifactId>cui-test-value-objects</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-        </dependency>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.cuioss.portal</groupId>
+    <artifactId>modules</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+  </parent>
+  <groupId>de.cuioss.portal.authentication</groupId>
+  <artifactId>authentication</artifactId>
+  <packaging>pom</packaging>
+  <name>Portal authentication modules</name>
+  <description>Groups all authentication modules of the portal</description>
+  <modules>
+    <module>portal-authentication-api</module>
+    <module>portal-authentication-mock</module>
+    <module>portal-authentication-oauth</module>
+    <module>portal-authentication-dummy</module>
+    <module>portal-authentication-token</module>
+  </modules>
+  <dependencies>
+    <!-- Provided -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
+    </dependency>
+    <!-- cuioss-->
+    <dependency>
+      <groupId>de.cuioss</groupId>
+      <artifactId>cui-java-tools</artifactId>
+    </dependency>
+    <!-- Test related -->
+    <dependency>
+      <groupId>de.cuioss.test</groupId>
+      <artifactId>cui-test-juli-logger</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.cuioss.test</groupId>
+      <artifactId>cui-test-value-objects</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-junit5</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-junit5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
