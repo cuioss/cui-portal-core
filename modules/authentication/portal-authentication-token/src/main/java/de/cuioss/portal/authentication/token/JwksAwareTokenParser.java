@@ -26,6 +26,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Delegate;
+
 import static de.cuioss.portal.authentication.token.PortalTokenLogMessages.INFO;
 
 /**

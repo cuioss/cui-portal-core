@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cuioss.portal.core.servlet;
 
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
@@ -95,37 +110,37 @@ class ExternalHostnameProducerTest {
     @EnableTestLogger(trace = ExternalHostnameProducer.class)
     @DisplayName("Direct Server Properties Tests")
     class DirectServerPropertiesTests {
-        
+
         @Test
         @DisplayName("Should resolve hostname from server properties")
         void shouldResolveFromServerProperties() {
             var name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(SERVER_NAME_AND_PORT, name, 
-                "Hostname should match request server name and port");
-            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
-                "Resolved hostname: ");
+            assertEquals(SERVER_NAME_AND_PORT, name,
+                    "Hostname should match request server name and port");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG,
+                    "Resolved hostname: ");
         }
 
         @ParameterizedTest(name = "Should handle server name={0} and port={1}")
         @CsvSource({
-            "localhost, 80",
-            "127.0.0.1, 443",
-            "'', 8080",
-            "test-server.local, 0",
-            "very.long.domain.name.example.com, 65535"
+                "localhost, 80",
+                "127.0.0.1, 443",
+                "'', 8080",
+                "test-server.local, 0",
+                "very.long.domain.name.example.com, 65535"
         })
         @DisplayName("Should handle edge case server properties")
         void shouldHandleEdgeCaseServerProperties(String serverName, int serverPort) {
             customServerName = serverName;
             customServerPort = serverPort;
-            
+
             var name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(serverName + ":" + serverPort, name, 
-                "Hostname should match custom server name and port");
-            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
-                "Resolved hostname: ");
+            assertEquals(serverName + ":" + serverPort, name,
+                    "Hostname should match custom server name and port");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG,
+                    "Resolved hostname: ");
         }
     }
 
@@ -138,40 +153,40 @@ class ExternalHostnameProducerTest {
         void enableXForwarded() {
             verifyAgainstXForward = true;
         }
-        
+
         @Test
         @DisplayName("Should resolve hostname from X-Forwarded headers")
         void shouldResolveFromXForwardedHeaders() {
             customXForwardedHost = SERVER_NAME;
             customXForwardedPort = String.valueOf(SERVER_PORT);
-            
+
             var name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(SERVER_NAME_AND_PORT, name, 
-                "Hostname should match X-Forwarded host and port");
-            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
-                "Resolved hostname: ");
+            assertEquals(SERVER_NAME_AND_PORT, name,
+                    "Hostname should match X-Forwarded host and port");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG,
+                    "Resolved hostname: ");
         }
 
         @ParameterizedTest(name = "Should handle X-Forwarded host={0} and port={1}")
         @CsvSource({
-            "proxy.example.com, 8080",
-            "load-balancer.local, 443",
-            "'', 80",
-            "multiple.proxy.chain.example.com, 9000",
-            "ipv6.example.com, 8443"
+                "proxy.example.com, 8080",
+                "load-balancer.local, 443",
+                "'', 80",
+                "multiple.proxy.chain.example.com, 9000",
+                "ipv6.example.com, 8443"
         })
         @DisplayName("Should handle edge case X-Forwarded headers")
         void shouldHandleEdgeCaseXForwardedHeaders(String forwardedHost, String forwardedPort) {
             customXForwardedHost = forwardedHost;
             customXForwardedPort = forwardedPort;
-            
+
             var name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(forwardedHost + ":" + forwardedPort, name, 
-                "Hostname should match X-Forwarded host and port");
-            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
-                "Resolved hostname: ");
+            assertEquals(forwardedHost + ":" + forwardedPort, name,
+                    "Hostname should match X-Forwarded host and port");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG,
+                    "Resolved hostname: ");
         }
 
         @Test
@@ -181,13 +196,13 @@ class ExternalHostnameProducerTest {
             customXForwardedPort = null;
             customServerName = "fallback.example.com";
             customServerPort = 9443;
-            
+
             var name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(customServerName + ":" + customServerPort, name, 
-                "Hostname should fallback to server properties");
-            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG, 
-                "Resolved hostname: ");
+            assertEquals(customServerName + ":" + customServerPort, name,
+                    "Hostname should fallback to server properties");
+            LogAsserts.assertSingleLogMessagePresentContaining(TestLogLevel.DEBUG,
+                    "Resolved hostname: ");
         }
 
         @Test
@@ -197,21 +212,21 @@ class ExternalHostnameProducerTest {
             customXForwardedHost = "partial.example.com";
             customXForwardedPort = null;
             customServerPort = 7443;
-            
+
             var name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(customXForwardedHost + ":" + customServerPort, name, 
-                "Hostname should use X-Forwarded-Host with server port");
+            assertEquals(customXForwardedHost + ":" + customServerPort, name,
+                    "Hostname should use X-Forwarded-Host with server port");
 
             // Only X-Forwarded-Port is present
             customXForwardedHost = null;
             customXForwardedPort = "7080";
             customServerName = "server.example.com";
-            
+
             name = hostname.get();
             assertNotNull(name, "Hostname should be injected");
-            assertEquals(customServerName + ":" + customXForwardedPort, name, 
-                "Hostname should use server name with X-Forwarded-Port");
+            assertEquals(customServerName + ":" + customXForwardedPort, name,
+                    "Hostname should use server name with X-Forwarded-Port");
         }
     }
 }

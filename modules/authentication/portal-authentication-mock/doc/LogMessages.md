@@ -15,9 +15,3 @@ All messages follow the format: [MOCK-AUTH]-[identifier]: [message]
 | ID             | Component | Message | Description |
 |----------------|-----------|---------|-------------|
 | MOCK-AUTH-101 | Authentication | Invalid login attempt for user '%s' | Logged when a user fails to authenticate |
-
-## DEBUG Level (500-599)
-
-| ID             | Component | Message | Description |
-|----------------|-----------|---------|-------------|
-| MOCK-AUTH-501 | Authentication | Created default user info builder with roles=%s, groups=%s | Logged when creating a default user info builder with the specified roles and groups |
