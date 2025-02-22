@@ -153,7 +153,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
-            final LoginCredentials loginCredentials) {
+                                                     final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()
@@ -192,14 +192,15 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     @Override
     public boolean logout(final HttpServletRequest servletRequest) {
         var oldSession = servletRequest.getSession();
-        var userInfo = (AuthenticatedUserInfo) oldSession.getAttribute(USER_INFO_KEY);
+        AuthenticatedUserInfo userInfo = null;
         if (null != oldSession) {
+            userInfo = (AuthenticatedUserInfo) oldSession.getAttribute(USER_INFO_KEY);
             oldSession.invalidate();
         }
         var newSession = servletRequest.getSession(true);
         newSession.setAttribute(USER_INFO_KEY, NOT_LOGGED_IN);
         newSession.setAttribute(USER_INFO_LOGOUT_KEY, USER_INFO_LOGOUT_KEY);
-        if (userInfo != null && userInfo.isAuthenticated()) {
+        if (null != userInfo && userInfo.isAuthenticated()) {
             LOGGER.info(INFO.USER_LOGOUT.format(userInfo.getDisplayName()));
         }
         return true;
@@ -209,7 +210,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(final HttpServletRequest servletRequest) {
         var userInfo = (AuthenticatedUserInfo) servletRequest.getSession().getAttribute(USER_INFO_KEY);
         if (null == userInfo) {
-            if (defaultLoggedIn.get()) {
+            if (Boolean.TRUE.equals(defaultLoggedIn.get())) {
                 var userName = defaultUserName.get();
                 userInfo = createDefaultUserInfoBuilder().identifier(userName).qualifiedIdentifier(userName)
                         .displayName(userName).build();

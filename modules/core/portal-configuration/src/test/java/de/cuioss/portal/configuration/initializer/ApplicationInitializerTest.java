@@ -57,6 +57,7 @@ class ApplicationInitializerTest {
 
         @Override
         public void initialize() {
+            // Noop implementation: Test only
         }
 
     }

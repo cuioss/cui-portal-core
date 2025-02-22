@@ -107,7 +107,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
      */
     @Override
     public void initialize() {
-        if (enabledProvider.get()) {
+        if (Boolean.TRUE.equals(enabledProvider.get())) {
             LOGGER.debug("Initializing FileWatcherService");
             if (null == watcherService) {
                 try {

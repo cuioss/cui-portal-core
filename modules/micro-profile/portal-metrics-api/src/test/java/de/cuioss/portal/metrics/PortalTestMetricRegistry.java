@@ -45,7 +45,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Simple Mock variant of {@link MetricRegistry}. Partially implemented.
@@ -147,7 +146,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public <T extends Number> Gauge<T> gauge(Metadata metadata, Supplier<T> supplier, Tag... tags) {
         metricMap.put(new MetricID(metadata.getName()), (Gauge) () -> null);
-        LOGGER.info("Gauge for metric '%s'", metadata.getName(), CollectionLiterals.mutableList(tags).stream().map(tag -> tag.getTagName() + "=" + tag.getTagValue()).collect(Collectors.toList()));
+        LOGGER.info("Gauge for metric '%s'", metadata.getName(), CollectionLiterals.mutableList(tags).stream().map(tag -> tag.getTagName() + "=" + tag.getTagValue()).toList());
         return null;
     }
 

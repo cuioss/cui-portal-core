@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * </ul>
  *
  * <h2>Usage Examples</h2>
- *
+ * <p>
  * Basic configuration test:
  * <pre>
  * public class MyConfigTest extends AbstractConfigurationKeyVerifierTest {
@@ -66,7 +66,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  *     }
  * }
  * </pre>
- *
+ * <p>
  * Custom key filtering:
  * <pre>
  * public class FilteredConfigTest extends AbstractConfigurationKeyVerifierTest {
@@ -103,9 +103,9 @@ import static org.junit.jupiter.api.Assertions.fail;
  * </ul>
  *
  * @author Oliver Wolff
- * @since 1.0
  * @see ConfigSource
  * @see ConfigProvider
+ * @since 1.0
  */
 public abstract class AbstractConfigurationKeyVerifierTest {
 
@@ -272,8 +272,6 @@ public abstract class AbstractConfigurationKeyVerifierTest {
             return strings;
         }
         var foundNames = StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false).map(ConfigSource::getName).collect(Collectors.toSet());
-        fail("Unable to find any configuration source named '%s', available sources: '%s'".formatted(name, foundNames));
-
-        return null;
+        throw new AssertionError("Unable to find any configuration source named '%s', available sources: '%s'".formatted(name, foundNames));
     }
 }

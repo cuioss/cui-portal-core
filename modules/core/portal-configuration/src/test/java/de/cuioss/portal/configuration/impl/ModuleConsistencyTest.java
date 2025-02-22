@@ -36,14 +36,6 @@ class ModuleConsistencyTest {
         try (final var weld = new Weld().initialize()) {
             assertNotNull(weld.select(BeanManager.class),
                     "Unable to acquire an instance of javax.enterprise.inject.spi.BeanManager");
-
-            /*
-             * final Set<Bean<?>> fileConfigSourceInstances = CDI.current().getBeanManager()
-             * .getBeans(FileConfigurationSource.class,
-             * PortalConfigurationSource.Literal.INSTANCE);
-             * assertFalse(fileConfigSourceInstances.isEmpty(),
-             * "FileConfigurationSource instances not registered in CDI");
-             */
         }
     }
 

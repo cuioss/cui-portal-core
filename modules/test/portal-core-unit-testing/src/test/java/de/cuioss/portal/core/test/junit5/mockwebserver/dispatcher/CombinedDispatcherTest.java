@@ -72,7 +72,7 @@ class CombinedDispatcherTest {
 
     private void assertDispatchWithCode(CombinedDispatcher dispatcher, int httpCode, String urlPart) {
         for (HttpMethodMapper mapper : HttpMethodMapper.values()) {
-            var request = createRequestFor(mapper, dispatcher, urlPart);
+            var request = createRequestFor(mapper, urlPart);
             assertDoesNotThrow(() -> {
                 var result = dispatcher.dispatch(request);
                 assertTrue(result.getStatus().contains(String.valueOf(httpCode)),
@@ -82,7 +82,7 @@ class CombinedDispatcherTest {
 
     }
 
-    static RecordedRequest createRequestFor(HttpMethodMapper mapper, CombinedDispatcher dispatcher, String urlPart) {
+    static RecordedRequest createRequestFor(HttpMethodMapper mapper, String urlPart) {
         return new RecordedRequest(mapper.name() + " " + urlPart + "someResource  HTTP/1.1",
                 Headers.of("key=value", "key2=value2"), Collections.emptyList(), 0, new Buffer(), 0, new Socket(), null);
     }
