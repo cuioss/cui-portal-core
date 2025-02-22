@@ -55,7 +55,7 @@ import java.util.ResourceBundle;
  * public class CustomBundleLocator implements ResourceBundleLocator {
  *     
  *     &#064;Override
- *     public Optional<String> getBundlePath() {
+ *     public Optional&lt;String&gt; getBundlePath() {
  *         return Optional.of("com.example.messages");
  *     }
  *     

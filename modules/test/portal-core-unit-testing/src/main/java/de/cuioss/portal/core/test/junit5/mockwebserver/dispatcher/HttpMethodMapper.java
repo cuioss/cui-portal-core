@@ -42,7 +42,7 @@ import java.util.Optional;
  * HttpMethodMapper mapper = HttpMethodMapper.of(request);
  *
  * // Handle the request with the correct method
- * Optional<MockResponse> response = mapper.handleMethod(dispatcher, request);
+ * Optional&lt;MockResponse&gt; response = mapper.handleMethod(dispatcher, request);
  * </pre>
  *
  * @author Oliver Wolff

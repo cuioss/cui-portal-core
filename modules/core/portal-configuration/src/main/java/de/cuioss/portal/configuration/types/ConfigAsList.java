@@ -44,7 +44,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * // Basic usage with default separator (,)
  * &#64;Inject
  * &#64;ConfigAsList(name = "app.allowed.roles")
- * private List<String> allowedRoles;
+ * private List&lt;String&gt; allowedRoles;
  * 
  * // Custom separator with default value
  * &#64;Inject
@@ -53,7 +53,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     separator = ':',
  *     defaultValue = "/home:/usr/local"
  * )
- * private List<String> searchPaths;
+ * private List&lt;String&gt; searchPaths;
  * </pre>
  * <p>
  * Example configuration:

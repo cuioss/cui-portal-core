@@ -46,7 +46,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * // Basic usage - fails if any file not found
  * &#64;Inject
  * &#64;ConfigAsFileLoaderList(name = "app.template.files")
- * private List<FileLoader> templateFiles;
+ * private List&lt;FileLoader&gt; templateFiles;
  * 
  * // Custom separator and lenient validation
  * &#64;Inject
@@ -55,7 +55,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     separator = '|',
  *     failOnNotAccessible = false
  * )
- * private List<FileLoader> configFiles;
+ * private List&lt;FileLoader&gt; configFiles;
  * </pre>
  * <p>
  * Example configuration:

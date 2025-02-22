@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <h2>Usage</h2>
  * <pre>
  * &#064;Inject
- * private Event<Locale> localeChangeEvent;
+ * private Event&lt;Locale&gt; localeChangeEvent;
  * 
  * public void changeLocale(Locale newLocale) {
  *     localeChangeEvent.fire(newLocale);

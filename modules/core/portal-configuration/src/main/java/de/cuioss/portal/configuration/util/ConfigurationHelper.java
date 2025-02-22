@@ -67,7 +67,7 @@ import static java.util.Objects.requireNonNull;
  * <h3>Property Filtering</h3>
  * <pre>
  * // Filter properties starting with "app.module"
- * Map<String, String> filtered = ConfigurationHelper.getFilteredPropertyMap(
+ * Map&lt;String, String&gt; filtered = ConfigurationHelper.getFilteredPropertyMap(
  *     properties,
  *     "app.module.",
  *     true  // Strip prefix from keys
@@ -87,7 +87,7 @@ import static java.util.Objects.requireNonNull;
  * <h3>Configuration Value Processing</h3>
  * <pre>
  * // Convert configuration value to typed list
- * List<Integer> ports = ConfigurationHelper.resolveConfigList(
+ * List&lt;Integer&gt; ports = ConfigurationHelper.resolveConfigList(
  *     "app.ports",           // Config key
  *     "8080,8443",          // Default value
  *     Integer::parseInt      // Value converter

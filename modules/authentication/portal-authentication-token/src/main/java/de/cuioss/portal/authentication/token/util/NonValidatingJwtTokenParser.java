@@ -58,7 +58,7 @@ import java.util.Set;
  * Usage example:
  * <pre>
  * NonValidatingJwtTokenParser parser = new NonValidatingJwtTokenParser();
- * Optional<JsonWebToken> token = parser.unsecured(tokenString);
+ * Optional&lt;JsonWebToken&gt; token = parser.unsecured(tokenString);
  * token.ifPresent(t -> {
  *     String issuer = t.getIssuer();
  *     // Use issuer to select appropriate validator

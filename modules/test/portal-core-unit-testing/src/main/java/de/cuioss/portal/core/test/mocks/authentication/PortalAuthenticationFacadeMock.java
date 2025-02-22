@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * </ul>
  *
  * <h2>Usage Examples</h2>
- *
+ * <p>
  * Basic authentication:
  * <pre>
  * &#64;Inject
@@ -63,11 +63,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * void testLogin() {
  *     // Authenticate with default admin credentials
  *     LoginCredentials credentials = new LoginCredentials("admin", "admin");
- *     ResultObject<AuthenticatedUserInfo> result = authFacade.authenticate(credentials);
+ *     ResultObject&lt;AuthenticatedUserInfo&gt; result = authFacade.authenticate(credentials);
  *     assertTrue(result.isValid());
  * }
  * </pre>
- *
+ * <p>
  * Custom authentication behavior:
  * <pre>
  * // Configure custom authentication result
@@ -80,11 +80,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * // Configure authentication to fail
  * authFacade.setAuthenticationResult(AuthenticationResults.invalidResultKey());
  * </pre>
- *
+ * <p>
  * Session management:
  * <pre>
  * // Check current authentication state
- * Optional<AuthenticatedUserInfo> currentUser = authFacade.getCurrentAuthenticationContext();
+ * Optional&lt;AuthenticatedUserInfo&gt; currentUser = authFacade.getCurrentAuthenticationContext();
  *
  * // Invalidate authentication
  * authFacade.logout();
@@ -101,10 +101,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * </ul>
  *
  * @author Oliver Wolff
- * @since 1.0
  * @see FormBasedAuthenticationFacade
  * @see AuthenticatedUserInfo
  * @see LoginCredentials
+ * @since 1.0
  */
 @ApplicationScoped
 @PortalAuthenticationFacade
@@ -161,7 +161,7 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
 
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest request,
-            final LoginCredentials loginCredentials) {
+                                                     final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         if (loginCredentials.isComplete()
                 && loginCredentials.getUsername().equalsIgnoreCase(loginCredentials.getPassword())) {
@@ -203,7 +203,6 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
      *
      * @param username
      * @param password
-     *
      * @return created {@link LoginCredentials} with a given Username / password.
      */
     public static LoginCredentials createLoginCredentials(final String username, final String password) {
@@ -218,7 +217,6 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
      * username==password.
      *
      * @param username
-     *
      * @return created {@link LoginCredentials} with a given Username / password.
      */
     public static LoginCredentials createLoginCredentials(final String username) {

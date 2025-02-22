@@ -40,7 +40,7 @@ import java.util.Optional;
  * Usage example:
  * <pre>
  * TokenFactory factory = TokenFactory.of(parser1, parser2);
- * Optional<ParsedAccessToken> token = factory.createAccessToken(tokenString);
+ * Optional&lt;ParsedAccessToken&gt; token = factory.createAccessToken(tokenString);
  * </pre>
  * <p>
  * The factory uses {@link MultiIssuerTokenParser} internally to manage multiple token parsers

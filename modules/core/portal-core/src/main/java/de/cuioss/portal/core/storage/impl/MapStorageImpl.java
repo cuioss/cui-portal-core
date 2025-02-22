@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p><strong>Usage example:</strong></p>
  * <pre>
- * MapStorage<String, UserData> storage = new MapStorageImpl<>();
+ * MapStorage&lt;String, UserData&gt; storage = new MapStorageImpl&lt;&gt;();
  * storage.put("user123", userData);
  * UserData data = storage.get("user123", new UserData()); // With default value
  * </pre>

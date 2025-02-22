@@ -52,7 +52,7 @@ public class CacheConfig implements Serializable {
     public static final String RECORD_STATISTICS_KEY = "record_statistics";
 
     /**
-     * The expiration for the cache, the unit is defined at {@link #getTimeUnit()}.
+     * The expiration for the cache, the unit is defined at {@link #timeUnit}.
      */
     @Getter
     private final long expiration;

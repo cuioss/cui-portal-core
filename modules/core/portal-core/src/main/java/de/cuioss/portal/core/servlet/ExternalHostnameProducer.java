@@ -43,7 +43,7 @@ import java.util.Optional;
  * <pre>
  * &#64;Inject
  * &#64;CuiExternalHostname
- * Provider<String> hostname;
+ * Provider&lt;String&gt; hostname;
  *
  * String serverAddress = hostname.get();
  * </pre>

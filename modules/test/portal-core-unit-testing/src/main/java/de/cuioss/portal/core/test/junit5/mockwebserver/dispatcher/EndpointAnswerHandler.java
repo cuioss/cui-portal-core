@@ -146,9 +146,10 @@ public class EndpointAnswerHandler {
     }
 
     /**
-     * Resets the current answer to {@link #getDefaultResponse()}
+     * Resets the current answer to the default response
      *
      * @return The current instance of this Handler
+     * @see #getDefaultResponse()
      */
     public EndpointAnswerHandler resetToDefaultResponse() {
         response = defaultResponse;

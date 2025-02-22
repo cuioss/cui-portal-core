@@ -72,7 +72,7 @@ import static java.util.Collections.synchronizedMap;
  * configuration.update("key1", "value1", "key2", "value2");
  *
  * // Method 2: Map-based
- * Map<String, String> properties = new HashMap<>();
+ * Map&lt;String, String&gt; properties = new HashMap&lt;&gt;();
  * properties.put("key1", "value1");
  * properties.put("key2", "value2");
  * configuration.update(properties);

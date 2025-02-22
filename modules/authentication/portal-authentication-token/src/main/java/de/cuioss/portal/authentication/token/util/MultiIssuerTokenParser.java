@@ -47,7 +47,7 @@ import java.util.Optional;
  *     .addParser(issuer2Parser)
  *     .build();
  * 
- * Optional<JWTParser> selectedParser = parser.getParserForToken(tokenString);
+ * Optional&lt;JWTParser&gt; selectedParser = parser.getParserForToken(tokenString);
  * </pre>
  * <p>
  * The class uses {@link NonValidatingJwtTokenParser} internally for initial token inspection

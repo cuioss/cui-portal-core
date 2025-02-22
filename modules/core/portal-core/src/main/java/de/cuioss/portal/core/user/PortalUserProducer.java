@@ -50,7 +50,7 @@ import java.io.Serializable;
  * <p><strong>Usage example:</strong></p>
  * <pre>
  * &#64;Inject
- * Provider<AuthenticatedUserInfo> userInfo;
+ * Provider&lt;AuthenticatedUserInfo&gt; userInfo;
  * 
  * void someMethod() {
  *     if (userInfo.get().isAuthenticated()) {

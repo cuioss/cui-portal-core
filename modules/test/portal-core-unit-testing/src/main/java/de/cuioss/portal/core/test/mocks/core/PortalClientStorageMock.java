@@ -62,7 +62,7 @@ import java.io.Serial;
  * <pre>
  * void testBulkOperations() {
  *     // Store multiple values
- *     Map<String, String> data = new HashMap<>();
+ *     Map&lt;String, String&gt; data = new HashMap&lt;&gt;();
  *     data.put("key1", "value1");
  *     data.put("key2", "value2");
  *     storage.putAll(data);

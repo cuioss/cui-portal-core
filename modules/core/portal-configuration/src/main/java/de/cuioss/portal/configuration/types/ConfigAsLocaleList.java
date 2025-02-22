@@ -46,7 +46,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * // Basic usage with system fallback
  * &#64;Inject
  * &#64;ConfigAsLocaleList(name = "app.supported.locales")
- * private List<Locale> supportedLocales;
+ * private List&lt;Locale&gt; supportedLocales;
  * 
  * // Strict parsing with custom separator
  * &#64;Inject
@@ -55,7 +55,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     defaultToSystem = false,
  *     separator = '|'
  * )
- * private List<Locale> availableLanguages;
+ * private List&lt;Locale&gt; availableLanguages;
  * </pre>
  * <p>
  * Example configuration:

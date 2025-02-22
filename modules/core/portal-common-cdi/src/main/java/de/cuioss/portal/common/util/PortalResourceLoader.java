@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  * <h2>Usage</h2>
  * <pre>
  * // Load a resource using a specific class context
- * Optional<URL> resource = PortalResourceLoader.getResource("/path/to/resource.txt", MyClass.class);
+ * Optional&lt;URL&gt; resource = PortalResourceLoader.getResource("/path/to/resource.txt", MyClass.class);
  * 
  * // Process the resource if found
  * resource.ifPresent(url -> {

@@ -45,7 +45,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * // Basic usage with default separator (,)
  * &#64;Inject
  * &#64;ConfigAsSet(name = "app.allowed.roles")
- * private Set<String> allowedRoles;
+ * private Set&lt;String&gt; allowedRoles;
  * 
  * // Custom separator with default value
  * &#64;Inject
@@ -54,7 +54,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     separator = ';',
  *     defaultValue = "text/html;application/json"
  * )
- * private Set<String> mimeTypes;
+ * private Set&lt;String&gt; mimeTypes;
  * </pre>
  * <p>
  * Example configuration:

@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * <pre>
  * public class MyConfigTest extends AbstractConfigurationKeyVerifierTest {
  *     &#64;Override
- *     protected Class<?> getKeyHolder() {
+ *     protected Class&lt;?&gt; getKeyHolder() {
  *         return MyConfigurationKeys.class;
  *     }
  *
@@ -71,12 +71,12 @@ import static org.junit.jupiter.api.Assertions.fail;
  * <pre>
  * public class FilteredConfigTest extends AbstractConfigurationKeyVerifierTest {
  *     &#64;Override
- *     protected Set<String> getKeysIgnoreList() {
+ *     protected Set&lt;String&gt; getKeysIgnoreList() {
  *         return Set.of("temporary.key", "debug.key");
  *     }
  *
  *     &#64;Override
- *     protected Set<String> getConfigurationKeysIgnoreList() {
+ *     protected Set&lt;String&gt; getConfigurationKeysIgnoreList() {
  *         return Set.of("DEPRECATED_KEY", "FUTURE_KEY");
  *     }
  *

@@ -60,7 +60,7 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  * private ResourceBundleRegistry registry;
  * 
  * public void process() {
- *     List<ResourceBundleLocator> locators = registry.getResolvedPaths();
+ *     List&lt;ResourceBundleLocator&gt; locators = registry.getResolvedPaths();
  *     // Process locators in priority order
  * }
  * </pre>

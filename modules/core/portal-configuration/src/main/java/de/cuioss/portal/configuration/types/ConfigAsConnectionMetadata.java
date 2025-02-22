@@ -29,7 +29,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * CDI qualifier for injecting connection configuration as {@link ConnectionMetadata} instances.
  * This qualifier provides comprehensive configuration for various connection types
  * including authentication, caching, and connection properties.
- * <p>
+ * 
  * Features:
  * <ul>
  *   <li>Multiple authentication methods</li>
@@ -38,11 +38,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *   <li>Connection type support</li>
  *   <li>Flexible configuration structure</li>
  * </ul>
- * <p>
+ * 
  * <h2>Configuration Structure</h2>
  * All properties use a common base name prefix. For example, with base name
  * "app.service.connection", properties would be:
- * <p>
+ *
  * <h3>1. Basic Properties</h3>
  * <ul>
  *   <li>{@code baseName.id} - Optional identifier (defaults to baseName)</li>
@@ -57,10 +57,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     </ul>
  *   </li>
  * </ul>
- * <p>
+ *
  * <h3>2. Authentication Configuration</h3>
  * Set via {@code baseName.authentication}:
- * <p>
+ *
  * a) Certificate Authentication:
  * <pre>
  * baseName.authentication=certificate
@@ -68,28 +68,28 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * baseName.authentication.certificate.keystore.password=store-password
  * baseName.authentication.certificate.keystore.keypassword=key-password
  * </pre>
- * <p>
+ *
  * b) Basic Authentication:
  * <pre>
  * baseName.authentication=basic
  * baseName.authentication.basic.username=user
  * baseName.authentication.basic.password=pass
  * </pre>
- * <p>
+ *
  * c) Application Token:
  * <pre>
  * baseName.authentication=token.application
  * baseName.authentication.token.application.token=your-token
  * baseName.authentication.token.application.key=X-Auth-Token
  * </pre>
- * <p>
+ *
  * d) User Token (Experimental):
  * <pre>
  * baseName.authentication=token.user
  * baseName.authentication.token.user.token.source=token-source
  * baseName.authentication.token.user.key=token-header
  * </pre>
- * <p>
+ *
  * <h3>3. Cache Configuration</h3>
  * Optional caching settings:
  * <pre>
@@ -97,7 +97,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * baseName.config.max-age=60     # max age in minutes
  * baseName.config.max-stale=30   # stale tolerance in minutes
  * </pre>
- * <p>
+ * 
  * Usage example:
  * <pre>
  * &#64;Inject
@@ -117,10 +117,10 @@ public @interface ConfigAsConnectionMetadata {
 
     /**
      * The base name prefix for all connection configuration properties.
-     * <p>
+     * 
      * This prefix will be used to locate all related configuration properties
      * such as URL, authentication settings, and cache configuration.
-     * <p>
+     * 
      * For example, if baseName is "app.service":
      * <ul>
      *   <li>URL will be read from "app.service.url"</li>
@@ -135,7 +135,7 @@ public @interface ConfigAsConnectionMetadata {
 
     /**
      * Controls validation behavior for missing or invalid configuration.
-     * <p>
+     * 
      * When true:
      * <ul>
      *   <li>Validates all required properties are present</li>

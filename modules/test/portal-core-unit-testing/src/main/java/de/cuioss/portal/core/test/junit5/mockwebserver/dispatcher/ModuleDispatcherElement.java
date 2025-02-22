@@ -43,7 +43,7 @@ import java.util.Optional;
  *     }
  *
  *     &#64;Override
- *     public Optional<MockResponse> handleGet(RecordedRequest request) {
+ *     public Optional&lt;MockResponse&gt; handleGet(RecordedRequest request) {
  *         if (request.getPath().equals("/api/users/123")) {
  *             return Optional.of(new MockResponse()
  *                 .setResponseCode(200)

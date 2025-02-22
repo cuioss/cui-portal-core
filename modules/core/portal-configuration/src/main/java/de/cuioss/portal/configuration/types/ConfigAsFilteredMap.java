@@ -43,7 +43,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * // Basic usage - keep prefix
  * &#64;Inject
  * &#64;ConfigAsFilteredMap(startsWith = "portal.theme.")
- * private Map<String, String> themeProperties;
+ * private Map&lt;String, String&gt; themeProperties;
  * 
  * // Strip prefix from keys
  * &#64;Inject
@@ -51,7 +51,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     startsWith = "portal.mail.",
  *     stripPrefix = true
  * )
- * private Map<String, String> mailConfig;
+ * private Map&lt;String, String&gt; mailConfig;
  * </pre>
  * <p>
  * Example configuration:

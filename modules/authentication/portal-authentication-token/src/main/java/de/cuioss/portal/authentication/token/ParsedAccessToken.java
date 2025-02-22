@@ -56,7 +56,7 @@ import static java.util.stream.Collectors.toSet;
  * <p>
  * Usage example:
  * <pre>
- * Optional<ParsedAccessToken> token = ParsedAccessToken.fromTokenString(tokenString, parser);
+ * Optional&lt;ParsedAccessToken&gt; token = ParsedAccessToken.fromTokenString(tokenString, parser);
  * if (token.isPresent() &amp;&amp; token.get().providesScopes(requiredScopes)) {
  *     // Token is valid and has required scopes
  * }

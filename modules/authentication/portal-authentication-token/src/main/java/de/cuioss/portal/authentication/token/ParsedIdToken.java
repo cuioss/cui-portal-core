@@ -38,7 +38,7 @@ import java.util.Optional;
  * <p>
  * Usage example:
  * <pre>
- * Optional<ParsedIdToken> token = ParsedIdToken.fromTokenString(tokenString, parser);
+ * Optional&lt;ParsedIdToken&gt; token = ParsedIdToken.fromTokenString(tokenString, parser);
  * token.flatMap(ParsedIdToken::getEmail).ifPresent(email -> {
  *     // Process user's email
  * });

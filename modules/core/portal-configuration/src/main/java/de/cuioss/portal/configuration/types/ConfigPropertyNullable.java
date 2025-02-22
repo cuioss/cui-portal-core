@@ -1,12 +1,12 @@
 /*
  * Copyright 2023 the original author or authors.
- * <p>
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * 
  * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * CDI qualifier for injecting optional configuration properties that may be null.
  * This qualifier provides a way to handle missing configuration values without
  * throwing exceptions.
- * <p>
+ * 
  * Features:
  * <ul>
  *   <li>Null-safe configuration injection</li>
@@ -35,30 +35,30 @@ import java.lang.annotation.Target;
  *   <li>Empty string to null conversion</li>
  *   <li>Support for primitive and wrapper types</li>
  * </ul>
- * <p>
+ *
  * <h2>Usage Guidelines</h2>
- * <p>
+ *
  * 1. Recommended for:
  * <ul>
  *   <li>Passivation-capable beans (e.g., {@link jakarta.enterprise.context.SessionScoped})</li>
  *   <li>Beans implementing {@link java.io.Serializable}</li>
  *   <li>Optional configuration values that may not be present</li>
  * </ul>
- * <p>
+ *
  * 2. Not recommended for:
  * <ul>
  *   <li>{@link jakarta.enterprise.context.ApplicationScoped} beans (use {@link java.util.Optional} instead)</li>
  *   <li>Collection types (has no effect)</li>
  *   <li>Required configuration values</li>
  * </ul>
- * <p>
+ *
  * <h2>Supported Types</h2>
  * <ul>
  *   <li>Primitive types (int, long, boolean, etc.)</li>
  *   <li>Wrapper types ({@link Integer}, {@link Long}, etc.)</li>
  *   <li>{@link String} values</li>
  * </ul>
- * <p>
+ * 
  * Usage examples:
  * <pre>
  * // Basic usage - returns null if not configured
@@ -74,7 +74,7 @@ import java.lang.annotation.Target;
  * )
  * private Integer timeout;
  * </pre>
- * <p>
+ * 
  * Null Handling:
  * <ul>
  *   <li>Returns null if configuration key is missing</li>
@@ -91,7 +91,7 @@ public @interface ConfigPropertyNullable {
 
     /**
      * The configuration property key to inject.
-     * <p>
+     * 
      * The value associated with this key will be injected into the annotated
      * field.
      * If the key is not found and no default value is specified,
@@ -104,7 +104,7 @@ public @interface ConfigPropertyNullable {
 
     /**
      * Optional default value to use when the configuration key is not found.
-     * <p>
+     * 
      * Special handling:
      * <ul>
      *   <li>Empty string ("") will be converted to null</li>

@@ -64,7 +64,7 @@ import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
  *     }
  *
  *     &#64;Override
- *     protected Collection<String> getRequiredRoles() {
+ *     protected Collection&lt;String&gt; getRequiredRoles() {
  *         return Set.of("ADMIN", "DATA_USER");
  *     }
  * }

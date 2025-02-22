@@ -32,7 +32,7 @@
  * // List of values
  * &#64;Inject
  * &#64;ConfigAsList(name = "app.allowed.origins")
- * private List<String> allowedOrigins;
+ * private List&lt;String&gt; allowedOrigins;
  * 
  * // File configuration
  * &#64;Inject
