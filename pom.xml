@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
-        <version>0.8.6</version>
-        <relativePath />
+        <version>0.8.9</version>
+        <relativePath/>
     </parent>
     <groupId>de.cuioss.portal</groupId>
     <artifactId>cui-portal-core</artifactId>
@@ -27,7 +28,7 @@
         <system>GitHub Issues</system>
     </issueManagement>
     <properties>
-        <version.cui.parent>0.8.6</version.cui.parent>
+        <version.cui.parent>0.8.9</version.cui.parent>
     </properties>
     <modules>
         <module>bom</module>
