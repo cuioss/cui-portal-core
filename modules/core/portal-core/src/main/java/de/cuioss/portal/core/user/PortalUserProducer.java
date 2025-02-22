@@ -35,9 +35,38 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Stateful producer for the {@link AuthenticatedUserInfo}
+ * CDI producer for managing authenticated user information within the portal context.
+ * This producer maintains the state of the currently authenticated user and responds
+ * to authentication events.
+ *
+ * <p>Key responsibilities:</p>
+ * <ul>
+ *   <li>Produces {@link AuthenticatedUserInfo} for injection</li>
+ *   <li>Manages user state changes during authentication/logout</li>
+ *   <li>Integrates with the portal's authentication facade</li>
+ *   <li>Responds to {@link UserChangeEvent} events</li>
+ * </ul>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;Inject
+ * Provider<AuthenticatedUserInfo> userInfo;
+ * 
+ * void someMethod() {
+ *     if (userInfo.get().isAuthenticated()) {
+ *         // Handle authenticated user
+ *     }
+ * }
+ * </pre>
+ *
+ * <p>This producer is application scoped but produces user-specific information
+ * through the use of proxies and providers.</p>
  *
  * @author Oliver Wolff
+ * @see AuthenticatedUserInfo
+ * @see UserChangeEvent
+ * @see AuthenticationFacade
+ * @since 1.0
  */
 @RequestScoped
 @EqualsAndHashCode(exclude = {"authenticationFacade", "servletRequestProvider"})

@@ -1,7 +1,6 @@
-= portal-configuration
+= Portal Configuration Module
 
-== What is it?
-Provides some portal-specific extensions to microprofile-config. In addition it provides some default configuration.
+Module providing configuration management and type-safe configuration injection for the Portal based on MicroProfile Config.
 
 == Maven Coordinates
 
@@ -13,14 +12,186 @@ Provides some portal-specific extensions to microprofile-config. In addition it 
     </dependency>
 ----
 
-== Core Types and Concepts
-* link:src/main/java/de/cuioss/portal/configuration/types/[Additional configuration-types]
-* link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[Simplifies the programmatic lookup up configuration-properties]
+== Core Concepts
 
+The Portal Configuration module provides a robust configuration system built on MicroProfile Config with additional Portal-specific features:
 
-Constant Key classes for:
+=== Configuration Hierarchy
+* All Portal configurations use the `portal.` prefix
+* Specialized prefixes for different areas (e.g., `portal.theme.`, `portal.session.`)
+* Configuration keys are defined in link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[PortalConfigurationKeys]
 
-* link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[Portal-Configuration-Core]
-* link:src/main/java/de/cuioss/portal/configuration/HealthCheckConfigKeys.java[Health-Check]
-* link:src/main/java/de/cuioss/portal/configuration/MetricsConfigKeys.java[Metrics]
-* link:src/main/java/de/cuioss/portal/configuration/TracingConfigKeys.java[Tracing]
+=== Type-Safe Configuration
+* Built on MicroProfile Config's type conversion system
+* Extended with Portal-specific types
+* Validation at injection time
+* Default values through link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationDefaults.java[PortalConfigurationDefaults]
+
+=== Configuration Sources
+. System Properties
+. Environment Variables
+. Application Properties
+. Default Values
+
+== Configuration Types
+
+=== Basic Types
+* String: Default type
+* Numbers: Integer, Long, Double
+* Boolean: For feature flags
+* Enums: For fixed-choice options
+
+=== Specialized Types
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsList.java[ConfigAsList]: List configurations
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsSet.java[ConfigAsSet]: Set configurations
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsFileLoader.java[ConfigAsFileLoader]: File-based configurations
+* link:src/main/java/de/cuioss/portal/configuration/types/ConfigAsLocale.java[ConfigAsLocale]: Locale configurations
+
+== Usage Examples
+
+=== Basic Configuration
+[source,java]
+----
+// Simple string configuration
+@Inject
+@ConfigProperty(name = "portal.app.name")
+private String appName;
+
+// Integer with default
+@Inject
+@ConfigProperty(name = "portal.app.port", defaultValue = "8080")
+private Integer port;
+
+// Boolean feature flag
+@Inject
+@ConfigProperty(name = "portal.feature.enabled", defaultValue = "false")
+private boolean featureEnabled;
+----
+
+=== List and Set Configurations
+[source,java]
+----
+// List of allowed origins
+@Inject
+@ConfigAsList(name = "portal.security.allowed.origins")
+private List<String> allowedOrigins;
+
+// Set of enabled features
+@Inject
+@ConfigAsSet(name = "portal.features.enabled")
+private Set<String> enabledFeatures;
+----
+
+=== File-Based Configuration
+[source,java]
+----
+// Load configuration file
+@Inject
+@ConfigAsFileLoader(name = "portal.config.file")
+private FileLoader configFile;
+
+// Multiple configuration files
+@Inject
+@ConfigAsFileLoaderList(name = "portal.config.files")
+private List<FileLoader> configFiles;
+----
+
+=== Connection Metadata Configuration Example
+
+The `@ConfigAsConnectionMetadata` annotation allows you to configure connection metadata through properties. Here's a complete example:
+
+[source,properties]
+----
+# Basic Connection Settings
+my.connection.url=https://api.example.com/v1
+my.connection.description=Production API Connection
+my.connection.type=REST
+
+# Authentication Configuration
+my.connection.authentication.type=BASIC
+my.connection.authentication.basic.username=apiuser
+my.connection.authentication.basic.password=secret123
+
+# -- OR --
+my.connection.authentication.type=TOKEN
+my.connection.authentication.token.key=X-API-Key
+my.connection.authentication.token.value=your-api-token
+
+# -- OR --
+my.connection.authentication.type=CERTIFICATE
+my.connection.authentication.certificate.keystore.location=/path/to/keystore.jks
+my.connection.authentication.certificate.keystore.password=keystorepass
+my.connection.authentication.certificate.keystore.keypassword=keypass
+
+# SSL/TLS Configuration (Optional)
+my.connection.transport.truststore.location=/path/to/truststore.jks
+my.connection.transport.truststore.password=truststorepass
+
+# Timeout Settings (Optional)
+my.connection.timeout=5000
+my.connection.read.timeout=30000
+
+# Proxy Configuration (Optional)
+my.connection.proxy.host=proxy.company.com
+my.connection.proxy.port=8080
+
+----
+
+Usage in code:
+
+[source,java]
+----
+@Inject
+@ConfigAsConnectionMetadata(baseName = "my.connection")
+private Provider<ConnectionMetadata> connectionMetadata;
+
+// Or with fail-fast disabled
+@Inject
+@ConfigAsConnectionMetadata(baseName = "my.connection", failOnInvalidConfiguration = false)
+private Provider<ConnectionMetadata> connectionMetadata;
+----
+
+Configuration Notes:
+
+* `baseName`: The prefix for all configuration properties (e.g., "my.connection")
+* `authentication.type`: Supported values: `NONE`, `BASIC`, `TOKEN`, `CERTIFICATE`
+* `type`: Supported values: `REST`, `SOAP`, `UNDEFINED`
+* All timeout values are in milliseconds
+* For certificate authentication, both keystore and truststore configurations are supported
+* Proxy configuration is optional and requires both host and port to be set
+* Use `failOnInvalidConfiguration = false` to handle missing or invalid configuration gracefully
+
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
+== Best Practices
+
+=== Key Naming
+* Use lowercase with dots as separators
+* Follow the established prefix hierarchy
+* Be descriptive but concise
+* Example: `portal.security.authentication.timeout`
+
+=== Type Safety
+* Use the most specific type possible
+* Provide sensible default values
+* Validate configuration at startup
+* Use Optional for truly optional values
+
+=== Configuration Organization
+* Group related configurations
+* Use consistent naming patterns
+* Document expected values and formats
+* Reference keys from link:src/main/java/de/cuioss/portal/configuration/PortalConfigurationKeys.java[PortalConfigurationKeys]
+
+== Related Components
+
+* link:src/main/java/de/cuioss/portal/configuration/initializer/ApplicationInitializer.java[ApplicationInitializer]: Ordered initialization framework
+* link:src/main/java/de/cuioss/portal/configuration/schedule/FileWatcherService.java[FileWatcherService]: Configuration file monitoring
+* link:src/main/java/de/cuioss/portal/configuration/util/ConfigurationHelper.java[ConfigurationHelper]: Configuration utility methods
+
+== Further Reading
+
+* link:https://github.com/eclipse/microprofile-config[MicroProfile Config]
+* link:https://jakarta.ee/specifications/cdi/[Jakarta CDI]

@@ -23,9 +23,29 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import java.util.Optional;
 
 /**
- * Variant of {@link ParsedToken} representing an id-token
+ * Represents a parsed OpenID Connect ID token.
+ * Provides access to identity information claims as specified by the OpenID Connect Core specification.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Email claim access</li>
+ *   <li>Token validation and parsing</li>
+ *   <li>Type verification (expects "ID" type claim)</li>
+ * </ul>
+ * <p>
+ * Note: This implementation is primarily tested with Keycloak ID tokens.
+ * While it follows OpenID Connect standards, some behavior may be specific to Keycloak.
+ * <p>
+ * Usage example:
+ * <pre>
+ * Optional<ParsedIdToken> token = ParsedIdToken.fromTokenString(tokenString, parser);
+ * token.flatMap(ParsedIdToken::getEmail).ifPresent(email -> {
+ *     // Process user's email
+ * });
+ * </pre>
  *
  * @author Oliver Wolff
+ * @see ParsedToken
  */
 @ToString
 public class ParsedIdToken extends ParsedToken {
@@ -43,8 +63,13 @@ public class ParsedIdToken extends ParsedToken {
      * otherwise {@link Optional#empty()}
      */
     public static Optional<ParsedIdToken> fromTokenString(String tokenString, JWTParser tokenParser) {
+        LOGGER.debug("Creating ID token from token string");
         Optional<JsonWebToken> rawToken = jsonWebTokenFrom(tokenString, tokenParser, LOGGER);
-
+        if (rawToken.isEmpty()) {
+            LOGGER.debug("Failed to create ID token from string");
+            return Optional.empty();
+        }
+        LOGGER.debug("Successfully created ID token");
         return rawToken.map(ParsedIdToken::new);
     }
 
@@ -54,7 +79,13 @@ public class ParsedIdToken extends ParsedToken {
      * @return email if present
      */
     public Optional<String> getEmail() {
-        return jsonWebToken.claim("email");
+        LOGGER.debug("Retrieving email from ID token");
+        Optional<String> email = jsonWebToken.claim("email");
+        if (email.isEmpty()) {
+            LOGGER.debug("No email claim found in ID token");
+        } else {
+            LOGGER.debug("Found email in ID token: %s", email.get());
+        }
+        return email;
     }
-
 }

@@ -15,31 +15,55 @@
  */
 package de.cuioss.portal.common.bundle;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-
+import de.cuioss.portal.common.PortalCommonLogMessages;
 import de.cuioss.portal.common.bundle.support.HighPrioBundles;
 import de.cuioss.portal.common.bundle.support.InvalidBundlePath;
 import de.cuioss.portal.common.bundle.support.MissingBundle;
+import de.cuioss.test.juli.LogAsserts;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@EnableTestLogger(debug = ResourceBundleLocator.class)
+@DisplayName("Tests the ResourceBundleLocator functionality")
 class ResourceBundleLocatorTest {
 
     @Test
+    @DisplayName("Should handle happy case")
     void shouldHandleHappyCase() {
         assertTrue(new HighPrioBundles().getBundle(Locale.GERMANY).isPresent());
+
+        // Verify successful bundle loading
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.DEBUG,
+                "Successfully loaded ");
+        // Verify no warnings or errors in happy path
+        LogAsserts.assertNoLogMessagePresent(TestLogLevel.WARN, ResourceBundleLocator.class);
+        LogAsserts.assertNoLogMessagePresent(TestLogLevel.ERROR, ResourceBundleLocator.class);
     }
 
     @Test
+    @DisplayName("Should handle missing path")
     void shouldHandleMissingPath() {
-        assertFalse(new MissingBundle().getBundle(Locale.GERMANY).isPresent());
+        var locator = new MissingBundle();
+        assertFalse(locator.getBundle(Locale.GERMANY).isPresent());
     }
 
     @Test
+    @DisplayName("Should handle invalid path")
     void shouldHandleInvalidPath() {
-        assertFalse(new InvalidBundlePath().getBundle(Locale.GERMANY).isPresent());
+        var locator = new InvalidBundlePath();
+        assertFalse(locator.getBundle(Locale.GERMANY).isPresent());
+
+        // Verify error message
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.WARN,
+                PortalCommonLogMessages.WARN.LOAD_FAILED.resolveIdentifierString());
+        // Verify no success messages in error case
+        LogAsserts.assertNoLogMessagePresent(TestLogLevel.INFO, ResourceBundleLocator.class);
     }
 }

@@ -35,8 +35,32 @@ import java.util.TreeSet;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * Represents an Access Token with corresponding information. In essence, it is a convenience type
- * for accessing concrete instances of {@link JsonWebToken}
+ * Represents a parsed OAuth2 access token with enhanced functionality for scope and role management.
+ * Provides convenient access to standard OAuth2 claims as well as additional OpenID Connect claims.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Scope management and validation</li>
+ *   <li>Role-based access control</li>
+ *   <li>User identity information (subject ID, email, name)</li>
+ * </ul>
+ * <p>
+ * The token supports the following claims:
+ * <ul>
+ *   <li>{@link #CLAIM_NAME_SCOPE}: Space-separated list of OAuth2 scopes</li>
+ *   <li>{@link #CLAIM_NAME_ROLES}: JSON array of assigned roles</li>
+ *   <li>{@link #CLAIM_NAME_NAME}: User's display name</li>
+ *   <li>{@link Claims#email}: User's email address</li>
+ *   <li>{@link Claims#preferred_username}: User's preferred username</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * Optional<ParsedAccessToken> token = ParsedAccessToken.fromTokenString(tokenString, parser);
+ * if (token.isPresent() &amp;&amp; token.get().providesScopes(requiredScopes)) {
+ *     // Token is valid and has required scopes
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
  */
@@ -89,12 +113,12 @@ public class ParsedAccessToken extends ParsedToken {
      */
     public Set<String> getScopes() {
         if (!jsonWebToken.containsClaim(CLAIM_NAME_SCOPE)) {
-            LOGGER.debug("No Scopes available");
+            LOGGER.debug("No scope claim found in token");
             return Set.of();
         }
 
         var result = Splitter.on(' ').splitToList(jsonWebToken.getClaim(CLAIM_NAME_SCOPE));
-        LOGGER.debug("Extracted scopes: '%s'", result);
+        LOGGER.debug("Found scopes in token: %s", result);
         return new TreeSet<>(result);
     }
 
@@ -103,7 +127,14 @@ public class ParsedAccessToken extends ParsedToken {
      * @return boolean indicating whether the token provides all given Scopes
      */
     public boolean providesScopes(Collection<String> expectedScopes) {
-        return getScopes().containsAll(expectedScopes);
+        if (null == expectedScopes || expectedScopes.isEmpty()) {
+            LOGGER.debug("No scopes to check against");
+            return true;
+        }
+        var availableScopes = getScopes();
+        var result = availableScopes.containsAll(expectedScopes);
+        LOGGER.debug("Scope check result=%s (expected=%s, available=%s)", result, expectedScopes, availableScopes);
+        return result;
     }
 
     /**
@@ -113,7 +144,7 @@ public class ParsedAccessToken extends ParsedToken {
      * {@link #providesScopes(Collection)} it log on debug the corresponding scopes
      */
     public boolean providesScopesAndDebugIfScopesAreMissing(Collection<String> expectedScopes, String logContext,
-                                                            CuiLogger logger) {
+            CuiLogger logger) {
         Set<String> delta = determineMissingScopes(expectedScopes);
         if (delta.isEmpty()) {
             logger.trace("All expected scopes are present: {}, {}", expectedScopes, logContext);
@@ -143,14 +174,22 @@ public class ParsedAccessToken extends ParsedToken {
      * @return the roles defined in the 'roles' claim of the token
      */
     public Set<String> getRoles() {
+        LOGGER.debug("Retrieving roles from token");
         if (!jsonWebToken.containsClaim(CLAIM_NAME_ROLES)) {
+            LOGGER.debug("No roles claim found in token");
             return Set.of();
         }
 
-        return jsonWebToken.<JsonArray>getClaim(CLAIM_NAME_ROLES)
-                .getValuesAs(JsonString.class)
-                .stream()
-                .map(JsonString::getString).collect(toSet());
+        var roles = jsonWebToken.getClaim(CLAIM_NAME_ROLES);
+        if (roles instanceof JsonArray array) {
+            var result = array.getValuesAs(JsonString.class).stream()
+                    .map(JsonString::getString)
+                    .collect(toSet());
+            LOGGER.debug("Found roles in token: %s", result);
+            return result;
+        }
+        LOGGER.debug("Roles claim is not a JSON array");
+        return Set.of();
     }
 
     /**
@@ -190,7 +229,6 @@ public class ParsedAccessToken extends ParsedToken {
         return Optional.ofNullable(jsonWebToken.getClaim(CLAIM_NAME_NAME));
     }
 
-
     /**
      * Resolves the preferred username from the token.
      *
@@ -199,5 +237,4 @@ public class ParsedAccessToken extends ParsedToken {
     public Optional<String> getPreferredUsername() {
         return Optional.ofNullable(jsonWebToken.getClaim(Claims.preferred_username));
     }
-
 }

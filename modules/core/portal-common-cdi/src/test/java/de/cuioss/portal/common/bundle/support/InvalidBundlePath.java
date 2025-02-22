@@ -15,10 +15,10 @@
  */
 package de.cuioss.portal.common.bundle.support;
 
+import de.cuioss.portal.common.bundle.ResourceBundleLocator;
+
 import java.io.Serial;
 import java.util.Optional;
-
-import de.cuioss.portal.common.bundle.ResourceBundleLocator;
 
 public class InvalidBundlePath implements ResourceBundleLocator {
 

@@ -15,13 +15,32 @@
  */
 package de.cuioss.portal.metrics;
 
+import de.cuioss.tools.collect.CollectionLiterals;
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricFilter;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
-import org.eclipse.microprofile.metrics.*;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -36,8 +55,10 @@ import java.util.function.Supplier;
 @ApplicationScoped
 public class PortalTestMetricRegistry implements MetricRegistry {
 
+    private static final CuiLogger LOGGER = new CuiLogger(PortalTestMetricRegistry.class);
+
     private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException(
-        "Not implemented yet");
+            "Not implemented yet");
 
     private final Map<String, Metadata> metadataMap = new HashMap<>();
     private final Map<MetricID, Metric> metricMap = new ConcurrentHashMap<>();
@@ -48,7 +69,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      */
     public Optional<Metric> getMetric(final String name) {
         return metricMap.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).map(Map.Entry::getValue)
-            .findAny();
+                .findAny();
     }
 
     /**
@@ -125,6 +146,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public <T extends Number> Gauge<T> gauge(Metadata metadata, Supplier<T> supplier, Tag... tags) {
         metricMap.put(new MetricID(metadata.getName()), (Gauge) () -> null);
+        LOGGER.info("Gauge for metric '%s'", metadata.getName(), CollectionLiterals.mutableList(tags).stream().map(tag -> tag.getTagName() + "=" + tag.getTagValue()).toList());
         return null;
     }
 
@@ -221,7 +243,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
         metricMap.put(id, timer);
         metadataMap.put(name, new MetadataBuilder().withName(name)
-            .withUnit(MetricUnits.NANOSECONDS).build());
+                .withUnit(MetricUnits.NANOSECONDS).build());
         return timer;
     }
 

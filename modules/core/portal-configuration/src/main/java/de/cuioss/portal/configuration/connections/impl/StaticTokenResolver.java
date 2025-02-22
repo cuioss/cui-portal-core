@@ -24,11 +24,20 @@ import lombok.ToString;
 import java.io.Serial;
 
 /**
- * Basic Implementation of {@link TokenResolver} used for static tokens that do
- * not change for a specific user.
+ * Implementation of {@link TokenResolver} for static, application-wide tokens.
+ * This resolver is used when the token value remains constant and is not
+ * user-specific or session-bound.
+ * <p>
+ * Use cases include:
+ * <ul>
+ *   <li>API keys for service-to-service communication</li>
+ *   <li>Static bearer tokens for application authentication</li>
+ *   <li>Shared secrets for internal system communication</li>
+ * </ul>
+ * <p>
+ * Note: This implementation is immutable and thread-safe.
  *
  * @author Oliver Wolff
- *
  */
 @RequiredArgsConstructor
 @EqualsAndHashCode
@@ -38,11 +47,27 @@ public class StaticTokenResolver implements TokenResolver {
     @Serial
     private static final long serialVersionUID = 7523596484663692845L;
 
+    /**
+     * The key or name identifying this token.
+     * This is typically used in headers or query parameters to identify
+     * the token type or purpose.
+     */
     @Getter
     private final String key;
 
+    /**
+     * The actual token value.
+     * Not included in toString() for security reasons.
+     */
     private final String token;
 
+    /**
+     * Resolves and returns the static token value.
+     * Since this is a static implementation, it always returns the same token
+     *  provided during construction.
+     *
+     * @return the static token value, never null
+     */
     @Override
     public String resolve() {
         return token;

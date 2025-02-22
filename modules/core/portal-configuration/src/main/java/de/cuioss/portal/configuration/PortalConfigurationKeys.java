@@ -20,9 +20,52 @@ import de.cuioss.portal.configuration.schedule.FileWatcherService;
 import lombok.experimental.UtilityClass;
 
 /**
- * Provides the keys used for the web.xml based configuration of the portal.
+ * Central repository of configuration keys used throughout the Portal application.
+ * This class defines the standard configuration key hierarchy and provides
+ * constants for all configurable aspects of the Portal.
+ * 
+ * <h2>Key Hierarchy</h2>
+ * The configuration keys follow a hierarchical structure:
+ * <ul>
+ *   <li>{@code portal.*} - Core portal configuration</li>
+ *   <li>{@code portal.session.*} - Session-related settings</li>
+ *   <li>{@code portal.configuration.*} - Configuration system settings</li>
+ *   <li>{@code portal.resource.*} - Resource handling</li>
+ *   <li>{@code portal.theme.*} - Theme configuration</li>
+ *   <li>{@code portal.pages.*} - Page-specific settings</li>
+ *   <li>{@code portal.locale.*} - Localization settings</li>
+ *   <li>{@code integration.*} - Integration configurations</li>
+ * </ul>
+ * 
+ * <h2>Usage Examples</h2>
+ * <pre>
+ * // Basic configuration injection
+ * &#64;Inject
+ * &#64;ConfigProperty(name = PortalConfigurationKeys.PORTAL_BASE + "myKey")
+ * private String myConfig;
+ * 
+ * // Theme configuration
+ * &#64;Inject
+ * &#64;ConfigProperty(name = PortalConfigurationKeys.THEME_BASE + "name")
+ * private String themeName;
+ * 
+ * // Integration settings
+ * &#64;Inject
+ * &#64;ConfigProperty(name = PortalConfigurationKeys.INTEGRATION_BASE + "endpoint")
+ * private String integrationEndpoint;
+ * </pre>
+ * 
+ * <h2>Best Practices</h2>
+ * <ul>
+ *   <li>Always use these constants instead of hardcoding configuration keys</li>
+ *   <li>Follow the established naming hierarchy when adding new keys</li>
+ *   <li>Document the purpose and expected values for each key</li>
+ *   <li>Consider providing default values in {@link PortalConfigurationDefaults}</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @see PortalConfigurationDefaults
+ * @see de.cuioss.portal.configuration.types
  */
 @UtilityClass
 public class PortalConfigurationKeys {
@@ -562,7 +605,7 @@ public class PortalConfigurationKeys {
      * timeout the request will be aborted.
      */
     public static final String PORTAL_LAZY_LOADING_REQUEST_RETRIEVE_TIMEOUT = LAZY_LOADING_BASE
-        + "request.retrieve.timeout";
+            + "request.retrieve.timeout";
 
     /**
      * Defines the timeout to handle a backend request in seconds. After this
@@ -650,5 +693,5 @@ public class PortalConfigurationKeys {
      * </p>
      */
     public static final String PORTAL_SERVLET_BASIC_AUTH_ALLOWED = PORTAL_BASE
-        + "authentication.servlet.allowBasicAuth";
+            + "authentication.servlet.allowBasicAuth";
 }

@@ -15,15 +15,19 @@
  */
 package de.cuioss.portal.restclient;
 
+import de.cuioss.portal.configuration.connections.TokenResolver;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
-
-import de.cuioss.portal.configuration.connections.TokenResolver;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Client filter that will do token authentication. You must allocate it and
- * then register it with the Client or WebTarget.
+ * Client filter that implements token-based authentication for REST client requests.
+ * The actual token is provided through a {@link TokenResolver} implementation.
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * when token authentication is specified in the configuration.
+ *
+ * @see CuiRestClientBuilder
  */
 @RequiredArgsConstructor
 public class TokenFilter implements ClientRequestFilter {

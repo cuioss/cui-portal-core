@@ -15,24 +15,25 @@
  */
 package de.cuioss.portal.metrics.utils;
 
-import static de.cuioss.tools.base.Preconditions.checkArgument;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.Getter;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
 
-import de.cuioss.tools.string.MoreStrings;
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+
+import static de.cuioss.tools.base.Preconditions.checkArgument;
 
 /**
  * Builder for MicroProfile {@link MetricID}.
  */
 @Getter
 public class MetricIdBuilder {
+
+    private static final CuiLogger LOGGER = new CuiLogger(MetricIdBuilder.class);
 
     private String name;
 
@@ -48,6 +49,7 @@ public class MetricIdBuilder {
     public MetricIdBuilder() {
         tags = new ArrayList<>();
         exceptionTagMappers = new ArrayList<>();
+        LOGGER.debug("Created new MetricIdBuilder");
     }
 
     /**
@@ -57,6 +59,7 @@ public class MetricIdBuilder {
      */
     public MetricIdBuilder name(String name) {
         this.name = name;
+        LOGGER.debug("Set metric name: %s", name);
         return this;
     }
 
@@ -67,6 +70,9 @@ public class MetricIdBuilder {
      */
     public MetricIdBuilder exception(final Throwable cause) {
         exception = cause;
+        if (cause != null) {
+            LOGGER.debug("Set exception: %s", cause.getClass().getName());
+        }
         return this;
     }
 
@@ -78,6 +84,7 @@ public class MetricIdBuilder {
      */
     public MetricIdBuilder exceptionTagMapper(final Function<Throwable, Tag> mapper) {
         exceptionTagMappers.add(mapper);
+        LOGGER.debug("Added exception tag mapper, total mappers: %s", exceptionTagMappers.size());
         return this;
     }
 
@@ -88,6 +95,7 @@ public class MetricIdBuilder {
      */
     public MetricIdBuilder tags(Tag[] tags) {
         if (null != tags) {
+            LOGGER.debug("Adding %s tags", tags.length);
             for (Tag tag : tags) {
                 if (null != tag) {
                     this.tags.add(deepCopy(tag));
@@ -103,26 +111,34 @@ public class MetricIdBuilder {
      * @return the {@link MetricIdBuilder} with the given Tag
      */
     public MetricIdBuilder tag(Tag tag) {
-        tags.add(deepCopy(tag));
+        if (null != tag) {
+            tags.add(deepCopy(tag));
+            LOGGER.debug("Added tag: %s=%s", tag.getTagName(), tag.getTagValue());
+        }
         return this;
-    }
-
-    private static Tag deepCopy(final Tag tag) {
-        return new Tag(tag.getTagName(), tag.getTagValue());
     }
 
     /**
      * @return the create {@link MetricID}
      */
     public MetricID build() {
-        checkArgument(!MoreStrings.isEmpty(name), "name must not be null nor empty");
+        LOGGER.debug("Building MetricID");
+        checkArgument(null != name && !name.trim().isEmpty(), "name must be set");
 
         if (null != exception) {
-            for (Function<Throwable, Tag> exceptionTagMapper : exceptionTagMappers) {
-                Optional.ofNullable(exceptionTagMapper.apply(exception)).ifPresent(tags::add);
-            }
+            LOGGER.debug("Processing %s exception tag mappers", exceptionTagMappers.size());
+            exceptionTagMappers.stream()
+                    .map(mapper -> mapper.apply(exception))
+                    .filter(Objects::nonNull)
+                    .forEach(tags::add);
         }
 
-        return new MetricID(name, tags.toArray(new Tag[0]));
+        var metricId = new MetricID(name, tags.toArray(new Tag[0]));
+        LOGGER.debug("Built MetricID '%s' with %s tags", name, tags.size());
+        return metricId;
+    }
+
+    private static Tag deepCopy(final Tag tag) {
+        return new Tag(tag.getTagName(), tag.getTagValue());
     }
 }

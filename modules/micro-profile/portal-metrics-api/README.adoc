@@ -1,7 +1,6 @@
-= portal-metrics-api
+= Portal Metrics API
 
-== What is it?
-Provides some extensions to microprofile-metrics-api
+Provides MicroProfile Metrics integration for Portal applications, with a focus on Caffeine Cache metrics collection and monitoring.
 
 == Maven Coordinates
 
@@ -13,6 +12,162 @@ Provides some extensions to microprofile-metrics-api
     </dependency>
 ----
 
-== Core Types and Concepts
+== Core Concepts
 
-* link:src/main/java/de/cuioss/portal/metrics/CaffeineCacheMetrics.java[CaffeineCacheMetrics]
+=== Metrics Collection
+* Integration with MicroProfile Metrics
+* Standardized metric naming
+* Application-level metrics support
+* Automatic metric registration
+
+=== Cache Monitoring
+* Comprehensive Caffeine cache metrics through link:src/main/java/de/cuioss/portal/metrics/CaffeineCacheMetrics.java[CaffeineCacheMetrics]
+* Hit/miss statistics tracking
+* Load performance monitoring
+* Size and eviction metrics
+
+=== Logging Infrastructure
+* Structured logging via link:src/main/java/de/cuioss/portal/metrics/PortalMetricsLogMessages.java[PortalMetricsLogMessages]
+* Consistent message formatting
+* Severity-based categorization
+* Performance impact tracking
+
+== Metric Categories
+
+=== Cache Performance Metrics
+* *Hit Rate*: Percentage of cache hits
+* *Miss Rate*: Percentage of cache misses
+* *Load Time*: Average time to load entries
+* *Eviction Count*: Number of evicted entries
+
+=== Cache State Metrics
+* *Size*: Current cache size
+* *Maximum Size*: Configured maximum size
+* *Entry Count*: Total number of entries
+* *Memory Usage*: Estimated memory consumption
+
+=== Load Statistics
+* *Load Success*: Successful load operations
+* *Load Failure*: Failed load attempts
+* *Average Load Penalty*: Time cost of loading
+
+== Usage Examples
+
+=== Basic Cache Metrics
+[source,java]
+----
+@Inject
+@ConfigAsCacheConfig(name = "user.cache.config")
+private CacheConfig cacheConfig;
+
+@Inject
+@RegistryType(type = MetricRegistry.Type.APPLICATION)
+private MetricRegistry metricRegistry;
+
+// Create cache with metrics enabled
+Cache<String, UserInfo> userCache = Caffeine.newBuilder()
+    .maximumSize(cacheConfig.getSize())
+    .expireAfterWrite(cacheConfig.getExpiration(), cacheConfig.getTimeUnit())
+    .recordStats()  // Required for metrics
+    .build();
+
+// Register cache metrics
+new CaffeineCacheMetrics("user-cache", userCache, cacheConfig)
+    .bindTo(metricRegistry);
+----
+
+=== Custom Metric Tags
+[source,java]
+----
+// Add custom tags to metrics
+Map<String, String> tags = new HashMap<>();
+tags.put("region", "europe");
+tags.put("environment", "production");
+
+CaffeineCacheMetrics metrics = new CaffeineCacheMetrics("user-cache", userCache, cacheConfig)
+    .withTags(tags);
+metrics.bindTo(metricRegistry);
+----
+
+=== Metric Monitoring
+[source,java]
+----
+@Inject
+private MetricRegistry metricRegistry;
+
+public CacheStatistics getCacheStats(String cacheName) {
+    Counter hits = metricRegistry.counter(cacheName + ".hits");
+    Counter misses = metricRegistry.counter(cacheName + ".misses");
+    
+    return CacheStatistics.builder()
+        .hitCount(hits.getCount())
+        .missCount(misses.getCount())
+        .hitRate(calculateHitRate(hits.getCount(), misses.getCount()))
+        .build();
+}
+----
+
+== Configuration
+
+=== Application Name Resolution
+[source,properties]
+----
+# MicroProfile standard property (highest priority)
+mp.metrics.appName=my-portal-app
+
+# Portal-specific property (fallback)
+portal.metrics.appName=my-portal-app
+
+# General application name (lowest priority)
+portal.application.name=my-portal-app
+----
+
+=== Cache Configuration
+[source,properties]
+----
+# Cache size configuration
+portal.cache.user.size=10000
+
+# Cache expiration
+portal.cache.user.expiration=60
+portal.cache.user.timeunit=MINUTES
+
+# Statistics collection
+portal.cache.user.record-stats=true
+----
+
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
+== Best Practices
+
+=== Metric Naming
+* Use consistent naming patterns
+* Include meaningful cache names
+* Add relevant tags for filtering
+* Follow MicroProfile conventions
+
+=== Performance Considerations
+* Enable statistics only when needed
+* Monitor memory impact
+* Use appropriate cache sizes
+* Configure suitable expiration times
+
+=== Monitoring Setup
+* Set up alerts for key metrics
+* Monitor hit/miss ratios
+* Track load failures
+* Watch eviction rates
+
+== Thread Safety
+* All components are thread-safe
+* Metric collection uses atomic operations
+* Safe for concurrent cache access
+* Thread-safe configuration handling
+
+== Related Documentation
+
+* link:https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics]
+* link:https://github.com/ben-manes/caffeine[Caffeine Cache]
+* link:https://prometheus.io/docs/practices/naming/[Metric Naming Best Practices]

@@ -27,8 +27,8 @@ import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.Combine
 import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_TEAPOT;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class CombinedDispatcherTest {
 
@@ -72,19 +72,17 @@ class CombinedDispatcherTest {
 
     private void assertDispatchWithCode(CombinedDispatcher dispatcher, int httpCode, String urlPart) {
         for (HttpMethodMapper mapper : HttpMethodMapper.values()) {
-            var request = createRequestFor(mapper, dispatcher, urlPart);
-            try {
+            var request = createRequestFor(mapper, urlPart);
+            assertDoesNotThrow(() -> {
                 var result = dispatcher.dispatch(request);
                 assertTrue(result.getStatus().contains(String.valueOf(httpCode)),
                         "Status was '" + result.getStatus() + "', expected was: " + httpCode);
-            } catch (InterruptedException e) {
-                fail(e.getMessage());
-            }
+            });
         }
 
     }
 
-    static RecordedRequest createRequestFor(HttpMethodMapper mapper, CombinedDispatcher dispatcher, String urlPart) {
+    static RecordedRequest createRequestFor(HttpMethodMapper mapper, String urlPart) {
         return new RecordedRequest(mapper.name() + " " + urlPart + "someResource  HTTP/1.1",
                 Headers.of("key=value", "key2=value2"), Collections.emptyList(), 0, new Buffer(), 0, new Socket(), null);
     }

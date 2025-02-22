@@ -1,31 +1,150 @@
 = portal-authentication-mock
 
 == What is it?
-Implementation of 'link:../portal-authentication-api/[portal-authentication-api]' for cases,
-where it is only needed technically or for documentation purpose.
-In contrast to 'link:../portal-authentication-dummy/[portal-authentication-dummy]' this module must never be used in production environments.
+
+A mock implementation of the link:../portal-authentication-api/[portal-authentication-api] designed for testing and development scenarios. Unlike the link:../portal-authentication-dummy/[portal-authentication-dummy], this module is strictly for non-production use.
 
 == Maven Coordinates
 
-[source, xml]
+[source,xml]
 ----
-    <dependency>
-        <groupId>de.cuioss.portal.authentication</groupId>
-        <artifactId>portal-authentication-mock</artifactId>
-    </dependency>
+<dependency>
+    <groupId>de.cuioss.portal.authentication</groupId>
+    <artifactId>portal-authentication-mock</artifactId>
+    <scope>test</scope>
+</dependency>
 ----
+
+== Core Features
+
+* Configurable authentication state
+* Customizable user attributes
+* Flexible role and group management
+* Context map support
+* Comprehensive logging
 
 == Configuration
 
-Keys and defaults: 
+=== Basic Properties
 
-[source, properties]
+[cols="2,2,1"]
+|===
+|Property |Description |Default
+
+|portal.MockAuthenticationFacade.authenticated
+|Controls initial authentication state
+|true
+
+|portal.MockAuthenticationFacade.username
+|Default username
+|user
+
+|portal.MockAuthenticationFacade.system
+|Authentication system identifier
+|mock
+
+|portal.MockAuthenticationFacade.groups
+|Comma-separated list of user groups
+|_empty_
+
+|portal.MockAuthenticationFacade.roles
+|Comma-separated list of user roles
+|_empty_
+
+|portal.MockAuthenticationFacade.contextMap.*
+|Additional context attributes
+|_empty_
+|===
+
+=== Example Configuration
+
+[source,properties]
 ----
+# Basic setup
 portal.MockAuthenticationFacade.authenticated=true
-portal.MockAuthenticationFacade.username=user
-portal.MockAuthenticationFacade.system=mock
-portal.MockAuthenticationFacade.groups= // Comma separated String
-portal.MockAuthenticationFacade.roles= // Comma separated String
-portal.MockAuthenticationFacade.contextMap= // Suffix with the concrete keys, like portal.MockAuthenticationFacade.contextMap.mykey=myValue
+portal.MockAuthenticationFacade.username=testuser
+portal.MockAuthenticationFacade.system=test-system
 
+# Groups and roles
+portal.MockAuthenticationFacade.groups=admin-group,user-group
+portal.MockAuthenticationFacade.roles=ADMIN,USER
+
+# Context attributes
+portal.MockAuthenticationFacade.contextMap.department=IT
+portal.MockAuthenticationFacade.contextMap.location=HQ
 ----
+
+== Usage Examples
+
+=== Basic Authentication Test
+
+[source,java]
+----
+@Inject
+private MockAuthenticationFacade authFacade;
+
+@Test
+void shouldAuthenticateUser() {
+    var credentials = new LoginCredentials("user", "user");
+    var result = authFacade.login(mockRequest, credentials);
+    assertTrue(result.isValid());
+    
+    var userInfo = authFacade.retrieveCurrentAuthenticationContext(mockRequest);
+    assertTrue(userInfo.isAuthenticated());
+    assertEquals("user", userInfo.getDisplayName());
+}
+----
+
+=== Custom User Configuration
+
+[source,java]
+----
+@Inject
+private MockAuthenticationFacade authFacade;
+
+@Test
+void shouldProvideCustomUserInfo() {
+    // Configure user
+    authFacade.authenticated(true)
+             .username("admin")
+             .roles(List.of("ADMIN", "USER"))
+             .groups(List.of("admin-group"));
+             
+    var userInfo = authFacade.retrieveCurrentAuthenticationContext(mockRequest);
+    assertTrue(userInfo.isAuthenticated());
+    assertTrue(userInfo.getRoles().contains("ADMIN"));
+}
+----
+
+== Implementation Details
+
+=== Authentication Flow
+
+1. Initial state determined by configuration
+2. Login validation compares identifier and password
+3. Successful login creates AuthenticatedUserInfo
+4. Context maintained per request
+
+=== Security Considerations
+
+* Not for production use
+* No actual security measures
+* Designed for testing scenarios
+* May expose sensitive configurations
+
+== Best Practices
+
+* Always use test scope
+* Clear configuration between tests
+* Avoid in production code
+* Document test scenarios
+* Use meaningful user configurations
+
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
+== Related Modules
+
+* link:../portal-authentication-api/[portal-authentication-api] - Core authentication API
+* link:../portal-authentication-dummy/[portal-authentication-dummy] - Production-safe dummy implementation

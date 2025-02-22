@@ -18,30 +18,56 @@ package de.cuioss.portal.authentication.oauth;
 import lombok.experimental.UtilityClass;
 
 /**
- * Provide the keys for the application.properties to configure oauth2.
+ * Defines the configuration keys for OAuth2/OpenID Connect authentication settings.
+ * This utility class provides constants for all configuration properties required
+ * to set up and customize the OAuth2/OIDC authentication flow.
  *
- * @author Matthias Walliczek
+ * <p>The configuration keys are structured hierarchically:
+ * <ul>
+ *   <li>{@code authentication.*} - Base configuration namespace</li>
+ *   <li>{@code authentication.oidc.*} - OpenID Connect specific settings</li>
+ *   <li>{@code authentication.oidc.client.*} - Client-side configuration</li>
+ *   <li>{@code authentication.oidc.server.*} - Authorization server settings</li>
+ * </ul>
+ *
+ * <p>Usage:
+ * These keys should be used in application.properties or similar configuration
+ * mechanisms to configure the OAuth2/OIDC integration.
  */
 @UtilityClass
 public class OAuthConfigKeys {
 
     /**
-     * Base key for constructing key root at 'authentication.'.
+     * Base configuration namespace for authentication settings.
      */
     public static final String AUTHENTICATION_BASE = "authentication.";
 
+    /**
+     * Base configuration namespace for OpenID Connect settings.
+     */
     public static final String OPEN_ID_BASE = AUTHENTICATION_BASE + "oidc.";
 
+    /**
+     * Base configuration namespace for OpenID Connect client settings.
+     */
     private static final String OPEN_ID_CLIENT_BASE = OPEN_ID_BASE + "client.";
+
+    /**
+     * Base configuration namespace for OpenID Connect server settings.
+     */
     private static final String OPEN_ID_SERVER_BASE = OPEN_ID_BASE + "server.";
 
+    /**
+     * Base configuration namespace for OpenID Connect client logout settings.
+     */
     private static final String OPEN_ID_CLIENT_LOGOUT_BASE = OPEN_ID_CLIENT_BASE + "logout.";
 
     /**
-     * <p>
-     * The external host name of the authentication service provider. This hostname
-     * can be used to e.g. calculate the redirect uri for the web-browser.
-     * </p>
+     * Configuration key for the external hostname of the authentication service provider.
+     * This hostname is used to calculate the complete redirect URI for the web browser
+     * during the OAuth2 flow.
+     *
+     * <p>Example: {@code https://auth.example.com}
      */
     public static final String EXTERNAL_HOSTNAME = AUTHENTICATION_BASE + "externalHostname";
 
@@ -60,8 +86,7 @@ public class OAuthConfigKeys {
      * {@value #OPEN_ID_ROLE_MAPPER_CLAIM}
      * <p>
      * Defines the name of the claim / attribute that is used for mapping the roles
-     * to the user, multiple values are allowed, separated by comma. Defaults to
-     * 'ehealth-suite-roles'
+     * to the user; multiple values are allowed, separated by comma.
      * </p>
      */
     public static final String OPEN_ID_ROLE_MAPPER_CLAIM = OPEN_ID_CLIENT_BASE + "role_mapper_claim";
@@ -165,7 +190,7 @@ public class OAuthConfigKeys {
     public static final String OPEN_ID_DISCOVER_PATH = OPEN_ID_SERVER_BASE + "discovery_path";
 
     /**
-     * Ensure that the final config is valid, i.e. required attributes are present.
+     * Ensure that the final config is valid, i.e., required attributes are present.
      */
     public static final String CONFIG_VALIDATION_ENABLED = OPEN_ID_BASE + "validation.enabled";
 }

@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @EnableMockWebServer
-@AddBeanClasses({ Oauth2DiscoveryConfigurationProducer.class })
+@AddBeanClasses({Oauth2DiscoveryConfigurationProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
 class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2ServiceImpl>, MockWebServerHolder {
 
@@ -77,13 +77,13 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testCalcEncodedRedirectUrl() {
+    void calcEncodedRedirectUrl() {
         // test default
         assertEquals("http%3A%2F%2Fpathtest", underTest.calcEncodedRedirectUrl("test"));
     }
 
     @Test
-    void testCreateAuthenticatedUserInfoFailed() {
+    void createAuthenticatedUserInfoFailed() {
         dispatcher.setTokenResult(EndpointAnswerHandler.RESPONSE_NOT_FOUND);
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
@@ -92,7 +92,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testDeprecatedCreateAuthenticatedUserInfo() throws InterruptedException {
+    void deprecatedCreateAuthenticatedUserInfo() throws InterruptedException {
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -112,7 +112,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testCreateAuthenticatedUserInfo() throws InterruptedException {
+    void createAuthenticatedUserInfo() throws InterruptedException {
 
         configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
 
@@ -151,7 +151,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void testRetrieveClientToken() throws InterruptedException {
+    void retrieveClientToken() throws InterruptedException {
 
         var token = underTest.retrieveClientToken(null);
         assertNotNull(token);

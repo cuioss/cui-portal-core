@@ -1,21 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>de.cuioss.portal.core</groupId>
-        <artifactId>core</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
-    </parent>
-    <properties>
-        <maven.jar.plugin.automatic.module.name>
-            de.cuioss.portal.core.common.cdi</maven.jar.plugin.automatic.module.name>
-    </properties>
-    <artifactId>portal-common-cdi</artifactId>
-    <name>Portal Common CDI</name>
-    <description>Provides some base-types and utilities</description>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.cuioss.portal.core</groupId>
+    <artifactId>core</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>portal-common-cdi</artifactId>
+  <name>Portal Common CDI</name>
+  <description>Provides some base-types and utilities</description>
+  <properties>
+    <maven.jar.plugin.automatic.module.name>
+      de.cuioss.portal.core.common.cdi</maven.jar.plugin.automatic.module.name>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>de.cuioss</groupId>
@@ -47,9 +52,9 @@
       <groupId>jakarta.inject</groupId>
       <artifactId>jakarta.inject-api</artifactId>
     </dependency>
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-junit5</artifactId>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-junit5</artifactId>
+    </dependency>
+  </dependencies>
 </project>

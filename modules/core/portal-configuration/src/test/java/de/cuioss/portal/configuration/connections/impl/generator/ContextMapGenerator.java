@@ -15,16 +15,16 @@
  */
 package de.cuioss.portal.configuration.connections.impl.generator;
 
-import static de.cuioss.test.generator.Generators.integers;
-import static de.cuioss.test.generator.Generators.nonEmptyStrings;
+import de.cuioss.test.generator.TypedGenerator;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.cuioss.test.generator.TypedGenerator;
+import static de.cuioss.test.generator.Generators.integers;
+import static de.cuioss.test.generator.Generators.nonEmptyStrings;
 
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({"rawtypes"})
 public class ContextMapGenerator implements TypedGenerator<Map> {
 
     private final TypedGenerator<String> stringGenerator = nonEmptyStrings();

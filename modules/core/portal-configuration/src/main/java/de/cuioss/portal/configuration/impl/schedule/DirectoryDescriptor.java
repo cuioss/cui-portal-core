@@ -15,40 +15,53 @@
  */
 package de.cuioss.portal.configuration.impl.schedule;
 
-import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
+import de.cuioss.tools.logging.CuiLogger;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import de.cuioss.tools.logging.CuiLogger;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
+import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
- * Provides some convenient methods for tracing detecting directory-changes.
+ * Tracks changes to a directory by monitoring its content and the modification timestamps
+ * of all files and subdirectories within it.
+ * This class provides methods to detect when
+ * any files or subdirectories have been added, removed, or modified.
  *
  * @author Matthias Walliczek
- *
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 final class DirectoryDescriptor extends AbstractFileDescriptor {
 
-    private static final CuiLogger log = new CuiLogger(DirectoryDescriptor.class);
+    private static final CuiLogger LOGGER = new CuiLogger(DirectoryDescriptor.class);
 
     private List<String> content;
 
     private long lastModifiedHash;
 
     /**
-     * @param path must not be null and derive an existing directory
+     * Creates a new DirectoryDescriptor for the given path.
+     *
+     * @param path absolute or relative path to an existing directory, must not be null
+     * @throws NullPointerException if path is null
      */
     DirectoryDescriptor(final Path path) {
         super(path);
     }
 
+    /**
+     * Recursively builds a list of all files and subdirectories within the given directory,
+     * while also computing a hash of their modification timestamps.
+     *
+     * @param directory the directory to scan
+     * @return list of paths (as strings) for all files and directories found
+     */
     private List<String> fileList(final Path directory) {
         List<String> fileNames = mutableList();
         try (var directoryStream = Files.newDirectoryStream(directory)) {
@@ -60,17 +73,29 @@ final class DirectoryDescriptor extends AbstractFileDescriptor {
                 }
             }
         } catch (IOException ex) {
-            log.warn("Directory " + directory + " could not be read", ex);
+            LOGGER.warn(ex, WARN.UNABLE_TO_READ_DIRECTORY.format(directory));
         }
         return fileNames;
     }
 
+    /**
+     * Updates the internal state by scanning the directory structure and computing
+     * new content and modification timestamp hashes.
+     * This method resets the stored modification hash before performing the update.
+     */
     @Override
     public void update() {
         lastModifiedHash = 0L;
         content = fileList(getPath());
     }
 
+    /**
+     * Checks if the directory or any of its contents have been modified by comparing
+     * both the list of files/directories and their modification timestamps.
+     *
+     * @return true if any files/directories have been added, removed, or modified
+     * since the last update, false if everything is unchanged
+     */
     @Override
     public boolean isUpdated() {
         var oldLastModifiedHash = lastModifiedHash;

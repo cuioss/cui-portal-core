@@ -1,28 +1,155 @@
-= portal-authentication-api
+= Portal Authentication API
 
-== What is it?
-Provides types for handling authentication and authorization related information within the cui-portal.
-It is meant as an abstraction over different ways of authentication and authorization,
-see link:../[portal-authentication] for the different runtimes.
+Comprehensive authentication and authorization framework for Portal applications. This API provides a flexible abstraction layer over various authentication mechanisms, enabling secure user management and access control.
 
 == Maven Coordinates
 
-[source, xml]
+[source,xml]
 ----
-    <dependency>
-        <groupId>de.cuioss.portal.authentication</groupId>
-        <artifactId>portal-authentication-api</artifactId>
-    </dependency>
+<dependency>
+    <groupId>de.cuioss.portal.authentication</groupId>
+    <artifactId>portal-authentication-api</artifactId>
+</dependency>
 ----
 
-== Usage
+== Core Concepts
 
-The central object ist the `@Dependent`-scoped `AuthenticatedUserInfo`
-that has a number of methods interacting with the logged-in user.
+=== Authentication Model
+* link:src/main/java/de/cuioss/portal/authentication/AuthenticatedUserInfo.java[AuthenticatedUserInfo] - Core interface for user identity
+* link:src/main/java/de/cuioss/portal/authentication/model/BaseAuthenticatedUserInfo.java[BaseAuthenticatedUserInfo] - Thread-safe implementation
+* Immutable user state management
+* Extensible attribute system
+* Role and group-based authorization
+
+=== Authentication Facade
+* link:src/main/java/de/cuioss/portal/authentication/facade/AuthenticationFacade.java[AuthenticationFacade] - Primary authentication interface
+* Session lifecycle management
+* Pluggable authentication sources
+* Secure logout handling
+
+=== User Enrichment
+* link:src/main/java/de/cuioss/portal/authentication/PortalUserEnricher.java[PortalUserEnricher] - User data enrichment interface
+* Priority-based enrichment chain
+* Dynamic context updates
+* Custom attribute management
+
+== Detailed Component Documentation
+
+=== AuthenticatedUserInfo Interface
+Core interface defining user authentication state:
 
 [source,java]
 ----
-    @Inject
-    private AuthenticatedUserInfo userProvider;
-
+public interface AuthenticatedUserInfo {
+    boolean isAuthenticated();
+    String getIdentifier();
+    String getDisplayName();
+    Set<String> getRoles();
+    Set<String> getGroups();
+    Optional<String> getAttributeValue(String key);
+}
 ----
+
+=== BaseAuthenticatedUserInfo Implementation
+Thread-safe implementation with builder pattern:
+
+[source,java]
+----
+var user = BaseAuthenticatedUserInfo.builder()
+    .identifier("user123")
+    .displayName("John Doe")
+    .authenticated(true)
+    .addRole("ADMIN")
+    .addGroup("IT_STAFF")
+    .addAttribute("department", "IT")
+    .build();
+----
+
+=== AuthenticationFacade Interface
+Primary authentication operations:
+
+[source,java]
+----
+public interface AuthenticationFacade {
+    AuthenticationResult login(HttpServletRequest request, 
+                             LoginCredentials credentials);
+    void logout(HttpServletRequest request);
+    AuthenticatedUserInfo getCurrentUser(HttpServletRequest request);
+}
+----
+
+== Usage Examples
+
+=== Role-Based Access Control
+
+[source,java]
+----
+@Inject
+private AuthenticatedUserInfo userInfo;
+
+public void restrictedOperation() {
+    if (!userInfo.isAuthenticated()) {
+        throw new SecurityException("Authentication required");
+    }
+    
+    if (!userInfo.isUserInRole("ADMIN")) {
+        throw new SecurityException("Insufficient privileges");
+    }
+    
+    // Perform restricted operation
+}
+----
+
+=== Custom User Enrichment
+
+[source,java]
+----
+@Priority(PortalPriorities.PORTAL_CORE_LEVEL)
+public class DepartmentEnricher implements PortalUserEnricher {
+    
+    @Override
+    public AuthenticatedUserInfo enrich(AuthenticatedUserInfo user) {
+        return BaseAuthenticatedUserInfo.builder()
+            .copyFrom(user)
+            .addAttribute("department", loadDepartment(user))
+            .build();
+    }
+}
+----
+
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
+== Best Practices
+
+=== Security Guidelines
+* Use HTTPS for authentication
+* Implement proper session management
+* Follow least privilege principle
+* Log security events
+
+=== Implementation Guidelines
+* Extend BaseAuthenticationFacade for custom authentication
+* Use builder pattern for user info creation
+* Implement custom UserEnricher for additional attributes
+
+== Technical Details
+
+=== Thread Safety
+* All model classes are immutable
+* Facade implementations are thread-safe
+* Session handling is concurrent-safe
+* Builder pattern ensures safe object creation
+
+=== Performance Considerations
+* User info objects are cached per request
+* Enrichment chain is optimized
+* Role checks use Set implementation
+
+== Related Documentation
+
+* link:../portal-authentication-mock/[Portal Authentication Mock] - Testing support
+* link:../portal-authentication-oauth/[Portal Authentication OAuth] - OAuth implementation
+* link:https://jakarta.ee/specifications/security/[Jakarta Security]
+* link:https://www.rfc-editor.org/rfc/rfc6749[OAuth 2.0 Specification]

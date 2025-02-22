@@ -15,44 +15,90 @@
  */
 package de.cuioss.portal.common.bundle;
 
+import de.cuioss.portal.common.PortalCommonLogMessages;
+import de.cuioss.tools.logging.CuiLogger;
+
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import de.cuioss.tools.logging.CuiLogger;
-
 /**
- * Used for configuring ResourceBundles. Implementations should provide a
- * {@link jakarta.annotation.Priority}. Because of the overwriting mechanics a higher
- * {@link jakarta.annotation.Priority} of one of the concrete bundles results in a higher priority
- * of said bundles, resulting in the key to be chosen of the ones with the
- * higher ordering. Number higher than 100 should always be reserved for
- * assemblies / applications
+ * Interface for locating and providing {@link ResourceBundle}s in the Portal.
+ * 
+ * <h2>Overview</h2>
+ * Implementations locate and provide access to resource bundles, supporting the
+ * Portal's hierarchical bundle resolution system.
+ * 
+ * <h2>Priority System</h2>
+ * Implementations should provide a {@link jakarta.annotation.Priority} to define
+ * their position in the resolution chain:
+ * <ul>
+ *   <li>Higher priority values (higher numbers) take precedence</li>
+ *   <li>Values 1-99: Core portal bundles</li>
+ *   <li>Values 100+: Reserved for assemblies/applications</li>
+ * </ul>
+ * 
+ * <h2>Implementation Requirements</h2>
+ * <ul>
+ *   <li>Must be thread-safe</li>
+ *   <li>Must handle {@link MissingResourceException} gracefully</li>
+ *   <li>Should cache bundles when possible</li>
+ *   <li>Must only return valid, loadable bundle paths</li>
+ * </ul>
+ * 
+ * <h2>Usage Example</h2>
+ * <pre>
+ * &#064;Priority(150)
+ * &#064;ApplicationScoped
+ * public class CustomBundleLocator implements ResourceBundleLocator {
+ *     
+ *     &#064;Override
+ *     public Optional<String> getBundlePath() {
+ *         return Optional.of("com.example.messages");
+ *     }
+ *     
+ *     &#064;Override
+ *     public ResourceBundle getBundle(Locale locale) {
+ *         try {
+ *             return ResourceBundle.getBundle(getBundlePath().get(), locale);
+ *         } catch (MissingResourceException e) {
+ *             LOGGER.warn(e, PortalCommonLogMessages.WARN.LOAD_FAILED.format(
+ *                 getBundlePath().get(), locale, e.getMessage()));
+ *             return null;
+ *         }
+ *     }
+ * }
+ * </pre>
  *
  * @author Matthias Walliczek
+ * @see ResourceBundleRegistry
+ * @see jakarta.annotation.Priority
  */
 public interface ResourceBundleLocator extends Serializable {
 
-    /** Constant <code>LOGGER</code> */
+    /**
+     * Logger for this class
+     */
     CuiLogger LOGGER = new CuiLogger(ResourceBundleLocator.class);
 
     /**
-     * <p>getBundlePath.</p>
+     * Returns the path to the resource bundle.
      *
-     * @return paths of the resource bundles if it can be loaded. <em>Caution: </em>
-     *         {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry} assumes that only loadable paths are
-     *         to be returned. Therefore, each implementation must take care.
+     * @return Optional containing the bundle path if it exists and can be loaded,
+     *         empty Optional otherwise
+     * @see ResourceBundleRegistry#initBean()
      */
     Optional<String> getBundlePath();
 
     /**
-     * <p>getBundle.</p>
+     * Returns a {@link ResourceBundle} for the specified locale.
      *
-     * @return an {@link java.util.Optional} {@link java.util.ResourceBundle} derived by the path of
-     *         {@link #getBundlePath()}
-     * @param locale a {@link java.util.Locale} object
+     * @param locale the locale for which to get the bundle, must not be null
+     * @return the resource bundle for the given locale, or null if not found
+     * @throws MissingResourceException if the bundle path exists but the bundle cannot be loaded
+     * @see ResourceBundle#getBundle(String, Locale)
      */
     default Optional<ResourceBundle> getBundle(Locale locale) {
         var bundlePath = getBundlePath();
@@ -66,7 +112,7 @@ public interface ResourceBundleLocator extends Serializable {
             LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath.get(), locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.debug("Unable to load %s '%s' for locale '%s'".formatted(getClass().getName(), bundlePath, locale), e);
+            LOGGER.warn(PortalCommonLogMessages.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
             return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
         }
     }
@@ -75,14 +121,18 @@ public interface ResourceBundleLocator extends Serializable {
      * This is needed in the context of a Quarkus module. Otherwise, the
      * {@link ResourceBundle} can not be found. The difference to the default
      * implementation is passing {@code Thread.currentThread().getContextClassLoader()}.
+     *
+     * @param bundlePath must not be null
+     * @param locale must not be null
+     * @return an {@link Optional} {@link ResourceBundle}
      */
     private Optional<ResourceBundle> getBundleViaCurrentThreadContextClassLoader(String bundlePath, Locale locale) {
         try {
             var rb = ResourceBundle.getBundle(bundlePath, locale, Thread.currentThread().getContextClassLoader());
-            LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath, locale);
+            LOGGER.debug("Loaded bundle for %s, path=%s, locale=%s", getClass().getName(), bundlePath, locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn("Unable to load %s '%s' for locale '%s'".formatted(getClass().getName(), bundlePath, locale), e);
+            LOGGER.warn(e, PortalCommonLogMessages.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
             return Optional.empty();
         }
     }

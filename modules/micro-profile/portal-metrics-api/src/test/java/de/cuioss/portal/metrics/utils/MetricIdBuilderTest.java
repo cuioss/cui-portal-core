@@ -15,65 +15,119 @@
  */
 package de.cuioss.portal.metrics.utils;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.eclipse.microprofile.metrics.Tag;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.eclipse.microprofile.metrics.Tag;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("MetricIdBuilder Tests")
 class MetricIdBuilderTest {
 
-    @Test
-    void exceptionOnMissingName() {
-        var builder = new MetricIdBuilder();
-        assertThrows(IllegalArgumentException.class, builder::build);
+    @Nested
+    @DisplayName("Parameter Validation")
+    class ValidationTests {
+        @Test
+        @DisplayName("Should throw on missing name")
+        void exceptionOnMissingName() {
+            var builder = new MetricIdBuilder();
+            assertThrows(IllegalArgumentException.class, builder::build,
+                    "Builder should throw on missing name");
+        }
+
+        @Test
+        @DisplayName("Should throw on empty name")
+        void exceptionOnEmptyName() {
+            var builder = new MetricIdBuilder().name("");
+            assertThrows(IllegalArgumentException.class, builder::build,
+                    "Builder should throw on empty name");
+        }
     }
 
-    @Test
-    void exceptionOnEmptyName() {
-        var builder = new MetricIdBuilder().name("");
-        assertThrows(IllegalArgumentException.class, builder::build);
+    @Nested
+    @DisplayName("Exception Mapper Tests")
+    class ExceptionMapperTests {
+        @Test
+        @DisplayName("Should not process mappers without exception")
+        void dontProcessExceptionMappersIfNoException() {
+            var builder = new MetricIdBuilder().name("test").exceptionTagMapper(throwable -> {
+                fail("ExceptionMapper must not be processed if there is no exception given.");
+                return null;
+            });
+            assertDoesNotThrow(builder::build,
+                    "Builder should not process mappers without exception");
+        }
+
+        @Test
+        @DisplayName("Should process all exception mappers")
+        void processedExceptionMappers() {
+            // Given
+            final var countDown = new CountDownLatch(2);
+
+            // When
+            var builder = new MetricIdBuilder()
+                    .name("test")
+                    .exception(new RuntimeException("Test exception"))
+                    .exceptionTagMapper(throwable -> {
+                        countDown.countDown();
+                        return new Tag("mapper1", throwable.getMessage());
+                    })
+                    .exceptionTagMapper(throwable -> {
+                        countDown.countDown();
+                        return new Tag("mapper2", throwable.getClass().getSimpleName());
+                    });
+
+            // Then
+            var metricId = assertDoesNotThrow(builder::build,
+                    "Builder should process mappers without throwing");
+            assertEquals(0L, countDown.getCount(), "All mappers should be processed");
+            assertEquals("Test exception", metricId.getTags().get("mapper1"),
+                    "First mapper should add exception message");
+            assertEquals("RuntimeException", metricId.getTags().get("mapper2"),
+                    "Second mapper should add exception class");
+        }
     }
 
-    @Test
-    void dontProcessExceptionMappersIfNoException() {
-        var builder = new MetricIdBuilder().name("test").exceptionTagMapper(throwable -> {
-            fail("ExceptionMapper must not be processed if there is no exception given.");
-            return null;
-        });
-        assertDoesNotThrow(builder::build);
-    }
+    @Nested
+    @DisplayName("Tag Management Tests")
+    class TagTests {
+        @Test
+        @DisplayName("Should add all tags correctly")
+        void shouldAddAllTags() {
+            // Given
+            var testTag1 = new Tag("test1", "value1");
+            var testTag2 = new Tag("test2", "value2");
+            var testTag3 = new Tag("test3", "value3");
 
-    @Test
-    void processedExceptionMappers() {
-        final var countDown = new CountDownLatch(2);
-        var builder = new MetricIdBuilder().name("test").exception(new Exception()).exceptionTagMapper(throwable -> {
-            countDown.countDown();
-            return null;
-        }).exceptionTagMapper(throwable -> {
-            countDown.countDown();
-            return null;
-        });
-        assertDoesNotThrow(builder::build);
-        assertEquals(0L, countDown.getCount());
-    }
+            // When
+            var builder = new MetricIdBuilder()
+                    .name("test")
+                    .tag(testTag1)
+                    .tag(testTag2)
+                    .tags(new Tag[]{testTag3});
+            var metricID = assertDoesNotThrow(builder::build,
+                    "Builder should handle multiple tags without throwing");
 
-    @Test
-    void addsTags() {
-        var testTag1 = new Tag("test1", "value");
-        var testTag2 = new Tag("test2", "value");
-        var testTag3 = new Tag("test3", "value");
+            // Then
+            var tags = metricID.getTags();
+            assertEquals("value1", tags.get("test1"), "First tag should have correct value");
+            assertEquals("value2", tags.get("test2"), "Second tag should have correct value");
+            assertEquals("value3", tags.get("test3"), "Third tag should have correct value");
+        }
 
-        var builder = new MetricIdBuilder().name("test").tag(testTag1).tag(testTag2).tags(new Tag[] { testTag3 });
-        var metricID = assertDoesNotThrow(builder::build);
+        @Test
+        @DisplayName("Should handle null tags gracefully")
+        void shouldHandleNullTags() {
+            var builder = new MetricIdBuilder()
+                    .name("test")
+                    .tag(null)
+                    .tags((Tag[]) null);
 
-        assertTrue(metricID.getTags().containsKey("test1"), "test Tag 1 missing");
-        assertTrue(metricID.getTags().containsKey("test2"), "test Tag 2 missing");
-        assertTrue(metricID.getTags().containsKey("test3"), "test Tag 3 missing");
+            assertDoesNotThrow(builder::build,
+                    "Builder should handle null tags without throwing");
+        }
     }
 }

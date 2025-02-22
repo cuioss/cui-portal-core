@@ -35,17 +35,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_DISCOVER_PATH;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM;
-import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.OPEN_ID_SERVER_BASE_URL;
+import static de.cuioss.portal.authentication.oauth.OAuthConfigKeys.*;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
 import static de.cuioss.tools.net.UrlHelper.addTrailingSlashToUrl;
 import static de.cuioss.tools.string.MoreStrings.isBlank;
 
 /**
- * Produces {@link Oauth2Configuration} using the new config params
- * ({@see OAuthConfigKeys}).
- *
- * @author Matthias Walliczek
+ * CDI producer for {@link Oauth2Configuration} that supports OpenID Connect Discovery.
+ * This producer automatically configures OAuth2 settings by fetching configuration
+ * from the OpenID Connect provider's discovery endpoint.
+ * 
+ * <p>Configuration sources in order of precedence:
+ * <ul>
+ *   <li>OpenID Connect Discovery document (.well-known/openid-configuration)</li>
+ *   <li>Fallback to manual configuration via application properties</li>
+ * </ul>
+ * 
+ * <p>Required configuration properties:
+ * <ul>
+ *   <li>{@code authentication.oidc.server.baseUrl} - Base URL of the OIDC provider</li>
+ *   <li>{@code authentication.oidc.client.id} - OAuth2 client ID</li>
+ *   <li>{@code authentication.oidc.client.secret} - OAuth2 client secret</li>
+ * </ul>
+ * 
+ * <p>Optional configuration:
+ * <ul>
+ *   <li>{@code authentication.oidc.server.discoveryPath} - Custom discovery path</li>
+ *   <li>{@code authentication.oidc.client.role_mapper_claim} - Role mapping claim</li>
+ * </ul>
+ * 
+ * @see OAuthConfigKeys
+ * @see Oauth2Configuration
  */
 @ApplicationScoped
 public class Oauth2DiscoveryConfigurationProducer {
@@ -129,20 +150,19 @@ public class Oauth2DiscoveryConfigurationProducer {
         if (!isBlank(settingServerBaseUrl) && !isBlank(settingOauth2discoveryUri)) {
             final var builder = new CuiRestClientBuilder(LOGGER);
             final var discoveryURI = addTrailingSlashToUrl(settingServerBaseUrl) + settingOauth2discoveryUri;
-            LOGGER.debug("Using discoveryURI {}", discoveryURI);
+            LOGGER.debug("Using discovery URI: %s", discoveryURI);
             builder.url(discoveryURI);
             try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
                 final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
             } catch (final Exception e) {
-                LOGGER.error(e, "Auto discovery of oauth config failed, using URI: {}", discoveryURI);
+                LOGGER.error(e, ERROR.DISCOVERY_FAILED::format);
             }
         } else {
-            LOGGER.warn("Oauth config key '{}' and/or '{}' not set, trying fallback", OPEN_ID_SERVER_BASE_URL,
-                OPEN_ID_DISCOVER_PATH);
+            LOGGER.warn(() -> WARN.CONFIG_KEYS_NOT_SET.format(OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH));
         }
 
-        LOGGER.debug("oauth config: {}", configuration);
+        LOGGER.debug("Configuration created: %s", configuration);
 
         if (null != configuration && configValidationEnabled.get()) {
             configuration.validate();
@@ -161,7 +181,7 @@ public class Oauth2DiscoveryConfigurationProducer {
         logoutRedirectParameter.get().ifPresent(newConfiguration::setLogoutRedirectParamName);
         postLogoutRedirectUri.get().ifPresent(newConfiguration::setPostLogoutRedirectUri);
         Optional<List<String>> roleMapperClaims = roleMapperClaim.get();
-        if(roleMapperClaims.isPresent()) {
+        if (roleMapperClaims.isPresent()) {
             newConfiguration.setRoleMapperClaims(roleMapperClaims.get());
         } else {
             newConfiguration.setRoleMapperClaims(Collections.emptyList());
@@ -191,11 +211,11 @@ public class Oauth2DiscoveryConfigurationProducer {
         // overwrite well-known config, if present
 
         internalTokenUrl.get().ifPresent(url -> {
-            LOGGER.debug("overwrite well-known token-url '{}' with: {}", newConfiguration.getTokenUri(), url);
+            LOGGER.debug("Overwriting token URL from %s to %s", newConfiguration.getTokenUri(), url);
             newConfiguration.setTokenUri(url);
         });
         internalUserInfoUrl.get().ifPresent(url -> {
-            LOGGER.debug("overwrite well-known userinfo-url '{}' with: {}", newConfiguration.getUserInfoUri(), url);
+            LOGGER.debug("Overwriting userinfo URL from %s to %s", newConfiguration.getUserInfoUri(), url);
             newConfiguration.setUserInfoUri(url);
         });
 

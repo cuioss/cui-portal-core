@@ -15,21 +15,18 @@
  */
 package de.cuioss.portal.authentication.model;
 
-import static de.cuioss.test.generator.Generators.letterStrings;
-import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashMap;
-
-import org.junit.jupiter.api.Test;
-
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
 import de.cuioss.test.valueobjects.api.generator.PropertyGenerator;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+
+import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
+import static org.junit.jupiter.api.Assertions.*;
 
 @PropertyGenerator(ContextMapGenerator.class)
 @VerifyBuilder

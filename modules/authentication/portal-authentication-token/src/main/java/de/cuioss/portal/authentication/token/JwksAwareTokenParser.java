@@ -27,9 +27,32 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Delegate;
 
+import static de.cuioss.portal.authentication.token.PortalTokenLogMessages.INFO;
+
 /**
- * Variant of {@link JWTParser} that will be configured for remote loading of the public-keys.
- * They are necessary to verify the signature or the token.
+ * JWT parser implementation with support for remote JWKS (JSON Web Key Set) loading.
+ * This parser extends the standard {@link JWTParser} functionality by adding the ability
+ * to fetch and manage public keys from a JWKS endpoint for token signature verification.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Remote JWKS endpoint configuration</li>
+ *   <li>Automatic key refresh support</li>
+ *   <li>TLS certificate configuration for secure key loading</li>
+ *   <li>Issuer-based token validation</li>
+ * </ul>
+ * <p>
+ * The parser can be configured using the builder pattern:
+ * <pre>
+ * JwksAwareTokenParser parser = JwksAwareTokenParser.builder()
+ *     .jwksIssuer("https://auth.example.com")
+ *     .jwksEndpoint("https://auth.example.com/.well-known/jwks.json")
+ *     .jwksRefreshIntervall(60)
+ *     .build();
+ * </pre>
+ * <p>
+ * This implementation is thread-safe and handles automatic key rotation
+ * based on the configured refresh interval.
  *
  * @author Oliver Wolff
  */
@@ -39,6 +62,7 @@ import lombok.experimental.Delegate;
 public class JwksAwareTokenParser implements JWTParser {
 
     private static final CuiLogger LOGGER = new CuiLogger(JwksAwareTokenParser.class);
+    public static final int DEFAULT_REFRESH_INTERVAL = 180;
 
     @Delegate
     private final JWTParser tokenParser;
@@ -111,11 +135,17 @@ public class JwksAwareTokenParser implements JWTParser {
             Preconditions.checkArgument(null != containedContextInfo.getIssuedBy(), "jwksIssuer must be set");
             Preconditions.checkArgument(null != containedContextInfo.getPublicKeyLocation() || null != containedContextInfo.getPublicKeyContent(), "either jwksEndpoint or getPublicKeyContent must be set");
             if (null != containedContextInfo.getJwksRefreshInterval()) {
-                LOGGER.debug("Defaulting jwksRefreshIntervall to %s", 180);
+                LOGGER.debug("Using default jwksRefreshInterval: %s", 180);
                 containedContextInfo.setJwksRefreshInterval(180);
             }
-            LOGGER.info(LogMessages.CONFIGURED_JWKS.format(containedContextInfo.getPublicKeyLocation(), containedContextInfo.getJwksRefreshInterval(), containedContextInfo.getIssuedBy()));
-            return new JwksAwareTokenParser(new DefaultJWTParser(containedContextInfo), containedContextInfo.getIssuedBy());
+
+            LOGGER.info(INFO.CONFIGURED_JWKS.format(
+                    containedContextInfo.getPublicKeyLocation(),
+                    containedContextInfo.getJwksRefreshInterval(),
+                    containedContextInfo.getIssuedBy()));
+
+            return new JwksAwareTokenParser(new DefaultJWTParser(containedContextInfo),
+                    containedContextInfo.getIssuedBy());
         }
     }
 

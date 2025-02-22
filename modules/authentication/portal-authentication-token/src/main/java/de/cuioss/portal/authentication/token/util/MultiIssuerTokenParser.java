@@ -16,6 +16,7 @@
 package de.cuioss.portal.authentication.token.util;
 
 import de.cuioss.portal.authentication.token.JwksAwareTokenParser;
+import de.cuioss.tools.logging.CuiLogger;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -27,15 +28,38 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Manages multiple {@link JwksAwareTokenParser} instances for different issuers.
- * Provides functionality to inspect JWT tokens and determine the appropriate parser
- * based on the issuer.
+ * Manages multiple JWT token parsers for different token issuers in a multi-tenant environment.
+ * This class provides functionality to inspect JWT tokens, determine their issuer, and select
+ * the appropriate parser based on the issuer information.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Multi-issuer support for token validation</li>
+ *   <li>Safe token inspection without signature validation</li>
+ *   <li>Dynamic parser selection based on token issuer</li>
+ *   <li>Thread-safe implementation</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * MultiIssuerTokenParser parser = MultiIssuerTokenParser.builder()
+ *     .addParser(issuer1Parser)
+ *     .addParser(issuer2Parser)
+ *     .build();
+ * 
+ * Optional<JWTParser> selectedParser = parser.getParserForToken(tokenString);
+ * </pre>
+ * <p>
+ * The class uses {@link NonValidatingJwtTokenParser} internally for initial token inspection
+ * to determine the issuer before selecting the appropriate validating parser.
  *
- * @author Generated
+ * @author Oliver Wolff
  */
 @ToString
 @EqualsAndHashCode
 public class MultiIssuerTokenParser {
+
+    private static final CuiLogger LOGGER = new CuiLogger(MultiIssuerTokenParser.class);
 
     private final Map<String, JWTParser> issuerToParser;
     private final NonValidatingJwtTokenParser inspectionParser;
@@ -49,6 +73,7 @@ public class MultiIssuerTokenParser {
     public MultiIssuerTokenParser(@NonNull Map<String, JWTParser> issuerToParser) {
         this.issuerToParser = new HashMap<>(issuerToParser);
         this.inspectionParser = new NonValidatingJwtTokenParser();
+        LOGGER.debug("Initialized MultiIssuerTokenParser with %s parser(s)", issuerToParser.size());
     }
 
     /**
@@ -67,8 +92,11 @@ public class MultiIssuerTokenParser {
      * @return the issuer of the token if present
      */
     public Optional<String> extractIssuer(@NonNull String token) {
-        return inspectionParser.unsecured(token)
+        LOGGER.debug("Extracting issuer from token");
+        var issuer = inspectionParser.unsecured(token)
                 .map(JsonWebToken::getIssuer);
+        LOGGER.debug("Extracted issuer: %s", issuer.orElse("<none>"));
+        return issuer;
     }
 
     /**
@@ -78,7 +106,12 @@ public class MultiIssuerTokenParser {
      * @return an Optional containing the parser if found, empty otherwise
      */
     public Optional<JWTParser> getParserForIssuer(@NonNull String issuer) {
-        return Optional.ofNullable(issuerToParser.get(issuer));
+        LOGGER.debug("Looking up parser for issuer: %s", issuer);
+        var parser = Optional.ofNullable(issuerToParser.get(issuer));
+        if (parser.isEmpty()) {
+            LOGGER.debug("No parser found for issuer: %s", issuer);
+        }
+        return parser;
     }
 
     /**
@@ -89,6 +122,7 @@ public class MultiIssuerTokenParser {
      * @return an Optional containing the parser if found, empty otherwise
      */
     public Optional<JWTParser> getParserForToken(@NonNull String token) {
+        LOGGER.debug("Getting parser for token");
         return extractIssuer(token).flatMap(this::getParserForIssuer);
     }
 
@@ -105,6 +139,7 @@ public class MultiIssuerTokenParser {
          * @return this builder instance
          */
         public Builder addParser(@NonNull JwksAwareTokenParser parser) {
+            LOGGER.debug("Adding parser for issuer: %s", parser.getJwksIssuer());
             issuerToParser.put(parser.getJwksIssuer(), parser);
             return this;
         }

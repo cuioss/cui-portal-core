@@ -32,7 +32,27 @@ import java.util.Optional;
 import static de.cuioss.tools.string.MoreStrings.trimOrNull;
 
 /**
- * Wrapper around {@link JsonWebToken}
+ * Abstract base class for parsed JWT token representations.
+ * Provides common functionality for working with {@link JsonWebToken} instances
+ * including token validation, expiration checking, and type determination.
+ * <p>
+ * Key features:
+ * <ul>
+ *   <li>Token parsing and validation</li>
+ *   <li>Expiration time management</li>
+ *   <li>Token type determination via "typ" claim</li>
+ *   <li>Access to raw token string and JWT claims</li>
+ * </ul>
+ * <p>
+ * Concrete implementations are available for specific token types:
+ * <ul>
+ *   <li>{@link ParsedAccessToken}: For OAuth2 access tokens</li>
+ *   <li>{@link ParsedIdToken}: For OpenID Connect ID tokens</li>
+ *   <li>{@link ParsedRefreshToken}: For OAuth2 refresh tokens</li>
+ * </ul>
+ * <p>
+ * Note: The implementation is primarily tested with Keycloak tokens.
+ * Some features may be specific to Keycloak's token format.
  *
  * @author Oliver Wolff
  */
@@ -47,17 +67,17 @@ public abstract class ParsedToken {
         return jsonWebToken.getRawToken();
     }
 
-    protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger logger) {
-        logger.trace("Parsing token '%s'", tokenString);
+    protected static Optional<JsonWebToken> jsonWebTokenFrom(String tokenString, JWTParser tokenParser, CuiLogger givenLogger) {
+        givenLogger.trace("Parsing token '%s'", tokenString);
         if (MoreStrings.isEmpty(trimOrNull(tokenString))) {
-            logger.warn(LogMessages.TOKEN_IS_EMPTY.format());
+            givenLogger.warn(PortalTokenLogMessages.WARN.TOKEN_IS_EMPTY::format);
             return Optional.empty();
         }
         try {
             return Optional.ofNullable(tokenParser.parse(tokenString));
         } catch (ParseException e) {
-            logger.warn(e, LogMessages.COULD_NOT_PARSE_TOKEN.format());
-            logger.trace(() -> LogMessages.COULD_NOT_PARSE_TOKEN_TRACE.format(tokenString));
+            givenLogger.warn(e, PortalTokenLogMessages.WARN.COULD_NOT_PARSE_TOKEN.format(e.getMessage()));
+            givenLogger.trace("Offending token '%s'", tokenString);
             return Optional.empty();
         }
     }

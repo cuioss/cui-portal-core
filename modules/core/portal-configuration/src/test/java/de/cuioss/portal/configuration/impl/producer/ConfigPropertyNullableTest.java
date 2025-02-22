@@ -22,6 +22,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -46,23 +47,26 @@ class ConfigPropertyNullableTest {
         configuration.clear();
     }
 
-    @Test
-    void nullForUnknownKey() {
-        assertDoesNotThrow(() -> value.get());
-        assertNull(value.get());
-    }
+    @Nested
+    class NullabilityTests {
+        @Test
+        void nullForUnknownKey() {
+            assertDoesNotThrow(() -> value.get());
+            assertNull(value.get());
+        }
 
-    @Test
-    void nullForEmptyDefault() {
-        configuration.fireEvent(KEY, "${not.there:}");
-        assertDoesNotThrow(() -> value.get(), "should use empty default value");
-        assertNull(value.get());
-    }
+        @Test
+        void nullForEmptyDefault() {
+            configuration.fireEvent(KEY, "${not.there:}");
+            assertDoesNotThrow(() -> value.get(), "should use empty default value");
+            assertNull(value.get());
+        }
 
-    @Test
-    void nullForUnresolvableVariable() {
-        configuration.fireEvent(KEY, "${not.there}");
-        assertDoesNotThrow(() -> value.get(), "should ignore unresolvable key");
-        assertNull(value.get());
+        @Test
+        void nullForUnresolvableVariable() {
+            configuration.fireEvent(KEY, "${not.there}");
+            assertDoesNotThrow(() -> value.get(), "should ignore unresolvable key");
+            assertNull(value.get());
+        }
     }
 }

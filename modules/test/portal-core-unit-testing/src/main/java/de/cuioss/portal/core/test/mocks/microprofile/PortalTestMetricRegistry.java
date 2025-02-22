@@ -18,12 +18,30 @@ package de.cuioss.portal.core.test.mocks.microprofile;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricFilter;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
-import org.eclipse.microprofile.metrics.*;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -31,16 +49,101 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Simple Mock variant of {@link MetricRegistry}. Partially implemented.
+ * Mock implementation of MicroProfile {@link MetricRegistry} for testing purposes.
+ * Provides a simplified metric registry that supports basic metric operations and
+ * tracking in a test environment.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Counter and Timer metric support</li>
+ *   <li>Metadata management</li>
+ *   <li>Concurrent metric storage</li>
+ *   <li>Application-scoped registry</li>
+ *   <li>Metric ID and tag support</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Counter metrics:
+ * <pre>
+ * &#64;Inject
+ * private MetricRegistry registry;
+ *
+ * void testCounter() {
+ *     // Create and use counter
+ *     Counter counter = registry.counter("requests");
+ *     counter.inc();
+ *
+ *     // Verify count
+ *     assertEquals(1, counter.getCount());
+ * }
+ * </pre>
+ *
+ * Timer metrics:
+ * <pre>
+ * void testTimer() {
+ *     Timer timer = registry.timer("response_time");
+ *
+ *     // Time an operation
+ *     timer.time(() -> {
+ *         // Simulated work
+ *         Thread.sleep(100);
+ *         return null;
+ *     });
+ *
+ *     // Verify timer
+ *     assertTrue(timer.getCount() > 0);
+ * }
+ * </pre>
+ *
+ * Metadata and tags:
+ * <pre>
+ * void testMetadata() {
+ *     // Create metric with metadata
+ *     Metadata metadata = Metadata.builder()
+ *         .withName("requests")
+ *         .withDescription("Total requests")
+ *         .withUnit(MetricUnits.NONE)
+ *         .build();
+ *
+ *     // Create metric with tags
+ *     Tag tag = new Tag("endpoint", "/api");
+ *     Counter counter = registry.counter(metadata, tag);
+ *
+ *     // Verify registration
+ *     assertTrue(registry.getMetrics().containsKey(new MetricID("requests", tag)));
+ * }
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Uses {@link ConcurrentHashMap} for thread-safe metric storage</li>
+ *   <li>Supports basic metric types (Counter, Timer)</li>
+ *   <li>Some advanced features are not implemented</li>
+ *   <li>Maintains metadata separately from metrics</li>
+ *   <li>Application-scoped for consistent state</li>
+ * </ul>
+ *
+ * <h2>Limitations</h2>
+ * <ul>
+ *   <li>Some metric types may not be fully implemented</li>
+ *   <li>Histogram and Meter operations throw UnsupportedOperationException</li>
+ *   <li>Some advanced MetricRegistry features are not available</li>
+ * </ul>
  *
  * @author Oliver Wolff
  * @author Sven Haag
+ * @since 1.0
+ * @see MetricRegistry
+ * @see Counter
+ * @see Timer
+ * @see Metadata
  */
 @ApplicationScoped
 public class PortalTestMetricRegistry implements MetricRegistry {
 
     private static final RuntimeException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException(
-        "Not implemented yet");
+            "Not implemented yet");
 
     @Getter(AccessLevel.PROTECTED)
     private final Map<String, Metadata> metadataMap = new HashMap<>();
@@ -54,7 +157,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
      */
     public Optional<Metric> getMetric(final String name) {
         return metricMap.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).map(Map.Entry::getValue)
-            .findAny();
+                .findAny();
     }
 
     /**
@@ -87,27 +190,32 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public Counter counter(final String name) {
-        return null;
+        return counter(new MetricID(name));
     }
 
     @Override
     public Counter counter(final String name, final Tag... tags) {
-        return null;
+        return counter(new MetricID(name, tags));
     }
 
     @Override
     public Counter counter(MetricID metricID) {
-        return null;
+        return (Counter) metricMap.computeIfAbsent(metricID, id -> {
+            Counter counter = new PortalTestCounter();
+            Metadata metadata = Metadata.builder().withName(id.getName()).build();
+            metadataMap.put(id.getName(), metadata);
+            return counter;
+        });
     }
 
     @Override
     public Counter counter(final Metadata metadata) {
-        return null;
+        return counter(new MetricID(metadata.getName()));
     }
 
     @Override
     public Counter counter(final Metadata metadata, final Tag... tags) {
-        return null;
+        return counter(new MetricID(metadata.getName(), tags));
     }
 
     @Override
@@ -233,7 +341,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
         metricMap.put(id, timer);
         metadataMap.put(name, new MetadataBuilder().withName(name)
-            .withUnit(MetricUnits.NANOSECONDS).build());
+                .withUnit(MetricUnits.NANOSECONDS).build());
         return timer;
     }
 
@@ -264,6 +372,10 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
     @Override
     public Counter getCounter(MetricID metricID) {
+        Metric metric = metricMap.get(metricID);
+        if (metric instanceof Counter counter) {
+            return counter;
+        }
         return null;
     }
 
@@ -285,18 +397,20 @@ public class PortalTestMetricRegistry implements MetricRegistry {
 
 
     @Override
-    public Metadata getMetadata(String s) {
-        return null;
+    public Metadata getMetadata(String name) {
+        return metadataMap.get(name);
     }
 
     @Override
     public boolean remove(final String name) {
-        return false;
+        metricMap.entrySet().removeIf(entry -> entry.getKey().getName().equals(name));
+        metadataMap.remove(name);
+        return true;
     }
 
     @Override
     public boolean remove(final MetricID metricID) {
-        return false;
+        return metricMap.remove(metricID) != null;
     }
 
     @Override
@@ -307,7 +421,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public SortedSet<String> getNames() {
         return Collections.unmodifiableSortedSet(
-            new TreeSet<>(metricMap.keySet().stream().map(MetricID::getName).collect(Collectors.toSet())));
+                new TreeSet<>(metricMap.keySet().stream().map(MetricID::getName).collect(Collectors.toSet())));
     }
 
     @Override

@@ -25,7 +25,7 @@ import static jakarta.servlet.http.HttpServletResponse.*;
 class BaseAllAcceptDispatcherTest {
 
     private static final String DEFAULT_PATH = "/hello";
-    static final RecordedRequest DUMMY = CombinedDispatcherTest.createRequestFor(HttpMethodMapper.GET, null, "/");
+    static final RecordedRequest DUMMY = CombinedDispatcherTest.createRequestFor(HttpMethodMapper.GET, "/");
 
     @Test
     void shouldDefaultToPositiveResponse() {

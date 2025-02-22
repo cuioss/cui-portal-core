@@ -1,40 +1,67 @@
 /**
- * <p>
- * Provides the handling of the unified {@link java.util.ResourceBundle}
- * </p>
- * <h2>Usage</h2>
- * <p>
- * The central element is
- * {@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} It unifies all
- * configured {@link java.util.ResourceBundle}s for the portal. In order to use
- * it within a bean use:
- * </p>
+ * Provides a unified resource bundle management system for Portal applications.
  *
+ * <h2>Overview</h2>
+ * This package provides a centralized way to handle {@link java.util.ResourceBundle}s
+ * in Portal applications. It enables unified access to messages and resources across
+ * different modules while supporting dynamic locale changes and hierarchical bundle
+ * resolution.
+ *
+ * <h2>Key Components</h2>
+ * <ul>
+ *   <li>{@link de.cuioss.portal.common.bundle.ResourceBundleWrapper} - Core interface
+ *       for accessing unified bundles with support for dynamic locale changes</li>
+ *   <li>{@link de.cuioss.portal.common.bundle.ResourceBundleRegistry} - Central registry
+ *       managing bundle configuration and resolution order</li>
+ *   <li>{@link de.cuioss.portal.common.bundle.ResourceBundleLocator} - Interface for
+ *       locating and providing module-specific bundles with priority support</li>
+ *   <li>{@link de.cuioss.portal.common.bundle.PortalResourceBundleBean} - JSF integration
+ *       component exposing bundles to views</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * <h3>JSF View Usage</h3>
+ * Access bundle messages in XHTML views:
  * <pre>
- *
- * &#064;Inject
- * private ResourceBundleWrapper resourceBundleWrapper;
+ * // Basic message access
+ * #{msgs['page.title']}
+ * 
+ * // With parameters
+ * #{msgs['welcome.message'].format(user.name)}
+ * 
+ * // Nested keys
+ * #{msgs['errors.validation.required']}
  * </pre>
  *
- * It is exposed as well as the named ResourceBundle "msgs" and can therefore
- * used within xhtml as standard {@link java.util.ResourceBundle}:
- *
+ * <h3>Java Code Usage</h3>
+ * Programmatic access to bundles:
  * <pre>
- * {@code #(msgs['page.dashboard.title'])}
+ * &#064;Inject
+ * private ResourceBundleWrapper bundleWrapper;
+ * 
+ * public String getLocalizedMessage() {
+ *     return bundleWrapper.getString("page.title");
+ * }
  * </pre>
  *
  * <h2>Configuration</h2>
- * <p>
- * Extending the {@link java.util.ResourceBundle}s is quite easy on a module
- * level. You need to provide an instance of
- * {@link de.cuioss.portal.common.bundle.ResourceBundleLocator} The actual
- * configuration will be done with
- * {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry}
- * </p>
- * <p>
- * On application-level you can use the extension point by adding a
- * Resource-Bundle at 'i18n.custom-messages'. It will be loaded with highest
- * priority and can therefore be used for overwriting portal-defaults and
- * extending it.
+ * To add module-specific bundles:
+ * <ol>
+ *   <li>Implement {@link de.cuioss.portal.common.bundle.ResourceBundleLocator}</li>
+ *   <li>Add {@link jakarta.annotation.Priority} to define bundle precedence</li>
+ *   <li>Register your implementation as a CDI bean</li>
+ *   <li>The {@link de.cuioss.portal.common.bundle.ResourceBundleRegistry} will
+ *       automatically discover and integrate your bundles</li>
+ * </ol>
+ *
+ * <h2>Thread Safety</h2>
+ * All components in this package are thread-safe and support concurrent access.
+ * The bundle resolution system is designed to handle concurrent locale changes
+ * efficiently.
+ *
+ * @author Oliver Wolff
+ * @see java.util.ResourceBundle
+ * @see jakarta.faces.application.Application#getResourceBundle
  */
 package de.cuioss.portal.common.bundle;

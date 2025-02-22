@@ -17,45 +17,88 @@ package de.cuioss.portal.core.test.junit5;
 
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
-import static de.cuioss.portal.configuration.PortalConfigurationKeys.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_STAGE;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
-@EnablePortalConfiguration(configuration = "key1:value1")
+@EnablePortalConfiguration(configuration = {
+        "key1:value1",
+        "key2:value2"
+})
+@DisplayName("Tests PortalConfigurationMockExtension")
 class PortalConfigurationMockExtensionTest {
-
-    @Inject
-    @ConfigProperty(name = PORTAL_SERVLET_BASIC_AUTH_ALLOWED)
-    private Provider<Boolean> attributeMpProvider;
-
-    @Inject
-    @ConfigProperty(name = PORTAL_STAGE)
-    private Provider<Optional<String>> attributeMpOptional;
 
     @Inject
     private PortalTestConfiguration configuration;
 
-    PortalConfigurationMockExtensionTest() {
+    @Test
+    @DisplayName("Should initialize configuration from annotation")
+    void shouldInitializeConfigurationFromAnnotation() {
+        assertNotNull(configuration, "Configuration should be injected");
+        assertEquals("value1", configuration.getValue("key1"), "Should have key1 value");
+        assertEquals("value2", configuration.getValue("key2"), "Should have key2 value");
     }
 
     @Test
-    void shouldHandleMicroProfile() {
-        assertNotNull(attributeMpProvider);
-        assertNotNull(attributeMpProvider.get());
-        assertTrue(attributeMpProvider.get());
+    @DisplayName("Should handle configuration updates")
+    void shouldHandleConfigurationUpdates() {
+        // Add new value
+        configuration.update("key3", "value3");
+        assertEquals("value3", configuration.getValue("key3"),
+                "Should store new value");
 
-        assertNotNull(attributeMpOptional);
-        assertTrue(attributeMpOptional.get().isPresent());
+        // Update existing value
+        configuration.update("key1", "updated");
+        assertEquals("updated", configuration.getValue("key1"),
+                "Should update existing value");
+    }
 
-        configuration.update(PORTAL_CUSTOMIZATION_ENABLED, "false");
-        assertTrue(attributeMpProvider.get());
+    @Test
+    @DisplayName("Should handle configuration removal")
+    void shouldHandleConfigurationRemoval() {
+        // Remove single key
+        configuration.remove("key1");
+        assertNull(configuration.getValue("key1"),
+                "Removed key should return null");
+
+        // Clear all configuration
+        configuration.clear();
+        assertNull(configuration.getValue("key2"),
+                "All keys should be cleared");
+    }
+
+    @Test
+    @DisplayName("Should handle project stage configuration")
+    void shouldHandleProjectStageConfiguration() {
+        // Set development stage
+        configuration.development();
+        assertEquals("development", configuration.getValue(PORTAL_STAGE),
+                "Should set development stage");
+
+        // Set production stage
+        configuration.production();
+        assertEquals("production", configuration.getValue(PORTAL_STAGE),
+                "Should set production stage");
+
+        // Clear stage
+        configuration.remove(PORTAL_STAGE);
+        assertNull(configuration.getValue(PORTAL_STAGE),
+                "Stage should be cleared");
+    }
+
+    @Test
+    @DisplayName("Should handle multiple key updates")
+    void shouldHandleMultipleKeyUpdates() {
+        // Update multiple keys at once
+        configuration.update("key4", "value4", "key5", "value5");
+
+        assertEquals("value4", configuration.getValue("key4"),
+                "Should store first new value");
+        assertEquals("value5", configuration.getValue("key5"),
+                "Should store second new value");
     }
 }

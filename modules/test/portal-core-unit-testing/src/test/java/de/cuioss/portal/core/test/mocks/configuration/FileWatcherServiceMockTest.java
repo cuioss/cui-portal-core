@@ -15,21 +15,24 @@
  */
 package de.cuioss.portal.core.test.mocks.configuration;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import de.cuioss.portal.configuration.schedule.FileChangedEvent;
+import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
+import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
-
+import lombok.Getter;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import de.cuioss.portal.configuration.schedule.PortalFileWatcherService;
-
 import java.nio.file.Path;
-import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
-import lombok.Getter;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
+@DisplayName("FileWatcherServiceMock Tests")
 class FileWatcherServiceMockTest implements ShouldBeNotNull<FileWatcherServiceMock> {
 
     @Inject
@@ -37,12 +40,81 @@ class FileWatcherServiceMockTest implements ShouldBeNotNull<FileWatcherServiceMo
     @Getter
     private FileWatcherServiceMock underTest;
 
-    @Test
-    void shouldHandlePaths() {
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
-        underTest.register(Path.of("/"));
-        assertFalse(underTest.getRegisteredPaths().isEmpty());
-        underTest.unregister(Path.of("/"));
-        assertTrue(underTest.getRegisteredPaths().isEmpty());
+    @Inject
+    @FileChangedEvent
+    private Event<Path> fileChangeEvent;
+
+    @Nested
+    @DisplayName("Path Registration")
+    class PathRegistrationTest {
+
+        @Test
+        @DisplayName("Should handle single path registration")
+        void shouldHandleSinglePath() {
+            var testPath = Path.of("/test/path");
+            assertTrue(underTest.getRegisteredPaths().isEmpty(),
+                    "Initial state should be empty");
+
+            underTest.register(testPath);
+            assertTrue(underTest.getRegisteredPaths().contains(testPath),
+                    "Path should be registered");
+
+            underTest.unregister(testPath);
+            assertFalse(underTest.getRegisteredPaths().contains(testPath),
+                    "Path should be unregistered");
+        }
+
+        @Test
+        @DisplayName("Should handle multiple path registration")
+        void shouldHandleMultiplePaths() {
+            var path1 = Path.of("/test/path1");
+            var path2 = Path.of("/test/path2");
+
+            underTest.register(path1, path2);
+            List<Path> paths = underTest.getRegisteredPaths();
+            assertTrue(paths.contains(path1), "First path should be registered");
+            assertTrue(paths.contains(path2), "Second path should be registered");
+
+            underTest.unregister(path1, path2);
+            assertTrue(underTest.getRegisteredPaths().isEmpty(),
+                    "All paths should be unregistered");
+        }
+
+        @Test
+        @DisplayName("Should handle duplicate path registration")
+        void shouldHandleDuplicatePaths() {
+            var testPath = Path.of("/test/path");
+
+            underTest.register(testPath);
+            underTest.register(testPath);
+
+            assertEquals(1, underTest.getRegisteredPaths().size(),
+                    "Duplicate paths should be registered only once");
+        }
+    }
+
+    @Nested
+    @DisplayName("Event Handling")
+    class EventHandlingTest {
+
+        @Test
+        @DisplayName("Should have injected event")
+        void shouldHaveEvent() {
+            assertNotNull(fileChangeEvent, "FileChangedEvent should be injected");
+        }
+
+        @Test
+        @DisplayName("Should fire events for registered paths")
+        void shouldFireEvents() {
+            var testPath = Path.of("/test/path");
+            underTest.register(testPath);
+
+            // Fire event and verify it's handled
+            // Note: In a real test environment, we would need an EventObserver to verify
+            underTest.fireEvent(testPath);
+
+            assertTrue(underTest.getRegisteredPaths().contains(testPath),
+                    "Path should remain registered after event");
+        }
     }
 }

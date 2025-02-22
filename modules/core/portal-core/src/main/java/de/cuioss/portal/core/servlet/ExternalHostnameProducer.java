@@ -15,38 +15,64 @@
  */
 package de.cuioss.portal.core.servlet;
 
+import de.cuioss.tools.logging.CuiLogger;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
 
-import de.cuioss.tools.logging.CuiLogger;
+import java.util.Optional;
 
 /**
- * To retrieve the external hostname including port of the request
+ * Produces the external hostname for the portal, handling both direct server access and
+ * proxy-forwarded scenarios. This is particularly useful in environments with load balancers,
+ * reverse proxies, or SSL terminators.
+ *
+ * <p>The hostname resolution follows this priority order:</p>
+ * <ol>
+ * <li>X-Forwarded-Host header (for proxy-forwarded host)</li>
+ * <li>X-Forwarded-Port header (for proxy-forwarded port)</li>
+ * <li>Server Name from request (direct server name)</li>
+ * <li>Server Port from request (direct server port)</li>
+ * </ol>
+ *
+ * <p>The produced hostname will be in the format: {@code hostname:port}</p>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;Inject
+ * &#64;CuiExternalHostname
+ * Provider<String> hostname;
+ *
+ * String serverAddress = hostname.get();
+ * </pre>
+ *
+ * @author Matthias Walliczek
+ * @see CuiExternalHostname
+ * @since 1.0
  */
 @ApplicationScoped
 public class ExternalHostnameProducer {
 
-    private static final CuiLogger log = new CuiLogger(ExternalHostnameProducer.class);
+    public static final String X_FORWARDED_HOST = "X-Forwarded-Host";
+    public static final String X_FORWARDED_PORT = "X-Forwarded-Port";
+    public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+
+    private static final CuiLogger LOGGER = new CuiLogger(ExternalHostnameProducer.class);
 
     @Inject
     Provider<HttpServletRequest> httpServletRequest;
 
     @Produces
-    @Dependent
-    @Named
     @CuiExternalHostname
     String getExternalHostname() {
         var request = httpServletRequest.get();
-        var url = request.getRequestURL();
-        var uri = request.getRequestURI();
-        var hostname = url.substring(0, url.indexOf(uri));
-        log.debug("Resolved hostname: {}", hostname);
-        return hostname;
-    }
+        String serverName = Optional.ofNullable(request.getHeader(X_FORWARDED_HOST)).orElse(request.getServerName());
+        String serverPort = Optional.ofNullable(request.getHeader(X_FORWARDED_PORT)).orElse(String.valueOf(request.getServerPort()));
 
+        String hostWithPort = serverName + ":" + serverPort;
+        LOGGER.debug("Resolved hostname: %s", hostWithPort);
+        return hostWithPort;
+    }
 }

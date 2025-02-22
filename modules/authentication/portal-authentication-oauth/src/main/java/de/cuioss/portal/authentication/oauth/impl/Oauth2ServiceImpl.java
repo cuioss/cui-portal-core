@@ -28,7 +28,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -36,8 +40,6 @@ import jakarta.ws.rs.core.MediaType;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.Serial;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,25 +47,58 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.ERROR;
+import static de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages.WARN;
 import static de.cuioss.tools.base.Preconditions.checkState;
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
 import static java.net.URLEncoder.encode;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Default implementation of {@link Oauth2Service}.
+ * Default implementation of {@link Oauth2Service} that handles OAuth2 authentication flows.
+ * This service implementation manages token requests, user information retrieval,
+ * and authenticated user creation.
  *
- * @author Matthias Walliczek
+ * <p>Core responsibilities:
+ * <ul>
+ *   <li>Token Management
+ *     <ul>
+ *       <li>Authorization code exchange</li>
+ *       <li>Client credentials flow</li>
+ *       <li>Token refresh</li>
+ *     </ul>
+ *   </li>
+ *   <li>User Information
+ *     <ul>
+ *       <li>Userinfo endpoint integration</li>
+ *       <li>Role/claim mapping</li>
+ *       <li>User object creation</li>
+ *     </ul>
+ *   </li>
+ *   <li>OAuth2 Flow Management
+ *     <ul>
+ *       <li>State validation</li>
+ *       <li>PKCE support</li>
+ *       <li>Redirect URI handling</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <p>Implementation notes:
+ * <ul>
+ *   <li>Thread-safe and application-scoped</li>
+ *   <li>Uses MicroProfile Rest Client for HTTP operations</li>
+ *   <li>Supports standard OAuth2 error responses</li>
+ * </ul>
+ *
+ * @see Oauth2Service
+ * @see Oauth2Configuration
+ * @see Token
  */
 @ApplicationScoped
-public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
+public class Oauth2ServiceImpl implements Oauth2Service {
 
-    private static final CuiLogger log = new CuiLogger(Oauth2ServiceImpl.class);
-
-    @Serial
-    private static final long serialVersionUID = 470127601291147747L;
-
-    private static final String RETRIEVE_CLIENT_TOKEN_FAILED_MSG = "Portal-135: Retrieving client token failed";
+    private static final CuiLogger LOGGER = new CuiLogger(Oauth2ServiceImpl.class);
 
     /**
      * The request to retrieve a user-specific token from the c2id-server after
@@ -74,8 +109,8 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
         Token requestToken(@FormParam("grant_type") String grantType, @FormParam("code") String code,
-                           @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
-                           @FormParam("redirect_uri") String redirectUri);
+                @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
+                @FormParam("redirect_uri") String redirectUri);
     }
 
     public interface RequestRefreshToken extends Closeable {
@@ -117,6 +152,7 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     @Inject
     private Provider<Oauth2Configuration> configurationProvider;
 
+
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,
             final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
@@ -129,34 +165,33 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         var configuration = configurationProvider.get();
         Token token;
 
-        final var builder = new CuiRestClientBuilder(log)
-            .basicAuth(configuration.getClientId(), configuration.getClientSecret())
-            .register(new AcceptJsonHeaderFilter());
+        final var builder = new CuiRestClientBuilder(LOGGER)
+                .basicAuth(configuration.getClientId(), configuration.getClientSecret())
+                .register(new AcceptJsonHeaderFilter());
 
         final String tokenUri = configuration.getTokenUri().trim();
         final String redirectUri = configuration.getExternalContextPath().trim() + servletRequest.getRequestURI();
-        log.debug("creating auth user info with scopes='{}', tokenUri='{}', redirectUri='{}'",
-            scopes, tokenUri, redirectUri);
+        LOGGER.debug("Creating authenticated user info with scopes: %s, tokenUri: %s, redirectUri: %s", scopes, tokenUri, redirectUri);
 
         try (final RequestToken requestToken = builder.url(tokenUri).build(RequestToken.class)) {
             token = requestToken.requestToken(
-                "authorization_code",
-                code.getValue(),
-                state.getValue(),
-                codeVerifier,
-                redirectUri
+                    "authorization_code",
+                    code.getValue(),
+                    state.getValue(),
+                    codeVerifier,
+                    redirectUri
             );
-            log.trace("received token='{}' for scopes='{}', requestUri={}",
-                token, scopes, servletRequest.getRequestURI());
+            LOGGER.trace("received token='%s' for scopes='%s', requestUri=%s",
+                    token, scopes, servletRequest.getRequestURI());
         } catch (IllegalArgumentException e) {
-            log.warn("Portal-106: Retrieving request token failed", e);
+            LOGGER.warn(WARN.REQUEST_TOKEN_FAILED.format(), e);
             return null;
         } catch (WebApplicationException e) {
-            log.warn("Portal-106: Retrieving request token failed", e);
-            CuiRestClientBuilder.debugResponse(e.getResponse(), log);
+            LOGGER.warn(WARN.REQUEST_TOKEN_FAILED.format(), e);
+            CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
         } catch (IOException e) {
-            log.error("Portal-540: IO Exception during request", e);
+            LOGGER.error(ERROR.IO_EXCEPTION.format(), e);
             return null;
         }
 
@@ -169,26 +204,26 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     }
 
     private AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Oauth2Configuration configuration,
-                                                            Token token, int tokenTimestamp) {
+            Token token, int tokenTimestamp) {
 
         final String userInfoUri = configuration.getUserInfoUri().trim();
-        final CuiRestClientBuilder builder = new CuiRestClientBuilder(log)
-            .register(new AcceptJsonHeaderFilter())
-            .bearerAuthToken(token.getAccess_token());
+        final CuiRestClientBuilder builder = new CuiRestClientBuilder(LOGGER)
+                .register(new AcceptJsonHeaderFilter())
+                .bearerAuthToken(token.getAccess_token());
 
-        log.trace("retrieving userinfo for authenticated user. userInfoUri={}, access_token={}",
-            userInfoUri, token.getAccess_token());
+        LOGGER.trace("retrieving userinfo for authenticated user. userInfoUri=%s, access_token=%s",
+                userInfoUri, token.getAccess_token());
 
         try (RequestUserInfo client = builder.url(userInfoUri).build(RequestUserInfo.class)) {
 
             Map<String, Object> userInfo = client.getUserInfo();
-            log.debug("successfully retrieved userinfo");
-            log.trace("userinfo: {}", userInfo);
+            LOGGER.debug("successfully retrieved userinfo");
+            LOGGER.trace("userinfo: %s", userInfo);
 
             var baseAuthenticatedUserInfoBuilder = BaseAuthenticatedUserInfo.builder().authenticated(true)
-                .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_SCOPES_KEY, scopes)
-                .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token)
-                .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY, tokenTimestamp);
+                    .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_SCOPES_KEY, scopes)
+                    .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_KEY, token)
+                    .contextMapElement(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY, tokenTimestamp);
 
             for (Entry<String, Object> entry : userInfo.entrySet()) {
                 if ("preferred_username".equals(entry.getKey())) {
@@ -197,25 +232,25 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
                     baseAuthenticatedUserInfoBuilder.identifier(entry.getValue().toString());
                 } else if ("email".equals(entry.getKey())) {
                     baseAuthenticatedUserInfoBuilder.contextMapElement(Oauth2AuthenticationFacade.EMAIL_KEY,
-                        entry.getValue().toString());
+                            entry.getValue().toString());
                 } else if (configuration.getRoleMapperClaims().contains(entry.getKey())) {
                     baseAuthenticatedUserInfoBuilder.roles(asStringList(entry.getValue()));
                 } else {
                     // parse domain-specific user info entries as key / value information in the
                     // contextMap
                     baseAuthenticatedUserInfoBuilder.contextMapElement(
-                        Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + entry.getKey(),
-                        entry.getValue().toString());
+                            Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + entry.getKey(),
+                            entry.getValue().toString());
                 }
             }
 
             return baseAuthenticatedUserInfoBuilder.build();
         } catch (WebApplicationException e) {
-            log.warn("Portal-107: Get userinfo failed", e);
-            CuiRestClientBuilder.debugResponse(e.getResponse(), log);
+            LOGGER.warn(WARN.GET_USERINFO_FAILED.format(), e);
+            CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
         } catch (Exception e) {
-            log.warn("Portal-107: Get userinfo failed", e);
+            LOGGER.warn(WARN.GET_USERINFO_FAILED.format(), e);
             return null;
         }
     }
@@ -238,20 +273,20 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
         var configuration = configurationProvider.get();
         checkState(null != configuration.getTokenUri(), "tokenUri must not be null");
 
-        final var builder = new CuiRestClientBuilder(log)
-            .basicAuth(configuration.getClientId(), configuration.getClientSecret())
-            .register(new AcceptJsonHeaderFilter());
+        final var builder = new CuiRestClientBuilder(LOGGER)
+                .basicAuth(configuration.getClientId(), configuration.getClientSecret())
+                .register(new AcceptJsonHeaderFilter());
 
         try (var requestToken = builder.url(configuration.getTokenUri().trim()).build(RequestClientToken.class)) {
 
             var token = requestToken.requestToken("client_credentials");
             return token.getAccess_token();
         } catch (WebApplicationException e) {
-            log.warn(e, RETRIEVE_CLIENT_TOKEN_FAILED_MSG);
-            CuiRestClientBuilder.debugResponse(e.getResponse(), log);
+            LOGGER.warn(WARN.CLIENT_TOKEN_FAILED.format(), e);
+            CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
         } catch (Exception e) {
-            log.warn(e, RETRIEVE_CLIENT_TOKEN_FAILED_MSG);
+            LOGGER.warn(WARN.CLIENT_TOKEN_FAILED.format(), e);
             return null;
         }
     }
@@ -259,29 +294,29 @@ public class Oauth2ServiceImpl implements Serializable, Oauth2Service {
     @Override
     public String refreshToken(OauthAuthenticatedUserInfo currentUser) {
         var configuration = configurationProvider.get();
-        final var builder = new CuiRestClientBuilder(log)
-            .basicAuth(configuration.getClientId(), configuration.getClientSecret())
-            .register(new AcceptJsonHeaderFilter());
+        final var builder = new CuiRestClientBuilder(LOGGER)
+                .basicAuth(configuration.getClientId(), configuration.getClientSecret())
+                .register(new AcceptJsonHeaderFilter());
 
         try (var requestToken = builder.url(configuration.getTokenUri().trim()).build(RequestRefreshToken.class)) {
 
             var token = requestToken.requestToken("refresh_token", currentUser.getToken().getRefresh_token());
             if (null != token) {
-                log.debug("successfully retrieved new token");
-                log.trace("new token: {}", token);
+                LOGGER.debug("successfully retrieved new token");
+                LOGGER.trace("new token: %s", token);
                 currentUser.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_KEY, token);
                 currentUser.getContextMap().put(OauthAuthenticatedUserInfo.TOKEN_TIMESTAMP_KEY,
-                    (int) (System.currentTimeMillis() / 1000L));
+                        (int) (System.currentTimeMillis() / 1000L));
                 return token.getAccess_token();
             }
-            log.debug("no token received");
+            LOGGER.debug("no token received");
             return null;
         } catch (WebApplicationException e) {
-            log.warn(e, RETRIEVE_CLIENT_TOKEN_FAILED_MSG);
-            CuiRestClientBuilder.debugResponse(e.getResponse(), log);
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED.format());
+            CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
         } catch (Exception e) {
-            log.warn(e, RETRIEVE_CLIENT_TOKEN_FAILED_MSG);
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED.format());
             return null;
         }
     }

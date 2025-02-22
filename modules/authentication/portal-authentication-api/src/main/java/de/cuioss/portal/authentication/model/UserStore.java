@@ -15,14 +15,14 @@
  */
 package de.cuioss.portal.authentication.model;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * A {@link UserStore} represents an entry, local, or ldap server. The optional

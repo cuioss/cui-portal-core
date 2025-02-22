@@ -26,11 +26,61 @@ import jakarta.inject.Named;
 import lombok.experimental.Delegate;
 
 /**
- * Replacement for instances of {@link AuthenticatedUserInfo} producer, enabling finer
- * control without using an underlying service. <em>Caution: </em> This bean is
- * application scoped in order not to introduce problems with improper scoping.
+ * CDI producer for {@link AuthenticatedUserInfo} instances in test environments.
+ * Provides a configurable user producer that allows fine-grained control over user
+ * properties without requiring an actual authentication service.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Produces pre-configured user instances</li>
+ *   <li>Supports runtime user property modification</li>
+ *   <li>Application-scoped for consistent state</li>
+ *   <li>Named bean access via EL</li>
+ *   <li>Delegate pattern for builder access</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * Basic injection:
+ * <pre>
+ * &#64;Inject
+ * &#64;Named(PortalTestUserProducer.BEAN_NAME)
+ * private AuthenticatedUserInfo user;
+ *
+ * void testUser() {
+ *     assertEquals("user", user.getIdentifier());
+ *     assertEquals("user", user.getDisplayName());
+ * }
+ * </pre>
+ *
+ * Customizing user properties:
+ * <pre>
+ * &#64;Inject
+ * private PortalTestUserProducer userProducer;
+ *
+ * void setupCustomUser() {
+ *     userProducer
+ *         .displayName("John Doe")
+ *         .identifier("jdoe")
+ *         .email("john@example.com")
+ *         .addRole("admin")
+ *         .addAttribute("department", "IT");
+ * }
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Application scoped to prevent inconsistent state</li>
+ *   <li>Uses builder pattern via delegation</li>
+ *   <li>Produces dependent-scoped instances</li>
+ *   <li>Available as named bean "portalUser"</li>
+ *   <li>Initializes with default "user" properties</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @since 1.0
+ * @see AuthenticatedUserInfo
+ * @see BaseAuthenticatedUserInfo
  */
 @Named
 @ApplicationScoped

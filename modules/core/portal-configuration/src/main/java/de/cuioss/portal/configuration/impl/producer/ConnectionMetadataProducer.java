@@ -16,8 +16,12 @@
 package de.cuioss.portal.configuration.impl.producer;
 
 import de.cuioss.portal.configuration.connections.exception.ConnectionConfigurationException;
-import de.cuioss.portal.configuration.connections.impl.*;
+import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
+import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata.ConnectionMetadataBuilder;
+import de.cuioss.portal.configuration.connections.impl.ConnectionMetadataKeys;
+import de.cuioss.portal.configuration.connections.impl.ConnectionType;
+import de.cuioss.portal.configuration.connections.impl.StaticTokenResolver;
 import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.portal.configuration.util.ConfigurationHelper;
 import de.cuioss.tools.io.MorePaths;
@@ -35,6 +39,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR;
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static de.cuioss.tools.string.MoreStrings.emptyToNull;
 import static java.lang.Boolean.parseBoolean;
 import static java.util.Objects.requireNonNull;
@@ -51,20 +57,11 @@ import static java.util.Objects.requireNonNull;
 @ApplicationScoped
 public class ConnectionMetadataProducer {
 
-    private static final String RETURNING_EMPTY_VALUE = "No '{}' is present, returning empty-value";
+    private static final CuiLogger LOGGER = new CuiLogger(ConnectionMetadataProducer.class);
 
-    private static final CuiLogger log = new CuiLogger(ConnectionMetadataProducer.class);
-
-    private static final String UNABLE_TO_CONSTRUCT_MSG = "Portal-116: Unable to construct ConnectionMetadata, due to ";
-
-    /**
-     * "Portal-117: Configuration setting for baseName is missing."
-     */
-    public static final String MISSING_BASENAME_MSG = "Portal-117: Configuration setting for baseName is missing.";
-    private static final String MISSING_CONFIG_MSG = "Portal-119: Missing configuration for {} detected.";
-    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Portal-120: Configuration for basic authentication is incomplete. Missing: ";
-    private static final String MISSING_TOKEN_CONFIG_MSG = "Portal-120: Configuration for token based authentication is incomplete. Missing: ";
-    private static final String INVALID_NUMBER_VALUE = "Portal-526: Invalid content for '%s', expected a number but was '%s'";
+    public static final String MISSING_BASENAME_MSG = "Configuration setting for baseName is missing.";
+    private static final String MISSING_BASIC_AUTH_CONFIG_MSG = "Configuration for basic authentication is incomplete. Missing: %s";
+    private static final String MISSING_TOKEN_CONFIG_MSG = "Configuration for token based authentication is incomplete. Missing: %s";
 
     /**
      * Try to create {@linkplain ConnectionMetadata}<br>
@@ -89,7 +86,7 @@ public class ConnectionMetadataProducer {
     ConnectionMetadata produceConnectionMetadata(final InjectionPoint injectionPoint) {
         final var metaData = ConfigurationHelper.resolveAnnotation(injectionPoint, ConfigAsConnectionMetadata.class)
                 .orElseThrow(() -> new IllegalStateException("Invalid usage"));
-        log.trace("Producing configuration for '{}'", metaData.baseName());
+        LOGGER.trace("Producing configuration for '%s'", metaData.baseName());
         final var failOnInvalidConfiguration = metaData.failOnInvalidConfiguration();
         return createConnectionMetadata(metaData.baseName(), failOnInvalidConfiguration);
     }
@@ -107,8 +104,8 @@ public class ConnectionMetadataProducer {
      * @return the created {@link ConnectionMetadata}
      */
     public static ConnectionMetadata createConnectionMetadata(final String baseName,
-                                                              final boolean failOnInvalidConfiguration) {
-        log.trace("Creating ConnectionMetadata for '{}'", baseName);
+            final boolean failOnInvalidConfiguration) {
+        LOGGER.trace("Creating ConnectionMetadata for '%s'", baseName);
         final var builder = ConnectionMetadata.builder();
         // Basename must be present
         final var name = suffixNameWithDot(requireNonNull(emptyToNull(baseName), MISSING_BASENAME_MSG));
@@ -144,7 +141,7 @@ public class ConnectionMetadataProducer {
         final var meta = builder.build();
         meta.getContextMap().putAll(ConfigurationHelper.getFilteredPropertyMap(properties,
                 suffixNameWithDot(ConnectionMetadataKeys.CONFIG_KEY), true));
-        log.debug("Created Connection Metadata '{}'", meta);
+        LOGGER.debug("Created Connection Metadata '%s'", meta);
         if (!failOnInvalidConfiguration) {
             return meta;
         }
@@ -153,7 +150,7 @@ public class ConnectionMetadataProducer {
             meta.validate();
             return meta;
         } catch (final ConnectionConfigurationException e) {
-            log.warn(UNABLE_TO_CONSTRUCT_MSG + e.getMessage());
+            LOGGER.warn(e, WARN.UNABLE_TO_CONSTRUCT.format(e.getMessage()));
             throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
@@ -168,12 +165,12 @@ public class ConnectionMetadataProducer {
     @SuppressWarnings("squid:S1301") // We will use the switch soon, Delete this if the switch is
     // extended
     private static void handleAuthentication(final String baseName, final boolean failOnInvalidConfiguration,
-                                             final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
-        log.trace("Determining AuthenticationType for '{}'", baseName);
+            final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
+        LOGGER.trace("Determining AuthenticationType for '%s'", baseName);
         // Determine Authentication
         final var authenticationType = AuthenticationType.resolveFrom(baseName, filteredProperties);
         builder.authenticationType(authenticationType);
-        log.debug("Detected AuthenticationType '{}' for baseName '{}'", authenticationType, baseName);
+        LOGGER.debug("Detected AuthenticationType '%s' for baseName '%s'", authenticationType, baseName);
         switch (authenticationType) {
             case BASIC:
                 final var userName = filteredProperties.get(ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
@@ -215,26 +212,26 @@ public class ConnectionMetadataProducer {
     }
 
     private static void handleMissingProperty(final String propertyName, final String exceptionMessage,
-                                              final boolean failOnInvalidConfiguration) {
-        log.warn(MISSING_CONFIG_MSG, propertyName);
+            final boolean failOnInvalidConfiguration) {
+        LOGGER.warn(WARN.MISSING_CONFIG.format(propertyName));
         if (failOnInvalidConfiguration) {
             throw new IllegalArgumentException(exceptionMessage);
         }
     }
 
     private static Optional<KeyStoreProvider> getTruststoreInformation(final Map<String, String> filteredProperties) {
-        log.trace("Resolving TruststoreInformation");
+        LOGGER.trace("Resolving TruststoreInformation");
         final var truststoreLocation = filteredProperties.get(ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_LOCATION);
         final var truststorePassword = extractFirstKeyValue(filteredProperties,
                 ConnectionMetadataKeys.TRANSPORT_TRUSTSTORE_PASSWORD);
 
         if (null == truststoreLocation || truststorePassword.isEmpty()) {
-            if (log.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 if (MoreStrings.isEmpty(truststoreLocation)) {
-                    log.debug(RETURNING_EMPTY_VALUE, "trust-store-location");
+                    LOGGER.debug("No value present for 'trust-store-location', returning empty-value");
                 }
                 if (truststorePassword.isEmpty()) {
-                    log.debug(RETURNING_EMPTY_VALUE, "trust-store-password");
+                    LOGGER.debug("No value present for 'trust-store-password', returning empty-value");
                 }
             }
             return Optional.empty();
@@ -249,27 +246,27 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<KeyStoreProvider> getKeystoreInformation(final Map<String, String> filteredProperties) {
-        log.trace("Resolving KeystoreInformation");
+        LOGGER.trace("Resolving KeystoreInformation");
         final var keystoreLocation = extractKeystoreLocation(filteredProperties);
         final var keystorePassword = extractFirstKeyValue(filteredProperties,
                 ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_PASSWORD,
-                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD);
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEY_PASSWORD);
 
         if (keystoreLocation.isEmpty() || keystorePassword.isEmpty()) {
-            if (log.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 if (keystoreLocation.isEmpty()) {
-                    log.debug(RETURNING_EMPTY_VALUE, "key-store-location");
+                    LOGGER.debug("No value present for 'key-store-location', returning empty-value");
                 }
                 if (keystorePassword.isEmpty()) {
-                    log.debug(RETURNING_EMPTY_VALUE, "key-store-password");
+                    LOGGER.debug("No value present for 'key-store-password', returning empty-value");
                 }
             }
             return Optional.empty();
         }
 
         final var keyPassword = extractFirstKeyValue(filteredProperties,
-                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEYPASSWORD,
-                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEYPASSWORD).orElse(keystorePassword.get());
+                ConnectionMetadataKeys.AUTH_CERTIFICATE_KEYSTORE_KEY_PASSWORD,
+                ConnectionMetadataKeys.TRANSPORT_KEYSTORE_KEY_PASSWORD).orElse(keystorePassword.get());
 
         return Optional.of(KeyStoreProvider.builder().keyStoreType(KeyStoreType.KEY_STORE)
                 .location(new File(keystoreLocation.get())).storePassword(keystorePassword.get())
@@ -286,7 +283,7 @@ public class ConnectionMetadataProducer {
     }
 
     private static Optional<String> extractFirstKeyValue(final Map<String, String> filteredProperties,
-                                                         final String... keys) {
+            final String... keys) {
         for (final String key : keys) {
             final var value = filteredProperties.get(key);
             if (!MoreStrings.isEmpty(value)) {
@@ -306,31 +303,35 @@ public class ConnectionMetadataProducer {
      * @throws IllegalArgumentException if the value cannot be parsed
      */
     private static Optional<Long> getPositiveLong(final String key, final String value,
-                                                  final boolean failOnInvalidConfiguration) {
-        if (null != value) {
-            try {
-                return Optional.of(Long.parseUnsignedLong(value.trim()));
-            } catch (final NumberFormatException e) {
-                if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
-                }
-                log.error(e, INVALID_NUMBER_VALUE, key, value);
+            final boolean failOnInvalidConfiguration) {
+        if (MoreStrings.isEmpty(value)) {
+            LOGGER.trace("No value present for '%s', returning empty-value", key);
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(Long.parseUnsignedLong(value.trim()));
+        } catch (final NumberFormatException e) {
+            if (failOnInvalidConfiguration) {
+                throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
             }
+            LOGGER.error(e, ERROR.INVALID_NUMBER.format(key, value));
         }
         return Optional.empty();
     }
 
     private static Optional<Integer> getPositiveInt(final String key, final String value,
-                                                    final boolean failOnInvalidConfiguration) {
-        if (null != value) {
-            try {
-                return Optional.of(Integer.parseUnsignedInt(value.trim()));
-            } catch (final NumberFormatException e) {
-                if (failOnInvalidConfiguration) {
-                    throw new IllegalArgumentException(MoreStrings.lenientFormat(INVALID_NUMBER_VALUE, key, value), e);
-                }
-                log.error(e, INVALID_NUMBER_VALUE, key, value);
+            final boolean failOnInvalidConfiguration) {
+        if (MoreStrings.isEmpty(value)) {
+            LOGGER.trace("No value present for '%s', returning empty-value", key);
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(Integer.parseUnsignedInt(value.trim()));
+        } catch (final NumberFormatException e) {
+            if (failOnInvalidConfiguration) {
+                throw new IllegalArgumentException(ERROR.INVALID_NUMBER.format(key, value), e);
             }
+            LOGGER.error(e, ERROR.INVALID_NUMBER.format(key, value));
         }
         return Optional.empty();
     }

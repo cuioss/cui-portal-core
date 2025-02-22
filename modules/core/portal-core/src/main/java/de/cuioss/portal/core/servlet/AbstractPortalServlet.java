@@ -19,7 +19,6 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,38 +30,65 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+import static de.cuioss.portal.core.PortalCoreLogMessages.SERVLET;
+
 /**
- * Provides a minimal layer for modeling {@link Servlet}s that can be enabled by
- * role or configuration. Currently only get-requests are supported
- * ->{@link #executeDoGet(HttpServletRequest, HttpServletResponse)}. If you need
- * to implement a different method you can call
- * {@link #checkAccess(HttpServletResponse)} in order to participate in the
- * checks The algorithm:
- * <ul>
- * <li>Check enabled: {@link #isEnabled()}</li>
- * <li>Check authentication status: {@link #isLoggedInUserRequired()}</li>
- * <li>Check required roles: {@link #getRequiredRoles()}</li>
- * </ul>
- * If all previous checks are passed the method
- * {@link AbstractPortalServlet#executeDoGet(HttpServletRequest, HttpServletResponse)}
- * will be called.
+ * Base servlet implementation providing common portal functionality including
+ * authentication, authorization, and error handling. This abstract class handles
+ * common cross-cutting concerns, allowing concrete implementations to focus on
+ * business logic.
  *
- * @author Oliver Wolff
+ * <p><strong>Key features:</strong></p>
+ * <ul>
+ *   <li>Role-based access control</li>
+ *   <li>Authentication verification</li>
+ *   <li>Standardized error handling</li>
+ *   <li>Configurable servlet enablement</li>
+ * </ul>
+ *
+ * <p><strong>Security features:</strong></p>
+ * <ul>
+ *   <li>Enforces authentication if required</li>
+ *   <li>Validates user roles against required roles</li>
+ *   <li>Handles unauthorized access with appropriate HTTP status codes</li>
+ * </ul>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>
+ * &#64;WebServlet("/api/data")
+ * public class DataServlet extends AbstractPortalServlet {
+ *     &#64;Override
+ *     protected void executeDoGet(HttpServletRequest request, HttpServletResponse response) 
+ *             throws IOException {
+ *         // Implement business logic here
+ *     }
+ *
+ *     &#64;Override
+ *     protected Collection<String> getRequiredRoles() {
+ *         return Set.of("ADMIN", "DATA_USER");
+ *     }
+ * }
+ * </pre>
+ *
+ * <p><strong>HTTP Status Codes:</strong></p>
+ * <ul>
+ *   <li>{@code 401} - User is not authenticated but authentication is required</li>
+ *   <li>{@code 403} - User is authenticated but lacks required roles</li>
+ *   <li>{@code 500} - Internal server error during request processing</li>
+ *   <li>{@code 503} - Service is currently disabled ({@link #isEnabled()} returns false)</li>
+ * </ul>
+ *
+ * @see #executeDoGet(HttpServletRequest, HttpServletResponse)
+ * @see #getRequiredRoles()
+ * @see #isEnabled()
+ * @since 1.0
  */
 public abstract class AbstractPortalServlet extends HttpServlet {
-
-    /**
-     * Portal-523: Could not process Request, due to {}.
-     */
-    public static final String PORTAL_523 = "Portal-523: Could not process Request, due to {}";
-
-    private static final String NOT_LOGGED_IN = "Portal-523: Could not process Request, because the user must be logged in for this request";
-    private static final String USER = "Portal-523: Could not process Request, because of the condition '{}' is not met for user '{}'";
 
     @Serial
     private static final long serialVersionUID = 5418492528395532112L;
 
-    private final CuiLogger log = new CuiLogger(getClass());
+    private static final CuiLogger LOGGER = new CuiLogger(AbstractPortalServlet.class);
 
     @Inject
     Provider<AuthenticatedUserInfo> userInfoProvider;
@@ -75,7 +101,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         try {
             executeDoGet(req, resp);
         } catch (RuntimeException | IOException e) {
-            log.error(e, PORTAL_523, "Runtime Exception");
+            LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR.format(e.getMessage()));
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -90,26 +116,27 @@ public abstract class AbstractPortalServlet extends HttpServlet {
      * @return boolean indicating whether all checks are passed or not.
      */
     public boolean checkAccess(HttpServletResponse resp) {
-        log.trace("Checking call preconditions");
+        LOGGER.trace("Checking call preconditions");
         if (!isEnabled()) {
-            log.debug(PORTAL_523, "Disabled by configuration");
+            LOGGER.debug("Could not process Request, disabled by configuration");
             resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return false;
         }
         var user = getUserInfo();
 
         if (isLoggedInUserRequired() && !user.isAuthenticated()) {
-            log.warn(NOT_LOGGED_IN);
+            LOGGER.warn(SERVLET.WARN.USER_NOT_LOGGED_IN.format());
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         var requiredRoles = getRequiredRoles();
         if (!requiredRoles.isEmpty() && !new HashSet<>(user.getRoles()).containsAll(requiredRoles)) {
-            log.warn(USER, "User should provide the roles " + requiredRoles, user);
+            LOGGER.warn(SERVLET.WARN.USER_MISSING_ROLES.format(
+                    "User should provide the roles " + requiredRoles, user));
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
-        log.trace("All preconditions are ok, generating payload");
+        LOGGER.trace("All preconditions are ok, generating payload");
         return true;
     }
 

@@ -68,7 +68,7 @@ class ConfigurationProducerLocaleTest {
     @Test
     void shouldProduceLocaleList() {
         configuration.put(CONFIGURATION_KEY,
-            Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(), Locale.ENGLISH.toString()));
+                Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(), Locale.ENGLISH.toString()));
 
         configuration.fireEvent();
         assertEquals(2, injectedLocaleList.get().size());
@@ -77,7 +77,7 @@ class ConfigurationProducerLocaleTest {
     @Test
     void shouldIgnoreDuplicatesLocaleList() {
         configuration.put(CONFIGURATION_KEY, Joiner.on(CONTEXT_PARAM_SEPARATOR).join(Locale.GERMANY.toString(),
-            Locale.ENGLISH.toString(), Locale.GERMANY.toString()));
+                Locale.ENGLISH.toString(), Locale.GERMANY.toString()));
 
         configuration.fireEvent();
         assertEquals(2, injectedLocaleList.get().size());

@@ -16,18 +16,26 @@
 package de.cuioss.portal.authentication.oauth;
 
 /**
- * Helper class for redirecting to another (external) URL. To be used in non jsf
- * modules.
+ * Provides redirection capabilities for OAuth2 authentication flows.
+ * This interface abstracts the redirection mechanism to support both JSF and non-JSF
+ * environments, ensuring consistent redirection behavior across different module types.
  *
+ * <p>The redirector is responsible for:
+ * <ul>
+ *   <li>Handling external URL redirections</li>
+ *   <li>Managing context-independent URL processing</li>
+ *   <li>Providing consistent error handling</li>
+ * </ul>
  */
 public interface OauthRedirector {
 
     /**
-     * Redirect to another url. The url is expected to be complete and independent
-     * of the current context.
+     * Performs a redirect to the specified URL.
+     * The implementation must handle the redirection in a way appropriate for the current environment (JSF/non-JSF).
      *
-     * @param url the url as string
-     * @throws IllegalStateException if an exception occurred during redirect.
+     * @param url The complete, context-independent URL to redirect to
+     * @throws IllegalStateException if the redirection cannot be performed due to
+     *                               technical issues or invalid state
      */
     void sendRedirect(String url) throws IllegalStateException;
 

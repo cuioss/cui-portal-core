@@ -15,30 +15,56 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.test.juli.junit5.EnableTestLogger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@EnableTestLogger
+@DisplayName("Tests ParsedIdToken functionality")
 class ParsedIdTokenTest {
 
-    @Test
-    void shouldHandleValidToken() {
-        String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_ID_TOKEN);
 
-        var parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
+    @Nested
+    @DisplayName("Token Parsing Tests")
+    class TokenParsingTests {
 
-        assertTrue(parsedIdToken.isPresent());
-        assertEquals(parsedIdToken.get().getTokenString(), initialTokenString);
+        @Test
+        @DisplayName("Should handle valid token")
+        void shouldHandleValidToken() {
+            String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_ID_TOKEN);
+
+            var parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
+
+            assertTrue(parsedIdToken.isPresent(), "Token should be parsed successfully");
+            assertEquals(initialTokenString, parsedIdToken.get().getTokenString(), "Token string should match original");
+            assertFalse(parsedIdToken.get().isExpired(), "Token should not be expired");
+            assertEquals(TokenType.ID_TOKEN, parsedIdToken.get().getType(), "Token type should be ID_TOKEN");
+        }
+
+        @Test
+        @DisplayName("Should handle invalid token")
+        void shouldHandleInvalidToken() {
+            var parsedIdToken = ParsedIdToken.fromTokenString("invalid-token", TestTokenProducer.DEFAULT_TOKEN_PARSER);
+            assertFalse(parsedIdToken.isPresent(), "Invalid token should not be parsed");
+        }
     }
 
-    @Test
-    void shouldHandleEmail() {
-        String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_ID_TOKEN);
+    @Nested
+    @DisplayName("Token Claims Tests")
+    class TokenClaimsTests {
 
-        var parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
-        assertTrue(parsedIdToken.isPresent());
-        assertEquals("hello@world.com", parsedIdToken.get().getEmail().get());
+        @Test
+        @DisplayName("Should handle email claim")
+        void shouldHandleEmail() {
+            String initialTokenString = TestTokenProducer.validSignedJWTWithClaims(TestTokenProducer.SOME_ID_TOKEN);
+
+            var parsedIdToken = ParsedIdToken.fromTokenString(initialTokenString, TestTokenProducer.DEFAULT_TOKEN_PARSER);
+            assertTrue(parsedIdToken.isPresent(), "Token should be parsed successfully");
+            assertTrue(parsedIdToken.get().getEmail().isPresent(), "Email should be present");
+            assertEquals("hello@world.com", parsedIdToken.get().getEmail().get(), "Email should match expected value");
+        }
     }
-
 }

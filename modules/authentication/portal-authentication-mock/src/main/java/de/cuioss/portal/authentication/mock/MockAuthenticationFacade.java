@@ -16,11 +16,16 @@
 package de.cuioss.portal.authentication.mock;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
-import de.cuioss.portal.authentication.facade.*;
+import de.cuioss.portal.authentication.facade.AuthenticationFacade;
+import de.cuioss.portal.authentication.facade.AuthenticationResults;
+import de.cuioss.portal.authentication.facade.AuthenticationSource;
+import de.cuioss.portal.authentication.facade.FormBasedAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo.BaseAuthenticatedUserInfoBuilder;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.portal.configuration.types.ConfigAsList;
+import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.LoginCredentials;
 import de.cuioss.uimodel.result.ResultObject;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,6 +41,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.DEBUG;
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.INFO;
+import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.WARN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -109,6 +117,8 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private List<UserStore> availableUserStores;
 
+    private static final CuiLogger LOGGER = new CuiLogger(MockAuthenticationFacade.class);
+
     @ConfigProperty(name = CONFIGURATION_KEY_AUTHENTICATED, defaultValue = "true")
     @Inject
     private Provider<Boolean> defaultLoggedIn;
@@ -156,17 +166,22 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
                     .identifier(loginCredentials.getUsername()).qualifiedIdentifier(loginCredentials.getUsername())
                     .displayName(loginCredentials.getUsername()).build();
             servletRequest.getSession(true).setAttribute(USER_INFO_KEY, currentAuthenticationUserInfo);
+            LOGGER.info(INFO.USER_LOGIN.format(loginCredentials.getUsername()));
             return AuthenticationResults.validResult(currentAuthenticationUserInfo);
         }
+        LOGGER.warn(WARN.INVALID_LOGIN.format(loginCredentials.getUsername()));
         return AuthenticationResults.invalidResult(
                 "This is a mocked login, enter username with the same password, saying admin/admin, user/user,..",
                 "testuser", null);
     }
 
     private BaseAuthenticatedUserInfoBuilder createDefaultUserInfoBuilder() {
+        var roles = defaultUserRoles.get().stream().map(String::trim).toList();
+        var groups = defaultUserGroups.get().stream().map(String::trim).toList();
+        LOGGER.debug(DEBUG.DEFAULT_USER_INFO.format(roles, groups));
         var builder = BaseAuthenticatedUserInfo.builder().authenticated(true)
-                .groups(defaultUserGroups.get().stream().map(String::trim).toList())
-                .roles(defaultUserRoles.get().stream().map(String::trim).toList())
+                .groups(groups)
+                .roles(roles)
                 .system(defaultSystem);
         for (String entry : defaultContextMapEntries.get()) {
             builder.contextMapElement(entry.split(":")[0].trim(), entry.split(":")[1].trim());
@@ -177,12 +192,17 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     @Override
     public boolean logout(final HttpServletRequest servletRequest) {
         var oldSession = servletRequest.getSession();
+        AuthenticatedUserInfo userInfo = null;
         if (null != oldSession) {
+            userInfo = (AuthenticatedUserInfo) oldSession.getAttribute(USER_INFO_KEY);
             oldSession.invalidate();
         }
         var newSession = servletRequest.getSession(true);
         newSession.setAttribute(USER_INFO_KEY, NOT_LOGGED_IN);
         newSession.setAttribute(USER_INFO_LOGOUT_KEY, USER_INFO_LOGOUT_KEY);
+        if (null != userInfo && userInfo.isAuthenticated()) {
+            LOGGER.info(INFO.USER_LOGOUT.format(userInfo.getDisplayName()));
+        }
         return true;
     }
 
@@ -190,13 +210,16 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     public AuthenticatedUserInfo retrieveCurrentAuthenticationContext(final HttpServletRequest servletRequest) {
         var userInfo = (AuthenticatedUserInfo) servletRequest.getSession().getAttribute(USER_INFO_KEY);
         if (null == userInfo) {
-            if (defaultLoggedIn.get()) {
+            if (Boolean.TRUE.equals(defaultLoggedIn.get())) {
                 var userName = defaultUserName.get();
                 userInfo = createDefaultUserInfoBuilder().identifier(userName).qualifiedIdentifier(userName)
                         .displayName(userName).build();
             } else {
                 userInfo = NOT_LOGGED_IN;
             }
+        }
+        if (userInfo.isAuthenticated()) {
+            LOGGER.info(INFO.RETRIEVED_CONTEXT.format(userInfo.getDisplayName()));
         }
         return userInfo;
     }

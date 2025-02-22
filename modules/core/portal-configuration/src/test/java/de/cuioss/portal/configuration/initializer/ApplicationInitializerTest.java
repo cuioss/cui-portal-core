@@ -15,13 +15,12 @@
  */
 package de.cuioss.portal.configuration.initializer;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ApplicationInitializerTest {
 
@@ -58,6 +57,7 @@ class ApplicationInitializerTest {
 
         @Override
         public void initialize() {
+            // Noop implementation: Test only
         }
 
     }

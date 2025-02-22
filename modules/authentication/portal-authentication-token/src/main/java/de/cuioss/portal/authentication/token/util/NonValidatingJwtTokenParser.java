@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.authentication.token.util;
 
-import de.cuioss.portal.authentication.token.LogMessages;
+import de.cuioss.portal.authentication.token.PortalTokenLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
@@ -35,16 +35,37 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * A simplified JWT parser that can extract claims from a token without validating
- * its signature. This is useful for inspecting token content, like the issuer,
- * before deciding which actual validator to use.
+ * Utility class for inspecting JWT token content without signature validation.
+ * This parser is designed for preliminary token analysis to extract claims and metadata
+ * before full validation, particularly useful in multi-issuer scenarios.
+ * <p>
+ * Security features:
+ * <ul>
+ *   <li>Token size validation (max 16KB) to prevent memory exhaustion</li>
+ *   <li>Payload size validation (max 16KB) for JSON parsing</li>
+ *   <li>Standard Base64 decoding for JWT parts</li>
+ *   <li>Proper character encoding handling</li>
+ * </ul>
+ * <p>
+ * Important security note: This parser does NOT validate token signatures.
+ * It should only be used for:
+ * <ul>
+ *   <li>Extracting issuer information to select the appropriate validator</li>
+ *   <li>Preliminary token inspection and debugging</li>
+ *   <li>Token format validation</li>
+ * </ul>
+ * <p>
+ * Usage example:
+ * <pre>
+ * NonValidatingJwtTokenParser parser = new NonValidatingJwtTokenParser();
+ * Optional<JsonWebToken> token = parser.unsecured(tokenString);
+ * token.ifPresent(t -> {
+ *     String issuer = t.getIssuer();
+ *     // Use issuer to select appropriate validator
+ * });
+ * </pre>
  *
- * <p>Security considerations:
- * - Implements size checks to prevent overflow attacks
- * - Uses standard Java Base64 decoder
- * - Does not validate signatures, only for inspection
- *
- * @author Generated
+ * @author Oliver Wolff
  */
 @ToString
 @EqualsAndHashCode
@@ -76,22 +97,22 @@ public class NonValidatingJwtTokenParser {
      *
      * @param token the JWT token string to parse, must not be null
      * @return an Optional containing the JsonWebToken if parsing is successful,
-     *         or empty if the token is invalid or cannot be parsed
+     * or empty if the token is invalid or cannot be parsed
      */
     public Optional<JsonWebToken> unsecured(String token) {
         if (MoreStrings.isEmpty(token)) {
-            LOGGER.info(LogMessages.TOKEN_EMPTY.format());
+            LOGGER.debug("Token is empty or null");
             return Optional.empty();
         }
 
         if (token.getBytes(StandardCharsets.UTF_8).length > MAX_TOKEN_SIZE) {
-            LOGGER.warn(LogMessages.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
+            LOGGER.warn(PortalTokenLogMessages.WARN.TOKEN_SIZE_EXCEEDED.format(MAX_TOKEN_SIZE));
             return Optional.empty();
         }
 
         var parts = Splitter.on('.').splitToList(token);
         if (parts.size() != 3) {
-            LOGGER.info(LogMessages.INVALID_TOKEN_FORMAT.format(parts.size()));
+            LOGGER.debug("Invalid JWT token format: expected 3 parts but got %s", parts.size());
             return Optional.empty();
         }
 
@@ -99,7 +120,7 @@ public class NonValidatingJwtTokenParser {
             JsonObject claims = parsePayload(parts.get(1));
             return Optional.of(new NotValidatedJsonWebToken(claims));
         } catch (Exception e) {
-            LOGGER.info(e, LogMessages.TOKEN_PARSE_FAILED.format(e.getMessage()));
+            LOGGER.debug(e, "Failed to parse token: %s", e.getMessage());
             return Optional.empty();
         }
     }
@@ -108,7 +129,7 @@ public class NonValidatingJwtTokenParser {
         byte[] decoded = Base64.getUrlDecoder().decode(payload);
 
         if (decoded.length > MAX_PAYLOAD_SIZE) {
-            LOGGER.info(LogMessages.PAYLOAD_SIZE_EXCEEDED.format(MAX_PAYLOAD_SIZE));
+            LOGGER.debug("Decoded payload exceeds maximum size limit of %s bytes", MAX_PAYLOAD_SIZE);
             throw new IllegalStateException("Decoded payload exceeds maximum size limit");
         }
 

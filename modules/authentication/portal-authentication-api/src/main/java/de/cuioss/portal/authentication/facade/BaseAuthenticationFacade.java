@@ -26,12 +26,18 @@ import java.util.List;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 
 /**
- * Abstract implementation to handle {@link PortalUserEnricher}s.
+ * Base implementation of {@link AuthenticationFacade} that provides common functionality
+ * for authentication handling.
+ *
+ * <p>This class is thread-safe as it relies on CDI-managed components and immutable state.
+ * Implementations should ensure thread-safety by following the same principles.</p>
+ *
+ * @author Oliver Wolff
  */
 public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
 
     @Inject
-    private Instance<PortalUserEnricher> portalUserEnrichers;
+    private Instance<PortalUserEnricher> portalUserEnricher;
 
     /**
      * Enriches the given {@link AuthenticatedUserInfo} using the available
@@ -43,15 +49,23 @@ public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
      * <p>
      * The enriched {@linkplain AuthenticatedUserInfo} is returned as a result.
      *
-     * @param authenticatedUserInfo the instance to enrich
-     * @return the enriched instance
+     * @param authenticatedUserInfo the instance to enrich, may be null
+     * @return the enriched instance if authenticatedUserInfo is not null, otherwise null
      */
     protected AuthenticatedUserInfo enrich(AuthenticatedUserInfo authenticatedUserInfo) {
-        final List<PortalUserEnricher> sortedPortalUserEnrichers = PortalPriorities
-                .sortByPriority(mutableList(portalUserEnrichers));
+        if (null == authenticatedUserInfo) {
+            return null;
+        }
+
+        final List<PortalUserEnricher> sortedPortalUserEnricher = PortalPriorities
+                .sortByPriority(mutableList(portalUserEnricher));
+
         var enrichedAuthenticatedUserInfo = authenticatedUserInfo;
-        for (PortalUserEnricher portalUserEnricher : sortedPortalUserEnrichers) {
-            enrichedAuthenticatedUserInfo = portalUserEnricher.apply(enrichedAuthenticatedUserInfo);
+        for (PortalUserEnricher userEnricher : sortedPortalUserEnricher) {
+            var enriched = userEnricher.apply(enrichedAuthenticatedUserInfo);
+            if (enriched != null) {
+                enrichedAuthenticatedUserInfo = enriched;
+            }
         }
         return enrichedAuthenticatedUserInfo;
     }

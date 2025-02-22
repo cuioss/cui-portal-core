@@ -15,9 +15,8 @@
  */
 package de.cuioss.portal.core.test.mocks.microprofile;
 
-import org.eclipse.microprofile.metrics.Metric;
-
 import de.cuioss.test.generator.TypedGenerator;
+import org.eclipse.microprofile.metrics.Metric;
 
 class MetricGenerator implements TypedGenerator<Metric> {
 

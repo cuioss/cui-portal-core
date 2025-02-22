@@ -15,54 +15,41 @@
  */
 package de.cuioss.portal.restclient;
 
-import java.io.IOException;
-
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientResponseContext;
 import jakarta.ws.rs.client.ClientResponseFilter;
 
-import de.cuioss.tools.logging.CuiLogger;
-import jakarta.annotation.Priority;
+import java.io.IOException;
 
 /**
- * A {@linkplain ClientResponseFilter} to log the response metadata received by
- * the rest-client.
- * <p>
- * This class is annotated with {@link Priority} with value
- * {@link Integer#MIN_VALUE} to ensure it is the very last filter that is
- * called.
- * <p>
- * This is an abstract class to allow multi-registering via anonymous class.
+ * Client filter that logs incoming REST client responses.
+ * Provides detailed logging of response details including:
+ * <ul>
+ *   <li>Response status and status info</li>
+ *   <li>Headers</li>
+ * </ul>
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * and can be controlled through the Portal logging configuration.
+ *
+ * @see LogClientRequestFilter
+ * @see LogReaderInterceptor
+ * @see CuiRestClientBuilder
  */
 @Priority(Integer.MIN_VALUE)
 abstract class LogClientResponseFilter implements ClientResponseFilter {
 
-    private static final String PATTERN = """
-            -- Client response filter {}--
-            Status: {}
-            StatusInfo: {}
-            Allowed Methods: {}
-            EntityTag: {}
-            Cookies: {}
-            Date: {}
-            Headers: {}
-            Language: {}
-            LastModified: {}
-            Links: {}
-            Location: {}
-            MediaType: {}
-            """;
-
-    private final CuiLogger log;
-
+    private final CuiLogger givenLogger;
     private final String name;
 
-    protected LogClientResponseFilter(final CuiLogger logger) {
-        this(logger, "");
+    protected LogClientResponseFilter(final CuiLogger givenLogger) {
+        this(givenLogger, "");
     }
 
-    protected LogClientResponseFilter(final CuiLogger logger, final String name) {
-        log = logger;
+    protected LogClientResponseFilter(final CuiLogger givenLogger, final String name) {
+        this.givenLogger = givenLogger;
         this.name = "[" + name + "] ";
     }
 
@@ -70,14 +57,15 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
     public void filter(final ClientRequestContext clientRequestContext,
             final ClientResponseContext clientResponseContext) throws IOException {
         try {
-            log.info(PATTERN, name, clientResponseContext.getStatus(), clientResponseContext.getStatusInfo(),
-                    clientResponseContext.getAllowedMethods(), clientResponseContext.getEntityTag(),
-                    clientResponseContext.getCookies(), clientResponseContext.getDate(),
-                    clientResponseContext.getHeaders(), clientResponseContext.getLanguage(),
-                    clientResponseContext.getLastModified(), clientResponseContext.getLinks(),
-                    clientResponseContext.getLocation(), clientResponseContext.getMediaType());
+            givenLogger.info(RestClientLogMessages.INFO.RESPONSE_INFO.format(name, clientResponseContext.getStatus(),
+                    clientResponseContext.getStatusInfo(), clientResponseContext.getAllowedMethods(),
+                    clientResponseContext.getEntityTag(), clientResponseContext.getCookies(),
+                    clientResponseContext.getDate(), clientResponseContext.getHeaders(),
+                    clientResponseContext.getLanguage(), clientResponseContext.getLastModified(),
+                    clientResponseContext.getLinks(), clientResponseContext.getLocation(),
+                    clientResponseContext.getMediaType()));
         } catch (final Exception e) {
-            log.error("Portal-529: Could not trace-log response data", e);
+            givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
         }
     }
 }

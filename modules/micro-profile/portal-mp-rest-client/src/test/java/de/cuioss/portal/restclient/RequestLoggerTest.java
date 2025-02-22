@@ -16,240 +16,95 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.test.generator.Generators;
+import de.cuioss.test.generator.impl.URLGenerator;
+import de.cuioss.test.generator.junit.EnableGeneratorController;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
-import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientRequestContext;
-import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
-@EnableTestLogger(trace = RequestLoggerTest.class)
+/**
+ * Tests for the {@link LogClientRequestFilter} class focusing on request logging functionality
+ */
+@EnableTestLogger
+@EnableGeneratorController
+@DisplayName("Request Logger Tests")
 class RequestLoggerTest {
 
-    private static final CuiLogger log = new CuiLogger(RequestLoggerTest.class);
-
-    private static final String URI = "https://cuioss.de";
-
+    private static final CuiLogger LOGGER = new CuiLogger(RequestLoggerTest.class);
+    private static final String URI = new URLGenerator().next().toString();
     private static final String METHOD = Generators.fixedValues("GET", "POST", "LIST", "PUT", null).next();
     private static final boolean HAS_BODY = Generators.booleans().next();
     private static final String STRING = Generators.strings().next();
     private static final int INT = Generators.integers().next();
 
+    private TestPojo testPojo;
+    private LogClientRequestFilter underTest;
+
+    @BeforeEach
+    void setUp() {
+        testPojo = new TestPojo(STRING, INT);
+        underTest = new LogClientRequestFilter(LOGGER);
+        LOGGER.info("Testing with string={}, int={}, method={}, pojo={}", STRING, INT, METHOD, testPojo);
+    }
+
     @Test
-    void requestLoggingTest() throws IOException {
-        final var testPojo = new TestPojo(STRING, INT);
+    @DisplayName("Should properly log request details")
+    void shouldLogRequestDetails() throws IOException, URISyntaxException {
+        // Create mock
+        ClientRequestContext requestContext = EasyMock.createNiceMock(ClientRequestContext.class);
 
-        log.info("Testing with string={}, int={}, method={}, pojo={}", STRING, INT, METHOD, testPojo);
+        // Set up expectations
+        MultivaluedMap<String, String> stringHeaders = new MultivaluedHashMap<>();
+        stringHeaders.put("test", immutableList("test-value"));
 
-        new LogClientRequestFilter(log).filter(new ClientRequestContext() {
+        EasyMock.expect(requestContext.getMethod()).andReturn(METHOD).anyTimes();
+        EasyMock.expect(requestContext.getUri()).andReturn(new URI(URI)).anyTimes();
+        EasyMock.expect(requestContext.getStringHeaders()).andReturn(stringHeaders).anyTimes();
+        EasyMock.expect(requestContext.hasEntity()).andReturn(HAS_BODY).anyTimes();
+        if (HAS_BODY) {
+            EasyMock.expect(requestContext.getEntity()).andReturn(testPojo).anyTimes();
+        }
 
-            @Override
-            public Object getProperty(String name) {
-                throw new UnsupportedOperationException("getProperty");
-            }
+        // Replay
+        EasyMock.replay(requestContext);
 
-            @Override
-            public Collection<String> getPropertyNames() {
-                throw new UnsupportedOperationException("getPropertyNames");
-            }
+        // Execute
+        underTest.filter(requestContext);
 
-            @Override
-            public void setProperty(String name, Object object) {
-                throw new UnsupportedOperationException("setProperty");
-            }
-
-            @Override
-            public void removeProperty(String name) {
-                throw new UnsupportedOperationException("removeProperty");
-            }
-
-            @Override
-            public URI getUri() {
-                try {
-                    return new URI(URI);
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException("uri could not be set");
-                }
-            }
-
-            @Override
-            public void setUri(URI uri) {
-                throw new UnsupportedOperationException("setUri");
-            }
-
-            @Override
-            public String getMethod() {
-                return METHOD;
-            }
-
-            @Override
-            public void setMethod(String method) {
-                throw new UnsupportedOperationException("setMethod");
-            }
-
-            @Override
-            public MultivaluedMap<String, Object> getHeaders() {
-                throw new UnsupportedOperationException("getHeaders");
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getStringHeaders() {
-                final var map = new MultivaluedHashMap<String, String>();
-                map.putSingle("a-string", "foobar");
-                map.put("a-list", immutableList("a", "b", "c"));
-                return map;
-            }
-
-            @Override
-            public String getHeaderString(String name) {
-                throw new UnsupportedOperationException("getHeaderString");
-            }
-
-            @Override
-            public Date getDate() {
-                throw new UnsupportedOperationException("getDate");
-            }
-
-            @Override
-            public Locale getLanguage() {
-                throw new UnsupportedOperationException("getLanguage");
-            }
-
-            @Override
-            public MediaType getMediaType() {
-                throw new UnsupportedOperationException("getMediaType");
-            }
-
-            @Override
-            public List<MediaType> getAcceptableMediaTypes() {
-                throw new UnsupportedOperationException("getAcceptableMediaTypes");
-            }
-
-            @Override
-            public List<Locale> getAcceptableLanguages() {
-                throw new UnsupportedOperationException("getAcceptableLanguages");
-            }
-
-            @Override
-            public Map<String, Cookie> getCookies() {
-                throw new UnsupportedOperationException("getCookies");
-            }
-
-            @Override
-            public boolean hasEntity() {
-                return HAS_BODY;
-            }
-
-            @Override
-            public Object getEntity() {
-                if (HAS_BODY) {
-                    return testPojo;
-                }
-                return null;
-            }
-
-            @Override
-            public Class<?> getEntityClass() {
-                if (HAS_BODY) {
-                    return testPojo.getClass();
-                }
-                return null;
-            }
-
-            @Override
-            public Type getEntityType() {
-                return getEntityClass();
-            }
-
-            @Override
-            public void setEntity(Object entity) {
-                throw new UnsupportedOperationException("setEntity(Object)");
-            }
-
-            @Override
-            public void setEntity(Object entity, Annotation[] annotations, MediaType mediaType) {
-                throw new UnsupportedOperationException("setEntity(Object, Annotation, MediaType)");
-            }
-
-            @Override
-            public Annotation[] getEntityAnnotations() {
-                if (HAS_BODY) {
-                    return new Annotation[0];
-                }
-                return null;
-            }
-
-            @Override
-            public OutputStream getEntityStream() {
-                if (HAS_BODY) {
-                    // Per API, the JAX-RS runtime is responsible for closing this stream.
-                    final var bas = new ByteArrayOutputStream();
-                    try {
-                        bas.write(STRING.getBytes(StandardCharsets.ISO_8859_1));
-                        return bas;
-                    } catch (final IOException e) {
-                        throw new RuntimeException("Could not write request body");
-                    }
-                }
-                return null;
-            }
-
-            @Override
-            public void setEntityStream(OutputStream outputStream) {
-                throw new UnsupportedOperationException("setEntityStream");
-            }
-
-            @Override
-            public Client getClient() {
-                throw new UnsupportedOperationException("getClient");
-            }
-
-            @Override
-            public Configuration getConfiguration() {
-                throw new UnsupportedOperationException("getConfiguration");
-            }
-
-            @Override
-            public void abortWith(Response response) {
-                throw new UnsupportedOperationException("abortWith");
-            }
-        });
-
+        // Verify
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Request URI: " + URI);
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: " + nullToEmpty(METHOD));
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "a-list: [a, b, c]");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "a-string: [foobar]");
-
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "test: [test-value]");
         if (HAS_BODY) {
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Body:");
-            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, testPojo.toString());
+            LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Body: " + testPojo);
         }
     }
 
     @Data
     @AllArgsConstructor
-    public static class TestPojo {
+    static class TestPojo {
+        private String string;
+        private int integer;
+    }
 
-        private final String string;
-        private final int integer;
+    private String nullToEmpty(String value) {
+        return value == null ? "" : value;
     }
 }

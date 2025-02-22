@@ -22,7 +22,12 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -32,14 +37,75 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Base test for testing the mapping of a set of configurationKeys to a specific
- * {@link ConfigSource}.
- * The concrete {@link ConfigSource} will be identified by the key {@link #CONFIG_NAME} matching to the provided {@link #getConfigSourceName()}
- * In essence, it is about ensuring that the key mapping to a default configuration is complete and detecting name changes.
- * You can adjust the test-behavior by filtering the corresponding keys that are
- * checked, see therefore {@link #getKeysIgnoreList()} and {@link #getConfigurationKeysIgnoreList()}
+ * Base test class for verifying configuration key mappings to specific {@link ConfigSource}s.
+ * Ensures configuration completeness and detects key naming changes by validating
+ * declared configuration keys against the actual configuration source.
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Configuration key validation</li>
+ *   <li>ConfigSource mapping verification</li>
+ *   <li>Key presence testing</li>
+ *   <li>Configurable key filtering</li>
+ *   <li>Detailed validation reporting</li>
+ * </ul>
+ *
+ * <h2>Usage Examples</h2>
+ * <p>
+ * Basic configuration test:
+ * <pre>
+ * public class MyConfigTest extends AbstractConfigurationKeyVerifierTest {
+ *     &#64;Override
+ *     protected Class<?> getKeyHolder() {
+ *         return MyConfigurationKeys.class;
+ *     }
+ *
+ *     &#64;Override
+ *     protected String getConfigSourceName() {
+ *         return "my-config-source";
+ *     }
+ * }
+ * </pre>
+ * <p>
+ * Custom key filtering:
+ * <pre>
+ * public class FilteredConfigTest extends AbstractConfigurationKeyVerifierTest {
+ *     &#64;Override
+ *     protected Set<String> getKeysIgnoreList() {
+ *         return Set.of("temporary.key", "debug.key");
+ *     }
+ *
+ *     &#64;Override
+ *     protected Set<String> getConfigurationKeysIgnoreList() {
+ *         return Set.of("DEPRECATED_KEY", "FUTURE_KEY");
+ *     }
+ *
+ *     // ... other required overrides
+ * }
+ * </pre>
+ *
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>Uses MicroProfile Config for configuration access</li>
+ *   <li>Validates against public static final fields</li>
+ *   <li>Supports key filtering and exclusions</li>
+ *   <li>Provides detailed validation failure messages</li>
+ *   <li>Handles null and empty values appropriately</li>
+ * </ul>
+ *
+ * <h2>Best Practices</h2>
+ * <ul>
+ *   <li>Create one test class per configuration source</li>
+ *   <li>Document ignored keys with reasons</li>
+ *   <li>Keep key holder classes well-organized</li>
+ *   <li>Regularly review ignored keys</li>
+ *   <li>Use meaningful config source names</li>
+ * </ul>
  *
  * @author Oliver Wolff
+ * @see ConfigSource
+ * @see ConfigProvider
+ * @since 1.0
  */
 public abstract class AbstractConfigurationKeyVerifierTest {
 
@@ -94,15 +160,15 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var resolvedKeyNames = resolveKeyNames();
 
         LOGGER.info("Checking resolvedKeyNames:{}against configurationKeys:{}",
-            System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
-                + System.lineSeparator(),
-            System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
+                System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
+                        + System.lineSeparator(),
+                System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
 
         final List<String> notFoundKeys = resolvedKeyNames.stream().filter(key -> !configurationKeys.contains(key))
-            .toList();
+                .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
-                + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
+                    + ", you can use #getKeysIgnoreList() to filter the keys to be checked");
         }
     }
 
@@ -117,10 +183,10 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var resolvedKeysFromType = resolveKeyNames();
         LOGGER.info("Checking configurationKeys='{}' against resolvedKeysFromType='{}'", resolvedKeysFromType, configurationKeys);
         List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeysFromType.contains(key))
-            .toList();
+                .toList();
         if (!notFoundKeys.isEmpty()) {
             fail("Found Keys that are not backed by the provided configuration: " + notFoundKeys
-                + ", you can use #getConfigurationKeysIgnoreList() to filter the keys to be checked");
+                    + ", you can use #getConfigurationKeysIgnoreList() to filter the keys to be checked");
         }
     }
 
@@ -206,8 +272,6 @@ public abstract class AbstractConfigurationKeyVerifierTest {
             return strings;
         }
         var foundNames = StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false).map(ConfigSource::getName).collect(Collectors.toSet());
-        fail("Unable to find any configuration source named '%s', available sources: '%s'".formatted(name, foundNames));
-
-        return null;
+        throw new AssertionError("Unable to find any configuration source named '%s', available sources: '%s'".formatted(name, foundNames));
     }
 }

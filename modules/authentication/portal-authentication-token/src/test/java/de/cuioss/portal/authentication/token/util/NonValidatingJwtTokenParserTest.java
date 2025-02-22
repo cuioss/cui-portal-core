@@ -15,10 +15,14 @@
  */
 package de.cuioss.portal.authentication.token.util;
 
-import de.cuioss.portal.authentication.token.LogMessages;
+import de.cuioss.portal.authentication.token.PortalTokenLogMessages;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import de.cuioss.tools.string.MoreStrings;
+import de.cuioss.tools.string.Splitter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -29,18 +33,13 @@ import java.util.Base64;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.ISSUER;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_NAME;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
-import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.test.juli.LogAsserts.assertNoLogMessagePresent;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@EnableTestLogger
+@EnableTestLogger(debug = NonValidatingJwtTokenParser.class)
+@DisplayName("Tests NonValidatingJwtTokenParser functionality")
 class NonValidatingJwtTokenParserTest {
 
     private NonValidatingJwtTokenParser parser;
@@ -50,86 +49,118 @@ class NonValidatingJwtTokenParserTest {
         parser = new NonValidatingJwtTokenParser();
     }
 
-    @Test
-    void shouldParseValidToken() {
-        var token = validSignedJWTWithClaims(SOME_SCOPES);
-        var result = parser.unsecured(token);
+    @Nested
+    @DisplayName("Valid Token Tests")
+    class ValidTokenTests {
 
-        assertTrue(result.isPresent());
-        var jwt = result.get();
-        assertEquals(ISSUER, jwt.getIssuer());
-        assertNotNull(jwt.getSubject());
-        assertNotNull(jwt.getTokenID());
-        assertTrue(jwt.getExpirationTime() > 0);
-        assertTrue(jwt.getIssuedAtTime() > 0);
-        assertTrue(jwt.getGroups().isEmpty());
-        assertTrue(jwt.getAudience().isEmpty());
-        assertTrue(jwt.getClaimNames().size() > 5);
-        assertNull(jwt.getRawToken());
-        assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
-        assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
+        @Test
+        @DisplayName("Should parse valid token with scopes")
+        void shouldParseValidToken() {
+            var token = validSignedJWTWithClaims(SOME_SCOPES);
+            var result = parser.unsecured(token);
+
+            assertTrue(result.isPresent(), "Result should be present for valid token");
+            var jwt = result.get();
+            assertEquals(ISSUER, jwt.getIssuer(), "Issuer should match");
+            assertNotNull(jwt.getSubject(), "Subject should not be null");
+            assertNotNull(jwt.getTokenID(), "Token ID should not be null");
+            assertTrue(jwt.getExpirationTime() > 0, "Expiration time should be positive");
+            assertTrue(jwt.getIssuedAtTime() > 0, "Issued at time should be positive");
+            assertTrue(jwt.getGroups().isEmpty(), "Groups should be empty");
+            assertTrue(jwt.getAudience().isEmpty(), "Audience should be empty");
+            assertTrue(jwt.getClaimNames().size() > 5, "Should have more than 5 claims");
+            assertNull(jwt.getRawToken(), "Raw token should be null");
+            assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
+            assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
+        }
+
+        @Test
+        @DisplayName("Should parse token with name claim")
+        void shouldParseTokenWithName() {
+            var token = validSignedJWTWithClaims(SOME_NAME);
+            var result = parser.unsecured(token);
+
+            assertTrue(result.isPresent(), "Result should be present for valid token");
+            var jwt = result.get();
+            assertNotNull(jwt.getName(), "Name should not be null");
+            assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
+            assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
+        }
+
+        @Test
+        @DisplayName("Should handle token with minimal claims")
+        void shouldHandleEmptyToken() {
+            var token = createTokenWithLargePayload(1);
+            var result = parser.unsecured(token);
+            assertTrue(result.isPresent(), "Result should be present for minimal token");
+            var jwt = result.get();
+            assertEquals(0, jwt.getExpirationTime(), "Expiration time should be 0");
+            assertEquals(0, jwt.getIssuedAtTime(), "Issued at time should be 0");
+        }
     }
 
-    @Test
-    void shouldHandleEmptyToken() {
-        var token = createTokenWithLargePayload(1);
-        var result = parser.unsecured(token);
-        assertTrue(result.isPresent());
-        var jwt = result.get();
-        assertEquals(0, jwt.getExpirationTime());
-        assertEquals(0, jwt.getIssuedAtTime());
+    @Nested
+    @DisplayName("Invalid Token Format Tests")
+    @EnableTestLogger(debug = NonValidatingJwtTokenParser.class)
+    class InvalidTokenFormatTests {
+
+        @ParameterizedTest(name = "Should handle invalid token format: {0}")
+        @CsvSource({
+                "not.a.jwt, Failed to parse token",
+                "'', Token is empty or null",
+                "before.after, Invalid JWT token format: expected 3 parts but got 2",
+                "before.after.that.else, Invalid JWT token format: expected 3 parts but got 4",
+                "invalid, Invalid JWT token format: expected 3 parts but got 1"
+        })
+        @DisplayName("Should handle various invalid token formats")
+        void shouldHandleInvalidTokenFormat(String invalidToken, String expectedMessage) {
+            var result = parser.unsecured(invalidToken);
+            assertTrue(result.isEmpty(), "Result should be empty for invalid token");
+            if ("not.a.jwt".equals(invalidToken)) {
+                assertLogMessagePresentContaining(TestLogLevel.DEBUG, "Failed to parse token");
+            } else if (MoreStrings.isEmpty(invalidToken)) {
+                assertLogMessagePresentContaining(TestLogLevel.DEBUG, "Token is empty or null");
+            } else {
+                assertLogMessagePresentContaining(TestLogLevel.DEBUG,
+                        "Invalid JWT token format: expected 3 parts but got %d".formatted(
+                                Splitter.on('.').splitToList(invalidToken).size()));
+            }
+        }
+
+        @Test
+        @DisplayName("Should handle null token")
+        void shouldHandleNullToken() {
+            var result = parser.unsecured(null);
+            assertTrue(result.isEmpty(), "Result should be empty for null token");
+            assertLogMessagePresentContaining(TestLogLevel.DEBUG, "Token is empty or null");
+        }
     }
 
+    @Nested
+    @DisplayName("Token Size Limit Tests")
+    class TokenSizeLimitTests {
 
-    @Test
-    void shouldParseTokenWithName() {
-        var token = validSignedJWTWithClaims(SOME_NAME);
-        var result = parser.unsecured(token);
+        @ParameterizedTest(name = "Should reject token of size {0}KB")
+        @ValueSource(ints = {9, 10, 12, 16})
+        @DisplayName("Should reject oversized tokens")
+        void shouldRejectOversizedToken(int sizeInKb) {
+            String largeToken = createLargeToken(sizeInKb);
+            var result = parser.unsecured(largeToken);
+            assertTrue(result.isEmpty(), "Result should be empty for oversized token");
+            assertLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalTokenLogMessages.WARN.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
+        }
 
-        assertTrue(result.isPresent());
-        var jwt = result.get();
-        assertNotNull(jwt.getName());
-        assertNoLogMessagePresent(TestLogLevel.WARN, NonValidatingJwtTokenParser.class);
-        assertNoLogMessagePresent(TestLogLevel.ERROR, NonValidatingJwtTokenParser.class);
-    }
-
-    @ParameterizedTest(name = "Should handle invalid token format: {0}")
-    @CsvSource({
-            "not.a.jwt, Failed to parse token",
-            "'', Token is empty or null",
-            "before.after, Invalid JWT token format: expected 3 parts but got 2",
-            "before.after.that.else, Invalid JWT token format: expected 3 parts but got 4",
-            "invalid, Invalid JWT token format: expected 3 parts but got 1"
-    })
-    void shouldHandleInvalidTokenFormat(String invalidToken, String expectedMessage) {
-        var result = parser.unsecured(invalidToken);
-        assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.INFO, expectedMessage);
-    }
-
-    @Test
-    void shouldHandleNullToken() {
-        var result = parser.unsecured(null);
-        assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.INFO, LogMessages.TOKEN_EMPTY.resolveIdentifierString());
-    }
-
-    @ParameterizedTest(name = "Should handle oversized token of size {0}KB")
-    @ValueSource(ints = {9, 10, 12, 16})
-    void shouldRejectOversizedToken(int sizeInKb) {
-        String largeToken = createLargeToken(sizeInKb);
-        var result = parser.unsecured(largeToken);
-        assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
-    }
-
-    @ParameterizedTest(name = "Should handle oversized payload of size {0}KB")
-    @ValueSource(ints = {17, 20, 24, 32})
-    void shouldRejectOversizedPayload(int sizeInKb) {
-        String tokenWithLargePayload = createTokenWithLargePayload(sizeInKb);
-        var result = parser.unsecured(tokenWithLargePayload);
-        assertTrue(result.isEmpty());
-        assertLogMessagePresentContaining(TestLogLevel.WARN, LogMessages.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
+        @ParameterizedTest(name = "Should reject payload of size {0}KB")
+        @ValueSource(ints = {17, 20, 24, 32})
+        @DisplayName("Should reject tokens with oversized payload")
+        void shouldRejectLargePayload(int sizeInKb) {
+            String tokenWithLargePayload = createTokenWithLargePayload(sizeInKb);
+            var result = parser.unsecured(tokenWithLargePayload);
+            assertTrue(result.isEmpty(), "Result should be empty for token with oversized payload");
+            assertLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalTokenLogMessages.WARN.TOKEN_SIZE_EXCEEDED.resolveIdentifierString());
+        }
     }
 
     private String createLargeToken(int sizeInKb) {

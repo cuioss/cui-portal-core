@@ -16,6 +16,7 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
+import de.cuioss.portal.configuration.types.ConfigAsConnectionMetadata;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import jakarta.ws.rs.core.Configurable;
@@ -36,22 +37,36 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Builder for a JAVA MicroProfile based REST client.
- * <p>
- * To enable log debugging / tracing set package
- * de.cuioss.portal.core.restclient to TRACE level in your logger configuration.
+ * Implementation of MicroProfile REST Client builder for the Portal environment.
+ * Provides configuration and integration with Portal's authentication and
+ * logging infrastructure.
+ *
+ * <p>Supported features:
+ * <ul>
+ *   <li>Connection configuration via {@link ConfigAsConnectionMetadata}</li>
+ *   <li>Authentication (Basic, Bearer Token)</li>
+ *   <li>Request/Response logging</li>
+ *   <li>SSL configuration</li>
+ * </ul>
+ *
+ * <p>This builder is typically used through {@link RestClientProducer}
+ * and {@link PortalRestClient}. For direct usage, obtain an instance via
+ * {@link RestClientBuilder#newBuilder()}.
+ *
+ * @see RestClientBuilder
+ * @see PortalRestClient
+ * @see RestClientProducer
  */
-@SuppressWarnings("UnusedReturnValue")
 public class CuiRestClientBuilder {
 
-    private static final CuiLogger log = new CuiLogger(CuiRestClientBuilder.class);
+    private static final CuiLogger LOGGER = new CuiLogger(CuiRestClientBuilder.class);
 
     private static final String DISABLE_DEFAULT_MAPPER_PROPERTY_KEY = "microprofile.rest.client.disable.default.mapper";
     public static final String RESPONSE_EXCEPTION_MAPPER = "org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper";
 
     private final RestClientBuilder mpRestClientBuilder;
     private boolean traceLogEnabled;
-    private final CuiLogger logger;
+    private final CuiLogger givenLogger;
 
     /**
      * Creates a REST client builder.
@@ -62,12 +77,12 @@ public class CuiRestClientBuilder {
      * {@link CuiLogger#isTraceEnabled()}.
      * </p>
      *
-     * @param logger for trace-logging.
+     * @param givenLogger for trace-logging.
      */
-    public CuiRestClientBuilder(final CuiLogger logger) {
+    public CuiRestClientBuilder(final CuiLogger givenLogger) {
         mpRestClientBuilder = RestClientBuilder.newBuilder();
-        this.logger = logger;
-        traceLogEnabled = logger.isTraceEnabled() || log.isTraceEnabled();
+        this.givenLogger = givenLogger;
+        traceLogEnabled = givenLogger.isTraceEnabled() || LOGGER.isTraceEnabled();
 
         // Advice RestEasy not to add its default exception handler.
         // It would serve the request before we can trace-log anything.
@@ -83,25 +98,25 @@ public class CuiRestClientBuilder {
     /**
      * Debugs a given Response to the given logger
      *
-     * @param response must not be null
-     * @param log      must not be null
+     * @param response    must not be null
+     * @param givenLogger must not be null
      */
-    public static void debugResponse(final Response response, final CuiLogger log) {
-        log.debug("""
+    public static void debugResponse(final Response response, final CuiLogger givenLogger) {
+        givenLogger.debug("""
                         -- Client response filter --
-                        Status: {}
-                        StatusInfo: {}
-                        Allowed Methods: {}
-                        EntityTag: {}
-                        Cookies: {}
-                        Date: {}
-                        Headers: {}
-                        Language: {}
-                        LastModified: {}
-                        Links: {}
-                        Location: {}
-                        MediaType: {}
-                        """, response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
+                        Status: %s
+                        StatusInfo: %s
+                        Allowed Methods: %s
+                        EntityTag: %s
+                        Cookies: %s
+                        Date: %s
+                        Headers: %s
+                        Language: %s
+                        LastModified: %s
+                        Links: %s
+                        Location: %s
+                        MediaType: %s""",
+                response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
                 response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
                 response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),
                 response.getMediaType());
@@ -132,7 +147,6 @@ public class CuiRestClientBuilder {
                 basicAuth(connectionMeta.getLoginCredentials().getUsername(),
                         connectionMeta.getLoginCredentials().getPassword());
                 break;
-            case TOKEN_FROM_USER:
             case TOKEN_APPLICATION:
                 mpRestClientBuilder.register(new TokenFilter(connectionMeta.getTokenResolver()));
                 break;
@@ -219,14 +233,11 @@ public class CuiRestClientBuilder {
      */
     public CuiRestClientBuilder enableDefaultExceptionHandler() {
         try {
-            Class<?> defaultResponseExceptionMapper = Class.forName(RESPONSE_EXCEPTION_MAPPER, false,
-                    CuiRestClientBuilder.class.getClassLoader());
+            Class<?> defaultResponseExceptionMapper = Class.forName(RESPONSE_EXCEPTION_MAPPER, false, CuiRestClientBuilder.class.getClassLoader());
             register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();
         } catch (final Exception e) {
-            log.error(
-                    "Portal-541: Could not load org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper",
-                    e);
+            LOGGER.error(e, RestClientLogMessages.ERROR.DEFAULT_HANDLER_LOAD_ERROR.format(RESPONSE_EXCEPTION_MAPPER));
         }
         return this;
     }
@@ -405,6 +416,7 @@ public class CuiRestClientBuilder {
 
     /**
      * Create an implementation of the service interface T using the rest client.
+     * If {@code traceLogEnabled} it implicitly registers a {@link LogClientRequestFilter} two {@link LogClientResponseFilter} and a {@link LogReaderInterceptor}
      *
      * @param clazz the service interface which also must extend
      *              {@link java.io.Closeable}
@@ -412,20 +424,21 @@ public class CuiRestClientBuilder {
      * @return T the service class
      */
     public <T extends Closeable> T build(final Class<T> clazz) {
+        LOGGER.debug("Building REST client for class: %s", clazz.getName());
         if (traceLogEnabled) {
-            log.debug("trace logging engaged");
-            register(new LogClientRequestFilter(logger));
-            register(new LogClientResponseFilter(logger, "First ClientResponseFilter") {
+            LOGGER.debug("Configuring trace-logging");
+            register(new LogClientRequestFilter(givenLogger));
+
+            // LogClientResponseFilter is an abstract class to allow multi-registering via anonymous class.
+            register(new LogClientResponseFilter(givenLogger, "First ClientResponseFilter") {
 
             }, Integer.MAX_VALUE);
-            register(new LogClientResponseFilter(logger, "Last ClientResponseFilter") {
+            register(new LogClientResponseFilter(givenLogger, "Last ClientResponseFilter") {
 
             }, Integer.MIN_VALUE);
-            register(new LogReaderInterceptor(logger));
+            register(new LogReaderInterceptor(givenLogger));
         }
 
         return mpRestClientBuilder.build(clazz);
     }
-
-
 }

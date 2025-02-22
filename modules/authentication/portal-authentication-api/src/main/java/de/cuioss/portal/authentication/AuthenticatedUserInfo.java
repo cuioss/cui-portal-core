@@ -20,73 +20,101 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface of bean, which represents an encapsulating the current user-specific
- * information in session context. It should call data from authentication
- * facade on creation and then hold and provide this information for any other
- * beans.
+ * Interface representing user-specific information in the session context.
+ * Implementations must be thread-safe and immutable to ensure consistent state across
+ * multiple threads.
+ * 
+ * <h2>Usage Example</h2>
+ * <pre>
+ * AuthenticatedUserInfo userInfo = getCurrentUser();
+ * if (userInfo.isAuthenticated() && userInfo.isUserInRole("ADMIN")) {
+ *     // Perform admin operation
+ * }
+ * </pre>
+ * 
+ * <h2>Implementation Notes</h2>
+ * <ul>
+ *   <li>All implementations must be thread-safe</li>
+ *   <li>Return values must never be null - use empty collections instead</li>
+ *   <li>Changes to the user state should create new instances</li>
+ * </ul>
  *
  * @author Stephan Babkin
+ * @see de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo
+ * @see de.cuioss.portal.authentication.PortalUserEnricher
+ * @since 1.0
  */
 @SuppressWarnings("squid:S1214") // We allow constants in interfaces if they belong together
 // (coherence).
 public interface AuthenticatedUserInfo extends Serializable {
 
     /**
-     * Returns <code>true</code> in case of user is authenticated already and
-     * <code>false</code> otherwise.
+     * Indicates whether the user is currently authenticated.
      *
-     * @return <code>true</code> in case of user is authenticated already and
-     * <code>false</code> otherwise.
+     * @return {@code true} if the user is authenticated, {@code false} otherwise
      */
     boolean isAuthenticated();
 
     /**
-     * @return a list of role names assigned to the user.
+     * Returns the list of roles assigned to the user. The list is never null but may be empty.
+     *
+     * @return an unmodifiable list of role names, never {@code null}
      */
     List<String> getRoles();
 
     /**
-     * Checks if is user in a role.
+     * Checks if the user has a specific role.
      *
-     * @param roleName the role name
-     * @return true, if is user in a role
+     * @param roleName the role name to check, must not be {@code null}
+     * @return {@code true} if the user has the role, {@code false} otherwise
+     * @throws NullPointerException if roleName is {@code null}
      */
     default boolean isUserInRole(String roleName) {
         return getRoles().contains(roleName);
     }
 
     /**
-     * @return a list of group names the user is assigned to.
+     * Returns the list of groups the user belongs to. The list is never null but may be empty.
+     *
+     * @return an unmodifiable list of group names, never {@code null}
      */
     List<String> getGroups();
 
     /**
-     * @return the display name of the currently authenticated user
+     * Returns the display name of the authenticated user.
+     *
+     * @return the user's display name, never {@code null}
      */
     String getDisplayName();
 
     /**
-     * @return the (technical) identifier for the currently authenticated user to be
-     * used with {@link #getSystem()}.
+     * Returns the technical identifier for the authenticated user.
+     * This identifier should be used in conjunction with {@link #getSystem()}.
+     *
+     * @return the user's identifier, never {@code null}
      */
     String getIdentifier();
 
     /**
-     * @return the (technical) qualified identifier for the currently authenticated
-     * user to be used without {@link #getSystem()}.
+     * Returns the qualified identifier for the authenticated user.
+     * This identifier can be used independently of {@link #getSystem()}.
+     *
+     * @return the user's qualified identifier, never {@code null}
      */
     String getQualifiedIdentifier();
 
     /**
-     * @return the (technical) assigning authority for the {@link #getIdentifier()}
-     * of the currently authenticated user
+     * Returns the technical authority that assigned the {@link #getIdentifier()}.
+     *
+     * @return the system identifier, never {@code null}
      */
     String getSystem();
 
     /**
-     * @return the context map containing additional runtime information belonging
-     * to the {@link AuthenticatedUserInfo}
+     * Returns a map containing additional user context information.
+     * The map and its contents must be immutable to ensure thread-safety.
+     *
+     * @return an unmodifiable map of context information, never {@code null}
      */
     Map<Serializable, Serializable> getContextMap();
-
 }

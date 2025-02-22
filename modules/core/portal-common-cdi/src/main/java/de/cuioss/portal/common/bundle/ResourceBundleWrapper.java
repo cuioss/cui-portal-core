@@ -21,44 +21,68 @@ import java.util.Enumeration;
 import java.util.Set;
 
 /**
- * Defines the portal-contract dealing with UnifiedResourceBundle Technically it
- * provides an interface similar to {@link java.util.ResourceBundle}
+ * Core interface for accessing unified resource bundles in the Portal.
+ * Provides functionality similar to {@link java.util.ResourceBundle} but with
+ * additional Portal-specific features.
+ * 
+ * <p>The wrapper combines multiple resource bundles into a single access point,
+ * supporting dynamic locale changes and fallback mechanisms.
+ * 
+ * <h2>Thread Safety</h2>
+ * Implementations must be thread-safe and support concurrent access.
+ * 
+ * <h2>Usage</h2>
+ * <pre>
+ * &#064;Inject
+ * private ResourceBundleWrapper bundleWrapper;
+ * 
+ * // Get a message
+ * String message = bundleWrapper.getString("key.name");
+ * 
+ * // Check if key exists
+ * if (bundleWrapper.containsKey("key.name")) {
+ *     // Handle existing key
+ * }
+ * </pre>
  *
  * @author Oliver Wolff
  */
 public interface ResourceBundleWrapper extends Serializable {
 
     /**
-     * Returns resolved message by given key.
+     * Resolves a message for the given key.
      *
-     * @param key to be looked up
-     * @return the resolved message if key is defined, otherwise "??[key value]??"
-     *         will be returned and warning will be written
+     * @param key to be looked up, must not be {@code null}
+     * @return the resolved message if key is defined, otherwise returns "??[key]??"
+     *         and logs a warning
+     * @throws NullPointerException if key is {@code null}
      */
     String getString(String key);
 
     /**
-     * Technical method for {@link java.util.ResourceBundle} caching the resolved keys and
-     * values @see {@link java.util.ResourceBundle#getKeys()}
+     * Technical method for {@link java.util.ResourceBundle} compatibility.
+     * Provides access to all available keys in this bundle and its parents.
      *
-     * @return an Enumeration of the keys contained in this ResourceBundle and its
-     *         parent bundles.
+     * @return an {@link Enumeration} of all keys in this bundle and its parents,
+     *         never {@code null}
+     * @see java.util.ResourceBundle#getKeys()
      */
     default Enumeration<String> getKeys() {
         return Collections.enumeration(keySet());
     }
 
     /**
-     * <p>keySet.</p>
+     * Returns a set of all keys available in this bundle.
      *
-     * @return set of all supported keys of this bundle
+     * @return unmodifiable set of all keys in this bundle and its parents, never null
+     * @see java.util.ResourceBundle#keySet()
      */
     Set<String> keySet();
 
     /**
-     * <p>getBundleContent.</p>
+     * Returns a debug representation of the bundle's content.
      *
-     * @return a list of all configured bundles to be used for debugging.
+     * @return string containing details about configured bundles and their content
      */
     String getBundleContent();
 

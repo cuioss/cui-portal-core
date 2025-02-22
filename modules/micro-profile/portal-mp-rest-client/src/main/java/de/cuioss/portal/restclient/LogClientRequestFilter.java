@@ -15,42 +15,47 @@
  */
 package de.cuioss.portal.restclient;
 
-import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
-
-import java.io.IOException;
-
+import de.cuioss.tools.logging.CuiLogger;
+import jakarta.annotation.Priority;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.Form;
 
-import de.cuioss.tools.logging.CuiLogger;
-import jakarta.annotation.Priority;
+import java.io.IOException;
+
+import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
 
 /**
- * A {@linkplain ClientRequestFilter} to log the request uri, headers and body
- * sent by the rest-client. It will be the last filter that is called in the
- * filter chain to make sure the logged data is the actual request that is
- * hitting the server.
- * <p>
- * This class is annotated with {@link Priority} with value
- * {@link Integer#MAX_VALUE} to ensure it is the very last filter that is
- * called.
+ * Client filter that logs outgoing REST client requests.
+ * Provides detailed logging of request details including:
+ * <ul>
+ *   <li>Request URI and method</li>
+ *   <li>Headers (with sensitive information)</li>
+ *   <li>Request body (if enabled)</li>
+ * </ul>
+ *
+ * <p>The filter is automatically configured by {@link CuiRestClientBuilder}
+ * and can be controlled through the Portal logging configuration.
+ *
+ * @see LogClientResponseFilter
+ * @see LogReaderInterceptor
+ * @see CuiRestClientBuilder
  */
 @Priority(Integer.MAX_VALUE)
 class LogClientRequestFilter implements ClientRequestFilter {
 
     private static final String PATTERN = """
             -- Client request info --
-            Request URI: {}
-            Method: {}
-            Headers: {}
-            Body: {}
+            Request URI: %s
+            Method: %s
+            Headers: %s
+            Body: %s
             """;
 
-    private final CuiLogger log;
+    private final CuiLogger givenLogger;
 
-    public LogClientRequestFilter(final CuiLogger logger) {
-        this.log = logger;
+    public LogClientRequestFilter(final CuiLogger givenLogger) {
+        this.givenLogger = givenLogger;
     }
 
     @Override
@@ -69,9 +74,9 @@ class LogClientRequestFilter implements ClientRequestFilter {
                 }
             }
 
-            log.info(PATTERN, reqContext.getUri(), nullToEmpty(reqContext.getMethod()), headers.toString(), body);
+            givenLogger.info(PATTERN, reqContext.getUri(), nullToEmpty(reqContext.getMethod()), headers.toString(), body);
         } catch (final Exception e) {
-            log.error("Portal-529: Could not trace-log request data", e);
+            givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format(), e);
         }
     }
 }

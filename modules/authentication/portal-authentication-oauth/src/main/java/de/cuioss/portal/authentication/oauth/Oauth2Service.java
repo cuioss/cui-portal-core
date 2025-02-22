@@ -15,71 +15,111 @@
  */
 package de.cuioss.portal.authentication.oauth;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.oauth.impl.OauthAuthenticatedUserInfo;
 import de.cuioss.tools.net.UrlParameter;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * Accessing the oauth2 services to handle login, token request, and accessing
- * user information.
- *
- * @author Matthias Walliczek
+ * Core service interface for handling OAuth2 authentication operations.
+ * This service manages the OAuth2 authentication flow, token handling,
+ * and user information retrieval.
+ * 
+ * <p>Primary responsibilities include:
+ * <ul>
+ *   <li>Managing OAuth2 login flow and token requests</li>
+ *   <li>Retrieving and processing user information</li>
+ *   <li>Handling OAuth2 redirect URLs and state management</li>
+ *   <li>Converting OAuth2 responses into authenticated user objects</li>
+ * </ul>
+ * 
+ * <p>The service integrates with standard OAuth2 endpoints:
+ * <ul>
+ *   <li>/authorize - For initiating authentication</li>
+ *   <li>/token - For obtaining access tokens</li>
+ *   <li>/userinfo - For retrieving user details</li>
+ * </ul>
+ * 
+ * <p>Implementation notes:
+ * <ul>
+ *   <li>All implementations must be thread-safe</li>
+ *   <li>Token and state handling must follow OAuth2 security best practices</li>
+ *   <li>Error handling should use {@link OauthAuthenticationException}</li>
+ * </ul>
+ * 
+ * @see Oauth2Configuration
+ * @see OauthAuthenticatedUserInfo
  */
 public interface Oauth2Service {
 
     /**
-     * Creates an authenticated {@link AuthenticatedUserInfo} by requesting a token
-     * and retrieving user data from the /userinfo endpoint. The returned
-     * {@link AuthenticatedUserInfo} contains the {@code preferred_username} as
-     * {@link AuthenticatedUserInfo#getDisplayName()} and {@code sub} as
-     * {@link AuthenticatedUserInfo#getIdentifier()}. Other userinfo data is stored
-     * in the {@link AuthenticatedUserInfo#getContextMap()}.
+     * Creates an authenticated user info object by performing the OAuth2 token exchange
+     * and retrieving user data from the userinfo endpoint.
+     * 
+     * <p>The returned {@link AuthenticatedUserInfo} will contain:
+     * <ul>
+     *   <li>Display Name: From OAuth2 'preferred_username' claim</li>
+     *   <li>Identifier: From OAuth2 'sub' claim</li>
+     *   <li>Context Map: Additional userinfo data</li>
+     * </ul>
      *
-     * @param servletRequest
-     * @param code
-     * @param state
-     * @param scopes         the scopes to request
-     * @return an authenticated {@link AuthenticatedUserInfo}.
+     * @param servletRequest The current HTTP request containing session information
+     * @param code The OAuth2 authorization code from the callback request
+     * @param state The state parameter from the callback for CSRF protection
+     * @param scopes Space-separated list of OAuth2 scopes to request
+     * @param codeVerifier PKCE code verifier for enhanced security
+     * @return An authenticated user info object containing user details and tokens
+     * @throws OauthAuthenticationException if authentication fails or user info cannot be retrieved
+     * @throws IllegalArgumentException if any required parameter is null or invalid
      */
     AuthenticatedUserInfo createAuthenticatedUserInfo(HttpServletRequest servletRequest, UrlParameter code,
             UrlParameter state, String scopes, final String codeVerifier);
 
     /**
-     * Calculate the redirect url that gets send to the oauth2 server as urlencoded
-     * parameter value.
+     * Calculates the URL-encoded redirect URL for the OAuth2 authorization request.
+     * This URL is sent to the OAuth2 server as a parameter in the authorization request.
      *
-     * @param url
-     * @return the url.
+     * @param url The base redirect URL to encode
+     * @return The URL-encoded redirect URL string
+     * @throws IllegalArgumentException if the URL is null or invalid
      */
     String calcEncodedRedirectUrl(String url);
 
     /**
-     * Retrieve an {@link AuthenticatedUserInfo} with the user info properties from
-     * the oauth server.
+     * Retrieves user information from the OAuth2 server and creates an authenticated user.
+     * This method fetches user details using the provided access token and combines them
+     * with the requested scopes and timestamp information.
      *
-     * @param scopes
-     * @param token
-     * @param tokenTimestamp
-     * @return
+     * @param scopes Space-separated list of OAuth2 scopes associated with the token
+     * @param token The OAuth2 access token response containing tokens and related data
+     * @param tokenTimestamp Timestamp when the token was issued or retrieved
+     * @return An authenticated user info object containing user details and token information
+     * @throws OauthAuthenticationException if user info cannot be retrieved or is invalid
+     * @throws IllegalArgumentException if the token is null or expired
      */
     AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Token token, int tokenTimestamp);
 
     /**
-     * Retrieve an accessToken for the client with defined scope(s).
+     * Retrieves an access token for the client using the client credentials flow.
+     * This method performs client authentication and requests a token with the
+     * specified scopes.
      *
-     * @param scopes the scopes as space separated list, can be null (= all
-     *               registered scopes)
-     * @return the accessToken
+     * @param scopes Space-separated list of OAuth2 scopes to request, or null for all registered scopes
+     * @return A token object containing the access token and related metadata
+     * @throws OauthAuthenticationException if token retrieval fails
+     * @throws IllegalArgumentException if the scopes are invalid
      */
     String retrieveClientToken(String scopes);
 
     /**
-     * Refresh the {@link Token} in the current users context map.
+     * Refreshes an existing access token for the authenticated user.
+     * This method uses the refresh token to obtain a new access token
+     * when the current one is expired or about to expire.
      *
-     * @param currentUser current oauth user
-     * @return access token
+     * @param currentUser The currently authenticated user containing the refresh token
+     * @return A new token object containing the refreshed access token and metadata
+     * @throws OauthAuthenticationException if token refresh fails
+     * @throws IllegalArgumentException if the user or refresh token is invalid
      */
     String refreshToken(OauthAuthenticatedUserInfo currentUser);
 }

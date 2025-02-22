@@ -18,7 +18,23 @@ package de.cuioss.portal.configuration;
 import lombok.experimental.UtilityClass;
 
 /**
- * Provides Constants for the Portal
+ * Provides common constants used throughout the Portal application.
+ * These constants represent fixed values that are unlikely to change
+ * and are used across multiple components.
+ * 
+ * <h2>Usage Areas</h2>
+ * <ul>
+ *   <li>Resource path prefixes</li>
+ *   <li>Framework-specific constants</li>
+ *   <li>Common path elements</li>
+ * </ul>
+ * 
+ * <h2>Best Practices</h2>
+ * <ul>
+ *   <li>Use these constants instead of hardcoding values</li>
+ *   <li>Only add constants that are truly application-wide</li>
+ *   <li>Document the purpose and context of each constant</li>
+ * </ul>
  *
  * @author Oliver Wolff
  *
@@ -27,8 +43,16 @@ import lombok.experimental.UtilityClass;
 public class CuiConstants {
 
     /**
-     * The currently active prefix for mapping jsf-resources to the servlet:
-     * "/javax.faces.resource/"
+     * The standard prefix for JSF resource mapping in the servlet context.
+     * This prefix is used by the JSF framework to identify and serve resources
+     * like JavaScript files, CSS files, and images through the FacesServlet.
+     * 
+     * <h3>Example Usage</h3>
+     * <pre>
+     * // Constructing a JSF resource URL
+     * String resourceUrl = FACES_RESOURCES_PREFIX + "styles/main.css";
+     * // Result: "/jakarta.faces.resource/styles/main.css"
+     * </pre>
      */
-    public static final String FACES_RESOURCES_PREFIX = "/javax.faces.resource/";
+    public static final String FACES_RESOURCES_PREFIX = "/jakarta.faces.resource/";
 }

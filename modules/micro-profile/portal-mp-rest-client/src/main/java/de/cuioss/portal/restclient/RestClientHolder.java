@@ -20,10 +20,13 @@ import de.cuioss.uimodel.service.ServiceState;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Wraps a concrete rest client implementation of T and provides some
- * convenience methods.
+ * Holder for REST client instances in the Portal environment.
+ * Manages the lifecycle and configuration of client instances.
  *
- * @author Matthias Walliczek
+ * @param <T> The type of the REST client interface
+ *
+ * @see PortalRestClient
+ * @see RestClientProducer
  */
 @RequiredArgsConstructor
 public class RestClientHolder<T> implements OptionalService {
