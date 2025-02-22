@@ -38,6 +38,10 @@ Core components and infrastructure for building enterprise portal applications. 
 * Resource cleanup
 * Startup/shutdown coordination
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Detailed Component Documentation
 
 === ServletLifecycleListener
@@ -106,7 +110,6 @@ public void storeUserPreference(String key, String value) {
 # Optional: Configure custom context path
 portal.application.contextPath=/myapp
 ----
-
 
 == Best Practices
 

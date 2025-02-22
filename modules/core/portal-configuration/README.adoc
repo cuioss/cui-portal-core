@@ -134,6 +134,7 @@ my.connection.read.timeout=30000
 # Proxy Configuration (Optional)
 my.connection.proxy.host=proxy.company.com
 my.connection.proxy.port=8080
+
 ----
 
 Usage in code:
@@ -159,6 +160,10 @@ Configuration Notes:
 * For certificate authentication, both keystore and truststore configurations are supported
 * Proxy configuration is optional and requires both host and port to be set
 * Use `failOnInvalidConfiguration = false` to handle missing or invalid configuration gracefully
+
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
 
 == Best Practices
 

@@ -1,14 +1,5 @@
 # Portal Metrics Module Log Messages
 
-## Overview
-This document describes the log messages used in the Portal Metrics module. All messages are defined as LogRecords and follow the DSL-Style Nested Constants Pattern.
-
-## Message Categories
-
-* **INFO (001-099)**: General metrics operations
-* **WARN (100-199)**: Warning conditions
-* **ERROR (200-299)**: Error conditions
-
 ## Log Messages
 
 ### INFO Level (001-099)

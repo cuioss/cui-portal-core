@@ -140,6 +140,10 @@ void shouldProvideCustomUserInfo() {
 * Document test scenarios
 * Use meaningful user configurations
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Related Modules
 
 * link:../portal-authentication-api/[portal-authentication-api] - Core authentication API

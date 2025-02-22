@@ -31,6 +31,10 @@ Module providing a builder-based approach for creating and configuring MicroProf
 * Error tracking and reporting
 * See link:doc/LogMessages.md[Log Messages Documentation]
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Usage Examples
 
 === Basic REST Client

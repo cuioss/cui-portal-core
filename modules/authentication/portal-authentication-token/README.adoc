@@ -95,6 +95,10 @@ The module supports three token types, each with specific functionality:
 * link:src/main/java/de/cuioss/portal/authentication/token/ParsedIdToken.java[ParsedIdToken]: OpenID Connect ID token for user identity
 * link:src/main/java/de/cuioss/portal/authentication/token/ParsedRefreshToken.java[ParsedRefreshToken]: OAuth2 refresh token
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Security Considerations
 
 * All token validation is performed using cryptographic signatures

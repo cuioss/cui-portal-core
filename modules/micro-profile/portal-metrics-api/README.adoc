@@ -136,6 +136,10 @@ portal.cache.user.timeunit=MINUTES
 portal.cache.user.record-stats=true
 ----
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Best Practices
 
 === Metric Naming

@@ -117,6 +117,10 @@ public class DepartmentEnricher implements PortalUserEnricher {
 }
 ----
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Best Practices
 
 === Security Guidelines

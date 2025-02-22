@@ -114,6 +114,10 @@ Priority-based component ordering utilities.
 === link:src/main/java/de/cuioss/portal/common/stage[stage]
 Project stage management and environment configuration.
 
+== Documentation
+
+* link:doc/LogMessages.md[Log Messages]
+
 == Best Practices
 
 === CDI Usage

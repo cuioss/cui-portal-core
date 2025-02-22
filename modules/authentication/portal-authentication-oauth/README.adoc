@@ -90,3 +90,4 @@ link:https://github.com/cuioss/cui-portal-ui/tree/main/modules/portal-ui-oauth[p
 * link:src/main/java/de/cuioss/portal/authentication/oauth/package-info.java[API Documentation]
 * link:src/main/java/de/cuioss/portal/authentication/oauth/impl/package-info.java[Implementation Details]
 * https://openid.net/specs/openid-connect-rpinitiated-1_0.html[OpenID Connect RP-Initiated Logout Specification]
+* link:doc/LogMessages.md[Log Messages]
