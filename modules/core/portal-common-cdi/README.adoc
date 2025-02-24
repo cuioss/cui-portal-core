@@ -43,12 +43,9 @@ Core CDI infrastructure and utilities for Portal applications, providing essenti
 === Bean Management
 [source,java]
 ----
-// Access beans programmatically
-@Inject
-private PortalBeanManager beanManager;
 
 // Get typed bean instance
-MyService service = beanManager.getBean(MyService.class);
+MyService service = PortalBeanManager.getBean(MyService.class);
 
 // Create annotation instance
 Qualifier qualifier = AnnotationInstanceProvider.of(Qualifier.class)
