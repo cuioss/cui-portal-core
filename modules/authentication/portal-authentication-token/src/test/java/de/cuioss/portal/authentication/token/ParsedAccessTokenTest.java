@@ -121,6 +121,44 @@ class ParsedAccessTokenTest {
             assertTrue(parsedAccessToken.isPresent(), "Token should be present");
             assertTrue(parsedAccessToken.get().getRoles().isEmpty(), "Roles should be empty");
         }
+
+        @Test
+        @DisplayName("Should correctly determine missing roles")
+        void shouldDetermineMissingRoles() {
+            String initialToken = validSignedJWTWithClaims(SOME_ROLES);
+            var parsedAccessToken = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertTrue(parsedAccessToken.isPresent(), "Token should be present");
+
+            // Test with existing role
+            Set<String> missingRoles = parsedAccessToken.get().determineMissingRoles(Set.of("reader"));
+            assertTrue(missingRoles.isEmpty(), "Should have no missing roles for valid role");
+
+            // Test with non-existent role
+            missingRoles = parsedAccessToken.get().determineMissingRoles(Set.of(DEFINITELY_NO_SCOPE));
+            assertEquals(1, missingRoles.size(), "Should have one missing role");
+            assertTrue(missingRoles.contains(DEFINITELY_NO_SCOPE), "Should contain invalid role as missing");
+
+            // Test with mixed roles (existing and non-existing)
+            missingRoles = parsedAccessToken.get().determineMissingRoles(Set.of("reader", DEFINITELY_NO_SCOPE));
+            assertEquals(1, missingRoles.size(), "Should have one missing role in mixed set");
+            assertTrue(missingRoles.contains(DEFINITELY_NO_SCOPE), "Should contain invalid role as missing in mixed set");
+        }
+
+        @Test
+        @DisplayName("Should handle null or empty expected roles")
+        void shouldHandleNullOrEmptyExpectedRoles() {
+            String initialToken = validSignedJWTWithClaims(SOME_ROLES);
+            var parsedAccessToken = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertTrue(parsedAccessToken.isPresent(), "Token should be present");
+
+            // Test with null roles
+            Set<String> missingRoles = parsedAccessToken.get().determineMissingRoles(null);
+            assertTrue(missingRoles.isEmpty(), "Should return empty set for null expected roles");
+
+            // Test with empty roles
+            missingRoles = parsedAccessToken.get().determineMissingRoles(Set.of());
+            assertTrue(missingRoles.isEmpty(), "Should return empty set for empty expected roles");
+        }
     }
 
     @Nested
