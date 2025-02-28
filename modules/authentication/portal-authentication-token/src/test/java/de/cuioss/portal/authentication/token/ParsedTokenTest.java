@@ -27,7 +27,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static de.cuioss.portal.authentication.token.TestTokenProducer.*;
+import java.time.OffsetDateTime;
+
+import static de.cuioss.portal.authentication.token.TestTokenProducer.DEFAULT_TOKEN_PARSER;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.SOME_SCOPES;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithClaims;
+import static de.cuioss.portal.authentication.token.TestTokenProducer.validSignedJWTWithNotBefore;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -107,6 +113,72 @@ class ParsedTokenTest {
             assertFalse(token.get().isExpired(), "Token should not be expired");
             assertFalse(token.get().willExpireInSeconds(5), "Token should not expire in 5 seconds");
             assertTrue(token.get().willExpireInSeconds(500), "Token should expire in 500 seconds");
+        }
+    }
+
+    @Nested
+    @DisplayName("Not Before Time Tests")
+    class NotBeforeTimeTests {
+
+        @Test
+        @DisplayName("Should handle token without explicit nbf claim")
+        void shouldHandleTokenWithoutNotBeforeClaim() {
+            // Currently smallrye add nbf claim automatically
+            String initialToken = validSignedJWTWithNotBefore(OffsetDateTime.now().toInstant());
+
+            var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertTrue(token.isPresent(), "Token should be present for valid input");
+
+            // Just verify that the method doesn't throw an exception
+            // and returns something (either empty or a value)
+            assertDoesNotThrow(() -> token.get().getNotBeforeTime());
+
+        }
+
+        @Test
+        @DisplayName("Should handle token with nbf claim")
+        void shouldHandleTokenWithNotBeforeClaim() {
+            // Create a token with nbf set to 5 minutes ago
+            java.time.Instant notBeforeTime = java.time.Instant.now().minusSeconds(300);
+            String initialToken = validSignedJWTWithNotBefore(notBeforeTime);
+
+            var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertTrue(token.isPresent(), "Token should be present for nbf in the past");
+            var parsedNotBeforeTime = token.get().getNotBeforeTime();
+            assertTrue(parsedNotBeforeTime.isPresent(), "Not Before Time should be present");
+            assertTrue(parsedNotBeforeTime.get().isBefore(OffsetDateTime.now()), "Not Before Time should be in the past");
+
+        }
+
+        @Test
+        @DisplayName("Should handle token with near future, less than 60 sec nbf claim")
+        void shouldHandleTokenWithNearFutureNotBeforeClaim() {
+            // Create a token with nbf set to 30 seconds in the future.
+            // Smallrye rejects token with nbf in the future starting from 60s.
+            java.time.Instant notBeforeTime = java.time.Instant.now().plusSeconds(30);
+            String initialToken = validSignedJWTWithNotBefore(notBeforeTime);
+
+            var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertTrue(token.isPresent(), "Token should be present for valid input");
+
+            var parsedNotBeforeTime = token.get().getNotBeforeTime();
+            assertTrue(parsedNotBeforeTime.isPresent(), "Not Before Time should be present");
+
+            assertTrue(parsedNotBeforeTime.get().isAfter(OffsetDateTime.now()), "Not Before Time should be in the future");
+
+        }
+
+        @Test
+        @DisplayName("Should handle token with future, more than 60 sec nbf claim")
+        void shouldHandleTokenWithFutureNotBeforeClaim() {
+            // Create a token with nbf set to 300 seconds in the future.
+            // Smallrye rejects token with nbf in the future starting from 60s.
+            java.time.Instant notBeforeTime = java.time.Instant.now().plusSeconds(300);
+            String initialToken = validSignedJWTWithNotBefore(notBeforeTime);
+
+            var token = ParsedAccessToken.fromTokenString(initialToken, DEFAULT_TOKEN_PARSER);
+            assertFalse(token.isPresent(), "Token should not be present for valid input");
+
         }
     }
 }
