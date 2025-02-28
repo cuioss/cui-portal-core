@@ -90,6 +90,21 @@ public class TestTokenProducer {
                 .subject(SUBJECT).expiresAt(expireAt).sign(PRIVATE_KEY);
     }
 
+    /**
+     * Creates a valid signed JWT with a "Not Before" (nbf) claim
+     *
+     * @param notBefore the instant representing the "Not Before" time
+     * @return a signed JWT token string with the nbf claim set
+     */
+    public static String validSignedJWTWithNotBefore(Instant notBefore) {
+        return Jwt.claims(SOME_SCOPES).issuer(ISSUER)
+                .issuedAt(OffsetDateTime.ofInstant(notBefore, ZoneId.systemDefault()).minusMinutes(5).toInstant())
+                .subject(SUBJECT)
+                .expiresAt(OffsetDateTime.ofInstant(notBefore, ZoneId.systemDefault()).plusMinutes(10).toInstant())
+                .claim("nbf", notBefore.getEpochSecond())
+                .sign(PRIVATE_KEY);
+    }
+
     @Test
     void shouldCreateScopesAndClaims() throws ParseException {
         String token = validSignedJWTWithClaims(SOME_SCOPES);

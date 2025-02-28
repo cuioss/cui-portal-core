@@ -133,4 +133,21 @@ public abstract class ParsedToken {
     public String getIssuer() {
         return jsonWebToken.getIssuer();
     }
+    
+    /**
+     * Returns the "Not Before" time from the token if present.
+     * The "nbf" (not before) claim identifies the time before which the JWT must not be accepted for processing.
+     * This claim is optional, according to the JWT specification (RFC 7519).
+     * 
+     * @return an {@link Optional} containing the {@link OffsetDateTime} representation of the "Not Before" time
+     *         if the claim is present, or an empty Optional if not
+     */
+    public Optional<OffsetDateTime> getNotBeforeTime() {
+        Long notBeforeTime = jsonWebToken.getClaim("nbf");
+        if (notBeforeTime == null) {
+            return Optional.empty();
+        }
+        return Optional.of(OffsetDateTime
+                .ofInstant(Instant.ofEpochSecond(notBeforeTime), ZoneId.systemDefault()));
+    }
 }

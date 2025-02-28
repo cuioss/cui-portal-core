@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.authentication.token;
 
+import de.cuioss.tools.collect.MoreCollections;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.Splitter;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -144,7 +145,7 @@ public class ParsedAccessToken extends ParsedToken {
      * {@link #providesScopes(Collection)} it log on debug the corresponding scopes
      */
     public boolean providesScopesAndDebugIfScopesAreMissing(Collection<String> expectedScopes, String logContext,
-            CuiLogger logger) {
+                                                            CuiLogger logger) {
         Set<String> delta = determineMissingScopes(expectedScopes);
         if (delta.isEmpty()) {
             logger.trace("All expected scopes are present: {}, {}", expectedScopes, logContext);
@@ -200,6 +201,24 @@ public class ParsedAccessToken extends ParsedToken {
      */
     public boolean hasRole(String expectedRole) {
         return getRoles().contains(expectedRole);
+    }
+
+    /**
+     * @param expectedRoles to be checked
+     * @return an empty-Set in case the token provides all expectedRoles, otherwise a
+     * {@link TreeSet} containing all missing roles.
+     */
+    public Set<String> determineMissingRoles(Collection<String> expectedRoles) {
+        if (MoreCollections.isEmpty(expectedRoles)) {
+            return Collections.emptySet();
+        }
+        Set<String> availableRoles = getRoles();
+        if (availableRoles.containsAll(expectedRoles)) {
+            return Collections.emptySet();
+        }
+        Set<String> roleDelta = new TreeSet<>(expectedRoles);
+        roleDelta.removeAll(availableRoles);
+        return roleDelta;
     }
 
     /**
