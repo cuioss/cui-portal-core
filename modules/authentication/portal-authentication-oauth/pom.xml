@@ -20,8 +20,8 @@
       <artifactId>portal-authentication-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>mockwebserver3-junit5</artifactId>
+      <groupId>de.cuioss.test</groupId>
+      <artifactId>cui-test-mockwebserver-junit5</artifactId>
     </dependency>
     <dependency>
       <groupId>de.cuioss.test</groupId>

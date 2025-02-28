@@ -15,7 +15,7 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.ModuleDispatcherElement;
+import de.cuioss.test.mockwebserver.dispatcher.ModuleDispatcherElement;
 import de.cuioss.tools.io.FileLoaderUtility;
 import lombok.Getter;
 import lombok.NonNull;
