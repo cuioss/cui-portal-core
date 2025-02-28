@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.core.test.junit5.mockwebserver;
+package de.cuioss.test.mockwebserver;
 
 import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.extension.ExtendWith;

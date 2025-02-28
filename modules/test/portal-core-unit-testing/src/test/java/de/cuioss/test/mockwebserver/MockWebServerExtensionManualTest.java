@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.core.test.junit5.mockwebserver;
+package de.cuioss.test.mockwebserver;
 
-import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher;
-import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher;
+import de.cuioss.test.mockwebserver.dispatcher.BaseAllAcceptDispatcher;
+import de.cuioss.test.mockwebserver.dispatcher.CombinedDispatcher;
 import lombok.Getter;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,24 +35,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for verifying that the {@link MockWebServerExtension} works correctly
- * when using {@link EnableMockWebServer}.
+ * when manually registered with {@link ExtendWith}.
  */
-@EnableMockWebServer
-class MockWebServerExtensionTest implements MockWebServerHolder {
+@ExtendWith(MockWebServerExtension.class)
+@EnableMockWebServer(manualStart = true)
+class MockWebServerExtensionManualTest implements MockWebServerHolder {
 
     @Getter
     @Setter
     private MockWebServer mockWebServer;
 
     @Test
-    void shouldProvideServer() {
-        assertNotNull(mockWebServer);
-        assertTrue(mockWebServer.getStarted());
+    void shouldProvideServerNotStartedServer() {
+        assertNotNull(mockWebServer, "Server should be injected even for manual start");
+        assertFalse(mockWebServer.getStarted(), "Server should not be started");
+        // Now start the server manually
+        assertDoesNotThrow(() -> mockWebServer.start());
+        assertTrue(mockWebServer.getStarted(), "Server should be started");
     }
 
     @Test
     void shouldHandleSimpleRequest() throws URISyntaxException, IOException, InterruptedException {
         String serverUrl = mockWebServer.url("/api").toString();
+
+        assertDoesNotThrow(() -> mockWebServer.start());
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(serverUrl))

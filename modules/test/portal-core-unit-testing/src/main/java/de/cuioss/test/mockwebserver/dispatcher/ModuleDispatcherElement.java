@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
+package de.cuioss.test.mockwebserver.dispatcher;
 
-import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
 import lombok.NonNull;
 import mockwebserver3.MockResponse;
 import mockwebserver3.RecordedRequest;

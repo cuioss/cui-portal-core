@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
+package de.cuioss.test.mockwebserver.dispatcher;
 
 import mockwebserver3.RecordedRequest;
 import org.junit.jupiter.api.Test;
 
-import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.EndpointAnswerHandlerTest.assertMockResponse;
-import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.HttpMethodMapper.*;
+import static de.cuioss.test.mockwebserver.dispatcher.EndpointAnswerHandlerTest.assertMockResponse;
+import static de.cuioss.test.mockwebserver.dispatcher.HttpMethodMapper.*;
 import static jakarta.servlet.http.HttpServletResponse.*;
 
 class BaseAllAcceptDispatcherTest {

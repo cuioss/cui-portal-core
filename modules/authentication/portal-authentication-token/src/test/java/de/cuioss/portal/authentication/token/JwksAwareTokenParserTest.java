@@ -15,9 +15,9 @@
  */
 package de.cuioss.portal.authentication.token;
 
-import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
-import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
-import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
+import de.cuioss.test.mockwebserver.dispatcher.CombinedDispatcher;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;

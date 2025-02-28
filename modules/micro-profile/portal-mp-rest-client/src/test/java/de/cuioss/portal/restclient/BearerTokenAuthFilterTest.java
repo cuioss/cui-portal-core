@@ -16,10 +16,10 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
-import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
-import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.BaseAllAcceptDispatcher;
-import de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
+import de.cuioss.test.mockwebserver.dispatcher.BaseAllAcceptDispatcher;
+import de.cuioss.test.mockwebserver.dispatcher.CombinedDispatcher;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

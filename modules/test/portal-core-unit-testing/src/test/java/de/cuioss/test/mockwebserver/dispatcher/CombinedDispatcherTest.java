@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher;
+package de.cuioss.test.mockwebserver.dispatcher;
 
 import mockwebserver3.RecordedRequest;
 import okhttp3.Headers;
@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 import java.net.Socket;
 import java.util.Collections;
 
-import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_NOT_FOUND;
-import static de.cuioss.portal.core.test.junit5.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_TEAPOT;
+import static de.cuioss.test.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_NOT_FOUND;
+import static de.cuioss.test.mockwebserver.dispatcher.CombinedDispatcher.HTTP_CODE_TEAPOT;
 import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

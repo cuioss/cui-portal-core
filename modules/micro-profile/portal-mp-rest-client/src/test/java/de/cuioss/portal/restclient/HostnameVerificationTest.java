@@ -16,8 +16,8 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
-import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.servlet.http.HttpServletResponse;

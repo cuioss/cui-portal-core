@@ -15,8 +15,8 @@
  */
 package de.cuioss.portal.restclient;
 
-import de.cuioss.portal.core.test.junit5.mockwebserver.EnableMockWebServer;
-import de.cuioss.portal.core.test.junit5.mockwebserver.MockWebServerHolder;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
