@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
         <version>0.9.0</version>
-        <relativePath />
+        <relativePath/>
     </parent>
     <groupId>de.cuioss.portal</groupId>
     <artifactId>cui-portal-core</artifactId>
@@ -30,6 +31,17 @@
         <url>https://github.com/cuioss/cui-portal-core/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Remove me after upgrade to 0.9.1 -->
+                <groupId>de.cuioss.test</groupId>
+                <artifactId>cui-test-mockwebserver-junit5</artifactId>
+                <version>1.0.0</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <properties>
         <version.cui.parent>0.9.0</version.cui.parent>
     </properties>

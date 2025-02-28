@@ -22,21 +22,10 @@
  *   </li>
  *   <li>{@link de.cuioss.portal.core.test.junit5} - JUnit 5 specific extensions
  *       <ul>
- *         <li>MockWebServer support</li>
- *         <li>Request/Response dispatchers</li>
+ *         <li>Portal Test Configuration</li>
  *       </ul>
  *   </li>
  * </ul>
- *
- * <h2>Usage</h2>
- * This module is designed to be used as a test dependency:
- * <pre>
- * &lt;dependency&gt;
- *     &lt;groupId&gt;de.cuioss.portal.core&lt;/groupId&gt;
- *     &lt;artifactId&gt;portal-core-unit-testing&lt;/artifactId&gt;
- *     &lt;scope&gt;test&lt;/scope&gt;
- * &lt;/dependency&gt;
- * </pre>
  *
  * @see de.cuioss.portal.core.test.mocks
  * @see de.cuioss.portal.core.test.tests
