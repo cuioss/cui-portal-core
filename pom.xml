@@ -37,7 +37,7 @@
                 <!-- Remove me after upgrade to 0.9.1 -->
                 <groupId>de.cuioss.test</groupId>
                 <artifactId>cui-test-mockwebserver-junit5</artifactId>
-                <version>1.0.0</version>
+                <version>1.1.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
