@@ -17,9 +17,10 @@ package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.configuration.impl.producer.ConnectionMetadataProducer;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.URIBuilder;
+import de.cuioss.test.mockwebserver.mockresponse.MockResponse;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,28 +28,29 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import lombok.Getter;
 import lombok.Setter;
-import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
-import okhttp3.Headers;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@EnableMockWebServer
+
 @EnableAutoWeld
 @EnablePortalConfiguration
+@EnableMockWebServer
 @AddBeanClasses({ConnectionMetadataProducer.class, RestClientProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
-class RestClientProducerTest implements MockWebServerHolder {
+@MockResponse(path = "/success/test", status = HttpServletResponse.SC_OK, textContent = "test", headers = "ETag=W/123")
+class RestClientProducerTest {
 
     public interface TestResource extends Closeable {
 
@@ -56,23 +58,6 @@ class RestClientProducerTest implements MockWebServerHolder {
         @Path("test")
         String test();
 
-    }
-
-    @Override
-    public Dispatcher getDispatcher() {
-        return new Dispatcher() {
-
-            @Override
-            public @NotNull MockResponse dispatch(@NotNull RecordedRequest request) {
-                assert request.getPath() != null;
-                return switch (request.getPath()) {
-                    case "/success/test" ->
-                        new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml", "ETag", "W/123"), "test");
-                    case "/error/test" -> new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    default -> new MockResponse(HttpServletResponse.SC_NOT_FOUND);
-                };
-            }
-        };
     }
 
     @Inject
@@ -83,18 +68,17 @@ class RestClientProducerTest implements MockWebServerHolder {
     @Inject
     private PortalTestConfiguration configuration;
 
-    @Setter
-    private MockWebServer mockWebServer;
-
     @Test
+
     void serviceNotAvailable() {
         assertNotNull(underTestProvider.get());
         assertFalse(underTestProvider.get().isServiceAvailable());
     }
 
     @Test
-    void serviceAvailable() {
-        configuration.update("abc.url", mockWebServer.url("success").toString());
+    @ExplicitParamInjection
+    void serviceAvailable(URIBuilder uriBuilder) {
+        configuration.update("abc.url", uriBuilder.addPathSegment("success").build().toString());
         assertNotNull(underTestProvider.get());
         assertTrue(underTestProvider.get().isServiceAvailable());
         assertEquals("test", underTestProvider.get().get().test());

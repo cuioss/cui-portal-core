@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.9.3</version>
         <relativePath/>
     </parent>
     <groupId>de.cuioss.portal</groupId>
@@ -31,18 +31,37 @@
         <url>https://github.com/cuioss/cui-portal-core/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
+    <properties>
+        <version.jakarta.inject>2.0.1</version.jakarta.inject>
+        <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
+        <version.interceptor-api>2.0.1</version.interceptor-api>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <!-- Remove me after upgrade to 0.9.1 -->
-                <groupId>de.cuioss.test</groupId>
-                <artifactId>cui-test-mockwebserver-junit5</artifactId>
-                <version>1.0.0</version>
-                <scope>test</scope>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>3.6.1.Final</version>
             </dependency>
+            <dependency>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>${version.jakarta.inject}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${version.jakarta.ws.rs}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.interceptor</groupId>
+                <artifactId>jakarta.interceptor-api</artifactId>
+                <version>${version.interceptor-api}</version>
+                <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
-    <properties>
-        <version.cui.parent>0.9.0</version.cui.parent>
-    </properties>
 </project>
