@@ -17,11 +17,11 @@ package de.cuioss.portal.authentication.oauth.impl;
 
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.generator.impl.URLGenerator;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import jakarta.inject.Inject;
 import lombok.Getter;

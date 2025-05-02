@@ -153,7 +153,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
-                                                     final LoginCredentials loginCredentials) {
+            final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()

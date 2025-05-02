@@ -27,8 +27,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import lombok.Getter;
-import lombok.Setter;
-import mockwebserver3.MockWebServer;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
@@ -38,10 +36,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @EnableAutoWeld

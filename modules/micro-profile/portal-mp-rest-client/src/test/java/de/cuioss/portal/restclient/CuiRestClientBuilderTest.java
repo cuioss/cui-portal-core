@@ -19,14 +19,14 @@ import de.cuioss.portal.configuration.connections.impl.AuthenticationType;
 import de.cuioss.portal.configuration.connections.impl.ConnectionMetadata;
 import de.cuioss.portal.configuration.connections.impl.StaticTokenResolver;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.generator.Generators;
 import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.generator.impl.URLGenerator;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.LoginCredentials;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,6 +36,7 @@ import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -91,7 +92,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
         @GET
         @Path("test")
-        @jakarta.ws.rs.Produces(MEDIA_TYPE_FHIR_XML)
+        @Produces(MEDIA_TYPE_FHIR_XML)
         String test();
 
         @POST
@@ -101,7 +102,7 @@ class CuiRestClientBuilderTest implements MockWebServerHolder {
 
         @GET
         @Path("collection")
-        @jakarta.ws.rs.Produces(MediaType.APPLICATION_JSON)
+        @Produces(MediaType.APPLICATION_JSON)
         @Consumes(MediaType.APPLICATION_JSON)
         List<String> collection();
 

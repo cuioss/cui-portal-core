@@ -16,13 +16,14 @@
 package de.cuioss.portal.restclient;
 
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
 import de.cuioss.test.mockwebserver.MockWebServerHolder;
-import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import lombok.Setter;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
@@ -95,7 +96,7 @@ class HostnameVerificationTest implements MockWebServerHolder {
     public interface TestResource extends Closeable {
         @GET
         @Path("success/test")
-        @jakarta.ws.rs.Produces("application/fhir+xml")
+        @Produces("application/fhir+xml")
         String test();
     }
 }

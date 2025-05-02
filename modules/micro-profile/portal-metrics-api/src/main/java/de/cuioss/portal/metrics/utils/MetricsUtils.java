@@ -20,6 +20,7 @@ import de.cuioss.portal.configuration.PortalConfigurationKeys;
 import de.cuioss.portal.metrics.PortalMetricsLogMessages;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import lombok.experimental.UtilityClass;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
@@ -166,9 +167,9 @@ public class MetricsUtils {
      * @param response providing the Status Code
      * @return the resulting {@link Tag}
      */
-    public static Tag createHttpStatusCodeTag(final jakarta.ws.rs.core.Response response) {
+    public static Tag createHttpStatusCodeTag(final Response response) {
         return Optional.ofNullable(response)
-                .map(jakarta.ws.rs.core.Response::getStatus)
+                .map(Response::getStatus)
                 .map(status -> new Tag("http_status", String.valueOf(status)))
                 .orElse(null);
     }
