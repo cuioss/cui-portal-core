@@ -21,7 +21,6 @@ import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.mockwebserver.dispatcher.EndpointAnswerHandler;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.net.UrlParameter;
@@ -33,6 +32,7 @@ import lombok.Setter;
 import mockwebserver3.MockWebServer;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
@@ -50,10 +50,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableMockWebServer
 @AddBeanClasses({Oauth2DiscoveryConfigurationProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
-class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2ServiceImpl>, MockWebServerHolder {
-
-    @Setter
-    private MockWebServer mockWebServer;
+@ExplicitParamInjection
+class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2ServiceImpl> {
 
     @Inject
     @Getter
@@ -65,15 +63,15 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     @Produces
     private MockHttpServletRequest servletRequest;
 
-    @Getter
     private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach(MockWebServer mockWebServer) {
         servletRequest = new CuiMockHttpServletRequest();
         servletRequest.setPathInfo("some.url");
         dispatcher.reset();
         dispatcher.configure(configuration, mockWebServer);
+        mockWebServer.setDispatcher(dispatcher);
     }
 
     @Test
@@ -92,7 +90,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void deprecatedCreateAuthenticatedUserInfo() throws InterruptedException {
+    void deprecatedCreateAuthenticatedUserInfo(MockWebServer mockWebServer) throws InterruptedException {
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -112,7 +110,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void createAuthenticatedUserInfo() throws InterruptedException {
+    void createAuthenticatedUserInfo(MockWebServer mockWebServer) throws InterruptedException {
 
         configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
 
@@ -151,7 +149,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void retrieveClientToken() throws InterruptedException {
+    void retrieveClientToken(MockWebServer mockWebServer) throws InterruptedException {
 
         var token = underTest.retrieveClientToken(null);
         assertNotNull(token);
@@ -168,7 +166,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldRefreshTokenHappyCase() throws InterruptedException {
+    void shouldRefreshTokenHappyCase(MockWebServer mockWebServer) throws InterruptedException {
         var user = setupAuthorizedUser();
 
         var refreshToken = letterStrings(4, 24).next();
@@ -199,7 +197,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldHandleMissingRefreshToken() {
+    void shouldHandleMissingRefreshToken(MockWebServer mockWebServer) {
         var user = setupAuthorizedUser();
         user.getToken().setRefresh_token(null);
         user.getToken().setAccess_token(null);
@@ -213,7 +211,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void shouldRetrieveAuthenticatedUser() {
+    void shouldRetrieveAuthenticatedUser(MockWebServer mockWebServer) {
         var user = setupAuthorizedUser();
         var result = underTest.retrieveAuthenticatedUser("scoe", user.getToken(), 0);
         assertNotNull(result);

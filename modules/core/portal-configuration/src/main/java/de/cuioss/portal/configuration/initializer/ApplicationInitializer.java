@@ -15,10 +15,6 @@
  */
 package de.cuioss.portal.configuration.initializer;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import jakarta.enterprise.context.ApplicationScoped;
-
 /**
  * Contract for {@link ApplicationScoped} beans requiring deterministic initialization order.
  * This interface replaces the standard {@link PostConstruct} approach with a more

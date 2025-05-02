@@ -15,30 +15,24 @@
  */
 package de.cuioss.portal.restclient;
 
-import de.cuioss.test.generator.Generators;
 import de.cuioss.test.juli.LogAsserts;
 import de.cuioss.test.juli.TestLogLevel;
 import de.cuioss.test.juli.TestLoggerFactory;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
+import de.cuioss.test.mockwebserver.URIBuilder;
+import de.cuioss.test.mockwebserver.dispatcher.HttpMethodMapper;
+import de.cuioss.test.mockwebserver.mockresponse.MockResponseConfig;
 import de.cuioss.tools.collect.CollectionBuilder;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import lombok.Setter;
-import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
-import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
-import okhttp3.Headers;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
@@ -53,14 +47,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @EnableTestLogger(info = {RestClientLoggingTest.class, LogClientRequestFilter.class,
         LogReaderInterceptor.class, LogClientResponseFilter.class}, trace = LogClientRequestFilter42.class)
 @AddExtensions(ResteasyCdiExtension.class)
-class RestClientLoggingTest implements MockWebServerHolder {
+@ExplicitParamInjection
+@MockResponseConfig(
+        path = "/something",
+        status = HttpServletResponse.SC_OK,
+        method = HttpMethodMapper.GET,
+        headers = "x-header-key=x-header-value",
+        textContent = RestClientLoggingTest.TEXT
+)
+class RestClientLoggingTest {
 
     private static final CuiLogger LOGGER = new CuiLogger(RestClientLoggingTest.class);
 
-    private static final String TEXT = Generators.nonEmptyStrings().next();
-
-    @Setter
-    private MockWebServer mockWebServer;
+    static final String TEXT = "Some text";
 
     public interface TestService extends Closeable {
 
@@ -69,32 +68,13 @@ class RestClientLoggingTest implements MockWebServerHolder {
         String getSomething();
 
         @POST
-        @Path("something")
+        @Path("something-post")
         void postSomething();
     }
 
-    @Override
-    public Dispatcher getDispatcher() {
-        return new Dispatcher() {
-
-            @Override
-            public @NotNull MockResponse dispatch(final @NotNull RecordedRequest request) {
-                if ("/something".equals(request.getPath())) {
-                    if (HttpMethod.GET.equals(request.getMethod())) {
-                        return new MockResponse(HttpServletResponse.SC_OK, Headers.of("x-header-key", "x-header-value"), TEXT);
-                    }
-                    if (HttpMethod.POST.equals(request.getMethod())) {
-                        return new MockResponse(HttpServletResponse.SC_CREATED, Headers.of("x-header-key", "x-header-value"));
-                    }
-                }
-                return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
-            }
-        };
-    }
-
     @Test
-    void shouldLogGetRequestsAndResponses() {
-        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString()).traceLogEnabled(true)
+    void shouldLogGetRequestsAndResponses(URIBuilder uriBuilder) {
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(uriBuilder.build().toString()).traceLogEnabled(true)
                 .enableDefaultExceptionHandler().register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
 
@@ -116,8 +96,8 @@ class RestClientLoggingTest implements MockWebServerHolder {
     }
 
     @Test
-    void shouldLogClientRequestInfo() {
-        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString()).traceLogEnabled(true)
+    void shouldLogClientRequestInfo(URIBuilder uriBuilder) {
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(uriBuilder.build().toString()).traceLogEnabled(true)
                 .enableDefaultExceptionHandler().register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
         assertEquals(TEXT, service.getSomething());
@@ -129,7 +109,7 @@ class RestClientLoggingTest implements MockWebServerHolder {
                 .filter(msg -> msg.contains("-- Client request info --")).findFirst()
                 .orElseThrow(() -> new AssertionError("client request info not logged"));
 
-        assertTrue(clientRequestInfoLog.contains("Request URI: " + mockWebServer.url("something")));
+        assertTrue(clientRequestInfoLog.contains("Request URI: " + uriBuilder.addPathSegment("something").build()));
         assertTrue(clientRequestInfoLog.contains("Method: GET"));
         assertTrue(clientRequestInfoLog.contains("Headers:"));
         assertTrue(clientRequestInfoLog.contains("Accept: [application/json]"));
@@ -137,14 +117,14 @@ class RestClientLoggingTest implements MockWebServerHolder {
         final var clientResponseInfoLog = allMessages.stream().map(LogRecord::getMessage)
                 .filter(msg -> msg.contains("-- Client response info --")).findFirst()
                 .orElseThrow(() -> new AssertionError("client response info not logged"));
-        assertTrue(clientResponseInfoLog.contains("MediaType: application/octet-stream"));
+        assertTrue(clientResponseInfoLog.contains("MediaType: text/plain"));
         assertTrue(clientResponseInfoLog.contains("GenericType: class java.lang.String"));
         assertTrue(clientResponseInfoLog.contains("Properties:"));
         assertTrue(clientResponseInfoLog
                 .contains("org.eclipse.microprofile.rest.client.invokedMethod: public abstract java.lang.String "));
         assertTrue(clientResponseInfoLog.contains("Headers:"));
         assertTrue(clientResponseInfoLog.contains("Content-Length: [" + TEXT.length() + "]"));
-        assertTrue(clientResponseInfoLog.contains("Content-Type: [application/octet-stream]"));
+        assertTrue(clientResponseInfoLog.contains("Content-Type: [text/plain]"));
         assertTrue(clientResponseInfoLog.contains("x-header-key: [x-header-value]"));
         assertTrue(clientResponseInfoLog.contains("Body:"));
         assertTrue(clientResponseInfoLog.contains(TEXT));
@@ -161,24 +141,31 @@ class RestClientLoggingTest implements MockWebServerHolder {
         assertTrue(lastClientResponseFilter.contains("Cookies: {}"));
         assertTrue(lastClientResponseFilter.contains("Date: null"));
         assertTrue(lastClientResponseFilter
-                .contains("Headers: [Content-Length=" + TEXT.length() + ",x-header-key=x-header-value]"));
+                .contains("Headers: [Content-Length=" + TEXT.length() + ",Content-Type=text/plain,x-header-key=x-header-value]"));
         assertTrue(lastClientResponseFilter.contains("Language: null"));
         assertTrue(lastClientResponseFilter.contains("LastModified: null"));
         assertTrue(lastClientResponseFilter.contains("Links: []"));
         assertTrue(lastClientResponseFilter.contains("Location: null"));
-        assertTrue(lastClientResponseFilter.contains("MediaType: null"));
+        assertTrue(lastClientResponseFilter.contains("MediaType: text/plain"));
     }
 
     @Test
-    void shouldLogPostRequestsAndResponses() {
-        final var underTest = new CuiRestClientBuilder(LOGGER).url(mockWebServer.url("").toString()).traceLogEnabled(true);
+    @MockResponseConfig(
+            path = "/something-post",
+            status = HttpServletResponse.SC_CREATED,
+            method = HttpMethodMapper.POST,
+            headers = "x-header-key=x-header-value",
+            textContent = TEXT
+    )
+    void shouldLogPostRequestsAndResponses(URIBuilder uriBuilder) {
+        final var underTest = new CuiRestClientBuilder(LOGGER).url(uriBuilder.build().toString()).traceLogEnabled(true);
         underTest.register(new LogClientRequestFilter42());
         final var service = underTest.build(TestService.class);
         service.postSomething();
 
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "-- Client request info --");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO,
-                "Request URI: " + mockWebServer.url("something"));
+                "Request URI: " + uriBuilder.addPathSegment("something-post").build());
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Method: POST");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Headers:");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Accept: [application/json]");
@@ -194,12 +181,12 @@ class RestClientLoggingTest implements MockWebServerHolder {
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Cookies: {}");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Date: null");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO,
-                "Headers: [Content-Length=0,x-header-key=x-header-value]");
+                "Headers: [Content-Length=9,Content-Type=text/plain,x-header-key=x-header-value]");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Language: null");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "LastModified: null");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Links: []");
         LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "Location: null");
-        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "MediaType: null");
+        LogAsserts.assertLogMessagePresentContaining(TestLogLevel.INFO, "MediaType: text/plain");
 
         LogAsserts.assertLogMessagePresent(TestLogLevel.TRACE, "-- LogClientRequestFilter42 --");
         assertLogMessageBeforeOther(LogClientRequestFilter42.class, LogClientRequestFilter.class,

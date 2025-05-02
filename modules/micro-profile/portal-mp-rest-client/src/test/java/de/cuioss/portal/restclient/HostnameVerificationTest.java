@@ -18,24 +18,18 @@ package de.cuioss.portal.restclient;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
+import de.cuioss.test.mockwebserver.mockresponse.MockResponseConfig;
 import de.cuioss.tools.logging.CuiLogger;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import lombok.Setter;
-import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
-import okhttp3.Headers;
 import okhttp3.tls.HandshakeCertificates;
 import okhttp3.tls.HeldCertificate;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
@@ -49,27 +43,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableTestLogger
 @AddExtensions({ResteasyCdiExtension.class})
 @EnableMockWebServer(manualStart = true)
-class HostnameVerificationTest implements MockWebServerHolder {
+@MockResponseConfig(path = "/success/test", status = HttpServletResponse.SC_OK, textContent = "Hello World")
+class HostnameVerificationTest {
 
     private static final CuiLogger LOGGER = new CuiLogger(HostnameVerificationTest.class);
 
     private static final String TEXT = "Hello World";
 
-    @Setter
-    private MockWebServer mockWebServer;
-
-    @Override
-    public Dispatcher getDispatcher() {
-        return new Dispatcher() {
-            @Override
-            public @NotNull MockResponse dispatch(final @NotNull RecordedRequest request) {
-                return new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", "application/fhir+xml"), TEXT);
-            }
-        };
-    }
-
     @Test
-    void incorrectHostname() throws Exception {
+    @ExplicitParamInjection
+    void incorrectHostname(MockWebServer mockWebServer) throws Exception {
         final var hostname = InetAddress.getLocalHost().getCanonicalHostName();
 
         final var heldCertificate = new HeldCertificate.Builder().commonName(hostname).build();
@@ -95,8 +78,7 @@ class HostnameVerificationTest implements MockWebServerHolder {
     @Path("/")
     public interface TestResource extends Closeable {
         @GET
-        @Path("success/test")
-        @Produces("application/fhir+xml")
+        @Path("test")
         String test();
     }
 }

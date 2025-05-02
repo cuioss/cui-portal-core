@@ -20,7 +20,7 @@ import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
 import de.cuioss.test.mockwebserver.URIBuilder;
-import de.cuioss.test.mockwebserver.mockresponse.MockResponse;
+import de.cuioss.test.mockwebserver.mockresponse.MockResponseConfig;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableMockWebServer
 @AddBeanClasses({ConnectionMetadataProducer.class, RestClientProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
-@MockResponse(path = "/success/test", status = HttpServletResponse.SC_OK, textContent = "test", headers = "ETag=W/123")
+@MockResponseConfig(path = "/success/test", status = HttpServletResponse.SC_OK, textContent = "test", headers = "ETag=W/123")
 class RestClientProducerTest {
 
     public interface TestResource extends Closeable {

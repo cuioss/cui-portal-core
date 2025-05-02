@@ -29,6 +29,7 @@ import lombok.Setter;
 import mockwebserver3.MockWebServer;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
@@ -61,20 +62,18 @@ class Oauth2DiscoveryConfigurationProducerTest
 
     @Nested
     @DisplayName("Discovery Configuration Tests")
-    class DiscoveryConfigurationTests implements MockWebServerHolder {
+    @ExplicitParamInjection
+    class DiscoveryConfigurationTests {
 
         @Getter
         private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
-        @Setter
-        private MockWebServer mockWebServer;
-
-
         @BeforeEach
-        void beforeEach() {
+        void beforeEach(MockWebServer mockWebServer) {
             dispatcher.reset();
             configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
             dispatcher.configure(configuration, mockWebServer);
+            mockWebServer.setDispatcher(dispatcher);
         }
 
 
@@ -107,10 +106,11 @@ class Oauth2DiscoveryConfigurationProducerTest
 
         @Test
         @DisplayName("Should handle invalid OIDC configuration")
-        void shouldHandleInvalidOidcConfig() {
+        void shouldHandleInvalidOidcConfig(MockWebServer mockWebServer) {
             configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "true");
             dispatcher.setSimulateInvalidOidcConfig(true);
             dispatcher.configure(configuration, mockWebServer);
+            mockWebServer.setDispatcher(dispatcher);
 
             WeldException ex = assertThrows(WeldException.class, underTest::getConfiguration);
             assertNotNull(ex.getCause());
@@ -119,18 +119,17 @@ class Oauth2DiscoveryConfigurationProducerTest
 
     @Nested
     @DisplayName("Configuration Property Tests")
-    class ConfigurationPropertyTests implements MockWebServerHolder {
-        @Setter
-        private MockWebServer mockWebServer;
-
+    @ExplicitParamInjection
+    class ConfigurationPropertyTests {
         @Getter
         private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
         @BeforeEach
-        void beforeEach() {
+        void beforeEach(MockWebServer mockWebServer) {
             dispatcher.reset();
             configuration.update(OAuthConfigKeys.CONFIG_VALIDATION_ENABLED, "false");
             dispatcher.configure(configuration, mockWebServer);
+            mockWebServer.setDispatcher(dispatcher);
         }
 
         @Test
