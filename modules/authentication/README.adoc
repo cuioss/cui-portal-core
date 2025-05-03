@@ -19,7 +19,6 @@ In contrast to 'link:portal-authentication-mock/[portal-authentication-mock]' th
 Implementation for cases where it is only needed technically or for documentation purpose.
 In contrast to 'portal-authentication-dummy' this module must never be used in production environments.
 
-* link:portal-authentication-token/[portal-authentication-token]: Provides some convenience structures for dealing with JTW-Token.
 
 == Usage
 

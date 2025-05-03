@@ -190,7 +190,7 @@ public class PortalTestConfiguration implements ConfigSource {
     /**
      * @param projectStage to be set
      */
-    public void setPortalProjectStage(final de.cuioss.portal.common.stage.ProjectStage projectStage) {
+    public void setPortalProjectStage(final ProjectStage projectStage) {
         update(PortalConfigurationKeys.PORTAL_STAGE, projectStage.name().toLowerCase());
     }
 

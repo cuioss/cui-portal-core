@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.9.5</version>
         <relativePath/>
     </parent>
     <groupId>de.cuioss.portal</groupId>
@@ -31,18 +31,4 @@
         <url>https://github.com/cuioss/cui-portal-core/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <!-- Remove me after upgrade to 0.9.1 -->
-                <groupId>de.cuioss.test</groupId>
-                <artifactId>cui-test-mockwebserver-junit5</artifactId>
-                <version>1.0.0</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    <properties>
-        <version.cui.parent>0.9.0</version.cui.parent>
-    </properties>
 </project>

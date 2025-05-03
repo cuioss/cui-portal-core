@@ -21,10 +21,10 @@ import de.cuioss.portal.authentication.oauth.LoginPagePath;
 import de.cuioss.portal.authentication.oauth.OauthAuthenticationException;
 import de.cuioss.portal.authentication.oauth.Token;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
-import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
+import de.cuioss.test.mockwebserver.EnableMockWebServer;
+import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.net.UrlParameter;
@@ -36,6 +36,7 @@ import lombok.Setter;
 import mockwebserver3.MockWebServer;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.weld.junit5.ExplicitParamInjection;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
@@ -60,8 +61,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @AddBeanClasses({Oauth2AuthenticationFacadeImpl.class, Oauth2DiscoveryConfigurationProducer.class,
         RedirectorMock.class})
 @AddExtensions(ResteasyCdiExtension.class)
+@ExplicitParamInjection
 class Oauth2AuthenticationFacadeImplTest
-        implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl>, MockWebServerHolder {
+        implements ShouldHandleObjectContracts<Oauth2AuthenticationFacadeImpl> {
 
     @Inject
     @PortalAuthenticationFacade
@@ -84,17 +86,15 @@ class Oauth2AuthenticationFacadeImplTest
     @Produces
     private final Oauth2ServiceMock service = new Oauth2ServiceMock();
 
-    @Setter
-    private MockWebServer mockWebServer;
-
     @Getter
     private final OIDCWellKnownDispatcher dispatcher = new OIDCWellKnownDispatcher();
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach(MockWebServer mockWebServer) {
         servletRequest = new CuiMockHttpServletRequest();
         servletRequest.setPathInfo("some.url");
         dispatcher.configure(configuration, mockWebServer);
+        mockWebServer.setDispatcher(dispatcher);
         service.reset();
     }
 

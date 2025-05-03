@@ -12,6 +12,5 @@
   <description>Groups all test-related modules for the portal</description>
   <modules>
     <module>portal-core-unit-testing</module>
-    <module>portal-keycloak-integration-test</module>
   </modules>
 </project>

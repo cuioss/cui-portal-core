@@ -161,7 +161,7 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
 
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest request,
-                                                     final LoginCredentials loginCredentials) {
+            final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         if (loginCredentials.isComplete()
                 && loginCredentials.getUsername().equalsIgnoreCase(loginCredentials.getPassword())) {
