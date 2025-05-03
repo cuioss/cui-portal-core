@@ -46,14 +46,6 @@ class PortalResourceLoaderTest {
                     "Should return empty Optional for non-existing resource");
         }
 
-        @Test
-        @DisplayName("Should handle deprecated method")
-        @SuppressWarnings({"deprecation", "squid:S5738"}) // owolff will be removed in 1.3.0
-        void shouldHandleDeprecatedMethod() {
-            var resource = PortalResourceLoader.getRessource(EXISTING_RESOURCE, getClass());
-            assertTrue(resource.isPresent(), "Should find existing resource using deprecated method");
-            assertNotNull(resource.get(), "Resource URL should not be null from deprecated method");
-        }
     }
 
     @Nested

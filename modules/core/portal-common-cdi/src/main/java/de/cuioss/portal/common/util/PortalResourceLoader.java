@@ -32,19 +32,6 @@ public class PortalResourceLoader {
 
     private static final CuiLogger LOGGER = new CuiLogger(PortalResourceLoader.class);
 
-    /**
-     * Loads a certain resource from the classpath.
-     *
-     * @param resourcePath identifying the concrete resource, must not be null
-     * @param callingClass The class to use as context for resource loading, must not be null
-     * @param <T> the type of the calling class
-     * @return The {@link Optional} {@link URL} identifying the resource
-     * @deprecated Use {@link #getResource(String, Class)} instead. This method will be removed in a future version.
-     */
-    @Deprecated(since = "1.2", forRemoval = true)
-    public static <T> Optional<URL> getRessource(String resourcePath, Class<T> callingClass) {
-        return getResource(resourcePath, callingClass);
-    }
 
     /**
      * Loads a certain resource from the classpath.

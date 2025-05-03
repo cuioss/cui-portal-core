@@ -239,23 +239,6 @@ public final class PortalBeanManager {
     }
 
     /**
-     * Use this method if {@link #resolveBean(Class, Class)} returned an
-     * {@link Optional#empty()} and you want to create a Portal log message string.
-     *
-     * @param beanClass       tried to resolve
-     * @param annotationClass tried to resolve
-     * @param <T>
-     * @param <V>
-     * @return Portal-532 log message
-     * @deprecated Must not be used from outside
-     */
-    @Deprecated(since = "1.2")
-    public static <T, V extends Annotation> String createLogMessage(final Class<T> beanClass,
-            final Class<V> annotationClass) {
-        return "Portal-532: " + createErrorMessage(beanClass, annotationClass);
-    }
-
-    /**
      * Returns the CDI {@link BeanManager}.
      *
      * @return The CDI {@link BeanManager}.
