@@ -21,6 +21,8 @@ import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import org.easymock.EasyMock;
 import org.eclipse.microprofile.metrics.Tag;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,8 +35,8 @@ import java.lang.reflect.Field;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = {
@@ -93,16 +95,18 @@ class MetricUtilsTest {
         @Test
         @DisplayName("Should contain HTTP status code tag")
         void containsWebApplicationExceptionHttpStatusCodeTag() {
-            // This test requires the Jersey RuntimeDelegate
-            try {
-                Class.forName("org.glassfish.jersey.internal.RuntimeDelegateImpl");
-            } catch (ClassNotFoundException e) {
-                assumeTrue(false, "Skipping test: Jersey RuntimeDelegate not available");
-                return;
-            }
+            // Mock the Response.getStatus() method
+            Response mockResponse = EasyMock.createNiceMock(Response.class);
+            EasyMock.expect(mockResponse.getStatus()).andReturn(666).anyTimes();
+            EasyMock.replay(mockResponse);
 
-            var metricID = MetricsUtils.createMetricId("test", new WebApplicationException(666));
-            assertEquals("666", metricID.getTags().get("httpStatusCode"),
+            // Create a mock WebApplicationException that returns our mock Response
+            WebApplicationException mockException = EasyMock.createNiceMock(WebApplicationException.class);
+            EasyMock.expect(mockException.getResponse()).andReturn(mockResponse).anyTimes();
+            EasyMock.replay(mockException);
+
+            var metricID = MetricsUtils.createMetricId("test", mockException);
+            assertEquals("666", metricID.getTags().get("http_status"),
                     "HTTP status code should be present in tag");
         }
     }
@@ -132,5 +136,31 @@ class MetricUtilsTest {
     static class MetricUtilsTestException extends Exception {
         @Serial
         private static final long serialVersionUID = 1L;
+    }
+
+    @Nested
+    @DisplayName("HTTP Status Code Tag Tests")
+    class HttpStatusCodeTagTests {
+        @Test
+        @DisplayName("Should create tag with HTTP status code")
+        void shouldCreateTagWithHttpStatusCode() {
+            // Create mock Response
+            Response mockResponse = EasyMock.createNiceMock(Response.class);
+            EasyMock.expect(mockResponse.getStatus()).andReturn(200).anyTimes();
+            EasyMock.replay(mockResponse);
+
+            var tag = MetricsUtils.createHttpStatusCodeTag(mockResponse);
+
+            assertEquals("http_status", tag.getTagName(), "Tag name should be 'http_status'");
+            assertEquals("200", tag.getTagValue(), "Tag value should be '200'");
+        }
+
+        @Test
+        @DisplayName("Should return null for null response")
+        void shouldReturnNullForNullResponse() {
+            var tag = MetricsUtils.createHttpStatusCodeTag(null);
+
+            assertNull(tag, "Tag should be null for null response");
+        }
     }
 }
