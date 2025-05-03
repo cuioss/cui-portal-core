@@ -3,7 +3,7 @@
     <parent>
         <groupId>de.cuioss.portal.authentication</groupId>
         <artifactId>authentication</artifactId>
-        <version>1.3.0</version>
+        <version>1.3-SNAPSHOT</version>
     </parent>
     <artifactId>portal-authentication-api</artifactId>
     <name>Portal Authentication API</name>
