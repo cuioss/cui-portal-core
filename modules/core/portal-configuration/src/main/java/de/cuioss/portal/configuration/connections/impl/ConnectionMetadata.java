@@ -333,9 +333,4 @@ public class ConnectionMetadata implements Serializable {
             throw new ConnectionConfigurationException(ErrorReason.INVALID_PROXY);
         }
     }
-
-    @SuppressWarnings("java:S2094") // owolff: see class comment
-    public static class ConnectionMetadataBuilder {
-        // Needed for lombok-builder plus javadoc
-    }
 }
