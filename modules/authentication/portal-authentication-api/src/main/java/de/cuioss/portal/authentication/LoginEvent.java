@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,13 +68,13 @@ public class LoginEvent implements Serializable {
     public void logEvent() {
         switch (action) {
             case LOGIN_SUCCESS:
-                LOGGER.info(AUTH.INFO.LOGIN_SUCCESS.format(username));
+                LOGGER.info(AUTH.INFO.LOGIN_SUCCESS, username);
                 break;
             case LOGIN_FAILED:
-                LOGGER.warn(AUTH.WARN.LOGIN_FAILED.format(username));
+                LOGGER.warn(AUTH.WARN.LOGIN_FAILED, username);
                 break;
             case LOGOUT:
-                LOGGER.info(AUTH.INFO.LOGOUT.format(username));
+                LOGGER.info(AUTH.INFO.LOGOUT, username);
                 break;
             default:
                 throw new IllegalStateException("Unknown action: " + action);

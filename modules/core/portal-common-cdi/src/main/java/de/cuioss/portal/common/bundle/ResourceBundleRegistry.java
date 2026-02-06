@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -120,21 +120,21 @@ public class ResourceBundleRegistry implements Serializable {
             if (resolvedBundle.isPresent() && locator.getBundlePath().isPresent()) {
                 var bundlePath = locator.getBundlePath().get();
                 if (registeredPaths.contains(bundlePath)) {
-                    LOGGER.warn(PortalCommonLogMessages.WARN.DUPLICATE_PATH.format(bundlePath));
+                    LOGGER.warn(PortalCommonLogMessages.WARN.DUPLICATE_PATH, bundlePath);
                 } else {
                     LOGGER.debug("Adding bundle path %s", bundlePath);
                     validLocators.add(locator);
                     registeredPaths.add(bundlePath);
                 }
             } else {
-                LOGGER.warn(PortalCommonLogMessages.WARN.MISSING_PATH.format(locator.getClass().getName()));
+                LOGGER.warn(PortalCommonLogMessages.WARN.MISSING_PATH, locator.getClass().getName());
             }
         }
 
         resolvedPaths = validLocators.toImmutableList();
 
         if (resolvedPaths.isEmpty()) {
-            LOGGER.warn(PortalCommonLogMessages.WARN.NO_VALID_BUNDLES.format());
+            LOGGER.warn(PortalCommonLogMessages.WARN.NO_VALID_BUNDLES);
         } else {
             LOGGER.debug("Resulting bundle paths: %s", resolvedPaths.stream()
                     .map(loc -> loc.getBundlePath().orElse("undefined"))

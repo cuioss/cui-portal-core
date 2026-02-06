@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnablePortalConfigurationLocal
 class MPProducerTest {
 
-    private static final CuiLogger log = new CuiLogger(MPProducerTest.class);
+    private static final CuiLogger LOGGER = new CuiLogger(MPProducerTest.class);
 
     private static final String KEY_BASE = "mp.producer.config.test.";
     private static final String KEY_EMPTY_DEFAULT = KEY_BASE + "emptyDefault";
@@ -115,7 +115,7 @@ class MPProducerTest {
         assertFalse(stringListEmptyDefaultValueProvider.get().isEmpty(), "provider list should contain new value");
         assertEquals(ESCAPE_VALUE_OUT, stringListEmptyDefaultValueProvider.get().iterator().next());
 
-        log.info("setting new value: {}", VALUE);
+        LOGGER.info("setting new value: %s", VALUE);
         configuration.fireEvent(KEY_EMPTY_DEFAULT, VALUE);
 
         assertDoesNotThrow(() -> stringListEmptyDefaultValueProvider.get(), "provider list should provide new value");

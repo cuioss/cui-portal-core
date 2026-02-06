@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -236,8 +236,8 @@ public class PortalConfigProducer {
             try {
                 expiration = Long.parseLong(configProperties.get(EXPIRATION_KEY).trim());
             } catch (final NumberFormatException e) {
-                LOGGER.error(e, ERROR.INVALID_NUMBER.format(configKeyPrefix, EXPIRATION_KEY,
-                        configProperties.get(EXPIRATION_KEY)));
+                LOGGER.error(e, ERROR.INVALID_NUMBER, configKeyPrefix, EXPIRATION_KEY,
+                        configProperties.get(EXPIRATION_KEY));
             }
         }
 
@@ -245,7 +245,7 @@ public class PortalConfigProducer {
             try {
                 size = Long.parseLong(configProperties.get(SIZE_KEY).trim());
             } catch (final NumberFormatException e) {
-                LOGGER.error(e, ERROR.INVALID_NUMBER.format(configKeyPrefix, SIZE_KEY, configProperties.get(SIZE_KEY)));
+                LOGGER.error(e, ERROR.INVALID_NUMBER, configKeyPrefix, SIZE_KEY, configProperties.get(SIZE_KEY));
             }
         }
 
@@ -253,16 +253,16 @@ public class PortalConfigProducer {
             try {
                 timeUnit = TimeUnit.valueOf(configProperties.get(EXPIRATION_UNIT_KEY).trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
-                LOGGER.error(e, ERROR.INVALID_TIME_UNIT.format(configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
-                        configProperties.get(EXPIRATION_UNIT_KEY)));
+                LOGGER.error(e, ERROR.INVALID_TIME_UNIT, configKeyPrefix, EXPIRATION_UNIT_KEY, TimeUnit.values(),
+                        configProperties.get(EXPIRATION_UNIT_KEY));
             }
         }
 
         if (configProperties.containsKey(CacheConfig.RECORD_STATISTICS_KEY)) {
             final var configValue = configProperties.get(CacheConfig.RECORD_STATISTICS_KEY).trim();
             if (!isValidBoolean(configValue)) {
-                LOGGER.error(ERROR.INVALID_BOOLEAN.format(configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
-                        configProperties.get(CacheConfig.RECORD_STATISTICS_KEY)));
+                LOGGER.error(ERROR.INVALID_BOOLEAN, configKeyPrefix, CacheConfig.RECORD_STATISTICS_KEY,
+                        configProperties.get(CacheConfig.RECORD_STATISTICS_KEY));
                 recordStats = false;
             } else {
                 recordStats = Boolean.parseBoolean(configValue);
@@ -280,7 +280,7 @@ public class PortalConfigProducer {
         try {
             locale = LocaleUtils.toLocale(localeAsString);
         } catch (final IllegalArgumentException e) {
-            LOGGER.warn(WARN.INVALID_LOCALE.getTemplate(), localeAsString, e);
+            /*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.warn(e, WARN.INVALID_LOCALE.getTemplate(), localeAsString);
         }
         if (null != locale) {
             return locale;

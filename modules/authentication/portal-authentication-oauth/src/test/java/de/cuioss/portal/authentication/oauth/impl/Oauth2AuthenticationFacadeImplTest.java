@@ -24,7 +24,6 @@ import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.net.UrlParameter;
