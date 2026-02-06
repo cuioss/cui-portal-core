@@ -120,7 +120,7 @@ public class ServletLifecycleListener implements ServletContextListener {
             LOGGER.debug("Destroying '%s' for '%s'", applicationInitializer, contextPath);
             try {
                 applicationInitializer.destroy();
-            } /*~~(TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (RuntimeException e) {
+            } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
                 LOGGER.warn(LIFECYCLE.WARN.DESTROY_ERROR, applicationInitializer, contextPath, e.getMessage());
                 LOGGER.debug("Detailed exception: %s", e.getMessage());
             }

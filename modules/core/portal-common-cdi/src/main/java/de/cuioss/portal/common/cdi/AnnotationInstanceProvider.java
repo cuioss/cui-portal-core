@@ -212,7 +212,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
             Object memberValue;
             try {
                 memberValue = invoke(this, methods[i], EMPTY_OBJECT_ARRAY);
-            } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+            } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
                 memberValue = "";
             }
             sb.append(memberValue);
@@ -267,9 +267,7 @@ public class AnnotationInstanceProvider implements Annotation, InvocationHandler
                     return 0;
                 }
                 result += Objects.hash(m.getName(), value);
-            } /*~~(TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (RuntimeException ex) {
-                throw ex;
-            } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception ex) {
+            } catch (RuntimeException ex) { // cui-rewrite:disable InvalidExceptionUsageRecipe
                 throw new IllegalStateException(ex);
             }
         }

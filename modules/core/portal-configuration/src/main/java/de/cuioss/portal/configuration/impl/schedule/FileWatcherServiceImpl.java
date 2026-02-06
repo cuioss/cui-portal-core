@@ -99,7 +99,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     @Inject
     FileWatcherServiceImpl(@ConfigProperty(name = SCHEDULER_FILE_SCAN_ENABLED) Provider<Boolean> enabledProvider,
-                           @FileChangedEvent Event<Path> fileChangeEvent) {
+            @FileChangedEvent Event<Path> fileChangeEvent) {
         this.enabledProvider = enabledProvider;
         this.fileChangeEvent = fileChangeEvent;
     }
@@ -223,7 +223,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 } catch (ClosedWatchServiceException e) {
                     // Hm, feels a little clumsy. Should consider correct Interruption handling
                     LOGGER.debug("Shutdown while waiting");
-                } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+                } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
                     LOGGER.error(e, ERROR.FILE_SYSTEM_POLLING_ERROR);
                 } finally {
                     if (null != watchKey) {
@@ -256,7 +256,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             LOGGER.debug("Delivering notification for path changes of: '%s'", element.getPath());
             try {
                 fileChangeEvent.fire(element.getPath());
-            } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+            } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
                 LOGGER.error(e, ERROR.FILE_EVENT_HANDLING_ERROR, element.getPath());
             }
             element.update();
