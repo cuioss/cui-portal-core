@@ -32,5 +32,7 @@
     </issueManagement>
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
+        <!-- Lombok @Builder generates inner classes not visible to javadoc tool -->
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
 </project>
