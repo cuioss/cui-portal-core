@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,9 @@ package de.cuioss.portal.core.test.junit5;
 
 import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
-import io.smallrye.config.inject.ConfigProducer;
+import io.smallrye.config.inject.ConfigExtension;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Documented;
@@ -43,7 +44,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * <h2>Included Components</h2>
  * <ul>
- *   <li>{@link ConfigProducer} - MicroProfile Config producer</li>
+ *   <li>{@link ConfigExtension} - SmallRye Config CDI extension (registers config and config producer)</li>
  *   <li>{@link PortalTestConfiguration} - Portal-specific test configuration</li>
  *   <li>{@link PortalConfigProducer} - Portal configuration producer</li>
  * </ul>
@@ -96,7 +97,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(TYPE)
 @ExtendWith(PortalTestConfigurationExtension.class)
-@AddBeanClasses({PortalTestConfiguration.class, PortalConfigProducer.class, ConfigProducer.class})
+@AddExtensions(ConfigExtension.class)
+@AddBeanClasses({PortalTestConfiguration.class, PortalConfigProducer.class})
 public @interface EnablePortalConfiguration {
 
     /**

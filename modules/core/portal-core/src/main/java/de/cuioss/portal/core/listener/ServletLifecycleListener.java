@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,9 +68,7 @@ public class ServletLifecycleListener implements ServletContextListener {
 
     private static final CuiLogger LOGGER = new CuiLogger(ServletLifecycleListener.class);
 
-    @Inject
-    @PortalInitializer
-    Instance<ApplicationInitializer> applicationInitializers;
+    private final Instance<ApplicationInitializer> applicationInitializers;
 
     @Produces
     @Dependent
@@ -78,10 +76,15 @@ public class ServletLifecycleListener implements ServletContextListener {
     @CuiContextPath
     String contextPath = "portal";
 
+    @Inject
+    ServletLifecycleListener(@PortalInitializer Instance<ApplicationInitializer> applicationInitializers) {
+        this.applicationInitializers = applicationInitializers;
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         contextPath = sce.getServletContext().getContextPath();
-        LOGGER.info(LIFECYCLE.INFO.CONTEXT_INITIALIZING.format(contextPath));
+        LOGGER.info(LIFECYCLE.INFO.CONTEXT_INITIALIZING, contextPath);
         applicationInitializerListener(sce.getServletContext());
     }
 
@@ -109,7 +112,7 @@ public class ServletLifecycleListener implements ServletContextListener {
     @PreDestroy
     public void applicationDestroyListener() {
         LOGGER.debug("Executing applicationDestroyListener for '%s'", contextPath);
-        LOGGER.info(LIFECYCLE.INFO.CONTEXT_SHUTDOWN.format(contextPath));
+        LOGGER.info(LIFECYCLE.INFO.CONTEXT_SHUTDOWN, contextPath);
         final List<ApplicationInitializer> finalizer = mutableList(applicationInitializers);
         finalizer.sort(Collections.reverseOrder());
         LOGGER.debug("ServletLifecycleListener called for '%s', finalizing with order: %s", contextPath, finalizer);
@@ -117,8 +120,9 @@ public class ServletLifecycleListener implements ServletContextListener {
             LOGGER.debug("Destroying '%s' for '%s'", applicationInitializer, contextPath);
             try {
                 applicationInitializer.destroy();
+                // cui-rewrite:disable InvalidExceptionUsageRecipe
             } catch (RuntimeException e) {
-                LOGGER.warn(LIFECYCLE.WARN.DESTROY_ERROR.format(applicationInitializer, contextPath, e.getMessage()));
+                LOGGER.warn(LIFECYCLE.WARN.DESTROY_ERROR, applicationInitializer, contextPath, e.getMessage());
                 LOGGER.debug("Detailed exception: %s", e.getMessage());
             }
         }

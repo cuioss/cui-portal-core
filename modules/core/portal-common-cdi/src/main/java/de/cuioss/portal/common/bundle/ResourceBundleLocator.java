@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -76,10 +76,11 @@ import java.util.ResourceBundle;
  * @see ResourceBundleRegistry
  * @see jakarta.annotation.Priority
  */
+// cui-rewrite:disable CuiLoggerStandardsRecipe
 public interface ResourceBundleLocator extends Serializable {
 
     /**
-     * Logger for this class
+     * Logger for this class.
      */
     CuiLogger LOGGER = new CuiLogger(ResourceBundleLocator.class);
 
@@ -112,7 +113,7 @@ public interface ResourceBundleLocator extends Serializable {
             LOGGER.debug("Successfully loaded %s '%s' for locale '%s'", getClass().getName(), bundlePath.get(), locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn(PortalCommonLogMessages.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath.get(), locale));
+            LOGGER.warn(PortalCommonLogMessages.WARN.LOAD_FAILED, getClass().getName(), bundlePath.get(), locale);
             return getBundleViaCurrentThreadContextClassLoader(bundlePath.get(), locale);
         }
     }
@@ -132,7 +133,7 @@ public interface ResourceBundleLocator extends Serializable {
             LOGGER.debug("Loaded bundle for %s, path=%s, locale=%s", getClass().getName(), bundlePath, locale);
             return Optional.of(rb);
         } catch (MissingResourceException e) {
-            LOGGER.warn(e, PortalCommonLogMessages.WARN.LOAD_FAILED.format(getClass().getName(), bundlePath, locale));
+            LOGGER.warn(e, PortalCommonLogMessages.WARN.LOAD_FAILED, getClass().getName(), bundlePath, locale);
             return Optional.empty();
         }
     }

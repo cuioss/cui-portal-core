@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,18 +40,18 @@ class DirectoryDescriptorTest {
 
     @Test
     void shouldHandleFactory() {
-        assertFalse(AbstractFileDescriptor.create(null).isPresent());
-        assertFalse(AbstractFileDescriptor.create(testFileHandler.getNonExistingFile()).isPresent());
-        assertTrue(AbstractFileDescriptor.create(testFileHandler.getBaseDir()).isPresent());
-        assertTrue(AbstractFileDescriptor.create(testFileHandler.getBaseDir()).isPresent());
+        assertFalse(FileDescriptors.create(null).isPresent());
+        assertFalse(FileDescriptors.create(testFileHandler.getNonExistingFile()).isPresent());
+        assertTrue(FileDescriptors.create(testFileHandler.getBaseDir()).isPresent());
+        assertTrue(FileDescriptors.create(testFileHandler.getBaseDir()).isPresent());
     }
 
     @Test
     void shouldFulfillObjectContract() throws IOException {
-        final var descriptor1 = AbstractFileDescriptor.create(testFileHandler.getBaseDir()).get();
+        final var descriptor1 = FileDescriptors.create(testFileHandler.getBaseDir()).get();
         var newDirectory = testFileHandler.getBaseDir().resolve("newDirectory");
         Files.createDirectories(newDirectory);
-        final var descriptor2 = AbstractFileDescriptor.create(newDirectory).get();
+        final var descriptor2 = FileDescriptors.create(newDirectory).get();
 
         assertNotEquals(descriptor1, descriptor2);
 
@@ -62,7 +62,7 @@ class DirectoryDescriptorTest {
 
     @Test
     void shouldHandleDirectory() throws IOException {
-        final var descriptor = AbstractFileDescriptor.create(testFileHandler.getBaseDir()).get();
+        final var descriptor = FileDescriptors.create(testFileHandler.getBaseDir()).get();
         assertFalse(descriptor.isUpdated());
         descriptor.update();
 
@@ -81,7 +81,7 @@ class DirectoryDescriptorTest {
 
     @Test
     void shouldHandleSingleFile() {
-        final var descriptor = AbstractFileDescriptor.create(testFileHandler.getFile1()).get();
+        final var descriptor = FileDescriptors.create(testFileHandler.getFile1()).get();
 
         assertEquals(testFileHandler.getFile1().toAbsolutePath(), descriptor.getPath());
 

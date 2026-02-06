@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -130,29 +130,37 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private static final String SCOPES_KEY = "Scopes";
     private static final String PKCE_CODE_KEY = "PKCE_CODE";
 
-    private final transient Object codeLock = new Object();
+    private final Object codeLock = new Object();
 
     private static final AuthenticatedUserInfo NOT_LOGGED_IN = BaseAuthenticatedUserInfo.builder().authenticated(false)
             .build();
 
     @SuppressWarnings("cdi-ambiguous-dependency")
-    @Inject
-    private Oauth2Service oauth2ServiceImpl;
+    private final Oauth2Service oauth2ServiceImpl;
 
-    @Inject
-    private Provider<Oauth2Configuration> configurationProvider;
+    private final Provider<Oauth2Configuration> configurationProvider;
 
-    @Inject
-    @LoginPagePath
-    private Provider<String> loginUrl;
+    private final Provider<String> loginUrl;
 
-    @Inject
-    private Provider<OauthRedirector> oauthRedirector;
+    private final Provider<OauthRedirector> oauthRedirector;
 
-    @Inject
-    private Provider<HttpServletRequest> servletRequestProvider;
+    private final Provider<HttpServletRequest> servletRequestProvider;
 
     private final SecureRandom random = new SecureRandom();
+
+    @Inject
+    public Oauth2AuthenticationFacadeImpl(
+            @SuppressWarnings("cdi-ambiguous-dependency") Oauth2Service oauth2ServiceImpl,
+            Provider<Oauth2Configuration> configurationProvider,
+            @LoginPagePath Provider<String> loginUrl,
+            Provider<OauthRedirector> oauthRedirector,
+            Provider<HttpServletRequest> servletRequestProvider) {
+        this.oauth2ServiceImpl = oauth2ServiceImpl;
+        this.configurationProvider = configurationProvider;
+        this.loginUrl = loginUrl;
+        this.oauthRedirector = oauthRedirector;
+        this.servletRequestProvider = servletRequestProvider;
+    }
 
     @Override
     public boolean logout(final HttpServletRequest servletRequest) {
@@ -199,12 +207,12 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             LOGGER.debug("Calling redirect to %s", retrieveUrl);
             oauthRedirector.get().sendRedirect(retrieveUrl);
         } catch (final IllegalStateException e) {
-            LOGGER.warn(e, WARN.REDIRECT_FAILED::format);
+            LOGGER.warn(e, WARN.REDIRECT_FAILED);
         }
     }
 
     private Optional<AuthenticatedUserInfo> triggerAuthenticate(final List<UrlParameter> parameters,
-            final String scopes) {
+                                                                final String scopes) {
         final var code = parameters.stream().filter(parameter -> "code".equals(parameter.getName())).findAny();
         final var state = parameters.stream().filter(parameter -> "state".equals(parameter.getName())).findAny();
         final var error = parameters.stream().filter(parameter -> "error".equals(parameter.getName())).findAny();
@@ -218,10 +226,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                     throw new OauthAuthenticationException("system.exception.oauth.consent");
                 }
                 if (ERROR_INVALID_SCOPE.equals(error.get().getValue())) {
-                    LOGGER.warn(WARN.INVALID_SCOPE.format(parameters));
+                    LOGGER.warn(WARN.INVALID_SCOPE, parameters);
                     throw new OauthAuthenticationException("system.exception.oauth.invalidScope");
                 }
-                LOGGER.warn(WARN.LOGIN_ERROR.format(parameters));
+                LOGGER.warn(WARN.LOGIN_ERROR, parameters);
                 throw new OauthAuthenticationException("system.exception.oauth.login");
             }
         }
@@ -230,13 +238,13 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @SuppressWarnings("squid:S3655") // already checked
     private Optional<AuthenticatedUserInfo> handleTriggerAuthenticate(final String scopes, final UrlParameter code,
-            final UrlParameter state) {
+                                                                      final UrlParameter state) {
         final var servletRequest = servletRequestProvider.get();
         LOGGER.debug("code and state parameter are present");
         final AuthenticatedUserInfo sessionUser;
         synchronized (codeLock) {
             if (null == servletRequest.getSession().getAttribute(STATE_KEY)) {
-                LOGGER.warn(WARN.UNKNOWN_STATE.format(state.getValue()));
+                LOGGER.warn(WARN.UNKNOWN_STATE, state.getValue());
                 return Optional.empty();
             }
             if (state.getValue().equals(servletRequest.getSession().getAttribute(STATE_KEY))) {
@@ -306,7 +314,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE::format);
+            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE);
             throw new IllegalStateException(e);
         }
 
@@ -406,7 +414,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         }
         final var tokenParts = token.getId_token().split("\\.");
         if (tokenParts.length != 3) {
-            LOGGER.info(INFO.ID_TOKEN_SPLIT_FAILED.format(token.getId_token()));
+            LOGGER.info(INFO.ID_TOKEN_SPLIT_FAILED, token.getId_token());
             return Collections.emptyMap();
         }
         var objectReader = new ObjectMapper().reader().forType(new TypeReference<Map<String, Object>>() {
@@ -415,7 +423,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             return objectReader.readValue(Base64.getDecoder().decode(tokenParts[1]));
         } catch (IOException e) {
-            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
+            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED, tokenParts[1]);
             return Collections.emptyMap();
         }
     }
@@ -472,7 +480,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         var config = configurationProvider.get();
 
         if (MoreStrings.isEmpty(config.getLogoutUri())) {
-            LOGGER.warn(WARN.NO_LOGOUT_URI::format);
+            LOGGER.warn(WARN.NO_LOGOUT_URI);
             throw new IllegalStateException((WARN.NO_LOGOUT_URI.format()));
         }
 
@@ -498,7 +506,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         if (currentUser.isPresent()) {
             return currentUser.get().getIdToken();
         }
-        LOGGER.warn(WARN.NO_ID_TOKEN::format);
+        LOGGER.warn(WARN.NO_ID_TOKEN);
         return Optional.empty();
     }
 
@@ -539,7 +547,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             LOGGER.trace("checked expire time. token valid?: %s", valid);
             return valid;
         } catch (final NumberFormatException e) {
-            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER::format);
+            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER);
             return false;
         }
     }

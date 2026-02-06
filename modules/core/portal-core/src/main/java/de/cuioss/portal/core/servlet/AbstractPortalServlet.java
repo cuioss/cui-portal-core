@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -101,7 +101,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         try {
             executeDoGet(req, resp);
         } catch (RuntimeException | IOException e) {
-            LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR.format(e.getMessage()));
+            LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR, e.getMessage());
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -125,14 +125,13 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         var user = getUserInfo();
 
         if (isLoggedInUserRequired() && !user.isAuthenticated()) {
-            LOGGER.warn(SERVLET.WARN.USER_NOT_LOGGED_IN.format());
+            LOGGER.warn(SERVLET.WARN.USER_NOT_LOGGED_IN);
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         var requiredRoles = getRequiredRoles();
         if (!requiredRoles.isEmpty() && !new HashSet<>(user.getRoles()).containsAll(requiredRoles)) {
-            LOGGER.warn(SERVLET.WARN.USER_MISSING_ROLES.format(
-                    "User should provide the roles " + requiredRoles, user));
+            LOGGER.warn(SERVLET.WARN.USER_MISSING_ROLES, requiredRoles, user);
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }

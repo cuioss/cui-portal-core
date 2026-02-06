@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -79,8 +79,7 @@ public class RestClientProducer {
         List<Type> arguments = mutableList(type.getActualTypeArguments());
         Preconditions.checkArgument(!arguments.isEmpty());
 
-        @SuppressWarnings("unchecked")
-        var serviceInterface = (Class<T>) arguments.get(0);
+        @SuppressWarnings("unchecked") var serviceInterface = (Class<T>) arguments.get(0);
 
         // Basename must be present
         final var baseName = suffixNameWithDot(requireNotEmpty(annotationMetaData.baseName(), MISSING_BASENAME_MSG));
@@ -94,7 +93,7 @@ public class RestClientProducer {
             return new RestClientHolder<>(new CuiRestClientBuilder(resolveCuiLogger(injectionPoint, serviceInterface))
                     .connectionMetadata(connectionMetadata).build(serviceInterface));
         } catch (IllegalArgumentException e) {
-            LOGGER.error(e, RestClientLogMessages.ERROR.INITIALIZATION_FAILED.format());
+            LOGGER.error(e, RestClientLogMessages.ERROR.INITIALIZATION_FAILED);
             return new RestClientHolder<>(null);
         }
     }

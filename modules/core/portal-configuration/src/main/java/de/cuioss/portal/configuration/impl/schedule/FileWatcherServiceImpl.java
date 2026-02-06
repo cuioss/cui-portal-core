@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -78,9 +78,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     private static final int EVENT_TIMEOUT = 500;
 
-    @Inject
-    @ConfigProperty(name = SCHEDULER_FILE_SCAN_ENABLED)
-    Provider<Boolean> enabledProvider;
+    private final Provider<Boolean> enabledProvider;
 
     private WatchService watcherService;
 
@@ -97,9 +95,14 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     @Getter(AccessLevel.MODULE)
     private boolean upAndRunning = false;
 
+    private final Event<Path> fileChangeEvent;
+
     @Inject
-    @FileChangedEvent
-    Event<Path> fileChangeEvent;
+    FileWatcherServiceImpl(@ConfigProperty(name = SCHEDULER_FILE_SCAN_ENABLED) Provider<Boolean> enabledProvider,
+            @FileChangedEvent Event<Path> fileChangeEvent) {
+        this.enabledProvider = enabledProvider;
+        this.fileChangeEvent = fileChangeEvent;
+    }
 
     /**
      * Initializes the watcher depending on the configuration of
@@ -113,7 +116,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 try {
                     watcherService = FileSystems.getDefault().newWatchService();
                 } catch (IOException | UnsupportedOperationException e) {
-                    LOGGER.error(e, ERROR.FILE_SYSTEM_ACCESS_ERROR.format(e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED));
+                    LOGGER.error(e, ERROR.FILE_SYSTEM_ACCESS_ERROR, e.getMessage(), SCHEDULER_FILE_SCAN_ENABLED);
                     upAndRunning = false;
                     return;
                 }
@@ -164,7 +167,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     public void register(Path... paths) {
         for (Path path : paths) {
             LOGGER.trace("Attempting to register path for monitoring: %s", path);
-            var created = AbstractFileDescriptor.create(path);
+            var created = FileDescriptors.create(path);
             if (created.isPresent()) {
                 var absolute = created.get().getPath();
                 if (!registeredPaths.containsKey(absolute)) {
@@ -213,6 +216,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     watchKey = watcherService.take();
                     TimeUnit.MILLISECONDS.sleep(EVENT_TIMEOUT);
                     handleChangedWatchKey(watchKey);
+                    // cui-rewrite:disable InvalidExceptionUsageRecipe
                 } catch (InterruptedException ie) {
                     LOGGER.debug(ie, "Interrupted, exiting loop");
                     Thread.currentThread().interrupt();
@@ -220,8 +224,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 } catch (ClosedWatchServiceException e) {
                     // Hm, feels a little clumsy. Should consider correct Interruption handling
                     LOGGER.debug("Shutdown while waiting");
-                } catch (Exception e) {
-                    LOGGER.error(e, ERROR.FILE_SYSTEM_POLLING_ERROR::format);
+                } catch (RuntimeException e) {
+                    LOGGER.error(e, ERROR.FILE_SYSTEM_POLLING_ERROR);
                 } finally {
                     if (null != watchKey) {
                         watchKey.reset();
@@ -234,7 +238,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     private void handleChangedWatchKey(WatchKey watchKey) {
         var events = watchKey.pollEvents();
         if (events.isEmpty()) {
-            LOGGER.warn(WARN.INVALID_WATCH_KEY.format(watchKey));
+            LOGGER.warn(WARN.INVALID_WATCH_KEY, watchKey);
             return;
         }
         if (LOGGER.isTraceEnabled()) {
@@ -253,8 +257,9 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             LOGGER.debug("Delivering notification for path changes of: '%s'", element.getPath());
             try {
                 fileChangeEvent.fire(element.getPath());
-            } catch (Exception e) {
-                LOGGER.error(e, ERROR.FILE_EVENT_HANDLING_ERROR.format(element.getPath()));
+                // cui-rewrite:disable InvalidExceptionUsageRecipe
+            } catch (RuntimeException e) {
+                LOGGER.error(e, ERROR.FILE_EVENT_HANDLING_ERROR, element.getPath());
             }
             element.update();
         }

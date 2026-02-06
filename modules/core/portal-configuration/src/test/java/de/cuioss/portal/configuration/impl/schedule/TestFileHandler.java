@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -88,24 +88,24 @@ public final class TestFileHandler {
         final var dir = Path.of("target/test-files", UUID.randomUUID().toString());
 
         if (!Files.exists(dir)) {
-            LOGGER.info("creating {}", dir.toAbsolutePath());
+            LOGGER.info("creating %s", dir.toAbsolutePath());
             Files.createDirectories(dir).toFile().deleteOnExit();
         }
 
-        LOGGER.info("created test file dir: {}", dir.toAbsolutePath());
+        LOGGER.info("created test file dir: %s", dir.toAbsolutePath());
         return dir;
     }
 
     private Path setupTestFile(Path newFile) throws IOException {
         if (!newFile.toFile().exists()) {
-            LOGGER.info("creating: {}", newFile.toAbsolutePath());
+            LOGGER.info("creating: %s", newFile.toAbsolutePath());
             Files.createFile(newFile);
             newFile.toFile().deleteOnExit();
         } else {
-            LOGGER.warn("file already exists: {}", newFile.toAbsolutePath());
+            LOGGER.warn("file already exists: %s", newFile.toAbsolutePath());
         }
 
-        LOGGER.info("copying over {} to {}", SOURCE_FILE, newFile.toAbsolutePath());
+        LOGGER.info("copying over %s to %s", SOURCE_FILE, newFile.toAbsolutePath());
         Files.copy(new BufferedInputStream(Files.newInputStream(SOURCE_FILE)), newFile,
                 StandardCopyOption.REPLACE_EXISTING);
         new BufferedInputStream(Files.newInputStream(SOURCE_FILE)).close();
@@ -118,10 +118,10 @@ public final class TestFileHandler {
      */
     private static void deleteTestFile(Path targetFile) {
         if (Files.exists(targetFile)) {
-            LOGGER.info("deleting: {}", targetFile.toAbsolutePath());
+            LOGGER.info("deleting: %s", targetFile.toAbsolutePath());
             MorePaths.deleteQuietly(targetFile);
         } else {
-            LOGGER.warn("file does not exist: {}", targetFile.toAbsolutePath());
+            LOGGER.warn("file does not exist: %s", targetFile.toAbsolutePath());
         }
     }
 
@@ -130,10 +130,10 @@ public final class TestFileHandler {
      */
     private void deleteTestFileDirectory() {
         if (Files.exists(getBaseDir())) {
-            LOGGER.info("deleting: {}", getBaseDir().toAbsolutePath());
+            LOGGER.info("deleting: %s", getBaseDir().toAbsolutePath());
             MorePaths.deleteQuietly(getBaseDir());
         } else {
-            LOGGER.warn("dir does not exist: {}", getBaseDir().toAbsolutePath());
+            LOGGER.warn("dir does not exist: %s", getBaseDir().toAbsolutePath());
         }
     }
 }

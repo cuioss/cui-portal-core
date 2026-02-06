@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,9 +24,9 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
-import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.replacePlaceholders;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableTestLogger(debug = ConfigurationPlaceholderHelper.class)
@@ -35,6 +35,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConfigurationPlaceholderHelperTest {
 
     private Set<String> addedSysProperties = new HashSet<>();
+
+    private static String replacePlaceholders(String value, boolean exceptionOnMissingKey) {
+        return ConfigurationPlaceholderHelper.replacePlaceholders(value, exceptionOnMissingKey,
+                key -> Optional.ofNullable(System.getProperty(key)));
+    }
 
     @AfterEach
     void cleanSystemProperties() {
@@ -71,11 +76,11 @@ class ConfigurationPlaceholderHelperTest {
         assertEquals(1, warnMsgs.size(), "Missing WARN log statement for Portal-161 message");
         var firstWarnMsg = warnMsgs.get(0).getMessage();
         switch (firstWarnMsg) {
-            case "Portal-161: Missing config key/s: missing_1, missing_2",
-                "Portal-161: Missing config key/s: missing_2, missing_1" -> {
+            case "PortalConfig-161: Missing configuration for missing_1, missing_2 detected.",
+                "PortalConfig-161: Missing configuration for missing_2, missing_1 detected." -> {
                 // test passed
             }
-            default -> fail("Unexpected WARN log statement for Portal-161: " + firstWarnMsg);
+            default -> fail("Unexpected WARN log statement for PortalConfig-161: " + firstWarnMsg);
         }
     }
 
@@ -137,7 +142,7 @@ class ConfigurationPlaceholderHelperTest {
     void exception_throwIfKeyMissing() {
         var ex = assertThrows(NoSuchElementException.class, () -> replacePlaceholders("${MISSING_KEY}", true));
 
-        assertEquals("Portal-161: Missing config key/s: MISSING_KEY", ex.getMessage());
+        assertEquals("PortalConfig-161: Missing configuration for MISSING_KEY detected.", ex.getMessage());
     }
 
     @Test

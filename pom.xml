@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.cuioss</groupId>
         <artifactId>cui-java-parent</artifactId>
-        <version>0.9.9.6</version>
+        <version>1.4.0</version>
         <relativePath />
     </parent>
     <groupId>de.cuioss.portal</groupId>
@@ -30,4 +30,9 @@
         <url>https://github.com/cuioss/cui-portal-core/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <!-- Lombok @Builder generates inner classes not visible to javadoc tool -->
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    </properties>
 </project>

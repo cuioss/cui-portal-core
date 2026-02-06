@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -172,10 +172,10 @@ public final class ConfigurationHelper {
                 if (value.isPresent()) {
                     resolved.put(key, value.get());
                 } else {
-                    LOGGER.trace("No value found for key '{}'", key);
+                    LOGGER.trace("No value found for key '%s'", key);
                 }
             } catch (final NoSuchElementException e) {
-                LOGGER.trace(e, "Could not resolve config key: {}", key);
+                LOGGER.trace(e, "Could not resolve config key: %s", key);
             }
         }
         return resolved;
@@ -268,7 +268,7 @@ public final class ConfigurationHelper {
         try {
             return ConfigProvider.getConfig().getOptionalValue(name, type);
         } catch (final NoSuchElementException e) {
-            LOGGER.trace(e, "Could not resolve config key: {}", name);
+            LOGGER.trace(e, "Could not resolve config key: %s", name);
         }
         return Optional.empty();
     }
@@ -359,7 +359,7 @@ public final class ConfigurationHelper {
     public static Optional<String> resolveConfigPropertyFromSysOrEnv(final String name) {
         final var systemValue = Optional.ofNullable(System.getProperty(name));
         if (systemValue.isPresent()) {
-            LOGGER.trace("resolved system property {}={}", name, systemValue.get());
+            LOGGER.trace("resolved system property %s=%s", name, systemValue.get());
             return systemValue;
         }
 
@@ -446,7 +446,7 @@ public final class ConfigurationHelper {
             }
             result = Enum.valueOf(enumClass, value);
         } catch (final IllegalArgumentException ex) {
-            LOGGER.error(PortalConfigurationMessages.ERROR.ENUM_CONVERSION.format(inputValue, enumClass, ex.getMessage()));
+            LOGGER.error(PortalConfigurationMessages.ERROR.ENUM_CONVERSION, inputValue, enumClass, ex.getMessage());
             if (explodeOnInvalidInput) {
                 throw ex;
             }
@@ -540,6 +540,7 @@ public final class ConfigurationHelper {
      *                                   its default value for more than 5 times.
      */
     public static String replacePlaceholders(final String source, boolean exceptionOnMissingKey) {
-        return ConfigurationPlaceholderHelper.replacePlaceholders(source, exceptionOnMissingKey);
+        return ConfigurationPlaceholderHelper.replacePlaceholders(source, exceptionOnMissingKey,
+                ConfigurationHelper::resolveConfigProperty);
     }
 }

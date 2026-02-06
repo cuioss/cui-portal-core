@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.DEBUG;
 import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.INFO;
 import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.WARN;
 import static java.util.Objects.requireNonNull;
@@ -119,33 +118,37 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private static final CuiLogger LOGGER = new CuiLogger(MockAuthenticationFacade.class);
 
-    @ConfigProperty(name = CONFIGURATION_KEY_AUTHENTICATED, defaultValue = "true")
-    @Inject
-    private Provider<Boolean> defaultLoggedIn;
+    private final Provider<Boolean> defaultLoggedIn;
 
-    @ConfigProperty(name = CONFIGURATION_KEY_USER_NAME, defaultValue = USER)
-    @Inject
-    private Provider<String> defaultUserName;
+    private final Provider<String> defaultUserName;
 
-    @ConfigProperty(name = CONFIGURATION_KEY_SYSTEM, defaultValue = "mock")
-    @Inject
-    private String defaultSystem;
+    private final String defaultSystem;
 
-    @ConfigAsList(name = CONFIGURATION_KEY_GROUPS)
-    @Inject
-    private Provider<List<String>> defaultUserGroups;
+    private final Provider<List<String>> defaultUserGroups;
 
-    @ConfigAsList(name = CONFIGURATION_KEY_ROLES)
-    @Inject
-    private Provider<List<String>> defaultUserRoles;
+    private final Provider<List<String>> defaultUserRoles;
 
-    @ConfigAsList(name = CONFIGURATION_KEY_CONTEXT_MAP)
-    @Inject
-    private Provider<List<String>> defaultContextMapEntries;
+    private final Provider<List<String>> defaultContextMapEntries;
 
     @Getter
     @Setter
     private AuthenticationSource authenticationSource = AuthenticationSource.MOCK;
+
+    @Inject
+    public MockAuthenticationFacade(
+            @ConfigProperty(name = CONFIGURATION_KEY_AUTHENTICATED, defaultValue = "true") Provider<Boolean> defaultLoggedIn,
+            @ConfigProperty(name = CONFIGURATION_KEY_USER_NAME, defaultValue = USER) Provider<String> defaultUserName,
+            @ConfigProperty(name = CONFIGURATION_KEY_SYSTEM, defaultValue = "mock") String defaultSystem,
+            @ConfigAsList(name = CONFIGURATION_KEY_GROUPS) Provider<List<String>> defaultUserGroups,
+            @ConfigAsList(name = CONFIGURATION_KEY_ROLES) Provider<List<String>> defaultUserRoles,
+            @ConfigAsList(name = CONFIGURATION_KEY_CONTEXT_MAP) Provider<List<String>> defaultContextMapEntries) {
+        this.defaultLoggedIn = defaultLoggedIn;
+        this.defaultUserName = defaultUserName;
+        this.defaultSystem = defaultSystem;
+        this.defaultUserGroups = defaultUserGroups;
+        this.defaultUserRoles = defaultUserRoles;
+        this.defaultContextMapEntries = defaultContextMapEntries;
+    }
 
     /**
      * The dummy implementation provides a successful login in case the identifier
@@ -153,7 +156,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
-            final LoginCredentials loginCredentials) {
+                                                     final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()
@@ -166,10 +169,10 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
                     .identifier(loginCredentials.getUsername()).qualifiedIdentifier(loginCredentials.getUsername())
                     .displayName(loginCredentials.getUsername()).build();
             servletRequest.getSession(true).setAttribute(USER_INFO_KEY, currentAuthenticationUserInfo);
-            LOGGER.info(INFO.USER_LOGIN.format(loginCredentials.getUsername()));
+            LOGGER.info(INFO.USER_LOGIN, loginCredentials.getUsername());
             return AuthenticationResults.validResult(currentAuthenticationUserInfo);
         }
-        LOGGER.warn(WARN.INVALID_LOGIN.format(loginCredentials.getUsername()));
+        LOGGER.warn(WARN.INVALID_LOGIN, loginCredentials.getUsername());
         return AuthenticationResults.invalidResult(
                 "This is a mocked login, enter username with the same password, saying admin/admin, user/user,..",
                 "testuser", null);
@@ -178,7 +181,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     private BaseAuthenticatedUserInfoBuilder createDefaultUserInfoBuilder() {
         var roles = defaultUserRoles.get().stream().map(String::trim).toList();
         var groups = defaultUserGroups.get().stream().map(String::trim).toList();
-        LOGGER.debug(DEBUG.DEFAULT_USER_INFO.format(roles, groups));
+        LOGGER.debug("Created default user info builder with roles=%s, groups=%s", roles, groups);
         var builder = BaseAuthenticatedUserInfo.builder().authenticated(true)
                 .groups(groups)
                 .roles(roles)
@@ -201,7 +204,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
         newSession.setAttribute(USER_INFO_KEY, NOT_LOGGED_IN);
         newSession.setAttribute(USER_INFO_LOGOUT_KEY, USER_INFO_LOGOUT_KEY);
         if (null != userInfo && userInfo.isAuthenticated()) {
-            LOGGER.info(INFO.USER_LOGOUT.format(userInfo.getDisplayName()));
+            LOGGER.info(INFO.USER_LOGOUT, userInfo.getDisplayName());
         }
         return true;
     }
@@ -219,7 +222,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
             }
         }
         if (userInfo.isAuthenticated()) {
-            LOGGER.info(INFO.RETRIEVED_CONTEXT.format(userInfo.getDisplayName()));
+            LOGGER.info(INFO.RETRIEVED_CONTEXT, userInfo.getDisplayName());
         }
         return userInfo;
     }

@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -109,8 +109,8 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         @POST
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
         Token requestToken(@FormParam("grant_type") String grantType, @FormParam("code") String code,
-                @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
-                @FormParam("redirect_uri") String redirectUri);
+                           @FormParam("state") String state, @FormParam("code_verifier") String codeVerifier,
+                           @FormParam("redirect_uri") String redirectUri);
     }
 
     public interface RequestRefreshToken extends Closeable {
@@ -149,13 +149,16 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         }
     }
 
-    @Inject
-    private Provider<Oauth2Configuration> configurationProvider;
+    private final Provider<Oauth2Configuration> configurationProvider;
 
+    @Inject
+    Oauth2ServiceImpl(Provider<Oauth2Configuration> configurationProvider) {
+        this.configurationProvider = configurationProvider;
+    }
 
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,
-            final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
+                                                             final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
 
         requireNonNull(servletRequest);
         requireNonNull(code);
@@ -184,14 +187,14 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             LOGGER.trace("received token='%s' for scopes='%s', requestUri=%s",
                     token, scopes, servletRequest.getRequestURI());
         } catch (IllegalArgumentException e) {
-            LOGGER.warn(WARN.REQUEST_TOKEN_FAILED.format(), e);
+            LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             return null;
         } catch (WebApplicationException e) {
-            LOGGER.warn(WARN.REQUEST_TOKEN_FAILED.format(), e);
+            LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
         } catch (IOException e) {
-            LOGGER.error(ERROR.IO_EXCEPTION.format(), e);
+            LOGGER.error(e, ERROR.IO_EXCEPTION);
             return null;
         }
 
@@ -204,7 +207,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
     }
 
     private AuthenticatedUserInfo retrieveAuthenticatedUser(String scopes, Oauth2Configuration configuration,
-            Token token, int tokenTimestamp) {
+                                                            Token token, int tokenTimestamp) {
 
         final String userInfoUri = configuration.getUserInfoUri().trim();
         final CuiRestClientBuilder builder = new CuiRestClientBuilder(LOGGER)
@@ -246,11 +249,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
             return baseAuthenticatedUserInfoBuilder.build();
         } catch (WebApplicationException e) {
-            LOGGER.warn(WARN.GET_USERINFO_FAILED.format(), e);
+            LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        } catch (Exception e) {
-            LOGGER.warn(WARN.GET_USERINFO_FAILED.format(), e);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             return null;
         }
     }
@@ -282,11 +285,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             var token = requestToken.requestToken("client_credentials");
             return token.getAccess_token();
         } catch (WebApplicationException e) {
-            LOGGER.warn(WARN.CLIENT_TOKEN_FAILED.format(), e);
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        } catch (Exception e) {
-            LOGGER.warn(WARN.CLIENT_TOKEN_FAILED.format(), e);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             return null;
         }
     }
@@ -312,11 +315,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             LOGGER.debug("no token received");
             return null;
         } catch (WebApplicationException e) {
-            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED.format());
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        } catch (Exception e) {
-            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED.format());
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             return null;
         }
     }

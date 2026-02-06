@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,6 +30,7 @@ import lombok.Getter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -78,57 +79,61 @@ public class Oauth2DiscoveryConfigurationProducer {
     @Dependent
     private Oauth2Configuration configuration;
 
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_ID)
-    private Provider<Optional<String>> oauth2clientId;
+    private final Provider<Optional<String>> oauth2clientId;
+
+    private final Provider<Optional<String>> oauth2clientSecret;
+
+    private final Provider<Optional<String>> serverBaseUrl;
+
+    private final Provider<Optional<String>> oauth2discoveryUri;
+
+    private final Provider<Optional<String>> externalContextPath;
+
+    private final Provider<Optional<String>> oauth2initialScopes;
+
+    private final Provider<Optional<List<String>>> roleMapperClaim;
+
+    private final Provider<Optional<String>> logoutRedirectParameter;
+
+    private final Provider<Optional<Boolean>> logoutWithIdTokenHintProvider;
+
+    private final Provider<Optional<String>> postLogoutRedirectUri;
+
+    private final Provider<Optional<String>> internalTokenUrl;
+
+    private final Provider<Optional<String>> internalUserInfoUrl;
+
+    private final Provider<Boolean> configValidationEnabled;
 
     @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_SECRET)
-    private Provider<Optional<String>> oauth2clientSecret;
-
-    @Inject
-    @ConfigProperty(name = OPEN_ID_SERVER_BASE_URL)
-    private Provider<Optional<String>> serverBaseUrl;
-
-    @Inject
-    @ConfigProperty(name = OPEN_ID_DISCOVER_PATH)
-    private Provider<Optional<String>> oauth2discoveryUri;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.EXTERNAL_HOSTNAME)
-    private Provider<Optional<String>> externalContextPath;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_DEFAULT_SCOPES)
-    private Provider<Optional<String>> oauth2initialScopes;
-
-    @Inject
-    @ConfigProperty(name = OPEN_ID_ROLE_MAPPER_CLAIM)
-    private Provider<Optional<List<String>>> roleMapperClaim;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER)
-    private Provider<Optional<String>> logoutRedirectParameter;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_ADD_ID_TOKEN_HINT)
-    private Provider<Optional<Boolean>> logoutWithIdTokenHintProvider;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI)
-    private Provider<Optional<String>> postLogoutRedirectUri;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL)
-    private Provider<Optional<String>> internalTokenUrl;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL)
-    private Provider<Optional<String>> internalUserInfoUrl;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.CONFIG_VALIDATION_ENABLED)
-    private Provider<Boolean> configValidationEnabled;
+    public Oauth2DiscoveryConfigurationProducer(
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_ID) Provider<Optional<String>> oauth2clientId,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_SECRET) Provider<Optional<String>> oauth2clientSecret,
+            @ConfigProperty(name = OPEN_ID_SERVER_BASE_URL) Provider<Optional<String>> serverBaseUrl,
+            @ConfigProperty(name = OPEN_ID_DISCOVER_PATH) Provider<Optional<String>> oauth2discoveryUri,
+            @ConfigProperty(name = OAuthConfigKeys.EXTERNAL_HOSTNAME) Provider<Optional<String>> externalContextPath,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_DEFAULT_SCOPES) Provider<Optional<String>> oauth2initialScopes,
+            @ConfigProperty(name = OPEN_ID_ROLE_MAPPER_CLAIM) Provider<Optional<List<String>>> roleMapperClaim,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER) Provider<Optional<String>> logoutRedirectParameter,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_ADD_ID_TOKEN_HINT) Provider<Optional<Boolean>> logoutWithIdTokenHintProvider,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI) Provider<Optional<String>> postLogoutRedirectUri,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL) Provider<Optional<String>> internalTokenUrl,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL) Provider<Optional<String>> internalUserInfoUrl,
+            @ConfigProperty(name = OAuthConfigKeys.CONFIG_VALIDATION_ENABLED) Provider<Boolean> configValidationEnabled) {
+        this.oauth2clientId = oauth2clientId;
+        this.oauth2clientSecret = oauth2clientSecret;
+        this.serverBaseUrl = serverBaseUrl;
+        this.oauth2discoveryUri = oauth2discoveryUri;
+        this.externalContextPath = externalContextPath;
+        this.oauth2initialScopes = oauth2initialScopes;
+        this.roleMapperClaim = roleMapperClaim;
+        this.logoutRedirectParameter = logoutRedirectParameter;
+        this.logoutWithIdTokenHintProvider = logoutWithIdTokenHintProvider;
+        this.postLogoutRedirectUri = postLogoutRedirectUri;
+        this.internalTokenUrl = internalTokenUrl;
+        this.internalUserInfoUrl = internalUserInfoUrl;
+        this.configValidationEnabled = configValidationEnabled;
+    }
 
     /**
      * The request to retrieve information about the current authenticated user.
@@ -155,11 +160,11 @@ public class Oauth2DiscoveryConfigurationProducer {
             try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
                 final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
-            } catch (final Exception e) {
-                LOGGER.error(e, ERROR.DISCOVERY_FAILED::format);
+            } catch (final IOException | RuntimeException e) {
+                LOGGER.error(e, ERROR.DISCOVERY_FAILED);
             }
         } else {
-            LOGGER.warn(() -> WARN.CONFIG_KEYS_NOT_SET.format(OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH));
+            LOGGER.warn(WARN.CONFIG_KEYS_NOT_SET, OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH);
         }
 
         LOGGER.debug("Configuration created: %s", configuration);

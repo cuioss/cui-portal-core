@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,8 +56,6 @@ class PortalConfigSourceTest {
 
     @Inject
     private PortalTestConfigurationLocal configuration;
-
-    private Map<String, String> payload;
 
     @Inject
     @ConfigAsFilteredMap(startsWith = SOME_PREFIX)
@@ -200,14 +198,6 @@ class PortalConfigSourceTest {
         configuration.put(KEY, "DEFAULT");
         configuration.fireEvent();
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty(KEY).orElse(null));
-        /*
-         * assertNotEquals("ENV",
-         * ConfigurationHelper.resolveConfigProperty("PLACEHOLDER").orElse(null),
-         * "actual placeholder expected because PortalConfigurationProducer has lower prio than ENV config source. "
-         * +
-         * "this should be no issue because usually ENV properties are only used in actual config property."
-         * );
-         */
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER").orElse(null),
                 "expanded value expected");
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER_YAML").orElse(null));

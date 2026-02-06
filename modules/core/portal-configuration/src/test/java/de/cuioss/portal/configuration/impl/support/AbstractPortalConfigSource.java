@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -87,10 +87,10 @@ abstract class AbstractPortalConfigSource implements ConfigSource {
         if (null != configOrdinal) {
             try {
                 final var ordinal = Integer.parseInt(configOrdinal);
-                LOGGER.trace("config_ordinal of {}={}", getName(), ordinal);
+                LOGGER.trace("config_ordinal of %s=%s", getName(), ordinal);
                 return Optional.of(ordinal);
             } catch (final NumberFormatException nfe) {
-                LOGGER.trace(nfe, "config_ordinal is not a number. source={}", getName());
+                LOGGER.trace(nfe, "config_ordinal is not a number. source=%s", getName());
             }
         }
         return Optional.empty();

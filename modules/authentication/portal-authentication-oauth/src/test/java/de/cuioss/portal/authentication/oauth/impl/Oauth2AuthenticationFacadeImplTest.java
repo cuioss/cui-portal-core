@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,6 @@ import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
-import de.cuioss.test.mockwebserver.MockWebServerHolder;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.collect.CollectionLiterals;
 import de.cuioss.tools.net.UrlParameter;
@@ -32,7 +31,6 @@ import de.cuioss.tools.string.MoreStrings;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import lombok.Getter;
-import lombok.Setter;
 import mockwebserver3.MockWebServer;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;

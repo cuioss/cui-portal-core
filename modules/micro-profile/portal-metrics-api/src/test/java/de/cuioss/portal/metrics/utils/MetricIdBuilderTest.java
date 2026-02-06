@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -70,7 +70,7 @@ class MetricIdBuilderTest {
             // When
             var builder = new MetricIdBuilder()
                     .name("test")
-                    .exception(new RuntimeException("Test exception"))
+                    .exception(new IllegalStateException("Test exception"))
                     .exceptionTagMapper(throwable -> {
                         countDown.countDown();
                         return new Tag("mapper1", throwable.getMessage());
@@ -86,7 +86,7 @@ class MetricIdBuilderTest {
             assertEquals(0L, countDown.getCount(), "All mappers should be processed");
             assertEquals("Test exception", metricId.getTags().get("mapper1"),
                     "First mapper should add exception message");
-            assertEquals("RuntimeException", metricId.getTags().get("mapper2"),
+            assertEquals("IllegalStateException", metricId.getTags().get("mapper2"),
                     "Second mapper should add exception class");
         }
     }
