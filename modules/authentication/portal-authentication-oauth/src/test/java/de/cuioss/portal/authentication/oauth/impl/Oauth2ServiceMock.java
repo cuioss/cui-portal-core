@@ -47,7 +47,7 @@ public class Oauth2ServiceMock implements Oauth2Service, Serializable {
 
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,
-            final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
+                                                             final UrlParameter code, final UrlParameter state, final String scopes, final String codeVerifier) {
         var token = new Token();
         token.setAccess_token("access");
         token.setId_token("id");

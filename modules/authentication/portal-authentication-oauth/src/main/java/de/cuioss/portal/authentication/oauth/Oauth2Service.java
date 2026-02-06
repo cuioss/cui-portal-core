@@ -73,7 +73,7 @@ public interface Oauth2Service {
      * @throws IllegalArgumentException if any required parameter is null or invalid
      */
     AuthenticatedUserInfo createAuthenticatedUserInfo(HttpServletRequest servletRequest, UrlParameter code,
-            UrlParameter state, String scopes, final String codeVerifier);
+                                                      UrlParameter state, String scopes, final String codeVerifier);
 
     /**
      * Calculates the URL-encoded redirect URL for the OAuth2 authorization request.

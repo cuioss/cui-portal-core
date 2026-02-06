@@ -78,8 +78,8 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     @Inject
     ResourceBundleWrapperImpl(ResourceBundleRegistry resourceBundleRegistry,
-                              Provider<CuiProjectStage> projectStage,
-                              @PortalLocale Provider<Locale> localeProvider) {
+            Provider<CuiProjectStage> projectStage,
+            @PortalLocale Provider<Locale> localeProvider) {
         this.resourceBundleRegistry = resourceBundleRegistry;
         this.projectStage = projectStage;
         this.localeProvider = localeProvider;
