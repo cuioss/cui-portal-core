@@ -57,8 +57,8 @@ class MetricUtilsTest {
             appTagField.setAccessible(true);
             appNameField.set(null, null);
             appTagField.set(null, null);
-        } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
-            /*~~(TODO: Throw specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/throw new RuntimeException("Failed to reset MetricsUtils state", e);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Failed to reset MetricsUtils state", e);
         }
 
         // Reset configuration to ensure clean state

@@ -131,7 +131,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         }
         var requiredRoles = getRequiredRoles();
         if (!requiredRoles.isEmpty() && !new HashSet<>(user.getRoles()).containsAll(requiredRoles)) {
-            LOGGER.warn(SERVLET.WARN.USER_MISSING_ROLES, "User should provide the roles " + requiredRoles, user);
+            LOGGER.warn(SERVLET.WARN.USER_MISSING_ROLES, requiredRoles, user);
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }

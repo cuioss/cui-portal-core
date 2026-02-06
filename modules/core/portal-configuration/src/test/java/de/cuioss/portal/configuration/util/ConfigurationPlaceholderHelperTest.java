@@ -76,11 +76,11 @@ class ConfigurationPlaceholderHelperTest {
         assertEquals(1, warnMsgs.size(), "Missing WARN log statement for Portal-161 message");
         var firstWarnMsg = warnMsgs.get(0).getMessage();
         switch (firstWarnMsg) {
-            case "Portal-161: Missing config key/s: missing_1, missing_2",
-                "Portal-161: Missing config key/s: missing_2, missing_1" -> {
+            case "PortalConfig-161: Missing configuration for missing_1, missing_2 detected.",
+                "PortalConfig-161: Missing configuration for missing_2, missing_1 detected." -> {
                 // test passed
             }
-            default -> fail("Unexpected WARN log statement for Portal-161: " + firstWarnMsg);
+            default -> fail("Unexpected WARN log statement for PortalConfig-161: " + firstWarnMsg);
         }
     }
 
@@ -142,7 +142,7 @@ class ConfigurationPlaceholderHelperTest {
     void exception_throwIfKeyMissing() {
         var ex = assertThrows(NoSuchElementException.class, () -> replacePlaceholders("${MISSING_KEY}", true));
 
-        assertEquals("Portal-161: Missing config key/s: MISSING_KEY", ex.getMessage());
+        assertEquals("PortalConfig-161: Missing configuration for MISSING_KEY detected.", ex.getMessage());
     }
 
     @Test

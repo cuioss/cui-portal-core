@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import static de.cuioss.portal.configuration.PortalConfigurationMessages.WARN;
 import static java.util.regex.Matcher.quoteReplacement;
 
 /**
@@ -92,10 +93,10 @@ class ConfigurationPlaceholderHelper {
         var result = replacePlaceholders(value, missingConfigKeys, 1, resolver);
 
         if (!missingConfigKeys.isEmpty()) {
-            final var errMsg = "Portal-161: Missing config key/s: " + Joiner.on(", ").join(missingConfigKeys);
-            /*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*//*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*//*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.warn(errMsg);
+            final var joinedKeys = Joiner.on(", ").join(missingConfigKeys);
+            LOGGER.warn(WARN.MISSING_CONFIG, joinedKeys);
             if (exceptionOnMissingKey) {
-                throw new NoSuchElementException(errMsg);
+                throw new NoSuchElementException(WARN.MISSING_CONFIG.format(joinedKeys));
             }
         }
 

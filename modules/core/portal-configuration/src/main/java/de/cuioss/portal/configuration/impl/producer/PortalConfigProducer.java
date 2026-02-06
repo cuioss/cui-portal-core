@@ -283,7 +283,7 @@ public class PortalConfigProducer {
         try {
             locale = LocaleUtils.toLocale(localeAsString);
         } catch (final IllegalArgumentException e) {
-            /*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*//*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*//*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.warn(e, WARN.INVALID_LOCALE.getTemplate(), localeAsString);
+            LOGGER.warn(e, WARN.INVALID_LOCALE, localeAsString);
         }
         if (null != locale) {
             return locale;

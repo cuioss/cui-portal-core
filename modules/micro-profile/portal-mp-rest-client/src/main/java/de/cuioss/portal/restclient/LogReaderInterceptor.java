@@ -63,8 +63,8 @@ class LogReaderInterceptor implements ReaderInterceptor {
             appendHeaders(logMsg, context);
             logBody(logMsg, context);
 
-            givenLogger.info(logMsg.toString());
-        } catch (final Exception e) {
+            givenLogger.info(logMsg.toString()); // cui-rewrite:disable CuiLogRecordPatternRecipe
+        } catch (final RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
             givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format());
         }
         return context.proceed();

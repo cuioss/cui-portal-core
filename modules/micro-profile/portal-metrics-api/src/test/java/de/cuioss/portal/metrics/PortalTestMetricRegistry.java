@@ -146,7 +146,7 @@ public class PortalTestMetricRegistry implements MetricRegistry {
     @Override
     public <T extends Number> Gauge<T> gauge(Metadata metadata, Supplier<T> supplier, Tag... tags) {
         metricMap.put(new MetricID(metadata.getName()), (Gauge) () -> null);
-        /*~~(TODO: 1 placeholders, 2 params. Suppress: // cui-rewrite:disable CuiLoggerStandardsRecipe)~~>*/LOGGER.info("Gauge for metric '%s'", metadata.getName(), CollectionLiterals.mutableList(tags).stream().map(tag -> tag.getTagName() + "=" + tag.getTagValue()).toList());
+        LOGGER.info("Gauge for metric '%s', tags: %s", metadata.getName(), CollectionLiterals.mutableList(tags).stream().map(tag -> tag.getTagName() + "=" + tag.getTagValue()).toList());
         return null;
     }
 

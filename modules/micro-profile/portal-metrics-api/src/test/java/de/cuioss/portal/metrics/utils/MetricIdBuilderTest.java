@@ -70,7 +70,7 @@ class MetricIdBuilderTest {
             // When
             var builder = new MetricIdBuilder()
                     .name("test")
-                    .exception(/*~~(TODO: Use specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/new RuntimeException("Test exception"))
+                    .exception(new IllegalStateException("Test exception"))
                     .exceptionTagMapper(throwable -> {
                         countDown.countDown();
                         return new Tag("mapper1", throwable.getMessage());
@@ -86,7 +86,7 @@ class MetricIdBuilderTest {
             assertEquals(0L, countDown.getCount(), "All mappers should be processed");
             assertEquals("Test exception", metricId.getTags().get("mapper1"),
                     "First mapper should add exception message");
-            assertEquals("RuntimeException", metricId.getTags().get("mapper2"),
+            assertEquals("IllegalStateException", metricId.getTags().get("mapper2"),
                     "Second mapper should add exception class");
         }
     }

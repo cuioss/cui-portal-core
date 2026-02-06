@@ -123,7 +123,7 @@ class CuiRestClientBuilderTest {
             try {
                 service.close();
                 service = null;
-            } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (final Exception e) {
+            } catch (final IOException e) {
                 LOGGER.debug("could not close service", e);
             }
         }
@@ -361,7 +361,7 @@ class CuiRestClientBuilderTest {
 
         try {
             service.test();
-        } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+        } catch (WebApplicationException e) {
             assertTrue(e.getMessage().contains("500"));
         }
     }

@@ -41,7 +41,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.DEBUG;
 import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.INFO;
 import static de.cuioss.portal.authentication.mock.MockAuthenticationLogMessages.WARN;
 import static java.util.Objects.requireNonNull;
@@ -157,7 +156,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
      */
     @Override
     public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
-            final LoginCredentials loginCredentials) {
+                                                     final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         requireNonNull(servletRequest);
         if (loginCredentials.isComplete()
@@ -182,7 +181,7 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
     private BaseAuthenticatedUserInfoBuilder createDefaultUserInfoBuilder() {
         var roles = defaultUserRoles.get().stream().map(String::trim).toList();
         var groups = defaultUserGroups.get().stream().map(String::trim).toList();
-        /*~~(TODO: DEBUG no LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.debug(DEBUG.DEFAULT_USER_INFO.format(roles, groups));
+        LOGGER.debug("Created default user info builder with roles=%s, groups=%s", roles, groups);
         var builder = BaseAuthenticatedUserInfo.builder().authenticated(true)
                 .groups(groups)
                 .roles(roles)

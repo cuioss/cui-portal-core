@@ -30,6 +30,7 @@ import lombok.Getter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -159,11 +160,11 @@ public class Oauth2DiscoveryConfigurationProducer {
             try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
                 final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
-            } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (final Exception e) {
+            } catch (final IOException | RuntimeException e) {
                 LOGGER.error(e, ERROR.DISCOVERY_FAILED);
             }
         } else {
-            /*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.warn(() -> WARN.CONFIG_KEYS_NOT_SET.format(OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH));
+            LOGGER.warn(WARN.CONFIG_KEYS_NOT_SET, OPEN_ID_SERVER_BASE_URL, OPEN_ID_DISCOVER_PATH);
         }
 
         LOGGER.debug("Configuration created: %s", configuration);

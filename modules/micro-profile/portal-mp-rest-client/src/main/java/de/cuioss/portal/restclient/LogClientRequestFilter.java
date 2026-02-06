@@ -75,8 +75,8 @@ class LogClientRequestFilter implements ClientRequestFilter {
                 }
             }
 
-            givenLogger.info(PATTERN, reqContext.getUri(), nullToEmpty(reqContext.getMethod()), headers.toString(), body);
-        } catch (final Exception e) {
+            givenLogger.info(PATTERN, reqContext.getUri(), nullToEmpty(reqContext.getMethod()), headers.toString(), body); // cui-rewrite:disable CuiLogRecordPatternRecipe
+        } catch (final RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
             givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR.format(), e);
         }
     }
