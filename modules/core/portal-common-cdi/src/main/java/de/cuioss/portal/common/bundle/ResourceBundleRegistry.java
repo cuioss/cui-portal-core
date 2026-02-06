@@ -83,8 +83,12 @@ public class ResourceBundleRegistry implements Serializable {
 
     private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleRegistry.class);
 
+    private final Instance<ResourceBundleLocator> locatorList;
+
     @Inject
-    Instance<ResourceBundleLocator> locatorList;
+    ResourceBundleRegistry(Instance<ResourceBundleLocator> locatorList) {
+        this.locatorList = locatorList;
+    }
 
     /**
      * The computed / resolved locators in priority order. This list is immutable and

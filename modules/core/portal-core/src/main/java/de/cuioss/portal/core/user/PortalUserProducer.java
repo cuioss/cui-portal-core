@@ -80,13 +80,17 @@ public class PortalUserProducer implements Serializable {
 
     private AuthenticatedUserInfo userInfo;
 
+    private final AuthenticationFacade authenticationFacade;
+
+    private final Provider<HttpServletRequest> servletRequestProvider;
+
     @SuppressWarnings("cdi-ambiguous-dependency")
     @Inject
-    @PortalAuthenticationFacade
-    AuthenticationFacade authenticationFacade;
-
-    @Inject
-    Provider<HttpServletRequest> servletRequestProvider;
+    PortalUserProducer(@PortalAuthenticationFacade AuthenticationFacade authenticationFacade,
+                       Provider<HttpServletRequest> servletRequestProvider) {
+        this.authenticationFacade = authenticationFacade;
+        this.servletRequestProvider = servletRequestProvider;
+    }
 
     /**
      * Initializes the produces by fetching user from facade

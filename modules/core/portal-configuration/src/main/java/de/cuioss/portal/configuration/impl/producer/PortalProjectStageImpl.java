@@ -71,9 +71,12 @@ public class PortalProjectStageImpl implements Serializable {
     @Getter(value = AccessLevel.PACKAGE)
     private CuiProjectStage projectStage = ProjectStage.PRODUCTION;
 
+    private final Provider<String> portalStageConfigurationProvider;
+
     @Inject
-    @ConfigProperty(name = PortalConfigurationKeys.PORTAL_STAGE)
-    Provider<String> portalStageConfigurationProvider;
+    PortalProjectStageImpl(@ConfigProperty(name = PortalConfigurationKeys.PORTAL_STAGE) Provider<String> portalStageConfigurationProvider) {
+        this.portalStageConfigurationProvider = portalStageConfigurationProvider;
+    }
 
     /**
      * Initializes the bean. See class documentation for an expected result.

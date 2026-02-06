@@ -24,9 +24,9 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
-import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.replacePlaceholders;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableTestLogger(debug = ConfigurationPlaceholderHelper.class)
@@ -35,6 +35,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConfigurationPlaceholderHelperTest {
 
     private Set<String> addedSysProperties = new HashSet<>();
+
+    private static String replacePlaceholders(String value, boolean exceptionOnMissingKey) {
+        return ConfigurationPlaceholderHelper.replacePlaceholders(value, exceptionOnMissingKey,
+                key -> Optional.ofNullable(System.getProperty(key)));
+    }
 
     @AfterEach
     void cleanSystemProperties() {

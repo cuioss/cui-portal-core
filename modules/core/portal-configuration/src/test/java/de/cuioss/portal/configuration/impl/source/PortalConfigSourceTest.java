@@ -57,8 +57,6 @@ class PortalConfigSourceTest {
     @Inject
     private PortalTestConfigurationLocal configuration;
 
-    private Map<String, String> payload;
-
     @Inject
     @ConfigAsFilteredMap(startsWith = SOME_PREFIX)
     private Provider<Map<String, String>> filteredMap;
@@ -200,14 +198,6 @@ class PortalConfigSourceTest {
         configuration.put(KEY, "DEFAULT");
         configuration.fireEvent();
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty(KEY).orElse(null));
-        /*
-         * assertNotEquals("ENV",
-         * ConfigurationHelper.resolveConfigProperty("PLACEHOLDER").orElse(null),
-         * "actual placeholder expected because PortalConfigurationProducer has lower prio than ENV config source. "
-         * +
-         * "this should be no issue because usually ENV properties are only used in actual config property."
-         * );
-         */
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER").orElse(null),
                 "expanded value expected");
         assertEquals("ENV", ConfigurationHelper.resolveConfigProperty("PLACEHOLDER_YAML").orElse(null));

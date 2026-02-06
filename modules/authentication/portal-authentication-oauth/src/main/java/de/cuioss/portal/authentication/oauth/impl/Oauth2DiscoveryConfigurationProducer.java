@@ -78,57 +78,61 @@ public class Oauth2DiscoveryConfigurationProducer {
     @Dependent
     private Oauth2Configuration configuration;
 
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_ID)
-    private Provider<Optional<String>> oauth2clientId;
+    private final Provider<Optional<String>> oauth2clientId;
+
+    private final Provider<Optional<String>> oauth2clientSecret;
+
+    private final Provider<Optional<String>> serverBaseUrl;
+
+    private final Provider<Optional<String>> oauth2discoveryUri;
+
+    private final Provider<Optional<String>> externalContextPath;
+
+    private final Provider<Optional<String>> oauth2initialScopes;
+
+    private final Provider<Optional<List<String>>> roleMapperClaim;
+
+    private final Provider<Optional<String>> logoutRedirectParameter;
+
+    private final Provider<Optional<Boolean>> logoutWithIdTokenHintProvider;
+
+    private final Provider<Optional<String>> postLogoutRedirectUri;
+
+    private final Provider<Optional<String>> internalTokenUrl;
+
+    private final Provider<Optional<String>> internalUserInfoUrl;
+
+    private final Provider<Boolean> configValidationEnabled;
 
     @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_SECRET)
-    private Provider<Optional<String>> oauth2clientSecret;
-
-    @Inject
-    @ConfigProperty(name = OPEN_ID_SERVER_BASE_URL)
-    private Provider<Optional<String>> serverBaseUrl;
-
-    @Inject
-    @ConfigProperty(name = OPEN_ID_DISCOVER_PATH)
-    private Provider<Optional<String>> oauth2discoveryUri;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.EXTERNAL_HOSTNAME)
-    private Provider<Optional<String>> externalContextPath;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_DEFAULT_SCOPES)
-    private Provider<Optional<String>> oauth2initialScopes;
-
-    @Inject
-    @ConfigProperty(name = OPEN_ID_ROLE_MAPPER_CLAIM)
-    private Provider<Optional<List<String>>> roleMapperClaim;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER)
-    private Provider<Optional<String>> logoutRedirectParameter;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_ADD_ID_TOKEN_HINT)
-    private Provider<Optional<Boolean>> logoutWithIdTokenHintProvider;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI)
-    private Provider<Optional<String>> postLogoutRedirectUri;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL)
-    private Provider<Optional<String>> internalTokenUrl;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL)
-    private Provider<Optional<String>> internalUserInfoUrl;
-
-    @Inject
-    @ConfigProperty(name = OAuthConfigKeys.CONFIG_VALIDATION_ENABLED)
-    private Provider<Boolean> configValidationEnabled;
+    public Oauth2DiscoveryConfigurationProducer(
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_ID) Provider<Optional<String>> oauth2clientId,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_SECRET) Provider<Optional<String>> oauth2clientSecret,
+            @ConfigProperty(name = OPEN_ID_SERVER_BASE_URL) Provider<Optional<String>> serverBaseUrl,
+            @ConfigProperty(name = OPEN_ID_DISCOVER_PATH) Provider<Optional<String>> oauth2discoveryUri,
+            @ConfigProperty(name = OAuthConfigKeys.EXTERNAL_HOSTNAME) Provider<Optional<String>> externalContextPath,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_DEFAULT_SCOPES) Provider<Optional<String>> oauth2initialScopes,
+            @ConfigProperty(name = OPEN_ID_ROLE_MAPPER_CLAIM) Provider<Optional<List<String>>> roleMapperClaim,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_REDIRECT_PARAMETER) Provider<Optional<String>> logoutRedirectParameter,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_LOGOUT_ADD_ID_TOKEN_HINT) Provider<Optional<Boolean>> logoutWithIdTokenHintProvider,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_CLIENT_POST_LOGOUT_REDIRECT_URI) Provider<Optional<String>> postLogoutRedirectUri,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_TOKEN_URL) Provider<Optional<String>> internalTokenUrl,
+            @ConfigProperty(name = OAuthConfigKeys.OPEN_ID_SERVER_USER_INFO_URL) Provider<Optional<String>> internalUserInfoUrl,
+            @ConfigProperty(name = OAuthConfigKeys.CONFIG_VALIDATION_ENABLED) Provider<Boolean> configValidationEnabled) {
+        this.oauth2clientId = oauth2clientId;
+        this.oauth2clientSecret = oauth2clientSecret;
+        this.serverBaseUrl = serverBaseUrl;
+        this.oauth2discoveryUri = oauth2discoveryUri;
+        this.externalContextPath = externalContextPath;
+        this.oauth2initialScopes = oauth2initialScopes;
+        this.roleMapperClaim = roleMapperClaim;
+        this.logoutRedirectParameter = logoutRedirectParameter;
+        this.logoutWithIdTokenHintProvider = logoutWithIdTokenHintProvider;
+        this.postLogoutRedirectUri = postLogoutRedirectUri;
+        this.internalTokenUrl = internalTokenUrl;
+        this.internalUserInfoUrl = internalUserInfoUrl;
+        this.configValidationEnabled = configValidationEnabled;
+    }
 
     /**
      * The request to retrieve information about the current authenticated user.

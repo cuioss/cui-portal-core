@@ -55,12 +55,6 @@ public class ConnectionMetadataKeys {
     private static final String AUTH_TOKEN_APPLICATION_BASE = AUTH_TOKEN_BASE + "application.";
 
     /**
-     * Base prefix for user-specific token authentication configuration.
-     * Complete prefix: "authentication.token.user."
-     */
-    private static final String AUTH_TOKEN_USER_BASE = AUTH_TOKEN_BASE + "user.";
-
-    /**
      * Property key for the application-wide authentication token.
      * Complete key: "authentication.token.application.token"
      */

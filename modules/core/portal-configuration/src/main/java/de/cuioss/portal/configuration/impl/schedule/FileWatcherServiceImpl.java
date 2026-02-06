@@ -78,9 +78,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
 
     private static final int EVENT_TIMEOUT = 500;
 
-    @Inject
-    @ConfigProperty(name = SCHEDULER_FILE_SCAN_ENABLED)
-    Provider<Boolean> enabledProvider;
+    private final Provider<Boolean> enabledProvider;
 
     private WatchService watcherService;
 
@@ -97,9 +95,14 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     @Getter(AccessLevel.MODULE)
     private boolean upAndRunning = false;
 
+    private final Event<Path> fileChangeEvent;
+
     @Inject
-    @FileChangedEvent
-    Event<Path> fileChangeEvent;
+    FileWatcherServiceImpl(@ConfigProperty(name = SCHEDULER_FILE_SCAN_ENABLED) Provider<Boolean> enabledProvider,
+                           @FileChangedEvent Event<Path> fileChangeEvent) {
+        this.enabledProvider = enabledProvider;
+        this.fileChangeEvent = fileChangeEvent;
+    }
 
     /**
      * Initializes the watcher depending on the configuration of
@@ -164,7 +167,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
     public void register(Path... paths) {
         for (Path path : paths) {
             LOGGER.trace("Attempting to register path for monitoring: %s", path);
-            var created = AbstractFileDescriptor.create(path);
+            var created = FileDescriptors.create(path);
             if (created.isPresent()) {
                 var absolute = created.get().getPath();
                 if (!registeredPaths.containsKey(absolute)) {

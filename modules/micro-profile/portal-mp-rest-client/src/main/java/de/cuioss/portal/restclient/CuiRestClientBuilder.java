@@ -93,7 +93,6 @@ public class CuiRestClientBuilder {
         // Both things we don't admire.
         // Also see: https://github.com/eclipse/microprofile-rest-client/issues/195
         disableDefaultExceptionHandler();
-        // register(DefaultResponseExceptionMapper.class, Integer.MIN_VALUE - 1);
     }
 
     /**

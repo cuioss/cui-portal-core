@@ -110,9 +110,12 @@ public class FileWatcherServiceMock implements FileWatcherService {
 
     private final Set<Path> registeredPaths = new HashSet<>();
 
+    private final Event<Path> fileChangeEvent;
+
     @Inject
-    @FileChangedEvent
-    private Event<Path> fileChangeEvent;
+    FileWatcherServiceMock(@FileChangedEvent Event<Path> fileChangeEvent) {
+        this.fileChangeEvent = fileChangeEvent;
+    }
 
     @Override
     public void register(Path... paths) {

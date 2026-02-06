@@ -57,6 +57,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 )
 class RestClientLoggingTest {
 
+    // Force class initialization of LogClientRequestFilter42 so its static CuiLogger
+    // holds a strong reference to the JUL Logger before @EnableTestLogger configures
+    // logger levels in @BeforeEach. Without this, JaCoCo memory pressure can cause GC
+    // to collect the weakly-referenced JUL Logger between configuration and first use.
+    @SuppressWarnings("unused")
+    private static final LogClientRequestFilter42 FORCE_CLASS_INIT = new LogClientRequestFilter42();
+
     private static final CuiLogger LOGGER = new CuiLogger(RestClientLoggingTest.class);
 
     static final String TEXT = "Some text";

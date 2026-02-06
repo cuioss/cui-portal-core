@@ -119,33 +119,37 @@ public class MockAuthenticationFacade implements FormBasedAuthenticationFacade {
 
     private static final CuiLogger LOGGER = new CuiLogger(MockAuthenticationFacade.class);
 
-    @ConfigProperty(name = CONFIGURATION_KEY_AUTHENTICATED, defaultValue = "true")
-    @Inject
-    private Provider<Boolean> defaultLoggedIn;
+    private final Provider<Boolean> defaultLoggedIn;
 
-    @ConfigProperty(name = CONFIGURATION_KEY_USER_NAME, defaultValue = USER)
-    @Inject
-    private Provider<String> defaultUserName;
+    private final Provider<String> defaultUserName;
 
-    @ConfigProperty(name = CONFIGURATION_KEY_SYSTEM, defaultValue = "mock")
-    @Inject
-    private String defaultSystem;
+    private final String defaultSystem;
 
-    @ConfigAsList(name = CONFIGURATION_KEY_GROUPS)
-    @Inject
-    private Provider<List<String>> defaultUserGroups;
+    private final Provider<List<String>> defaultUserGroups;
 
-    @ConfigAsList(name = CONFIGURATION_KEY_ROLES)
-    @Inject
-    private Provider<List<String>> defaultUserRoles;
+    private final Provider<List<String>> defaultUserRoles;
 
-    @ConfigAsList(name = CONFIGURATION_KEY_CONTEXT_MAP)
-    @Inject
-    private Provider<List<String>> defaultContextMapEntries;
+    private final Provider<List<String>> defaultContextMapEntries;
 
     @Getter
     @Setter
     private AuthenticationSource authenticationSource = AuthenticationSource.MOCK;
+
+    @Inject
+    public MockAuthenticationFacade(
+            @ConfigProperty(name = CONFIGURATION_KEY_AUTHENTICATED, defaultValue = "true") Provider<Boolean> defaultLoggedIn,
+            @ConfigProperty(name = CONFIGURATION_KEY_USER_NAME, defaultValue = USER) Provider<String> defaultUserName,
+            @ConfigProperty(name = CONFIGURATION_KEY_SYSTEM, defaultValue = "mock") String defaultSystem,
+            @ConfigAsList(name = CONFIGURATION_KEY_GROUPS) Provider<List<String>> defaultUserGroups,
+            @ConfigAsList(name = CONFIGURATION_KEY_ROLES) Provider<List<String>> defaultUserRoles,
+            @ConfigAsList(name = CONFIGURATION_KEY_CONTEXT_MAP) Provider<List<String>> defaultContextMapEntries) {
+        this.defaultLoggedIn = defaultLoggedIn;
+        this.defaultUserName = defaultUserName;
+        this.defaultSystem = defaultSystem;
+        this.defaultUserGroups = defaultUserGroups;
+        this.defaultUserRoles = defaultUserRoles;
+        this.defaultContextMapEntries = defaultContextMapEntries;
+    }
 
     /**
      * The dummy implementation provides a successful login in case the identifier

@@ -61,8 +61,12 @@ public class ExternalHostnameProducer {
 
     private static final CuiLogger LOGGER = new CuiLogger(ExternalHostnameProducer.class);
 
+    private final Provider<HttpServletRequest> httpServletRequest;
+
     @Inject
-    Provider<HttpServletRequest> httpServletRequest;
+    ExternalHostnameProducer(Provider<HttpServletRequest> httpServletRequest) {
+        this.httpServletRequest = httpServletRequest;
+    }
 
     @Produces
     @CuiExternalHostname

@@ -130,29 +130,37 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
     private static final String SCOPES_KEY = "Scopes";
     private static final String PKCE_CODE_KEY = "PKCE_CODE";
 
-    private final transient Object codeLock = new Object();
+    private final Object codeLock = new Object();
 
     private static final AuthenticatedUserInfo NOT_LOGGED_IN = BaseAuthenticatedUserInfo.builder().authenticated(false)
             .build();
 
     @SuppressWarnings("cdi-ambiguous-dependency")
-    @Inject
-    private Oauth2Service oauth2ServiceImpl;
+    private final Oauth2Service oauth2ServiceImpl;
 
-    @Inject
-    private Provider<Oauth2Configuration> configurationProvider;
+    private final Provider<Oauth2Configuration> configurationProvider;
 
-    @Inject
-    @LoginPagePath
-    private Provider<String> loginUrl;
+    private final Provider<String> loginUrl;
 
-    @Inject
-    private Provider<OauthRedirector> oauthRedirector;
+    private final Provider<OauthRedirector> oauthRedirector;
 
-    @Inject
-    private Provider<HttpServletRequest> servletRequestProvider;
+    private final Provider<HttpServletRequest> servletRequestProvider;
 
     private final SecureRandom random = new SecureRandom();
+
+    @Inject
+    public Oauth2AuthenticationFacadeImpl(
+            @SuppressWarnings("cdi-ambiguous-dependency") Oauth2Service oauth2ServiceImpl,
+            Provider<Oauth2Configuration> configurationProvider,
+            @LoginPagePath Provider<String> loginUrl,
+            Provider<OauthRedirector> oauthRedirector,
+            Provider<HttpServletRequest> servletRequestProvider) {
+        this.oauth2ServiceImpl = oauth2ServiceImpl;
+        this.configurationProvider = configurationProvider;
+        this.loginUrl = loginUrl;
+        this.oauthRedirector = oauthRedirector;
+        this.servletRequestProvider = servletRequestProvider;
+    }
 
     @Override
     public boolean logout(final HttpServletRequest servletRequest) {

@@ -149,9 +149,12 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         }
     }
 
-    @Inject
-    private Provider<Oauth2Configuration> configurationProvider;
+    private final Provider<Oauth2Configuration> configurationProvider;
 
+    @Inject
+    Oauth2ServiceImpl(Provider<Oauth2Configuration> configurationProvider) {
+        this.configurationProvider = configurationProvider;
+    }
 
     @Override
     public AuthenticatedUserInfo createAuthenticatedUserInfo(final HttpServletRequest servletRequest,

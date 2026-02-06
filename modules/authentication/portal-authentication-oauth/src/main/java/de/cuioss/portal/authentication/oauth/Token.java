@@ -41,6 +41,7 @@ import java.io.Serializable;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("java:S116") // Field names match OAuth2 JSON response property names
 public class Token implements Serializable {
 
     @Serial

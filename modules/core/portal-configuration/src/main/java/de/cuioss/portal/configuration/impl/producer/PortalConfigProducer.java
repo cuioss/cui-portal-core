@@ -73,9 +73,12 @@ public class PortalConfigProducer {
 
     static final String UNUSED = "unused";
 
+    private final Provider<Boolean> portalMetricsEnabled;
+
     @Inject
-    @ConfigProperty(name = PORTAL_METRICS_ENABLED, defaultValue = "false")
-    Provider<Boolean> portalMetricsEnabled;
+    PortalConfigProducer(@ConfigProperty(name = PORTAL_METRICS_ENABLED, defaultValue = "false") Provider<Boolean> portalMetricsEnabled) {
+        this.portalMetricsEnabled = portalMetricsEnabled;
+    }
 
     /**
      * @param injectionPoint providing the field-metadata

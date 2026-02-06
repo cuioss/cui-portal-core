@@ -21,8 +21,7 @@ import lombok.NonNull;
 import lombok.ToString;
 
 import java.util.Optional;
-
-import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper.PLACEHOLDER_PATTERN;
+import java.util.regex.Pattern;
 
 /**
  * Data Transfer Object (DTO) representing a configuration placeholder in the Portal's
@@ -63,6 +62,25 @@ import static de.cuioss.portal.configuration.util.ConfigurationPlaceholderHelper
 @ToString
 @EqualsAndHashCode
 class ConfigPlaceholder {
+
+    /**
+     * Regex pattern matching a valid config placeholder. It is not perfect! E.g. a
+     * key with leading or trailing whitespace/s is matched too, as well as a
+     * placeholder with non-matching leading and trailing curly braces - e.g.
+     * "${key1:${key2}crap}".
+     */
+    static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{" + // find start of a config placeholder.
+            // escaped, because these are regexp special
+            // chars.
+            "[^:]" + // ignore placeholder if it starts with a double-colon and therefore has no
+            // config-key.
+            ".*?" + // allow any character between curly braces. however,
+            // we need to stop at the first sight of a placeholders suffix.
+            // therefore, we use a lazy mode quantifier - the question mark.
+            "}+" // find at least 1 suffix character, but as many as possible to account for
+    // nested placeholders.
+    );
+
     @SuppressWarnings("el-syntax")
     private static final String PLACEHOLDER_PREFIX = "${";
     private static final String PLACEHOLDER_SUFFIX = "}";

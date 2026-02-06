@@ -68,17 +68,22 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private static final CuiLogger LOGGER = new CuiLogger(ResourceBundleWrapperImpl.class);
 
-    @Inject
-    ResourceBundleRegistry resourceBundleRegistry;
+    private final ResourceBundleRegistry resourceBundleRegistry;
 
     private transient List<ResourceBundle> resolvedBundles;
 
-    @Inject
-    Provider<CuiProjectStage> projectStage;
+    private final Provider<CuiProjectStage> projectStage;
+
+    private final Provider<Locale> localeProvider;
 
     @Inject
-    @PortalLocale
-    Provider<Locale> localeProvider;
+    ResourceBundleWrapperImpl(ResourceBundleRegistry resourceBundleRegistry,
+                              Provider<CuiProjectStage> projectStage,
+                              @PortalLocale Provider<Locale> localeProvider) {
+        this.resourceBundleRegistry = resourceBundleRegistry;
+        this.projectStage = projectStage;
+        this.localeProvider = localeProvider;
+    }
 
     private final List<String> keyList = new CopyOnWriteArrayList<>();
 

@@ -367,7 +367,7 @@ class CuiRestClientBuilderTest {
     }
 
     /**
-     * FIXME handle collections with default JAX-B instead of Jackson2 provider.
+     * Verifies that collection deserialization fails without a Jackson2 provider.
      */
     @Test
     @MockResponseConfig(

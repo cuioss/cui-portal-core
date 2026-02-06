@@ -540,6 +540,7 @@ public final class ConfigurationHelper {
      *                                   its default value for more than 5 times.
      */
     public static String replacePlaceholders(final String source, boolean exceptionOnMissingKey) {
-        return ConfigurationPlaceholderHelper.replacePlaceholders(source, exceptionOnMissingKey);
+        return ConfigurationPlaceholderHelper.replacePlaceholders(source, exceptionOnMissingKey,
+                ConfigurationHelper::resolveConfigProperty);
     }
 }

@@ -68,15 +68,18 @@ public class ServletLifecycleListener implements ServletContextListener {
 
     private static final CuiLogger LOGGER = new CuiLogger(ServletLifecycleListener.class);
 
-    @Inject
-    @PortalInitializer
-    Instance<ApplicationInitializer> applicationInitializers;
+    private final Instance<ApplicationInitializer> applicationInitializers;
 
     @Produces
     @Dependent
     @Named
     @CuiContextPath
     String contextPath = "portal";
+
+    @Inject
+    ServletLifecycleListener(@PortalInitializer Instance<ApplicationInitializer> applicationInitializers) {
+        this.applicationInitializers = applicationInitializers;
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
