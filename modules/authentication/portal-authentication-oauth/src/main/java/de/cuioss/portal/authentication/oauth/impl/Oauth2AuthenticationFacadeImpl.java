@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -199,7 +199,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             LOGGER.debug("Calling redirect to %s", retrieveUrl);
             oauthRedirector.get().sendRedirect(retrieveUrl);
         } catch (final IllegalStateException e) {
-            LOGGER.warn(e, WARN.REDIRECT_FAILED::format);
+            LOGGER.warn(e, WARN.REDIRECT_FAILED);
         }
     }
 
@@ -218,10 +218,10 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
                     throw new OauthAuthenticationException("system.exception.oauth.consent");
                 }
                 if (ERROR_INVALID_SCOPE.equals(error.get().getValue())) {
-                    LOGGER.warn(WARN.INVALID_SCOPE.format(parameters));
+                    LOGGER.warn(WARN.INVALID_SCOPE, parameters);
                     throw new OauthAuthenticationException("system.exception.oauth.invalidScope");
                 }
-                LOGGER.warn(WARN.LOGIN_ERROR.format(parameters));
+                LOGGER.warn(WARN.LOGIN_ERROR, parameters);
                 throw new OauthAuthenticationException("system.exception.oauth.login");
             }
         }
@@ -236,7 +236,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         final AuthenticatedUserInfo sessionUser;
         synchronized (codeLock) {
             if (null == servletRequest.getSession().getAttribute(STATE_KEY)) {
-                LOGGER.warn(WARN.UNKNOWN_STATE.format(state.getValue()));
+                LOGGER.warn(WARN.UNKNOWN_STATE, state.getValue());
                 return Optional.empty();
             }
             if (state.getValue().equals(servletRequest.getSession().getAttribute(STATE_KEY))) {
@@ -306,7 +306,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE::format);
+            LOGGER.error(e, ERROR.CANNOT_GENERATE_CODE_CHALLENGE);
             throw new IllegalStateException(e);
         }
 
@@ -406,7 +406,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         }
         final var tokenParts = token.getId_token().split("\\.");
         if (tokenParts.length != 3) {
-            LOGGER.info(INFO.ID_TOKEN_SPLIT_FAILED.format(token.getId_token()));
+            LOGGER.info(INFO.ID_TOKEN_SPLIT_FAILED, token.getId_token());
             return Collections.emptyMap();
         }
         var objectReader = new ObjectMapper().reader().forType(new TypeReference<Map<String, Object>>() {
@@ -415,7 +415,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         try {
             return objectReader.readValue(Base64.getDecoder().decode(tokenParts[1]));
         } catch (IOException e) {
-            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED.format(tokenParts[1]));
+            LOGGER.info(e, INFO.ID_TOKEN_PARSE_FAILED, tokenParts[1]);
             return Collections.emptyMap();
         }
     }
@@ -472,7 +472,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         var config = configurationProvider.get();
 
         if (MoreStrings.isEmpty(config.getLogoutUri())) {
-            LOGGER.warn(WARN.NO_LOGOUT_URI::format);
+            LOGGER.warn(WARN.NO_LOGOUT_URI);
             throw new IllegalStateException((WARN.NO_LOGOUT_URI.format()));
         }
 
@@ -498,7 +498,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
         if (currentUser.isPresent()) {
             return currentUser.get().getIdToken();
         }
-        LOGGER.warn(WARN.NO_ID_TOKEN::format);
+        LOGGER.warn(WARN.NO_ID_TOKEN);
         return Optional.empty();
     }
 
@@ -539,7 +539,7 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
             LOGGER.trace("checked expire time. token valid?: %s", valid);
             return valid;
         } catch (final NumberFormatException e) {
-            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER::format);
+            LOGGER.error(e, ERROR.TOKEN_EXPIRES_IN_NOT_A_VALID_NUMBER);
             return false;
         }
     }

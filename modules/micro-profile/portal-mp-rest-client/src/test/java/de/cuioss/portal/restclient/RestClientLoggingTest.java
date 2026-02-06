@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -202,12 +202,12 @@ class RestClientLoggingTest {
         for (LogRecord logRecord : recordedLogs) {
             if (firstClazz.getName().equals(logRecord.getSourceClassName())) {
                 posFirstClazzLog = posCurrentLog;
-                LOGGER.info("posFirstClazzLog={}", posFirstClazzLog);
+                LOGGER.info("posFirstClazzLog=%s", posFirstClazzLog);
             }
 
             if (secondClazz.getName().equals(logRecord.getSourceClassName())) {
                 posSecondClazzLog = posCurrentLog;
-                LOGGER.info("posSecondClazzLog={}", posSecondClazzLog);
+                LOGGER.info("posSecondClazzLog=%s", posSecondClazzLog);
             }
 
             if (posFirstClazzLog >= 0 && posSecondClazzLog >= 0) {

@@ -109,7 +109,7 @@ class ConfigurationPlaceholderHelper {
 
         if (!missingConfigKeys.isEmpty()) {
             final var errMsg = "Portal-161: Missing config key/s: " + Joiner.on(", ").join(missingConfigKeys);
-            /*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.warn(errMsg);
+            /*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*//*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*//*~~(TODO: WARN needs LogRecord. Suppress: // cui-rewrite:disable CuiLogRecordPatternRecipe)~~>*/LOGGER.warn(errMsg);
             if (exceptionOnMissingKey) {
                 throw new NoSuchElementException(errMsg);
             }

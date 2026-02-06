@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -159,7 +159,7 @@ public abstract class AbstractConfigurationKeyVerifierTest {
         var configurationKeys = extractConfigurationKeys();
         var resolvedKeyNames = resolveKeyNames();
 
-        LOGGER.info("Checking resolvedKeyNames:{}against configurationKeys:{}",
+        LOGGER.info("Checking resolvedKeyNames:%sagainst configurationKeys:%s",
                 System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(resolvedKeyNames)
                         + System.lineSeparator(),
                 System.lineSeparator() + "\t" + Joiner.on(System.lineSeparator() + "\t").join(configurationKeys));
@@ -181,7 +181,7 @@ public abstract class AbstractConfigurationKeyVerifierTest {
     void configurationKeysShouldReverseMapToKeyNames() {
         var configurationKeys = resolveConfigurationKeyNames();
         var resolvedKeysFromType = resolveKeyNames();
-        LOGGER.info("Checking configurationKeys='{}' against resolvedKeysFromType='{}'", resolvedKeysFromType, configurationKeys);
+        LOGGER.info("Checking configurationKeys='%s' against resolvedKeysFromType='%s'", resolvedKeysFromType, configurationKeys);
         List<String> notFoundKeys = configurationKeys.stream().filter(key -> !resolvedKeysFromType.contains(key))
                 .toList();
         if (!notFoundKeys.isEmpty()) {
@@ -212,11 +212,11 @@ public abstract class AbstractConfigurationKeyVerifierTest {
                         keys.add(value);
                     }
                 } else {
-                    LOGGER.debug("Field '{}' is not a String, ignoring", field.getName());
+                    LOGGER.debug("Field '%s' is not a String, ignoring", field.getName());
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 var message = "Unable to read field " + field.getName() + " due to " + e.getMessage();
-                LOGGER.error(message, e);
+                LOGGER.error(e, message);
                 fail(message);
             }
         }

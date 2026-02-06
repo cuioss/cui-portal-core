@@ -1,12 +1,12 @@
 /*
- * Copyright 2023 the original author or authors.
- * <p>
+ * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -184,14 +184,14 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             LOGGER.trace("received token='%s' for scopes='%s', requestUri=%s",
                     token, scopes, servletRequest.getRequestURI());
         } catch (IllegalArgumentException e) {
-            LOGGER.warn(WARN.REQUEST_TOKEN_FAILED.format(), e);
+            LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             return null;
         } catch (WebApplicationException e) {
-            LOGGER.warn(WARN.REQUEST_TOKEN_FAILED.format(), e);
+            LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
         } catch (IOException e) {
-            LOGGER.error(ERROR.IO_EXCEPTION.format(), e);
+            LOGGER.error(e, ERROR.IO_EXCEPTION);
             return null;
         }
 
@@ -246,11 +246,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
             return baseAuthenticatedUserInfoBuilder.build();
         } catch (WebApplicationException e) {
-            LOGGER.warn(WARN.GET_USERINFO_FAILED.format(), e);
+            LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        } catch (Exception e) {
-            LOGGER.warn(WARN.GET_USERINFO_FAILED.format(), e);
+        } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+            LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             return null;
         }
     }
@@ -282,11 +282,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             var token = requestToken.requestToken("client_credentials");
             return token.getAccess_token();
         } catch (WebApplicationException e) {
-            LOGGER.warn(WARN.CLIENT_TOKEN_FAILED.format(), e);
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        } catch (Exception e) {
-            LOGGER.warn(WARN.CLIENT_TOKEN_FAILED.format(), e);
+        } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             return null;
         }
     }
@@ -312,11 +312,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             LOGGER.debug("no token received");
             return null;
         } catch (WebApplicationException e) {
-            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED.format());
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        } catch (Exception e) {
-            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED.format());
+        } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (Exception e) {
+            LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             return null;
         }
     }
