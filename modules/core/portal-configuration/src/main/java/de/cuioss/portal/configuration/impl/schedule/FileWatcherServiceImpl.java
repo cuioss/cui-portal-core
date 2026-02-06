@@ -216,6 +216,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                     watchKey = watcherService.take();
                     TimeUnit.MILLISECONDS.sleep(EVENT_TIMEOUT);
                     handleChangedWatchKey(watchKey);
+                    // cui-rewrite:disable InvalidExceptionUsageRecipe
                 } catch (InterruptedException ie) {
                     LOGGER.debug(ie, "Interrupted, exiting loop");
                     Thread.currentThread().interrupt();
@@ -223,7 +224,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
                 } catch (ClosedWatchServiceException e) {
                     // Hm, feels a little clumsy. Should consider correct Interruption handling
                     LOGGER.debug("Shutdown while waiting");
-                } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+                } catch (RuntimeException e) {
                     LOGGER.error(e, ERROR.FILE_SYSTEM_POLLING_ERROR);
                 } finally {
                     if (null != watchKey) {

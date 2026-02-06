@@ -52,6 +52,7 @@ class LogReaderInterceptor implements ReaderInterceptor {
         this.givenLogger = givenLogger;
     }
 
+    // cui-rewrite:disable CuiLogRecordPatternRecipe
     @Override
     public Object aroundReadFrom(final ReaderInterceptorContext context) throws IOException, WebApplicationException {
         try {
@@ -64,8 +65,9 @@ class LogReaderInterceptor implements ReaderInterceptor {
             appendHeaders(logMsg, context);
             logBody(logMsg, context);
 
-            givenLogger.info(logMsg.toString()); // cui-rewrite:disable CuiLogRecordPatternRecipe
-        } catch (final RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+            givenLogger.info(logMsg.toString());
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
+        } catch (final RuntimeException e) {
             givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR);
         }
         return context.proceed();

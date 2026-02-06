@@ -60,6 +60,7 @@ class LogClientRequestFilter implements ClientRequestFilter {
         this.givenLogger = givenLogger;
     }
 
+    // cui-rewrite:disable CuiLogRecordPatternRecipe
     @Override
     public void filter(final ClientRequestContext reqContext) throws IOException {
         try {
@@ -76,8 +77,9 @@ class LogClientRequestFilter implements ClientRequestFilter {
                 }
             }
 
-            givenLogger.info(PATTERN, reqContext.getUri(), nullToEmpty(reqContext.getMethod()), headers.toString(), body); // cui-rewrite:disable CuiLogRecordPatternRecipe
-        } catch (final RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+            givenLogger.info(PATTERN, reqContext.getUri(), nullToEmpty(reqContext.getMethod()), headers.toString(), body);
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
+        } catch (final RuntimeException e) {
             givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR, e);
         }
     }

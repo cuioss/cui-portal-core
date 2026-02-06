@@ -66,7 +66,8 @@ abstract class LogClientResponseFilter implements ClientResponseFilter {
                     clientResponseContext.getLanguage(), clientResponseContext.getLastModified(),
                     clientResponseContext.getLinks(), clientResponseContext.getLocation(),
                     clientResponseContext.getMediaType());
-        } catch (final RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
+        } catch (final RuntimeException e) {
             givenLogger.error(e, RestClientLogMessages.ERROR.TRACE_LOG_ERROR);
         }
     }
