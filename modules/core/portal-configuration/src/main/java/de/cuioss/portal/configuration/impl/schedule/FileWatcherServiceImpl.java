@@ -256,7 +256,8 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
             LOGGER.debug("Delivering notification for path changes of: '%s'", element.getPath());
             try {
                 fileChangeEvent.fire(element.getPath());
-            } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+                // cui-rewrite:disable InvalidExceptionUsageRecipe
+            } catch (RuntimeException e) {
                 LOGGER.error(e, ERROR.FILE_EVENT_HANDLING_ERROR, element.getPath());
             }
             element.update();

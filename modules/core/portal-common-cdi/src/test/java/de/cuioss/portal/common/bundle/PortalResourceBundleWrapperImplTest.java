@@ -344,7 +344,8 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
                         locale = i % 2 == 0 ? Locale.ENGLISH : Locale.GERMAN;
                         localeChangeEvent.fire(Locale.GERMAN);
                     }
-                } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+                    // cui-rewrite:disable InvalidExceptionUsageRecipe
+                } catch (RuntimeException e) {
                     errors.set(e);
                 } finally {
                     latch.countDown();
@@ -357,7 +358,8 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
                     for (int i = 0; i < 1000; i++) {
                         underTest.getString("page.error.title");
                     }
-                } catch (RuntimeException e) { // cui-rewrite:disable InvalidExceptionUsageRecipe
+                    // cui-rewrite:disable InvalidExceptionUsageRecipe
+                } catch (RuntimeException e) {
                     errors.set(e);
                 } finally {
                     latch.countDown();
