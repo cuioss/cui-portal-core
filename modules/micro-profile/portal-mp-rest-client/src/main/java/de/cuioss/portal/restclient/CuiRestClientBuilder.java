@@ -1,12 +1,12 @@
 /*
- * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
- *
+ * Copyright 2023 the original author or authors.
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
  * @see PortalRestClient
  * @see RestClientProducer
  */
+// cui-rewrite:disable CuiLoggerStandardsRecipe
 public class CuiRestClientBuilder {
 
     private static final CuiLogger LOGGER = new CuiLogger(CuiRestClientBuilder.class);
@@ -66,7 +67,7 @@ public class CuiRestClientBuilder {
 
     private final RestClientBuilder mpRestClientBuilder;
     private boolean traceLogEnabled;
-    private static final CuiLogger LOGGER;
+    private final CuiLogger givenLogger;
 
     /**
      * Creates a REST client builder.
@@ -82,7 +83,7 @@ public class CuiRestClientBuilder {
     public CuiRestClientBuilder(final CuiLogger givenLogger) {
         mpRestClientBuilder = RestClientBuilder.newBuilder();
         this.givenLogger = givenLogger;
-        traceLogEnabled = LOGGER.isTraceEnabled() || LOGGER.isTraceEnabled();
+        traceLogEnabled = givenLogger.isTraceEnabled() || LOGGER.isTraceEnabled();
 
         // Advice RestEasy not to add its default exception handler.
         // It would serve the request before we can trace-log anything.
@@ -102,7 +103,7 @@ public class CuiRestClientBuilder {
      * @param givenLogger must not be null
      */
     public static void debugResponse(final Response response, final CuiLogger givenLogger) {
-        LOGGER.debug("""
+        givenLogger.debug("""
                         -- Client response filter --
                         Status: %s
                         StatusInfo: %s
@@ -236,8 +237,8 @@ public class CuiRestClientBuilder {
             Class<?> defaultResponseExceptionMapper = Class.forName(RESPONSE_EXCEPTION_MAPPER, false, CuiRestClientBuilder.class.getClassLoader());
             register(defaultResponseExceptionMapper.getDeclaredConstructor().newInstance(), Integer.MIN_VALUE);
             disableDefaultExceptionHandler();
-        } /*~~(TODO: Catch specific not Exception. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe)~~>*/catch (final Exception e) {
-            LOGGER.error(e, RestClientLogMessages.ERROR.DEFAULT_HANDLER_LOAD_ERROR, RESPONSE_EXCEPTION_MAPPER);
+        } catch (final Exception e) {
+            LOGGER.error(e, RestClientLogMessages.ERROR.DEFAULT_HANDLER_LOAD_ERROR.format(RESPONSE_EXCEPTION_MAPPER));
         }
         return this;
     }
