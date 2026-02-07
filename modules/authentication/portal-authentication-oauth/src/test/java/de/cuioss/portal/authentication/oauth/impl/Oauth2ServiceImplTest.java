@@ -89,7 +89,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void deprecatedCreateAuthenticatedUserInfo(MockWebServer mockWebServer) throws InterruptedException {
+    void deprecatedCreateAuthenticatedUserInfo(MockWebServer mockWebServer) throws Exception {
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -101,7 +101,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         var request = requests.get(1);
         var authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty());
-        assertEquals("Bearer SlAV32hkKG", authHeader.get(0));
+        assertEquals("Bearer SlAV32hkKG", authHeader.getFirst());
         assertNotNull(result);
         assertTrue(result.getContextMap().containsKey(Oauth2AuthenticationFacade.USERINFO_PREFIX_KEY + "account_type"));
         assertEquals("user",
@@ -109,7 +109,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void createAuthenticatedUserInfo(MockWebServer mockWebServer) throws InterruptedException {
+    void createAuthenticatedUserInfo(MockWebServer mockWebServer) throws Exception {
 
         configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
 
@@ -122,14 +122,14 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
 
         assertFalse(requests.isEmpty());
 
-        var request = requests.get(0);
+        var request = requests.getFirst();
 
         var contentTypeHeader = request.getHeaders().values("Content-Type");
         assertFalse(contentTypeHeader.isEmpty());
-        assertEquals(MediaType.APPLICATION_FORM_URLENCODED, contentTypeHeader.get(0));
+        assertEquals(MediaType.APPLICATION_FORM_URLENCODED, contentTypeHeader.getFirst());
         var acceptHeader = request.getHeaders().values("Accept");
         assertFalse(acceptHeader.isEmpty());
-        assertEquals(MediaType.APPLICATION_JSON, acceptHeader.get(0));
+        assertEquals(MediaType.APPLICATION_JSON, acceptHeader.getFirst());
         assertEquals("grant_type=authorization_code&code=123&state=456&code_verifier=" + code
                 + "&redirect_uri=http%3A%2F" + "%2Fpathsome.url", request.getBody().readUtf8());
 
@@ -137,7 +137,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertNotNull(request);
         var authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty());
-        assertEquals("Bearer SlAV32hkKG", authHeader.get(0));
+        assertEquals("Bearer SlAV32hkKG", authHeader.getFirst());
         assertNotNull(result);
         assertEquals("j.doe", result.getDisplayName());
         assertTrue(result.getRoles().contains("testRole"));
@@ -148,7 +148,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
     }
 
     @Test
-    void retrieveClientToken(MockWebServer mockWebServer) throws InterruptedException {
+    void retrieveClientToken(MockWebServer mockWebServer) throws Exception {
 
         var token = underTest.retrieveClientToken(null);
         assertNotNull(token);
@@ -157,15 +157,15 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
 
         assertFalse(requests.isEmpty());
 
-        var request = requests.get(0);
+        var request = requests.getFirst();
 
         var contentTypeHeader = request.getHeaders().values("Content-Type");
         assertFalse(contentTypeHeader.isEmpty());
-        assertEquals(MediaType.APPLICATION_FORM_URLENCODED, contentTypeHeader.get(0));
+        assertEquals(MediaType.APPLICATION_FORM_URLENCODED, contentTypeHeader.getFirst());
     }
 
     @Test
-    void shouldRefreshTokenHappyCase(MockWebServer mockWebServer) throws InterruptedException {
+    void shouldRefreshTokenHappyCase(MockWebServer mockWebServer) throws Exception {
         var user = setupAuthorizedUser();
 
         var refreshToken = letterStrings(4, 24).next();

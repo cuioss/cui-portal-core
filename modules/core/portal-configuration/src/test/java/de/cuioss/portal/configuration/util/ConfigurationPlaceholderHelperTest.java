@@ -74,7 +74,7 @@ class ConfigurationPlaceholderHelperTest {
 
         var warnMsgs = TestLoggerFactory.getTestHandler().resolveLogMessages(TestLogLevel.WARN);
         assertEquals(1, warnMsgs.size(), "Missing WARN log statement for Portal-161 message");
-        var firstWarnMsg = warnMsgs.get(0).getMessage();
+        var firstWarnMsg = warnMsgs.getFirst().getMessage();
         switch (firstWarnMsg) {
             case "PortalConfig-161: Missing configuration for missing_1, missing_2 detected.",
                 "PortalConfig-161: Missing configuration for missing_2, missing_1 detected." -> {

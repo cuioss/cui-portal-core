@@ -76,7 +76,7 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
             Collections.sort(sortList);
 
             assertAll("Priority order verification",
-                    () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.get(0).getOrder(),
+                    () -> assertEquals(PortalPriorities.PORTAL_ASSEMBLY_LEVEL, sortList.getFirst().getOrder(),
                             "Highest priority should be first"),
                     () -> assertEquals(PortalPriorities.PORTAL_MODULE_LEVEL, sortList.get(1).getOrder(),
                             "Medium priority should be second"),
@@ -126,7 +126,7 @@ class PriorityComparatorTest extends ValueObjectTest<PriorityComparator> {
                             "Sorted list should maintain same size"),
                     () -> assertTrue(shuffledList.containsAll(originalList),
                             "Sorted list should contain all original elements"),
-                    () -> assertEquals(first.getOrder(), shuffledList.get(0).getOrder(),
+                    () -> assertEquals(first.getOrder(), shuffledList.getFirst().getOrder(),
                             "First element should have same order"),
                     () -> assertEquals(second.getOrder(), shuffledList.get(1).getOrder(),
                             "Second element should have same order"),

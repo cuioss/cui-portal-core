@@ -39,10 +39,8 @@ import java.io.IOException;
  * @see CuiRestClientBuilder
  */
 @Priority(Integer.MIN_VALUE)
-// cui-rewrite:disable CuiLoggerStandardsRecipe
 abstract class LogClientResponseFilter implements ClientResponseFilter {
 
-    // cui-rewrite:disable CuiLoggerStandardsRecipe
     private final CuiLogger givenLogger;
     private final String name;
 

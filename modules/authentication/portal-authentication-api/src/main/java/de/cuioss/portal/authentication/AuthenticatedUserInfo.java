@@ -27,7 +27,7 @@ import java.util.Map;
  * <h2>Usage Example</h2>
  * <pre>
  * AuthenticatedUserInfo userInfo = getCurrentUser();
- * if (userInfo.isAuthenticated() && userInfo.isUserInRole("ADMIN")) {
+ * if (userInfo.isAuthenticated() &amp;&amp; userInfo.isUserInRole("ADMIN")) {
  *     // Perform admin operation
  * }
  * </pre>

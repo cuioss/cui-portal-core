@@ -333,7 +333,7 @@ class PortalResourceBundleWrapperImplTest implements ShouldHandleObjectContracts
         @Test
         @DisplayName("Should handle concurrent access")
         @Disabled("We need to figure out how o prevent ContextNotActive Exception")
-        void shouldHandleConcurrentAccess() throws InterruptedException {
+        void shouldHandleConcurrentAccess() throws Exception {
             var latch = new CountDownLatch(2);
             var errors = new AtomicReference<Exception>(null);
 

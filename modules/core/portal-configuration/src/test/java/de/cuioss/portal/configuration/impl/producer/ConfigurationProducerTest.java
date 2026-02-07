@@ -201,25 +201,25 @@ class ConfigurationProducerTest {
             // Property initially not there
             assertTrue(injectedListProvider.get().isEmpty());
             assertFalse(injectedListWithDefaultProvider.get().isEmpty());
-            assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+            assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().getFirst());
 
             configuration.put(CONFIGURATION_KEY, LIST_SINGLE_VALUE);
             configuration.fireEvent();
 
             assertEquals(1, injectedListProvider.get().size());
-            assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+            assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().getFirst());
 
             configuration.put(CONFIGURATION_KEY, LIST_TWO_VALUES);
             configuration.fireEvent();
 
             assertEquals(2, injectedListProvider.get().size());
-            assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+            assertNotEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().getFirst());
 
             configuration.put(CONFIGURATION_KEY, "");
             configuration.fireEvent();
             assertTrue(injectedListProvider.get().isEmpty());
             assertFalse(injectedListWithDefaultProvider.get().isEmpty());
-            assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().iterator().next());
+            assertEquals(LIST_DEFAULT_VALUE, injectedListWithDefaultProvider.get().getFirst());
         }
     }
 

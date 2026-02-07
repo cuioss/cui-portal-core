@@ -31,7 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
 
@@ -61,7 +60,7 @@ class ResponseLoggerTest {
 
     @Test
     @DisplayName("Should properly log response details")
-    void shouldLogResponseDetails() throws IOException {
+    void shouldLogResponseDetails() throws Exception {
         // Create mock
         ClientResponseContext responseContext = EasyMock.createNiceMock(ClientResponseContext.class);
 

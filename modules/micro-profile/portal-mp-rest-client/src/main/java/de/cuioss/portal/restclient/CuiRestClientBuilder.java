@@ -57,7 +57,6 @@ import java.util.concurrent.TimeUnit;
  * @see PortalRestClient
  * @see RestClientProducer
  */
-// cui-rewrite:disable CuiLoggerStandardsRecipe
 public class CuiRestClientBuilder {
 
     private static final CuiLogger LOGGER = new CuiLogger(CuiRestClientBuilder.class);

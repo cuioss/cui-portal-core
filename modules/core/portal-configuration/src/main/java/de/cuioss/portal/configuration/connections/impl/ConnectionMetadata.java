@@ -60,6 +60,14 @@ import static de.cuioss.portal.configuration.PortalConfigurationMessages.ERROR.S
 @Builder(toBuilder = true)
 public class ConnectionMetadata implements Serializable {
 
+    /**
+     * Builder stub to make Lombok-generated builder visible to Javadoc.
+     * Lombok will augment this class with the generated builder methods.
+     */
+    @SuppressWarnings("java:S1610") // Not a functional interface
+    public static class ConnectionMetadataBuilder {
+    }
+
     private static final CuiLogger LOGGER = new CuiLogger(ConnectionMetadata.class);
 
     @Serial

@@ -24,7 +24,6 @@ import lombok.experimental.UtilityClass;
  * All messages follow the format: PortalAuth-[identifier]: [message]
  * 
  * <h2>Message Categories</h2>
- * <p>
  * <h3>AUTH Category - Authentication Events</h3>
  * <ul>
  *   <li>INFO (001-099): Login/Logout events</li>

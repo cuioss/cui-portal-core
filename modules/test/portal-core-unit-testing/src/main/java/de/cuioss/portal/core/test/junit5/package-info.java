@@ -24,11 +24,7 @@
  *       <li>{@link de.cuioss.portal.core.test.junit5.PortalTestConfigurationExtension} - Configuration extension</li>
  *     </ul>
  *   </li>
- *   <li>HTTP Testing Support
- *     <ul>
- *       <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver} - Mock server and request handling</li>
- *     </ul>
- *   </li>
+ *   <li>HTTP Testing Support</li>
  * </ul>
  *
  * <h2>Key Concepts</h2>
@@ -41,10 +37,9 @@
  * For detailed documentation and examples, see:
  * <ul>
  *   <li>{@link de.cuioss.portal.core.test.junit5.EnablePortalConfiguration} for configuration setup</li>
- *   <li>{@link de.cuioss.portal.core.test.junit5.mockwebserver} for HTTP testing</li>
+ *   <li>Mock web server for HTTP testing</li>
  * </ul>
  *
- * @see de.cuioss.portal.core.test.junit5.mockwebserver
  * @see org.junit.jupiter.api.extension.Extension
  * @author Oliver Wolff
  * @since 1.0

@@ -74,7 +74,7 @@ class BearerTokenAuthFilterTest {
 
     @Test
     @DisplayName("Should provide valid authorization header")
-    void shouldProvideAuthorizationHeader(MockWebServer mockWebServer) throws InterruptedException {
+    void shouldProvideAuthorizationHeader(MockWebServer mockWebServer) throws Exception {
         var client = builder.url(mockWebServer.url("success").toString())
                 .bearerAuthToken(TEST_TOKEN)
                 .build(TestResource.class);
@@ -83,12 +83,12 @@ class BearerTokenAuthFilterTest {
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty(), "Authorization header should be present");
-        assertEquals("Bearer " + TEST_TOKEN, authHeader.get(0), "Authorization header should have correct format");
+        assertEquals("Bearer " + TEST_TOKEN, authHeader.getFirst(), "Authorization header should have correct format");
     }
 
     @Test
     @DisplayName("Should handle concurrent requests properly")
-    void shouldHandleConcurrentRequests(MockWebServer mockWebServer) throws InterruptedException {
+    void shouldHandleConcurrentRequests(MockWebServer mockWebServer) throws Exception {
         var client = builder.url(mockWebServer.url("success").toString())
                 .bearerAuthToken(TEST_TOKEN)
                 .build(TestResource.class);
@@ -112,7 +112,7 @@ class BearerTokenAuthFilterTest {
             var request = mockWebServer.takeRequest();
             var authHeader = request.getHeaders().values("Authorization");
             assertFalse(authHeader.isEmpty(), "Authorization header should be present");
-            assertEquals("Bearer " + TEST_TOKEN, authHeader.get(0),
+            assertEquals("Bearer " + TEST_TOKEN, authHeader.getFirst(),
                     "Authorization header should have correct format for all requests");
         }
 
@@ -121,7 +121,7 @@ class BearerTokenAuthFilterTest {
 
     @Test
     @DisplayName("Should handle null token values appropriately")
-    void shouldHandleNullTokenValue(MockWebServer mockWebServer) throws InterruptedException {
+    void shouldHandleNullTokenValue(MockWebServer mockWebServer) throws Exception {
         var client = builder.url(mockWebServer.url("success").toString())
                 .bearerAuthToken(null)
                 .build(TestResource.class);
@@ -134,7 +134,7 @@ class BearerTokenAuthFilterTest {
 
     @Test
     @DisplayName("Should handle empty token appropriately")
-    void shouldHandleEmptyToken(MockWebServer mockWebServer) throws InterruptedException {
+    void shouldHandleEmptyToken(MockWebServer mockWebServer) throws Exception {
         var client = builder.url(mockWebServer.url("success").toString())
                 .bearerAuthToken("")
                 .build(TestResource.class);
@@ -151,7 +151,7 @@ class BearerTokenAuthFilterTest {
             "token\nwith\nnewlines",
             "token@#$%^&*"
     })
-    void shouldHandleTokensWithSpecialCharacters(String token, MockWebServer mockWebServer) throws InterruptedException {
+    void shouldHandleTokensWithSpecialCharacters(String token, MockWebServer mockWebServer) throws Exception {
         var client = builder.url(mockWebServer.url("success").toString())
                 .bearerAuthToken(token)
                 .build(TestResource.class);
@@ -161,12 +161,12 @@ class BearerTokenAuthFilterTest {
         var authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty(), "Authorization header should be present");
         assertEquals("Bearer " + token.replaceAll("[\n\r\t]", " ").trim(),
-                authHeader.get(0), "Authorization header should handle special characters");
+                authHeader.getFirst(), "Authorization header should handle special characters");
     }
 
     @Test
     @DisplayName("Should handle very long token")
-    void shouldHandleVeryLongToken(MockWebServer mockWebServer) throws InterruptedException {
+    void shouldHandleVeryLongToken(MockWebServer mockWebServer) throws Exception {
         String longToken = "x".repeat(4096); // 4KB token
         var client = builder.url(mockWebServer.url("success").toString())
                 .bearerAuthToken(longToken)
@@ -176,7 +176,7 @@ class BearerTokenAuthFilterTest {
         var request = mockWebServer.takeRequest();
         var authHeader = request.getHeaders().values("Authorization");
         assertFalse(authHeader.isEmpty(), "Authorization header should be present");
-        assertEquals("Bearer " + longToken, authHeader.get(0),
+        assertEquals("Bearer " + longToken, authHeader.getFirst(),
                 "Authorization header should handle long tokens");
     }
 }

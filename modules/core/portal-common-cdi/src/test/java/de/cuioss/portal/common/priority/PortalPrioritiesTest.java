@@ -48,7 +48,7 @@ class PortalPrioritiesTest {
             final List<SomeInterface> sorted = PortalPriorities.sortByPriority(elements);
 
             assertAll("Priority sorting verification",
-                    () -> assertEquals(HighPriorityClass.class, sorted.get(0).getClass(),
+                    () -> assertEquals(HighPriorityClass.class, sorted.getFirst().getClass(),
                             "High priority class should be first"),
                     () -> assertEquals(MediumPriorityClass.class, sorted.get(1).getClass(),
                             "Medium priority class should be second"),
@@ -90,7 +90,7 @@ class PortalPrioritiesTest {
 
             assertAll("Single element list verification",
                     () -> assertEquals(1, sorted.size(), "Sorted list should have one element"),
-                    () -> assertEquals(HighPriorityClass.class, sorted.get(0).getClass(),
+                    () -> assertEquals(HighPriorityClass.class, sorted.getFirst().getClass(),
                             "Element should be preserved")
             );
         }
@@ -106,7 +106,7 @@ class PortalPrioritiesTest {
 
             assertAll("Equal priorities verification",
                     () -> assertEquals(2, sorted.size(), "Sorted list should maintain size"),
-                    () -> assertEquals(NoPriorityClass.class, sorted.get(0).getClass(),
+                    () -> assertEquals(NoPriorityClass.class, sorted.getFirst().getClass(),
                             "First element should be NoPriorityClass"),
                     () -> assertEquals(NoPriorityClass.class, sorted.get(1).getClass(),
                             "Second element should be NoPriorityClass")

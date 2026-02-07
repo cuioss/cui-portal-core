@@ -52,7 +52,7 @@ class MultipleEnrichersTest implements ShouldBeNotNull<MockBaseAuthenticationFac
         assertEquals(displayName, result.getDisplayName());
         assertEquals(identifier, result.getIdentifier());
         assertEquals(2, result.getRoles().size());
-        assertEquals("testRole", result.getRoles().get(0)); // Priority 200 runs first
+        assertEquals("testRole", result.getRoles().getFirst()); // Priority 200 runs first
         assertEquals("highPriorityRole", result.getRoles().get(1)); // Priority 50 runs second
     }
 }
