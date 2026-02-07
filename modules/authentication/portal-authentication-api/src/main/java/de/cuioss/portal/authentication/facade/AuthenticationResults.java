@@ -19,9 +19,6 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.uimodel.nameprovider.DisplayName;
 import de.cuioss.uimodel.nameprovider.LabeledKey;
-import de.cuioss.uimodel.result.ResultDetail;
-import de.cuioss.uimodel.result.ResultObject;
-import de.cuioss.uimodel.result.ResultState;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -66,19 +63,17 @@ public class AuthenticationResults {
     public static final String KEY_UNABLE_TO_LOGIN = "portal.authentication.error.unable_to_login";
 
     /**
-     * {@link ResultObject} with {@link ResultObject#getState()} is
-     * {@code RequestResultState#ERROR}, the key {@link #KEY_INCOMPLETE_CREDENTIALS}
-     * and the default result {@link #NOT_LOGGED_IN}
+     * {@link LoginResult} representing a failed login due to incomplete credentials,
+     * using the key {@link #KEY_INCOMPLETE_CREDENTIALS}.
      */
-    public static final ResultObject<AuthenticatedUserInfo> RESULT_INCOMPLETE_CREDENTIALS = invalidResultKey(
+    public static final LoginResult RESULT_INCOMPLETE_CREDENTIALS = invalidResultKey(
             KEY_INCOMPLETE_CREDENTIALS, null, null);
 
     /**
-     * {@link ResultObject} with {@link ResultObject#getState()} is
-     * {@code RequestResultState#ERROR}, the key {@link #KEY_INVALID_CONFIGURATION}
-     * and the default result {@link #NOT_LOGGED_IN}
+     * {@link LoginResult} representing a failed login due to invalid configuration,
+     * using the key {@link #KEY_INVALID_CONFIGURATION}.
      */
-    public static final ResultObject<AuthenticatedUserInfo> RESULT_INVALID_CONFIGURATION = invalidResultKey(
+    public static final LoginResult RESULT_INVALID_CONFIGURATION = invalidResultKey(
             KEY_INVALID_CONFIGURATION, null, null);
 
     /**
@@ -87,16 +82,12 @@ public class AuthenticationResults {
      *                 atna event)
      * @param cause    the optional throwable to be wrapped
      *
-     * @return {@link ResultObject} with {@link ResultObject#getState()} is
-     *         {@code RequestResultState#ERROR}, the given reason as a message and the
-     *         default result {@link #NOT_LOGGED_IN}
+     * @return {@link LoginResult.Failure} with the given reason as a displayable
+     *         message
      */
-    public static ResultObject<AuthenticatedUserInfo> invalidResult(final String reason, final String username,
+    public static LoginResult invalidResult(final String reason, final String username,
             final Throwable cause) {
-        return new ResultObject.Builder<AuthenticatedUserInfo>()
-                .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN_MESSAGE).identifier(username)
-                        .authenticated(false).build())
-                .state(ResultState.ERROR).resultDetail(new ResultDetail(new DisplayName(reason), cause)).build();
+        return new LoginResult.Failure(new DisplayName(reason), username, cause);
     }
 
     /**
@@ -105,26 +96,20 @@ public class AuthenticationResults {
      *                  atna event)
      * @param cause     the optional throwable to be wrapped
      *
-     * @return {@link ResultObject} with {@link ResultObject#getState()} is
-     *         {@code RequestResultState#ERROR}, the given reason as message and the
-     *         default result {@link #NOT_LOGGED_IN}
+     * @return {@link LoginResult.Failure} with the given reason key as a resolvable
+     *         message
      */
-    public static ResultObject<AuthenticatedUserInfo> invalidResultKey(final String reasonKey,
+    public static LoginResult invalidResultKey(final String reasonKey,
             final String username, final Throwable cause) {
-        return new ResultObject.Builder<AuthenticatedUserInfo>()
-                .validDefaultResult(BaseAuthenticatedUserInfo.builder().displayName(NOT_LOGGED_IN_MESSAGE).identifier(username)
-                        .authenticated(false).build())
-                .state(ResultState.ERROR).resultDetail(new ResultDetail(new LabeledKey(reasonKey), cause)).build();
+        return new LoginResult.Failure(new LabeledKey(reasonKey), username, cause);
     }
 
     /**
      * @param userInfo must not be null and should be an authenticated User
      *
-     * @return {@link ResultObject} with {@link ResultObject#getState()} is
-     *         {@code RequestResultState#VALID}, the given reason userInfo as
-     *         payload
+     * @return {@link LoginResult.Success} wrapping the given userInfo
      */
-    public static ResultObject<AuthenticatedUserInfo> validResult(final AuthenticatedUserInfo userInfo) {
-        return new ResultObject.Builder<AuthenticatedUserInfo>().result(userInfo).state(ResultState.VALID).build();
+    public static LoginResult validResult(final AuthenticatedUserInfo userInfo) {
+        return new LoginResult.Success(userInfo);
     }
 }

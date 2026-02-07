@@ -16,6 +16,7 @@
 package de.cuioss.portal.authentication.dummy;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.facade.LoginResult;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import de.cuioss.uimodel.application.LoginCredentials;
@@ -68,7 +69,9 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
         @DisplayName("Should return NOT_LOGGED_IN for null request and credentials")
         void shouldHandleNullCredentials() {
             var result = underTest.login(null, null);
-            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, result.getResult());
+            assertInstanceOf(LoginResult.Success.class, result);
+            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN,
+                    ((LoginResult.Success) result).authenticatedUserInfo());
         }
 
         @Test
@@ -81,7 +84,9 @@ class DummyAuthenticationFacadeTest implements ShouldBeNotNull<DummyAuthenticati
             EasyMock.replay(request);
 
             var result = underTest.login(request, credentials);
-            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN, result.getResult());
+            assertInstanceOf(LoginResult.Success.class, result);
+            assertEquals(DummyAuthenticationFacade.NOT_LOGGED_IN,
+                    ((LoginResult.Success) result).authenticatedUserInfo());
         }
     }
 

@@ -15,6 +15,7 @@
  */
 package de.cuioss.portal.core.test.mocks.authentication;
 
+import de.cuioss.portal.authentication.facade.LoginResult;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import jakarta.inject.Inject;
@@ -46,8 +47,8 @@ class PortalAuthenticationFacadeMockTest implements ShouldBeNotNull<PortalAuthen
         @Test
         void shouldHandleValidLogin() {
             var result = underTest.login(null, PortalAuthenticationFacadeMock.createLoginCredentials(PortalAuthenticationFacadeMock.ADMIN));
-            assertTrue(result.isValid());
-            assertTrue(result.getResult().isAuthenticated());
+            assertInstanceOf(LoginResult.Success.class, result);
+            assertTrue(((LoginResult.Success) result).authenticatedUserInfo().isAuthenticated());
         }
 
         @Test
