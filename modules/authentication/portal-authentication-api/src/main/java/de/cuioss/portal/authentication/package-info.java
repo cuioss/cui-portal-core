@@ -63,4 +63,7 @@
  * @author Oliver Wolff
  * @since 1.0
  */
+@NullMarked
 package de.cuioss.portal.authentication;
+
+import org.jspecify.annotations.NullMarked;

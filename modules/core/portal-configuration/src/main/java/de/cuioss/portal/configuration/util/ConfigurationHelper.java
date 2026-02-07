@@ -22,10 +22,10 @@ import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
 import jakarta.enterprise.inject.spi.InjectionPoint;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -466,7 +466,7 @@ public final class ConfigurationHelper {
      * @param name config key
      * @return the list of configProperties
      */
-    public static List<String> resolveConfigPropertyAsList(@NonNull final String name) {
+    public static List<String> resolveConfigPropertyAsList(final String name) {
         return resolveConfigPropertyAsList(name, null);
     }
 
@@ -477,7 +477,7 @@ public final class ConfigurationHelper {
      * @param defaultValue string representing default config value. can be null.
      * @return the list of configProperties
      */
-    public static List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue) {
+    public static List<String> resolveConfigPropertyAsList(final String name, @Nullable final String defaultValue) {
         return resolveConfigPropertyAsList(name, defaultValue, CONTEXT_PARAM_SEPARATOR);
     }
 
@@ -490,7 +490,8 @@ public final class ConfigurationHelper {
      * @return list with configured values, separated via
      * {@link PortalConfigurationKeys#CONTEXT_PARAM_SEPARATOR}
      */
-    public static List<String> resolveConfigPropertyAsList(@NonNull final String name, final String defaultValue, final char separator) {
+    public static List<String> resolveConfigPropertyAsList(final String name, @Nullable final String defaultValue, final char separator) {
+        requireNonNull(name, "name must not be null");
         final var configuredValue = resolveConfigProperty(name).orElse(emptyToNull(defaultValue));
         return immutableList(resolveListFromString(configuredValue, separator));
     }
@@ -510,7 +511,8 @@ public final class ConfigurationHelper {
      * @param value config key
      * @return config key with separator as last character
      */
-    public static String appendPropertySeparator(@NonNull final String value) {
+    public static String appendPropertySeparator(final String value) {
+        requireNonNull(value, "value must not be null");
         if (value.endsWith(PROPERTY_SEPARATOR)) {
             return value;
         }

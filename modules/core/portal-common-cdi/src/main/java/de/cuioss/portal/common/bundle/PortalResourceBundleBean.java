@@ -18,13 +18,13 @@ package de.cuioss.portal.common.bundle;
 import de.cuioss.portal.common.cdi.PortalBeanManager;
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -82,7 +82,8 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
      * @throws NullPointerException if the given key is {@code null}
      */
     @Override
-    protected Object handleGetObject(@NonNull final String key) {
+    protected Object handleGetObject(final String key) {
+        Objects.requireNonNull(key, "key must not be null");
         return getResourceBundleWrapper().getString(key);
     }
 
@@ -92,7 +93,6 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
      * @return a non-null enumeration of the keys in this resource bundle
      */
     @Override
-    @NonNull
     public Enumeration<String> getKeys() {
         return Collections.enumeration(getResourceBundleWrapper().keySet());
     }
@@ -103,7 +103,6 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
      * @return a non-null set of the keys in this resource bundle
      */
     @Override
-    @NonNull
     public Set<String> keySet() {
         return getResourceBundleWrapper().keySet();
     }
@@ -113,7 +112,6 @@ public class PortalResourceBundleBean extends ResourceBundle implements Serializ
      *
      * @return the non-null ResourceBundleWrapper instance
      */
-    @NonNull
     private ResourceBundleWrapper getResourceBundleWrapper() {
         if (null == resourceBundleWrapper) {
             LOGGER.debug("Resolving ResourceBundleWrapper");

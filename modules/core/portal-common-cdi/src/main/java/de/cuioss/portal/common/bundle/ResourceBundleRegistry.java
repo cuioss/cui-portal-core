@@ -25,7 +25,6 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.ToString;
 
 import java.io.Serial;
@@ -95,7 +94,6 @@ public class ResourceBundleRegistry implements Serializable {
      * contains only valid locators with unique paths.
      */
     @Getter
-    @NonNull
     private List<ResourceBundleLocator> resolvedPaths;
 
     /**

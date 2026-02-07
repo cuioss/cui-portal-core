@@ -17,11 +17,12 @@ package de.cuioss.portal.authentication;
 
 import de.cuioss.tools.logging.CuiLogger;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 import static de.cuioss.portal.authentication.PortalAuthenticationLogMessages.AUTH;
 
@@ -55,9 +56,9 @@ public class LoginEvent implements Serializable {
     }
 
     // Only needed for LOGIN_FAILED
+    @Nullable
     String username;
 
-    @NonNull
     Action action;
 
     private static final CuiLogger LOGGER = new CuiLogger(LoginEvent.class);
@@ -78,6 +79,13 @@ public class LoginEvent implements Serializable {
                 break;
             default:
                 throw new IllegalStateException("Unknown action: " + action);
+        }
+    }
+
+    public static class LoginEventBuilder {
+        public LoginEvent build() {
+            Objects.requireNonNull(action, "action must not be null");
+            return new LoginEvent(username, action);
         }
     }
 }

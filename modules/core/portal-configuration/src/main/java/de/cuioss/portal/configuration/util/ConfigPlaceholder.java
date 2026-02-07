@@ -17,9 +17,10 @@ package de.cuioss.portal.configuration.util;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -27,28 +28,28 @@ import java.util.regex.Pattern;
  * Data Transfer Object (DTO) representing a configuration placeholder in the Portal's
  * configuration system. Handles parsing and representation of placeholders with
  * optional default values.
- * 
+ *
  * <h2>Placeholder Format</h2>
  * <ul>
  *   <li>Basic: {@code ${config.key}}</li>
  *   <li>With Default: {@code ${config.key:defaultValue}}</li>
  * </ul>
- * 
+ *
  * <h2>Examples</h2>
  * <pre>
  * // Simple placeholder
  * ${app.home}
- * 
+ *
  * // Placeholder with default
  * ${app.port:8080}
- * 
+ *
  * // Placeholder with empty default
  * ${app.theme:}
- * 
+ *
  * // Environment variable reference
  * ${ENV_VAR:defaultValue}
  * </pre>
- * 
+ *
  * <h2>Usage Notes</h2>
  * <ul>
  *   <li>Default values are optional</li>
@@ -56,7 +57,7 @@ import java.util.regex.Pattern;
  *   <li>Whitespace in keys is not recommended</li>
  *   <li>Case-sensitive keys</li>
  * </ul>
- * 
+ *
  * @author Oliver Wolff
  */
 @ToString
@@ -90,26 +91,27 @@ class ConfigPlaceholder {
      * the placeholder key
      */
     @Getter
-    private final @NonNull String configKey;
+    private final String configKey;
 
     /**
      * the placeholders default value (optional)
      */
+    @Nullable
     private final String defaultValue;
 
     /**
      * Constructor for placeholders with a key only. Sets {@link #defaultValue} to
      * {@code null}.
      */
-    public ConfigPlaceholder(@NonNull final String configKey) {
+    public ConfigPlaceholder(final String configKey) {
         this(configKey, null);
     }
 
     /**
      * Constructor for placeholders with a key and default value.
      */
-    public ConfigPlaceholder(@NonNull final String configKey, final String defaultValue) {
-        this.configKey = configKey;
+    public ConfigPlaceholder(final String configKey, @Nullable final String defaultValue) {
+        this.configKey = Objects.requireNonNull(configKey, "configKey must not be null");
         this.defaultValue = defaultValue;
     }
 
@@ -127,7 +129,8 @@ class ConfigPlaceholder {
      * @param placeholder must not be null
      * @throws IllegalArgumentException if the given string is not a placeholder
      */
-    public static ConfigPlaceholder split(@NonNull final String placeholder) {
+    public static ConfigPlaceholder split(final String placeholder) {
+        Objects.requireNonNull(placeholder, "placeholder must not be null");
         if (!isPlaceholder(placeholder)) {
             throw new IllegalArgumentException("Not a valid config placeholder: " + placeholder);
         }
@@ -147,7 +150,7 @@ class ConfigPlaceholder {
      * @return true, if the given string represents a placeholder. false, otherwise,
      *         or the given string is null.
      */
-    public static boolean isPlaceholder(final String placeholder) {
+    public static boolean isPlaceholder(@Nullable final String placeholder) {
         if (null == placeholder) {
             return false;
         }
