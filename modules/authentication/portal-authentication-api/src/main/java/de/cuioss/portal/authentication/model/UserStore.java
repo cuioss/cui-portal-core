@@ -17,12 +17,11 @@ package de.cuioss.portal.authentication.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A {@link UserStore} represents an entry, local, or ldap server. The optional
@@ -31,7 +30,6 @@ import java.io.Serializable;
  *
  * @author Oliver Wolff
  */
-@RequiredArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class UserStore implements Serializable {
@@ -40,12 +38,21 @@ public class UserStore implements Serializable {
     private static final long serialVersionUID = -1854435554671404250L;
 
     @Getter
-    @NonNull
     private final String name;
 
     @Getter
-    @NonNull
     private final String displayName;
+
+    /**
+     * Constructor.
+     *
+     * @param name        to be set, must not be null
+     * @param displayName to be set, must not be null
+     */
+    public UserStore(final String name, final String displayName) {
+        this.name = Objects.requireNonNull(name, "name must not be null");
+        this.displayName = Objects.requireNonNull(displayName, "displayName must not be null");
+    }
 
     /**
      * Constructor.
@@ -53,8 +60,8 @@ public class UserStore implements Serializable {
      * @param name to be set, must not be null. Will be used for {@code getName()}
      *             and {@code getDisplayName()}
      */
-    public UserStore(@NonNull final String name) {
-        this.name = name;
-        displayName = name;
+    public UserStore(final String name) {
+        this.name = Objects.requireNonNull(name, "name must not be null");
+        this.displayName = name;
     }
 }

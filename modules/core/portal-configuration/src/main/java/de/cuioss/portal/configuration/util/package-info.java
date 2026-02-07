@@ -52,4 +52,7 @@
  * 
  * @author Oliver Wolff
  */
+@NullMarked
 package de.cuioss.portal.configuration.util;
+
+import org.jspecify.annotations.NullMarked;

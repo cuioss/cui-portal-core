@@ -79,4 +79,7 @@
  * @see java.util.ResourceBundle
  * @see jakarta.faces.application.Application#getResourceBundle
  */
+@NullMarked
 package de.cuioss.portal.common.bundle;
+
+import org.jspecify.annotations.NullMarked;
