@@ -74,7 +74,7 @@ class FileWatcherServiceImplEnabledTest {
         @Test
         void shouldRegisterAndUnregisterCorrectly() {
             underTest.register(testFileHandler.getFile1());
-            assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().iterator().next());
+            assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().getFirst());
 
             // Should not register twice
             underTest.register(testFileHandler.getFile1());
@@ -103,7 +103,7 @@ class FileWatcherServiceImplEnabledTest {
     class ChangeDetectionTests {
         @Test
         @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
-        void shouldDetectChanges() throws IOException {
+        void shouldDetectChanges() throws Exception {
             assertTrue(underTest.isUpAndRunning());
             underTest.register(testFileHandler.getFile1());
             underTest.register(testFileHandler.getFile2());

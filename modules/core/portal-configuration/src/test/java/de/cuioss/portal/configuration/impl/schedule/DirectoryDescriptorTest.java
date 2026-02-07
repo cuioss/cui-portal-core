@@ -47,7 +47,7 @@ class DirectoryDescriptorTest {
     }
 
     @Test
-    void shouldFulfillObjectContract() throws IOException {
+    void shouldFulfillObjectContract() throws Exception {
         final var descriptor1 = FileDescriptors.create(testFileHandler.getBaseDir()).get();
         var newDirectory = testFileHandler.getBaseDir().resolve("newDirectory");
         Files.createDirectories(newDirectory);
@@ -61,7 +61,7 @@ class DirectoryDescriptorTest {
     }
 
     @Test
-    void shouldHandleDirectory() throws IOException {
+    void shouldHandleDirectory() throws Exception {
         final var descriptor = FileDescriptors.create(testFileHandler.getBaseDir()).get();
         assertFalse(descriptor.isUpdated());
         descriptor.update();

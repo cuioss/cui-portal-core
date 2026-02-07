@@ -151,7 +151,7 @@ class Oauth2DiscoveryConfigurationProducerTest
 
             assertNotNull(result.getRoleMapperClaims());
             assertEquals(1, result.getRoleMapperClaims().size());
-            assertEquals(claim, result.getRoleMapperClaims().get(0));
+            assertEquals(claim, result.getRoleMapperClaims().getFirst());
         }
 
         @Test

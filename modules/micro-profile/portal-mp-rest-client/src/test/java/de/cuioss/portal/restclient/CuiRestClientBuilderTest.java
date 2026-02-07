@@ -58,7 +58,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serial;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -193,7 +192,7 @@ class CuiRestClientBuilderTest {
             headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
             textContent = TEXT
     )
-    void shouldDeactivateLogTracing(MockWebServer mockWebServer, URIBuilder uriBuilder) throws InterruptedException {
+    void shouldDeactivateLogTracing(MockWebServer mockWebServer, URIBuilder uriBuilder) throws Exception {
         service = new CuiRestClientBuilder(LOGGER).traceLogEnabled(false).url(uriBuilder.addPathSegment("success").build().toString())
                 .build(TestResource.class);
 
@@ -212,7 +211,7 @@ class CuiRestClientBuilderTest {
             headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
             textContent = TEXT
     )
-    void correctHostname(MockWebServer mockWebServer) throws InterruptedException {
+    void correctHostname(MockWebServer mockWebServer) throws Exception {
         final var handshakeCertificates = localhostCerts();
         mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
         service = new CuiRestClientBuilder(LOGGER)
@@ -233,7 +232,7 @@ class CuiRestClientBuilderTest {
             headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
             textContent = TEXT
     )
-    void ipAddress(MockWebServer mockWebServer) throws IOException {
+    void ipAddress(MockWebServer mockWebServer) throws Exception {
         final var hostname = InetAddress.getLocalHost().getHostAddress();
 
         final var handshakeCertificates = localhost();
@@ -271,7 +270,7 @@ class CuiRestClientBuilderTest {
             headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
             textContent = TEXT
     )
-    void basicAuth(MockWebServer mockWebServer) throws InterruptedException {
+    void basicAuth(MockWebServer mockWebServer) throws Exception {
         service = new CuiRestClientBuilder(LOGGER)
                 .connectionMetadata(ConnectionMetadata.builder()
                         .serviceUrl(mockWebServer.url("success").toString())
@@ -295,7 +294,7 @@ class CuiRestClientBuilderTest {
             headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
             textContent = TEXT
     )
-    void sendAuthenticationToken(MockWebServer mockWebServer) throws InterruptedException {
+    void sendAuthenticationToken(MockWebServer mockWebServer) throws Exception {
         service = new CuiRestClientBuilder(LOGGER)
                 .connectionMetadata(ConnectionMetadata.builder()
                         .serviceUrl(mockWebServer.url("success").toString())
@@ -333,7 +332,7 @@ class CuiRestClientBuilderTest {
             headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
             textContent = TEXT
     )
-    void sendGeneralToken(MockWebServer mockWebServer) throws InterruptedException {
+    void sendGeneralToken(MockWebServer mockWebServer) throws Exception {
         CuiRestClientBuilder cuiRestClientBuilder = new CuiRestClientBuilder(LOGGER);
         cuiRestClientBuilder.connectionMetadata(ConnectionMetadata.builder()
                 .serviceUrl(mockWebServer.url("success").toString())
@@ -388,7 +387,7 @@ class CuiRestClientBuilderTest {
 
     @Test
     @MockResponseConfig(path = "/test", status = HttpServletResponse.SC_OK)
-    void builderShouldHandleAdditionalAttributes(MockWebServer mockWebServer) throws URISyntaxException {
+    void builderShouldHandleAdditionalAttributes(MockWebServer mockWebServer) throws Exception {
         var builder = new CuiRestClientBuilder(LOGGER);
         TypedGenerator<URL> urls = new URLGenerator();
         builder.url(urls.next());

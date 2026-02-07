@@ -74,7 +74,7 @@ class FileWatcherServiceImplRecursiveTest {
 
     @Test
     @Disabled("owolff: For some reason the async calls block after the migration, needs further investigation")
-    void checkMultipleTimes() throws IOException {
+    void checkMultipleTimes() throws Exception {
         underTest.initialize();
         assertTrue(underTest.isUpAndRunning());
         assertNull(pathFromEvent);
