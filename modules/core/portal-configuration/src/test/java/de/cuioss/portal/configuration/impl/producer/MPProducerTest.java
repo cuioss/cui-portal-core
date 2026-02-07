@@ -113,7 +113,7 @@ class MPProducerTest {
 
         assertNotNull(stringListEmptyDefaultValueProvider.get(), "provider list should provide new value");
         assertFalse(stringListEmptyDefaultValueProvider.get().isEmpty(), "provider list should contain new value");
-        assertEquals(ESCAPE_VALUE_OUT, stringListEmptyDefaultValueProvider.get().iterator().next());
+        assertEquals(ESCAPE_VALUE_OUT, stringListEmptyDefaultValueProvider.get().getFirst());
 
         LOGGER.info("setting new value: %s", VALUE);
         configuration.fireEvent(KEY_EMPTY_DEFAULT, VALUE);
@@ -122,7 +122,7 @@ class MPProducerTest {
         final var newValue = stringListEmptyDefaultValueProvider.get();
         assertNotNull(newValue, "provider list should not be null");
         assertFalse(newValue.isEmpty(), "provider list should contain new value");
-        assertEquals(VALUE, newValue.iterator().next());
+        assertEquals(VALUE, newValue.getFirst());
     }
 
     @Test
@@ -141,7 +141,7 @@ class MPProducerTest {
     void listShouldBeTrimmed() {
         configuration.fireEvent(KEY_UNTRIMMED_STRING, "a,,, b , c ");
         assertEquals(3, untrimmedList.get().size());
-        assertEquals("a", untrimmedList.get().get(0));
+        assertEquals("a", untrimmedList.get().getFirst());
         assertEquals("b", untrimmedList.get().get(1));
         assertEquals("c", untrimmedList.get().get(2));
     }

@@ -69,7 +69,7 @@ class FileDescriptorTest {
     }
 
     @Test
-    void shouldHandleSingleFile() throws IOException {
+    void shouldHandleSingleFile() throws Exception {
         final var descriptor = new FileDescriptor(testFileHandler.getFile1());
 
         assertTrue(Files.isSameFile(testFileHandler.getFile1(), descriptor.getPath()));

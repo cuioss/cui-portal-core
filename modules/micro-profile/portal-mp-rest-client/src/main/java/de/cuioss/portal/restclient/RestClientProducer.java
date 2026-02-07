@@ -79,7 +79,7 @@ public class RestClientProducer {
         List<Type> arguments = mutableList(type.getActualTypeArguments());
         Preconditions.checkArgument(!arguments.isEmpty());
 
-        @SuppressWarnings("unchecked") var serviceInterface = (Class<T>) arguments.get(0);
+        @SuppressWarnings("unchecked") var serviceInterface = (Class<T>) arguments.getFirst();
 
         // Basename must be present
         final var baseName = suffixNameWithDot(requireNotEmpty(annotationMetaData.baseName(), MISSING_BASENAME_MSG));

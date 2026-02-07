@@ -73,7 +73,7 @@ class BaseAuthenticationFacadeTest implements ShouldBeNotNull<MockBaseAuthentica
             assertEquals(displayName, result.getDisplayName(), "Display name should match");
             assertEquals(identifier, result.getIdentifier(), "Identifier should match");
             assertEquals(1, result.getRoles().size(), "Should have one role");
-            assertEquals("testRole", result.getRoles().get(0), "Should have test role");
+            assertEquals("testRole", result.getRoles().getFirst(), "Should have test role");
         }
 
         @Test

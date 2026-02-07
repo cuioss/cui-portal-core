@@ -108,7 +108,7 @@ public final class PortalBeanManager {
         checkBeanTypesFound(beanClass, annotationClass, beanTypes);
         final var sortedBeans = sortByPriority(mutableList(beanTypes));
         // Wild casting here
-        final var bean = (Bean<T>) sortedBeans.iterator().next();
+        final var bean = (Bean<T>) sortedBeans.getFirst();
         final CreationalContext<T> context = beanManager.createCreationalContext(bean);
         // Wild casting again
         T result = (T) beanManager.getReference(bean, beanClass, context);

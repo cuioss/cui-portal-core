@@ -26,7 +26,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -72,7 +71,7 @@ class BasicAuthenticationFilterTest {
     class HeaderGenerationTests {
         @Test
         @DisplayName("Should generate correct basic auth header")
-        void shouldGenerateCorrectBasicAuthHeader() throws IOException {
+        void shouldGenerateCorrectBasicAuthHeader() throws Exception {
             // Given
             var filter = new BasicAuthenticationFilter(VALID_USERNAME, VALID_PASSWORD);
             var headers = new MultivaluedHashMap<String, Object>();
@@ -104,7 +103,7 @@ class BasicAuthenticationFilterTest {
                 "user name",
                 "user123"
         })
-        void shouldHandleSpecialCharactersInUsername(String username) throws IOException {
+        void shouldHandleSpecialCharactersInUsername(String username) throws Exception {
             // Given
             var filter = new BasicAuthenticationFilter(username, VALID_PASSWORD);
             var headers = new MultivaluedHashMap<String, Object>();
@@ -133,7 +132,7 @@ class BasicAuthenticationFilterTest {
                 "pass123",
                 "pass!@#$%^&*()"
         })
-        void shouldHandleSpecialCharactersInPassword(String password) throws IOException {
+        void shouldHandleSpecialCharactersInPassword(String password) throws Exception {
             // Given
             var filter = new BasicAuthenticationFilter(VALID_USERNAME, password);
             var headers = new MultivaluedHashMap<String, Object>();

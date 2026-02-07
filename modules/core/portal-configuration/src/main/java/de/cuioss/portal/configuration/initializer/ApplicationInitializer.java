@@ -16,8 +16,8 @@
 package de.cuioss.portal.configuration.initializer;
 
 /**
- * Contract for {@link ApplicationScoped} beans requiring deterministic initialization order.
- * This interface replaces the standard {@link PostConstruct} approach with a more
+ * Contract for {@code ApplicationScoped} beans requiring deterministic initialization order.
+ * This interface replaces the standard {@code PostConstruct} approach with a more
  * controlled initialization mechanism.
  * 
  * <h2>Key Features</h2>
@@ -39,7 +39,7 @@ package de.cuioss.portal.configuration.initializer;
  * 
  * <h2>Implementation Notes</h2>
  * <ul>
- *   <li>Must be used with {@link ApplicationScoped} beans only</li>
+ *   <li>Must be used with {@code ApplicationScoped} beans only</li>
  *   <li>Should be qualified with {@link PortalInitializer}</li>
  *   <li>Implement {@link #initialize()} for initialization logic</li>
  *   <li>Override {@link #getOrder()} to control initialization order</li>
@@ -76,7 +76,7 @@ public interface ApplicationInitializer extends Comparable<ApplicationInitialize
 
     /**
      * Performs the actual initialization of the bean. This method replaces any
-     * {@link PostConstruct} annotated methods and provides deterministic ordering.
+     * {@code PostConstruct} annotated methods and provides deterministic ordering.
      * <p>
      * Implementation Notes:
      * <ul>
@@ -89,7 +89,7 @@ public interface ApplicationInitializer extends Comparable<ApplicationInitialize
 
     /**
      * Performs cleanup operations when the application is shutting down.
-     * Analogous to {@link PreDestroy} but with deterministic ordering.
+     * Analogous to {@code PreDestroy} but with deterministic ordering.
      * <p>
      * The default implementation is a no-op. Override this method to:
      * <ul>

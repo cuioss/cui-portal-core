@@ -65,7 +65,7 @@ class FileWatcherServiceImplDisabledTest {
         @Test
         void shouldRegisterAndUnregisterCorrectly() {
             underTest.register(testFileHandler.getFile1());
-            assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().iterator().next());
+            assertEquals(testFileHandler.getFile1().toAbsolutePath(), underTest.getRegisteredPaths().getFirst());
 
             // Should not register twice
             underTest.register(testFileHandler.getFile1());

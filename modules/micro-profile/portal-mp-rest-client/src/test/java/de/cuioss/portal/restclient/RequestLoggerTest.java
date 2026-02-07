@@ -32,9 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import static de.cuioss.tools.collect.CollectionLiterals.immutableList;
 
@@ -65,7 +63,7 @@ class RequestLoggerTest {
 
     @Test
     @DisplayName("Should properly log request details")
-    void shouldLogRequestDetails() throws IOException, URISyntaxException {
+    void shouldLogRequestDetails() throws Exception {
         // Create mock
         ClientRequestContext requestContext = EasyMock.createNiceMock(ClientRequestContext.class);
 

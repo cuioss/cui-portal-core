@@ -89,7 +89,7 @@ class ResourceBundleRegistryTest implements ShouldHandleObjectContracts<Resource
                     () -> assertEquals(2, underTest.getResolvedPaths().size(),
                             "Should resolve exactly two bundles"),
                     () -> assertEquals(HighPrioBundles.HIGH_1,
-                            underTest.getResolvedPaths().get(0).getBundlePath().get(),
+                            underTest.getResolvedPaths().getFirst().getBundlePath().get(),
                             "First bundle should be high priority"),
                     () -> assertEquals(MediumPrioBundles.MEDIUM_1,
                             underTest.getResolvedPaths().get(1).getBundlePath().get(),

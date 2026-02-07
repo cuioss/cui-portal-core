@@ -50,8 +50,8 @@ public class UserStore implements Serializable {
     /**
      * Constructor.
      *
-     * @param name to be set, must not be null. Will be used for {@link #getName()}
-     *             and {@link #getDisplayName()}
+     * @param name to be set, must not be null. Will be used for {@code getName()}
+     *             and {@code getDisplayName()}
      */
     public UserStore(@NonNull final String name) {
         this.name = name;

@@ -43,7 +43,6 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -217,7 +216,7 @@ class Oauth2AuthenticationFacadeImplTest
     }
 
     @Test
-    void retrieveOauth2RedirectUrlWithPKCEChallenge() throws NoSuchAlgorithmException {
+    void retrieveOauth2RedirectUrlWithPKCEChallenge() throws Exception {
         var url = underTest.retrieveOauth2RedirectUrl("scope", null);
         dispatcher.assertAuthorizeURL(url,
                 "response_type=code&scope=scope&client_id=" + OIDCWellKnownDispatcher.CLIENT_ID + "&state=");

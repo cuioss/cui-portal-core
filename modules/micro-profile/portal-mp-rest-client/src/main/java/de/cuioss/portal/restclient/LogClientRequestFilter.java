@@ -42,7 +42,6 @@ import static de.cuioss.tools.string.MoreStrings.nullToEmpty;
  * @see CuiRestClientBuilder
  */
 @Priority(Integer.MAX_VALUE)
-// cui-rewrite:disable CuiLoggerStandardsRecipe
 class LogClientRequestFilter implements ClientRequestFilter {
 
     private static final String PATTERN = """
@@ -53,7 +52,6 @@ class LogClientRequestFilter implements ClientRequestFilter {
             Body: %s
             """;
 
-    // cui-rewrite:disable CuiLoggerStandardsRecipe
     private final CuiLogger givenLogger;
 
     public LogClientRequestFilter(final CuiLogger givenLogger) {

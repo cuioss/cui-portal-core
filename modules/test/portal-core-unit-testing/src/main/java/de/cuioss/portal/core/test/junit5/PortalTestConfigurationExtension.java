@@ -104,7 +104,7 @@ public class PortalTestConfigurationExtension implements BeforeEachCallback {
                 var splitted = Splitter.on(':').splitToList(element);
                 checkArgument(2 <= splitted.size(), "Expected element in the form key:value, but was " + element);
                 LOGGER.debug("Adding configuration entry: %s", element);
-                configuration.update(splitted.get(0), element.substring(element.indexOf(':') + 1));
+                configuration.update(splitted.getFirst(), element.substring(element.indexOf(':') + 1));
             }
         }
 

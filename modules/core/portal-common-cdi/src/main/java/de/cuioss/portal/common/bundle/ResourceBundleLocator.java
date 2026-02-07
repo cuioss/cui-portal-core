@@ -76,7 +76,6 @@ import java.util.ResourceBundle;
  * @see ResourceBundleRegistry
  * @see jakarta.annotation.Priority
  */
-// cui-rewrite:disable CuiLoggerStandardsRecipe
 public interface ResourceBundleLocator extends Serializable {
 
     /**
