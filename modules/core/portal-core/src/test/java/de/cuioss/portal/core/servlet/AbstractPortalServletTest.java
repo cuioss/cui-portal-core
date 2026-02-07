@@ -150,7 +150,7 @@ class AbstractPortalServletTest {
         @Test
         @DisplayName("Should provide sensible defaults")
         void shouldProvideSensibleDefaults() {
-            AbstractPortalServlet servlet = new AbstractPortalServlet() {
+            AbstractPortalServlet servlet = new AbstractPortalServlet(() -> null) {
 
                 @Serial private static final long serialVersionUID = -3472474929349372042L;
 
