@@ -263,6 +263,9 @@ public class CuiRestClientBuilder {
      */
     public CuiRestClientBuilder url(final String url) {
         try {
+            if (null == url) {
+                throw new MalformedURLException("null URL");
+            }
             mpRestClientBuilder.baseUrl(URI.create(url).toURL());
         } catch (final IllegalArgumentException | MalformedURLException e) {
             throw new IllegalArgumentException("The URL '" + url + "' could not be parsed!", e);
