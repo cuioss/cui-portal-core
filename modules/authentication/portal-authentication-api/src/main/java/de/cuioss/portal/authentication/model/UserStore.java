@@ -61,7 +61,6 @@ public class UserStore implements Serializable {
      *             and {@code getDisplayName()}
      */
     public UserStore(final String name) {
-        this.name = Objects.requireNonNull(name, "name must not be null");
-        this.displayName = name;
+        this(name, name);
     }
 }
