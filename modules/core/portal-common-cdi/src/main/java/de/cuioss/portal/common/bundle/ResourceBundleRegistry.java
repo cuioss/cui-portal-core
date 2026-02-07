@@ -94,7 +94,7 @@ public class ResourceBundleRegistry implements Serializable {
      * contains only valid locators with unique paths.
      */
     @Getter
-    private List<ResourceBundleLocator> resolvedPaths;
+    private List<ResourceBundleLocator> resolvedPaths = List.of();
 
     /**
      * Initializes the bean by processing all injected {@link ResourceBundleLocator}s.

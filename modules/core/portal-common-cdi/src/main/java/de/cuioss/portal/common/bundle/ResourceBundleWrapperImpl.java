@@ -30,6 +30,7 @@ import jakarta.inject.Provider;
 import lombok.EqualsAndHashCode;
 import lombok.Synchronized;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.Collections;
@@ -70,6 +71,7 @@ public class ResourceBundleWrapperImpl implements ResourceBundleWrapper {
 
     private final ResourceBundleRegistry resourceBundleRegistry;
 
+    @Nullable
     private transient List<ResourceBundle> resolvedBundles;
 
     private final Provider<CuiProjectStage> projectStage;

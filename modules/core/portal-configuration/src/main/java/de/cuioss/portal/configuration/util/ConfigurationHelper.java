@@ -394,7 +394,7 @@ public final class ConfigurationHelper {
      * {@link IllegalArgumentException} if the <code>inputValue</code>
      * cannot be converted.
      */
-    <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass) {
+    <T extends Enum<T>> T convertToEnum(@Nullable final String inputValue, final Class<T> enumClass) {
         return convertToEnum(inputValue, enumClass, true, null);
     }
 
@@ -409,7 +409,7 @@ public final class ConfigurationHelper {
      * <code>defaultValue</code> if the <code>inputValue</code> cannot be
      * converted.
      */
-    <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass, final T defaultValue) {
+    <T extends Enum<T>> T convertToEnum(@Nullable final String inputValue, final Class<T> enumClass, final T defaultValue) {
         return convertToEnum(inputValue, enumClass, false, defaultValue);
     }
 
@@ -429,7 +429,7 @@ public final class ConfigurationHelper {
      *                              <code>false</code>.
      * @return corresponding enum value of type <code>enumClass</code>.
      */
-    <T extends Enum<T>> T convertToEnum(final String inputValue, final Class<T> enumClass, final boolean explodeOnInvalidInput, final T defaultValue) {
+    <T extends Enum<T>> T convertToEnum(@Nullable final String inputValue, final Class<T> enumClass, final boolean explodeOnInvalidInput, @Nullable final T defaultValue) {
         requireNonNull(enumClass);
         checkArgument(explodeOnInvalidInput || null != defaultValue, "defaultValue must be present if explodeOnInvalidInput is set to false!");
 
