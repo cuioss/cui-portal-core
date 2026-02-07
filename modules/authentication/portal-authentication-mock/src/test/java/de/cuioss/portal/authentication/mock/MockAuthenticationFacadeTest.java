@@ -21,7 +21,6 @@ import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldBeNotNull;
 import de.cuioss.uimodel.application.LoginCredentials;
-import de.cuioss.uimodel.result.ResultState;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
@@ -99,11 +98,11 @@ class MockAuthenticationFacadeTest implements ShouldBeNotNull<MockAuthentication
         var password = letterStrings(3, 8).next();
         var result = underTest.login(servletRequest,
                 LoginCredentials.builder().username(name).password(password).build());
-        assertEquals(ResultState.ERROR, result.getState());
+        assertFalse(result.isValid());
         // Incomplete Credentials
         result = underTest.login(servletRequest, LoginCredentials.builder().username(name).build());
-        assertEquals(ResultState.ERROR, result.getState());
+        assertFalse(result.isValid());
         result = underTest.login(servletRequest, LoginCredentials.builder().username(name).password(name).build());
-        assertEquals(ResultState.VALID, result.getState());
+        assertTrue(result.isValid());
     }
 }

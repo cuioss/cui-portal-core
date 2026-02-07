@@ -19,11 +19,11 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.facade.AuthenticationResults;
 import de.cuioss.portal.authentication.facade.AuthenticationSource;
 import de.cuioss.portal.authentication.facade.FormBasedAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.LoginResult;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.uimodel.application.LoginCredentials;
-import de.cuioss.uimodel.result.ResultObject;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
@@ -99,7 +99,7 @@ public class PortalAuthenticationFacadeMock implements FormBasedAuthenticationFa
     }
 
     @Override
-    public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest request,
+    public LoginResult login(final HttpServletRequest request,
             final LoginCredentials loginCredentials) {
         requireNonNull(loginCredentials);
         if (loginCredentials.isComplete()

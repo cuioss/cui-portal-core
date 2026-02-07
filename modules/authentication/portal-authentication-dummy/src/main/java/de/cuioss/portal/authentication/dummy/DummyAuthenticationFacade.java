@@ -20,12 +20,12 @@ import de.cuioss.portal.authentication.facade.AuthenticationFacade;
 import de.cuioss.portal.authentication.facade.AuthenticationResults;
 import de.cuioss.portal.authentication.facade.AuthenticationSource;
 import de.cuioss.portal.authentication.facade.FormBasedAuthenticationFacade;
+import de.cuioss.portal.authentication.facade.LoginResult;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
 import de.cuioss.portal.authentication.model.BaseAuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.tools.logging.CuiLogger;
 import de.cuioss.uimodel.application.LoginCredentials;
-import de.cuioss.uimodel.result.ResultObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
@@ -62,7 +62,7 @@ public class DummyAuthenticationFacade implements FormBasedAuthenticationFacade 
      * and password are equal.
      */
     @Override
-    public ResultObject<AuthenticatedUserInfo> login(final HttpServletRequest servletRequest,
+    public LoginResult login(final HttpServletRequest servletRequest,
             final LoginCredentials loginCredentials) {
         LOGGER.debug("Login called");
         return AuthenticationResults.validResult(NOT_LOGGED_IN);

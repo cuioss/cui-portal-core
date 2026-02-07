@@ -18,7 +18,6 @@ package de.cuioss.portal.authentication.facade;
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.model.UserStore;
 import de.cuioss.uimodel.application.LoginCredentials;
-import de.cuioss.uimodel.result.ResultObject;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -35,13 +34,12 @@ public interface FormBasedAuthenticationFacade extends AuthenticationFacade {
      * @param request     The current {@link HttpServletRequest} that needs to be
      *                    authenticated.
      * @param credentials The credentials for authentication
-     * @return A {@link ResultObject} with the corresponding
-     * {@link AuthenticatedUserInfo} with
-     * {@link AuthenticatedUserInfo#isAuthenticated()} being {@code true} in
-     * case of successful logins, otherwise it will provide the
-     * corresponding error message to be displayed.
+     * @return A {@link LoginResult.Success} with the corresponding
+     * {@link AuthenticatedUserInfo} in case of successful logins, or a
+     * {@link LoginResult.Failure} with the corresponding error message
+     * to be displayed.
      */
-    ResultObject<AuthenticatedUserInfo> login(HttpServletRequest request, LoginCredentials credentials);
+    LoginResult login(HttpServletRequest request, LoginCredentials credentials);
 
     /**
      * Provides a list of available systems. Please note that no particular ordering
