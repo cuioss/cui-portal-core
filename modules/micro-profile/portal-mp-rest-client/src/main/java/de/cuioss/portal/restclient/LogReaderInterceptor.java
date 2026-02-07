@@ -40,12 +40,10 @@ import java.util.List;
  * @see CuiRestClientBuilder
  */
 @Priority(Integer.MIN_VALUE)
-// cui-rewrite:disable CuiLoggerStandardsRecipe
 class LogReaderInterceptor implements ReaderInterceptor {
 
     private static final String LINE_BREAK = "\n";
 
-    // cui-rewrite:disable CuiLoggerStandardsRecipe
     private final CuiLogger givenLogger;
 
     public LogReaderInterceptor(final CuiLogger givenLogger) {
