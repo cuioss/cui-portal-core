@@ -6,6 +6,7 @@
     <version>1.3-SNAPSHOT</version>
   </parent>
   <artifactId>portal-authentication-oauth</artifactId>
+  <name>Portal Authentication OAuth</name>
   <description>Defines an implementation of the authentication facade using
         oauth2
     </description>
