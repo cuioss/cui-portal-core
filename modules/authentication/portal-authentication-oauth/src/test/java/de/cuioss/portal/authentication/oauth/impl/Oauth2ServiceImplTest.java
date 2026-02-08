@@ -17,18 +17,24 @@ package de.cuioss.portal.authentication.oauth.impl;
 
 import de.cuioss.portal.authentication.oauth.OAuthConfigKeys;
 import de.cuioss.portal.authentication.oauth.Oauth2AuthenticationFacade;
+import de.cuioss.portal.authentication.oauth.PortalAuthenticationOauthLogMessages;
 import de.cuioss.portal.core.test.junit5.EnablePortalConfiguration;
 import de.cuioss.portal.core.test.mocks.configuration.PortalTestConfiguration;
 import de.cuioss.test.jsf.mocks.CuiMockHttpServletRequest;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.mockwebserver.EnableMockWebServer;
 import de.cuioss.test.mockwebserver.dispatcher.EndpointAnswerHandler;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.tools.net.UrlParameter;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.MediaType;
 import lombok.Getter;
+import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
+import okhttp3.Headers;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.weld.junit5.ExplicitParamInjection;
@@ -42,11 +48,13 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import static de.cuioss.test.generator.Generators.letterStrings;
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
 @EnablePortalConfiguration(configuration = "authentication.oidc.validation.enabled:false")
 @EnableMockWebServer
+@EnableTestLogger(warn = Oauth2ServiceImpl.class)
 @AddBeanClasses({Oauth2DiscoveryConfigurationProducer.class})
 @AddExtensions(ResteasyCdiExtension.class)
 @ExplicitParamInjection
@@ -215,5 +223,75 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         var result = underTest.retrieveAuthenticatedUser("scoe", user.getToken(), 0);
         assertNotNull(result);
         assertTrue(user.isAuthenticated());
+    }
+
+    @Test
+    void shouldHandleClientTokenServerError() {
+        dispatcher.setTokenResult(new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                Headers.of("Content-Type", MediaType.APPLICATION_JSON), "{\"error\":\"server_error\"}"));
+
+        var token = underTest.retrieveClientToken(null);
+        assertNull(token);
+        assertLogMessagePresentContaining(TestLogLevel.WARN,
+                PortalAuthenticationOauthLogMessages.WARN.CLIENT_TOKEN_FAILED.resolveIdentifierString());
+    }
+
+    @Test
+    void shouldHandleRefreshTokenServerError() {
+        var user = setupAuthorizedUser();
+        user.getToken().setRefresh_token("some-refresh-token");
+
+        dispatcher.setTokenResult(new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                Headers.of("Content-Type", MediaType.APPLICATION_JSON), "{\"error\":\"server_error\"}"));
+
+        var result = underTest.refreshToken(user);
+        assertNull(result);
+        assertLogMessagePresentContaining(TestLogLevel.WARN,
+                PortalAuthenticationOauthLogMessages.WARN.CLIENT_TOKEN_FAILED.resolveIdentifierString());
+    }
+
+    @Test
+    void shouldHandleUserInfoServerError() {
+        // First get a valid token, then fail on userinfo
+        dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                Headers.of("Content-Type", MediaType.APPLICATION_JSON), "{\"error\":\"server_error\"}"));
+
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
+        assertNull(result);
+        assertLogMessagePresentContaining(TestLogLevel.WARN,
+                PortalAuthenticationOauthLogMessages.WARN.GET_USERINFO_FAILED.resolveIdentifierString());
+    }
+
+    @Test
+    void shouldHandleMissingRoleClaim() {
+        configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "nonexistent-claim");
+
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
+        assertNotNull(result);
+        assertTrue(result.getRoles().isEmpty());
+    }
+
+    @Test
+    void shouldHandleEmptyRoleClaim() {
+        configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
+
+        // Use a userinfo response with empty roles array
+        dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
+                Headers.of("Content-Type", MediaType.APPLICATION_JSON),
+                """
+                {
+                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                    "preferred_username": "j.doe",
+                    "ehealth-suite-roles": []
+                }
+                """));
+
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
+        assertNotNull(result);
+        assertEquals("j.doe", result.getDisplayName());
+        assertTrue(result.getRoles().isEmpty());
     }
 }

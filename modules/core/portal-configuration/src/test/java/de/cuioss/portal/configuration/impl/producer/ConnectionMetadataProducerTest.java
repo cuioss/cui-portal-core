@@ -365,6 +365,112 @@ class ConnectionMetadataProducerTest {
         }
     }
 
+    @Nested
+    @DisplayName("Token Application Authentication Tests")
+    class TokenAuthenticationTests {
+
+        @Test
+        @DisplayName("Should produce token application auth with valid config")
+        void shouldProduceTokenApplicationAuth() {
+            applicationTokenConfig();
+            configuration.fireEvent();
+            var metadata = metadataProvider.get();
+            assertNotNull(metadata);
+            assertEquals(AuthenticationType.TOKEN_APPLICATION, metadata.getAuthenticationType());
+            assertNotNull(metadata.getTokenResolver());
+            assertEquals(TOKEN_KEY, metadata.getTokenResolver().getKey());
+            assertEquals(TOKEN_VALUE, metadata.getTokenResolver().resolve());
+        }
+
+        @Test
+        @DisplayName("Should warn on missing token key when failOnInvalidConfiguration is false")
+        void shouldWarnOnMissingTokenKey() {
+            applicationTokenConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY);
+            configuration.fireEvent();
+
+            var metadata = metadataNotFailProvider.get();
+            assertNotNull(metadata);
+            assertEquals(AuthenticationType.TOKEN_APPLICATION, metadata.getAuthenticationType());
+            assertLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalConfigurationMessages.WARN.MISSING_CONFIG.resolveIdentifierString());
+        }
+
+        @Test
+        @DisplayName("Should fail on missing token key when failOnInvalidConfiguration is true")
+        void shouldFailOnMissingTokenKey() {
+            applicationTokenConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_KEY);
+            configuration.fireEvent();
+
+            assertThrows(IllegalArgumentException.class, () -> metadataProvider.get());
+        }
+
+        @Test
+        @DisplayName("Should warn on missing token value when failOnInvalidConfiguration is false")
+        void shouldWarnOnMissingTokenValue() {
+            applicationTokenConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_TOKEN_APPLICATION_TOKEN);
+            configuration.fireEvent();
+
+            var metadata = metadataNotFailProvider.get();
+            assertNotNull(metadata);
+            assertLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalConfigurationMessages.WARN.MISSING_CONFIG.resolveIdentifierString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Basic Auth Validation Tests")
+    class BasicAuthValidationTests {
+
+        @Test
+        @DisplayName("Should warn on missing username when failOnInvalidConfiguration is false")
+        void shouldWarnOnMissingUsername() {
+            basicAuthConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
+            configuration.fireEvent();
+
+            var metadata = metadataNotFailProvider.get();
+            assertNotNull(metadata);
+            assertLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalConfigurationMessages.WARN.MISSING_CONFIG.resolveIdentifierString());
+        }
+
+        @Test
+        @DisplayName("Should warn on missing password when failOnInvalidConfiguration is false")
+        void shouldWarnOnMissingPassword() {
+            basicAuthConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD);
+            configuration.fireEvent();
+
+            var metadata = metadataNotFailProvider.get();
+            assertNotNull(metadata);
+            assertLogMessagePresentContaining(TestLogLevel.WARN,
+                    PortalConfigurationMessages.WARN.MISSING_CONFIG.resolveIdentifierString());
+        }
+
+        @Test
+        @DisplayName("Should fail on missing username when failOnInvalidConfiguration is true")
+        void shouldFailOnMissingUsername() {
+            basicAuthConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_NAME);
+            configuration.fireEvent();
+
+            assertThrows(IllegalArgumentException.class, () -> metadataProvider.get());
+        }
+
+        @Test
+        @DisplayName("Should fail on missing password when failOnInvalidConfiguration is true")
+        void shouldFailOnMissingPassword() {
+            basicAuthConfig();
+            configuration.remove(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.AUTH_BASIC_USER_PASSWORD);
+            configuration.fireEvent();
+
+            assertThrows(IllegalArgumentException.class, () -> metadataProvider.get());
+        }
+    }
+
     private void authTypeConfig() {
         configuration.put(BASE_NAME_SUFFIXED + ConnectionMetadataKeys.URL_KEY, CONNECTION_URL);
 
