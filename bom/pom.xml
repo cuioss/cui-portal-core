@@ -3,7 +3,7 @@
     <parent>
         <groupId>de.cuioss.portal</groupId>
         <artifactId>cui-portal-core</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.4.0</version>
     </parent>
     <artifactId>bom</artifactId>
     <packaging>pom</packaging>
