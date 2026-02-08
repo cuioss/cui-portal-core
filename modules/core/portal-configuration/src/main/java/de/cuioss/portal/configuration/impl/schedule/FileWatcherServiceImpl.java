@@ -92,7 +92,7 @@ public class FileWatcherServiceImpl implements FileWatcherService, ApplicationIn
      * Service status indicator. True if the service is properly initialized and
      * {@link PortalConfigurationKeys#SCHEDULER_FILE_SCAN_ENABLED} is true.
      */
-    @Getter(AccessLevel.MODULE)
+    @Getter(AccessLevel.PACKAGE)
     private boolean upAndRunning = false;
 
     private final Event<Path> fileChangeEvent;

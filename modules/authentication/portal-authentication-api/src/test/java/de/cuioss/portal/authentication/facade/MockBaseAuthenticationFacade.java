@@ -16,10 +16,18 @@
 package de.cuioss.portal.authentication.facade;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.PortalUserEnricher;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
 
 class MockBaseAuthenticationFacade extends BaseAuthenticationFacade {
+
+    @Inject
+    MockBaseAuthenticationFacade(Instance<PortalUserEnricher> portalUserEnricher) {
+        super(portalUserEnricher);
+    }
 
     @Setter
     private AuthenticatedUserInfo authenticatedUserInfo;

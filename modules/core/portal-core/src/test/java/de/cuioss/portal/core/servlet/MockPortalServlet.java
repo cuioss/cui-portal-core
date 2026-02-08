@@ -15,7 +15,10 @@
  */
 package de.cuioss.portal.core.servlet;
 
+import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -28,6 +31,11 @@ import java.util.Collection;
 
 @ApplicationScoped
 public class MockPortalServlet extends AbstractPortalServlet {
+
+    @Inject
+    MockPortalServlet(Provider<AuthenticatedUserInfo> userInfoProvider) {
+        super(userInfoProvider);
+    }
 
     @Serial
     private static final long serialVersionUID = -6932935998287415457L;

@@ -103,6 +103,7 @@ class ConfigurationPlaceholderHelper {
         return result;
     }
 
+    @SuppressWarnings("java:S2583") // False positive: value can be null in recursive placeholder resolution
     private static String replacePlaceholders(final String value, final Set<String> missingConfigKeys,
             final int count, final Function<String, Optional<String>> resolver) {
         if (null == value) {

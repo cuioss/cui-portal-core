@@ -162,8 +162,6 @@ public class ConnectionMetadataProducer {
         return baseName;
     }
 
-    @SuppressWarnings("squid:S1301") // We will use the switch soon, Delete this if the switch is
-    // extended
     private static void handleAuthentication(final String baseName, final boolean failOnInvalidConfiguration,
             final ConnectionMetadataBuilder builder, final Map<String, String> filteredProperties) {
         LOGGER.trace("Determining AuthenticationType for '%s'", baseName);
@@ -198,7 +196,16 @@ public class ConnectionMetadataProducer {
                 }
                 builder.tokenResolver(new StaticTokenResolver(key, token));
                 break;
-            default:
+            case CERTIFICATE:
+                // Certificate authentication is handled via keystore/SSL configuration below
+                LOGGER.debug("Certificate authentication for '%s' - handled via keystore config", baseName);
+                break;
+            case TOKEN_FROM_USER:
+                // Token from user context is resolved at runtime, no static config needed
+                LOGGER.debug("Token-from-user authentication for '%s' - resolved at runtime", baseName);
+                break;
+            case NONE:
+                LOGGER.trace("No authentication configured for '%s'", baseName);
                 break;
         }
     }

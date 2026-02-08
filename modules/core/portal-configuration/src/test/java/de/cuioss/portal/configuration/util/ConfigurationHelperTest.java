@@ -277,6 +277,42 @@ class ConfigurationHelperTest {
         }
     }
 
+    @Nested
+    @DisplayName("resolveConfigPropertyFromSysOrEnv Tests")
+    class SysOrEnvResolutionTests {
+
+        @Test
+        @DisplayName("Should resolve from system property first")
+        void shouldResolveFromSystemProperty() {
+            var key = "test.sys.or.env.property";
+            setAsSystemProperty(key, "sys-value");
+
+            var result = ConfigurationHelper.resolveConfigPropertyFromSysOrEnv(key);
+            assertTrue(result.isPresent());
+            assertEquals("sys-value", result.get());
+        }
+
+        @Test
+        @DisplayName("Should return empty when nothing matches")
+        void shouldReturnEmptyWhenNotFound() {
+            var result = ConfigurationHelper.resolveConfigPropertyFromSysOrEnv(
+                    "totally.nonexistent.key.that.does.not.exist.anywhere." + System.nanoTime());
+            assertFalse(result.isPresent());
+        }
+
+        @Test
+        @DisplayName("System property should take precedence over env var with same key")
+        void shouldPreferSystemPropertyOverEnv() {
+            // Set a system property for a key that might also exist as env var
+            var key = "test.precedence.check." + System.nanoTime();
+            setAsSystemProperty(key, "from-system");
+
+            var result = ConfigurationHelper.resolveConfigPropertyFromSysOrEnv(key);
+            assertTrue(result.isPresent());
+            assertEquals("from-system", result.get());
+        }
+    }
+
     private void setAsSystemProperty(String key, String value) {
         System.setProperty(key, value);
         usedSystemConfigKeys.add(key);

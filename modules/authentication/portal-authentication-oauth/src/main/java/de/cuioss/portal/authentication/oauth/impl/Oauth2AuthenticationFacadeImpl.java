@@ -18,6 +18,7 @@ package de.cuioss.portal.authentication.oauth.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
+import de.cuioss.portal.authentication.PortalUserEnricher;
 import de.cuioss.portal.authentication.facade.AuthenticationSource;
 import de.cuioss.portal.authentication.facade.BaseAuthenticationFacade;
 import de.cuioss.portal.authentication.facade.PortalAuthenticationFacade;
@@ -39,6 +40,7 @@ import de.cuioss.tools.net.UrlParameter;
 import de.cuioss.tools.string.MoreStrings;
 import de.cuioss.tools.string.Splitter;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -150,11 +152,13 @@ public class Oauth2AuthenticationFacadeImpl extends BaseAuthenticationFacade
 
     @Inject
     public Oauth2AuthenticationFacadeImpl(
+            Instance<PortalUserEnricher> portalUserEnricher,
             @SuppressWarnings("cdi-ambiguous-dependency") Oauth2Service oauth2ServiceImpl,
             Provider<Oauth2Configuration> configurationProvider,
             @LoginPagePath Provider<String> loginUrl,
             Provider<OauthRedirector> oauthRedirector,
             Provider<HttpServletRequest> servletRequestProvider) {
+        super(portalUserEnricher);
         this.oauth2ServiceImpl = oauth2ServiceImpl;
         this.configurationProvider = configurationProvider;
         this.loginUrl = loginUrl;

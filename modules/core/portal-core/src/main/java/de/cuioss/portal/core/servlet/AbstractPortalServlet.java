@@ -17,7 +17,6 @@ package de.cuioss.portal.core.servlet;
 
 import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.tools.logging.CuiLogger;
-import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -90,8 +89,11 @@ public abstract class AbstractPortalServlet extends HttpServlet {
 
     private static final CuiLogger LOGGER = new CuiLogger(AbstractPortalServlet.class);
 
-    @Inject
-    Provider<AuthenticatedUserInfo> userInfoProvider;
+    private final Provider<AuthenticatedUserInfo> userInfoProvider;
+
+    protected AbstractPortalServlet(Provider<AuthenticatedUserInfo> userInfoProvider) {
+        this.userInfoProvider = userInfoProvider;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

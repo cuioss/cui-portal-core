@@ -19,7 +19,6 @@ import de.cuioss.portal.authentication.AuthenticatedUserInfo;
 import de.cuioss.portal.authentication.PortalUserEnricher;
 import de.cuioss.portal.common.priority.PortalPriorities;
 import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
 
 import java.util.List;
 
@@ -36,8 +35,11 @@ import static de.cuioss.tools.collect.CollectionLiterals.mutableList;
  */
 public abstract class BaseAuthenticationFacade implements AuthenticationFacade {
 
-    @Inject
-    private Instance<PortalUserEnricher> portalUserEnricher;
+    private final Instance<PortalUserEnricher> portalUserEnricher;
+
+    protected BaseAuthenticationFacade(Instance<PortalUserEnricher> portalUserEnricher) {
+        this.portalUserEnricher = portalUserEnricher;
+    }
 
     /**
      * Enriches the given {@link AuthenticatedUserInfo} using the available

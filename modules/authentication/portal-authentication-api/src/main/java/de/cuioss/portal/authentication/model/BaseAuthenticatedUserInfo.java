@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -81,6 +82,7 @@ public class BaseAuthenticatedUserInfo implements AuthenticatedUserInfo {
     private final String qualifiedIdentifier;
 
     @Getter
+    @Nullable
     private final String system;
 
     @Getter
