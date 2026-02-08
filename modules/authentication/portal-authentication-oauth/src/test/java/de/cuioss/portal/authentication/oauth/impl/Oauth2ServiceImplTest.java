@@ -294,4 +294,58 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertEquals("j.doe", result.getDisplayName());
         assertTrue(result.getRoles().isEmpty());
     }
+
+    @Test
+    void shouldHandleNullRoleClaimValue() {
+        configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
+
+        dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
+                Headers.of("Content-Type", MediaType.APPLICATION_JSON),
+                """
+                {
+                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                    "preferred_username": "j.doe",
+                    "ehealth-suite-roles": null
+                }
+                """));
+
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
+        assertNotNull(result);
+        assertTrue(result.getRoles().isEmpty());
+    }
+
+    @Test
+    void shouldHandleNestedRoleClaim() {
+        configuration.update(OAuthConfigKeys.OPEN_ID_ROLE_MAPPER_CLAIM, "ehealth-suite-roles");
+
+        dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
+                Headers.of("Content-Type", MediaType.APPLICATION_JSON),
+                """
+                {
+                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                    "preferred_username": "j.doe",
+                    "ehealth-suite-roles": [["nestedRole1", "nestedRole2"], "plainRole"]
+                }
+                """));
+
+        var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
+                new UrlParameter("state", "456"), "scopes", "code");
+        assertNotNull(result);
+        assertTrue(result.getRoles().contains("nestedRole1"));
+        assertTrue(result.getRoles().contains("nestedRole2"));
+        assertTrue(result.getRoles().contains("plainRole"));
+    }
+
+    @Test
+    void shouldHandleRefreshTokenReturningNull() {
+        var user = setupAuthorizedUser();
+        user.getToken().setRefresh_token("some-refresh-token");
+
+        // Set token result to return a null-body response (404)
+        dispatcher.setTokenResult(EndpointAnswerHandler.RESPONSE_NOT_FOUND);
+
+        var result = underTest.refreshToken(user);
+        assertNull(result);
+    }
 }
