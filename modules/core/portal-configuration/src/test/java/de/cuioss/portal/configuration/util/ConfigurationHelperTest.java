@@ -313,6 +313,85 @@ class ConfigurationHelperTest {
         }
     }
 
+    @Nested
+    @DisplayName("Additional Enum Conversion Tests")
+    class AdditionalEnumConversionTests {
+
+        @Test
+        @DisplayName("Should return default for null input with default value")
+        void shouldReturnDefaultForNullInput() {
+            TestLogLevel.ERROR.addLogger(ConfigurationHelper.class);
+            assertEquals(TestEnum.TWO, ConfigurationHelper.convertToEnum(null, TestEnum.class, TestEnum.TWO));
+        }
+
+        @Test
+        @DisplayName("Should return default for empty input with default value")
+        void shouldReturnDefaultForEmptyInput() {
+            TestLogLevel.ERROR.addLogger(ConfigurationHelper.class);
+            assertEquals(TestEnum.TWO, ConfigurationHelper.convertToEnum("", TestEnum.class, TestEnum.TWO));
+        }
+    }
+
+    @Nested
+    @DisplayName("Additional List Resolution Tests")
+    class AdditionalListResolutionTests {
+
+        @Test
+        @DisplayName("Should resolve list with default value when key absent")
+        void resolveConfigPropertyAsListWithDefault() {
+            var result = ConfigurationHelper.resolveConfigPropertyAsList("nonexistent.key", "a,b,c");
+            assertNotNull(result);
+            assertEquals(3, result.size());
+            assertTrue(result.contains("a"));
+            assertTrue(result.contains("b"));
+            assertTrue(result.contains("c"));
+        }
+
+        @Test
+        @DisplayName("Should resolve empty list with null default")
+        void resolveConfigPropertyAsListWithNullDefault() {
+            var result = ConfigurationHelper.resolveConfigPropertyAsList("nonexistent.key", null);
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should resolve list with custom separator")
+        void resolveConfigPropertyAsListWithCustomSeparator() {
+            setAsSystemProperty("custom.sep.key", "a;b;c");
+            var result = ConfigurationHelper.resolveConfigPropertyAsList("custom.sep.key", null, ';');
+            assertNotNull(result);
+            assertEquals(3, result.size());
+            assertTrue(result.contains("a"));
+            assertTrue(result.contains("b"));
+            assertTrue(result.contains("c"));
+        }
+    }
+
+    @Nested
+    @DisplayName("Property Separator Tests")
+    class PropertySeparatorTests {
+
+        @Test
+        @DisplayName("Should not append separator when already present")
+        void appendPropertySeparatorAlreadyHasDot() {
+            assertEquals("key.", ConfigurationHelper.appendPropertySeparator("key."));
+        }
+
+        @Test
+        @DisplayName("Should append separator when missing")
+        void appendPropertySeparatorNeedsAppend() {
+            assertEquals("key.", ConfigurationHelper.appendPropertySeparator("key"));
+        }
+
+        @Test
+        @DisplayName("Should reject null value")
+        void appendPropertySeparatorRejectsNull() {
+            assertThrows(NullPointerException.class,
+                    () -> ConfigurationHelper.appendPropertySeparator(null));
+        }
+    }
+
     private void setAsSystemProperty(String key, String value) {
         System.setProperty(key, value);
         usedSystemConfigKeys.add(key);

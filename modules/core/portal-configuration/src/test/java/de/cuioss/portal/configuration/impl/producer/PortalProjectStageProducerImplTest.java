@@ -16,8 +16,11 @@
 package de.cuioss.portal.configuration.impl.producer;
 
 import de.cuioss.portal.configuration.PortalConfigurationKeys;
+import de.cuioss.portal.configuration.PortalConfigurationMessages;
 import de.cuioss.portal.configuration.impl.support.EnablePortalConfigurationLocal;
 import de.cuioss.portal.configuration.impl.support.PortalTestConfigurationLocal;
+import de.cuioss.test.juli.TestLogLevel;
+import de.cuioss.test.juli.junit5.EnableTestLogger;
 import de.cuioss.test.valueobjects.junit5.contracts.ShouldHandleObjectContracts;
 import de.cuioss.uimodel.application.CuiProjectStage;
 import jakarta.inject.Inject;
@@ -27,11 +30,13 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.Test;
 
+import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableAutoWeld
 @EnablePortalConfigurationLocal
+@EnableTestLogger(warn = PortalProjectStageImpl.class)
 @AddBeanClasses({PortalProjectStageImpl.class})
 class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<PortalProjectStageImpl> {
 
@@ -62,5 +67,25 @@ class PortalProjectStageProducerImplTest implements ShouldHandleObjectContracts<
         assertFalse(stageUnderTest.get().isDevelopment());
         assertTrue(stageUnderTest.get().isProduction());
         assertTrue(underTest.getProjectStage().isProduction());
+    }
+
+    @Test
+    void shouldDetectDevelopmentStage() {
+        configuration.fireEvent(PortalConfigurationKeys.PORTAL_STAGE, "development");
+
+        assertTrue(stageUnderTest.get().isDevelopment());
+        assertFalse(stageUnderTest.get().isProduction());
+        assertLogMessagePresentContaining(TestLogLevel.WARN,
+                PortalConfigurationMessages.WARN.PROJECT_STAGE_DEVELOPMENT_DETECTED.resolveIdentifierString());
+    }
+
+    @Test
+    void shouldDetectTestStage() {
+        configuration.fireEvent(PortalConfigurationKeys.PORTAL_STAGE, "test");
+
+        assertTrue(stageUnderTest.get().isTest());
+        assertFalse(stageUnderTest.get().isProduction());
+        assertLogMessagePresentContaining(TestLogLevel.WARN,
+                PortalConfigurationMessages.WARN.PROJECT_STAGE_TEST_DETECTED.resolveIdentifierString());
     }
 }

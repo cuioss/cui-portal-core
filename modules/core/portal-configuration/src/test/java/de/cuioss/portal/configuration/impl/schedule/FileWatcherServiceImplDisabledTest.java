@@ -115,5 +115,45 @@ class FileWatcherServiceImplDisabledTest {
             assertFalse(underTest.isUpAndRunning());
             underTest.destroy();
         }
+
+        @Test
+        void shouldShutdownExecutorWhenDisabled() {
+            // First enable to create the executor
+            configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "true");
+            configuration.fireEvent();
+            underTest.initialize();
+            assertTrue(underTest.isUpAndRunning());
+
+            // Now disable - should shutdown executor
+            configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "false");
+            configuration.fireEvent();
+            underTest.initialize();
+            assertFalse(underTest.isUpAndRunning());
+
+            // Cleanup
+            underTest.destroy();
+        }
+
+        @Test
+        void shouldHandleDestroyWithNullExecutor() {
+            // Don't initialize (executor remains null)
+            assertFalse(underTest.isUpAndRunning());
+            // destroy should handle null executor gracefully
+            assertDoesNotThrow(() -> underTest.destroy());
+        }
+
+        @Test
+        void shouldHandleMultipleInitializeCalls() {
+            configuration.put(SCHEDULER_FILE_SCAN_ENABLED, "true");
+            configuration.fireEvent();
+            underTest.initialize();
+            assertTrue(underTest.isUpAndRunning());
+
+            // Second initialize should not fail
+            underTest.initialize();
+            assertTrue(underTest.isUpAndRunning());
+
+            underTest.destroy();
+        }
     }
 }

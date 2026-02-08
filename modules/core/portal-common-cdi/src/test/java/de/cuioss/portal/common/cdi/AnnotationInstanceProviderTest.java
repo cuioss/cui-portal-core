@@ -20,6 +20,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Tests the AnnotationInstanceProvider utility")
@@ -96,6 +99,62 @@ class AnnotationInstanceProviderTest {
                             literal,
                             "Should equal instance created without attributes")
             );
+        }
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface TestAnnotation {
+        String value() default "defaultValue";
+    }
+
+    @TestAnnotation("hello")
+    static class AnnotatedHelper {
+    }
+
+    @Nested
+    @DisplayName("Equals Edge Case Tests")
+    class EqualsEdgeCaseTests {
+
+        @Test
+        @DisplayName("Should equal real annotation with matching values")
+        void shouldEqualRealAnnotation() {
+            var realAnnotation = AnnotatedHelper.class.getAnnotation(TestAnnotation.class);
+            var proxyAnnotation = AnnotationInstanceProvider.of(TestAnnotation.class,
+                    CollectionLiterals.immutableMap("value", "hello"));
+
+            assertEquals(proxyAnnotation, realAnnotation,
+                    "Proxy annotation should equal real annotation with same values");
+        }
+
+        @Test
+        @DisplayName("Should not equal different annotation type")
+        void shouldNotEqualDifferentAnnotationType() {
+            var deprecated = AnnotationInstanceProvider.of(Deprecated.class);
+            var suppressWarnings = AnnotationInstanceProvider.of(SuppressWarnings.class);
+
+            assertNotEquals(deprecated, suppressWarnings,
+                    "Different annotation types should not be equal");
+        }
+
+        @Test
+        @DisplayName("Should not equal non-annotation object")
+        void shouldNotEqualNonAnnotation() {
+            var annotation = AnnotationInstanceProvider.of(SuppressWarnings.class);
+            assertNotEquals(annotation, "not an annotation",
+                    "Annotation proxy should not equal a non-annotation");
+        }
+    }
+
+    @Nested
+    @DisplayName("Default Member Value Tests")
+    class DefaultMemberValueTests {
+
+        @Test
+        @DisplayName("Should return default member value when not explicitly set")
+        void shouldReturnDefaultMemberValue() {
+            var annotation = AnnotationInstanceProvider.of(TestAnnotation.class);
+            assertEquals("defaultValue", annotation.value(),
+                    "Should return the default value for unset annotation members");
         }
     }
 
