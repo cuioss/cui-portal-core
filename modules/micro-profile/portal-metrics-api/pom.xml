@@ -7,6 +7,7 @@
     <version>1.3-SNAPSHOT</version>
   </parent>
   <artifactId>portal-metrics-api</artifactId>
+  <name>Portal Metrics API</name>
   <properties>
     <maven.jar.plugin.automatic.module.name>
       de.cuioss.portal.metrics</maven.jar.plugin.automatic.module.name>
