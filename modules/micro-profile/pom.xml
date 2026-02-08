@@ -3,7 +3,7 @@
   <parent>
     <groupId>de.cuioss.portal</groupId>
     <artifactId>modules</artifactId>
-    <version>1.4.0</version>
+    <version>1.5-SNAPSHOT</version>
   </parent>
   <groupId>de.cuioss.portal.mirco-profile</groupId>
   <artifactId>micro-profile</artifactId>

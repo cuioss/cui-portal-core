@@ -3,7 +3,7 @@
     <parent>
         <groupId>de.cuioss.portal.core</groupId>
         <artifactId>core</artifactId>
-        <version>1.4.0</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>portal-core</artifactId>
     <name>Portal Servlet Core</name>

@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.cuioss.portal.mirco-profile</groupId>
     <artifactId>micro-profile</artifactId>
-    <version>1.4.0</version>
+    <version>1.5-SNAPSHOT</version>
   </parent>
   <artifactId>portal-metrics-api</artifactId>
   <name>Portal Metrics API</name>

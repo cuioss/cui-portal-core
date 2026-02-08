@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.cuioss.portal.test</groupId>
         <artifactId>test</artifactId>
-        <version>1.4.0</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>portal-core-unit-testing</artifactId>
     <name>Portal Core Unit Testing</name>
