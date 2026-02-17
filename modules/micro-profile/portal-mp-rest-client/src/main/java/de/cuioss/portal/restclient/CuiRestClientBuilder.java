@@ -102,19 +102,19 @@ public class CuiRestClientBuilder {
      */
     public static void debugResponse(final Response response, final CuiLogger givenLogger) {
         givenLogger.debug("""
-                        -- Client response filter --
-                        Status: %s
-                        StatusInfo: %s
-                        Allowed Methods: %s
-                        EntityTag: %s
-                        Cookies: %s
-                        Date: %s
-                        Headers: %s
-                        Language: %s
-                        LastModified: %s
-                        Links: %s
-                        Location: %s
-                        MediaType: %s""",
+                -- Client response filter --
+                Status: %s
+                StatusInfo: %s
+                Allowed Methods: %s
+                EntityTag: %s
+                Cookies: %s
+                Date: %s
+                Headers: %s
+                Language: %s
+                LastModified: %s
+                Links: %s
+                Location: %s
+                MediaType: %s""",
                 response.getStatus(), response.getStatusInfo(), response.getAllowedMethods(),
                 response.getEntityTag(), response.getCookies(), response.getDate(), response.getHeaders(),
                 response.getLanguage(), response.getLastModified(), response.getLinks(), response.getLocation(),

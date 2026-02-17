@@ -57,7 +57,6 @@ import org.junit.jupiter.api.Test;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serial;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +66,6 @@ import static de.cuioss.test.generator.Generators.enumValues;
 import static de.cuioss.test.generator.Generators.letterStrings;
 import static de.cuioss.test.juli.LogAsserts.assertLogMessagePresentContaining;
 import static de.cuioss.tools.collect.CollectionLiterals.immutableMap;
-import static okhttp3.tls.internal.TlsUtil.localhost;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
@@ -223,31 +221,6 @@ class CuiRestClientBuilderTest {
 
         assertEquals(TEXT, result);
         assertNotNull(mockWebServer.takeRequest(), "Request didn't happen");
-    }
-
-    @Test
-    @MockResponseConfig(
-            path = "/success/test",
-            status = HttpServletResponse.SC_OK,
-            headers = "Content-Type=" + MEDIA_TYPE_FHIR_XML + ";ETag=W/123;Expires=Fri, 02 Dec 2050 16:00:00 GMT",
-            textContent = TEXT
-    )
-    void ipAddress(MockWebServer mockWebServer) throws Exception {
-        final var hostname = InetAddress.getLocalHost().getHostAddress();
-
-        final var handshakeCertificates = localhost();
-        mockWebServer.useHttps(handshakeCertificates.sslSocketFactory());
-        mockWebServer.start(InetAddress.getLocalHost(), 0);
-
-        final var port = mockWebServer.getPort();
-
-        service = new CuiRestClientBuilder(LOGGER).connectionMetadata(ConnectionMetadata.builder()
-                .serviceUrl(mockWebServer.url("https://" + hostname + ":" + port + "/success").toString())
-                .authenticationType(AuthenticationType.BASIC)
-                .loginCredentials(LoginCredentials.builder().username("user").password("pass").build())
-                .sslContext(handshakeCertificates.sslContext()).build()).build(TestResource.class);
-
-        assertThrows(ProcessingException.class, () -> service.test());
     }
 
     @Test

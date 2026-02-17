@@ -41,9 +41,9 @@ class ModuleConsistencyTest {
         @DisplayName("Should start up CDI container successfully")
         void shouldStartUpContainer() {
             try (var weld = new Weld()
-                    .enableDiscovery()
-                    .addBeanClass(PortalAuthenticationFacadeMock.class)
-                    .initialize()) {
+                         .enableDiscovery()
+                         .addBeanClass(PortalAuthenticationFacadeMock.class)
+                         .initialize()) {
 
                 assertNotNull(weld.select(BeanManager.class),
                         "Unable to acquire an instance of javax.enterprise.inject.spi.BeanManager");

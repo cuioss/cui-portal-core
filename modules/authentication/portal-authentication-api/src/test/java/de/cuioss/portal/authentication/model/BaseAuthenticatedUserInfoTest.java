@@ -20,6 +20,7 @@ import de.cuioss.test.generator.TypedGenerator;
 import de.cuioss.test.valueobjects.ValueObjectTest;
 import de.cuioss.test.valueobjects.api.contracts.VerifyBuilder;
 import de.cuioss.test.valueobjects.api.generator.PropertyGenerator;
+import de.cuioss.test.valueobjects.api.property.PropertyReflectionConfig;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -30,6 +31,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @PropertyGenerator(ContextMapGenerator.class)
 @VerifyBuilder
+// Exclude 'authenticated' from reflection scan: cui-test-generator 3.0.0 no longer registers
+// a generator for primitive boolean.class (only Boolean.class). The property is tested manually below.
+@PropertyReflectionConfig(exclude = {"authenticated"})
 class BaseAuthenticatedUserInfoTest extends ValueObjectTest<BaseAuthenticatedUserInfo> {
 
     private final TypedGenerator<String> keys = Generators.nonEmptyStrings();

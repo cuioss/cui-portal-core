@@ -139,7 +139,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertFalse(acceptHeader.isEmpty());
         assertEquals(MediaType.APPLICATION_JSON, acceptHeader.getFirst());
         assertEquals("grant_type=authorization_code&code=123&state=456&code_verifier=" + code
-                + "&redirect_uri=http%3A%2F" + "%2Fpathsome.url", request.getBody().readUtf8());
+                + "&redirect_uri=http%3A%2F" + "%2Fpathsome.url", request.getBody().utf8());
 
         request = requests.get(1);
         assertNotNull(request);
@@ -281,12 +281,12 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
                 Headers.of("Content-Type", MediaType.APPLICATION_JSON),
                 """
-                {
-                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
-                    "preferred_username": "j.doe",
-                    "ehealth-suite-roles": []
-                }
-                """));
+                        {
+                            "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                            "preferred_username": "j.doe",
+                            "ehealth-suite-roles": []
+                        }
+                        """));
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -302,12 +302,12 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
                 Headers.of("Content-Type", MediaType.APPLICATION_JSON),
                 """
-                {
-                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
-                    "preferred_username": "j.doe",
-                    "ehealth-suite-roles": null
-                }
-                """));
+                        {
+                            "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                            "preferred_username": "j.doe",
+                            "ehealth-suite-roles": null
+                        }
+                        """));
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -322,12 +322,12 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
                 Headers.of("Content-Type", MediaType.APPLICATION_JSON),
                 """
-                {
-                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
-                    "preferred_username": "j.doe",
-                    "ehealth-suite-roles": [["nestedRole1", "nestedRole2"], "plainRole"]
-                }
-                """));
+                        {
+                            "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                            "preferred_username": "j.doe",
+                            "ehealth-suite-roles": [["nestedRole1", "nestedRole2"], "plainRole"]
+                        }
+                        """));
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");

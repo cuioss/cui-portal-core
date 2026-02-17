@@ -140,7 +140,7 @@ class AnnotationInstanceProviderTest {
         @DisplayName("Should not equal non-annotation object")
         void shouldNotEqualNonAnnotation() {
             var annotation = AnnotationInstanceProvider.of(SuppressWarnings.class);
-            assertNotEquals(annotation, "not an annotation",
+            assertNotEquals("not an annotation", annotation,
                     "Annotation proxy should not equal a non-annotation");
         }
     }

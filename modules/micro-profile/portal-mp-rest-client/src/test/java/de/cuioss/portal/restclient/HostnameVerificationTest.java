@@ -72,7 +72,7 @@ class HostnameVerificationTest {
         assertEquals(TEXT, result);
         assertNotNull(mockWebServer.takeRequest(), "Request didn't happen");
 
-        mockWebServer.shutdown();
+        mockWebServer.close();
     }
 
     @Path("/")

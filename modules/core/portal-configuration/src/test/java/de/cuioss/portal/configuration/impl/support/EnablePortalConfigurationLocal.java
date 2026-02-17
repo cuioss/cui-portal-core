@@ -16,8 +16,10 @@
 package de.cuioss.portal.configuration.impl.support;
 
 import de.cuioss.portal.configuration.impl.producer.PortalConfigProducer;
+import io.smallrye.config.inject.ConfigExtension;
 import io.smallrye.config.inject.ConfigProducer;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -41,6 +43,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-@AddBeanClasses({ConfigProducer.class, PortalConfigProducer.class, PortalTestConfigurationLocal.class})
+@AddExtensions(ConfigExtension.class)
+@AddBeanClasses({PortalConfigProducer.class, PortalTestConfigurationLocal.class})
 public @interface EnablePortalConfigurationLocal {
 }
