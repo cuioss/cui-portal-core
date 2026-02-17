@@ -113,7 +113,7 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
         var request = mockWebServer.takeRequest();
         while (null != request) {
-            if (!isOidcDiscoveryPath(request.getPath())) {
+            if (!isOidcDiscoveryPath(request.getUrl().encodedPath())) {
                 builder.add(request);
             }
             request = mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS);
@@ -128,14 +128,10 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
 
     @Override
     public @NotNull MockResponse dispatch(RecordedRequest request) {
-        LOGGER.info(() -> "Serve request " + request.getPath());
+        var path = request.getUrl().encodedPath();
+        LOGGER.info(() -> "Serve request " + path);
 
-        if (null == request.getPath()) {
-            LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-            return new MockResponse(HttpServletResponse.SC_NOT_FOUND);
-        }
-
-        return switch (request.getPath()) {
+        return switch (path) {
             case "/" + OIDC_DISCOVERY_PATH ->
                 new MockResponse(HttpServletResponse.SC_OK, Headers.of("Content-Type", MediaType.APPLICATION_JSON), simulateInvalidOidcConfig
                         ? toStringUnchecked(INVALID_CONFIGURATION).replaceAll("5602", currentPort)
@@ -143,8 +139,8 @@ public class OIDCWellKnownDispatcher extends Dispatcher {
             case "/auth/realms/master/protocol/openid-connect/userinfo" -> userInfoResult;
             case "/auth/realms/master/protocol/openid-connect/token" -> tokenResult;
             default -> {
-                LOGGER.warn(() -> "Unable to serve request " + request.getPath());
-                yield new MockResponse(HttpServletResponse.SC_NOT_FOUND);
+                LOGGER.warn(() -> "Unable to serve request " + path);
+                yield new MockResponse(HttpServletResponse.SC_NOT_FOUND, Headers.of(), "");
             }
         };
     }

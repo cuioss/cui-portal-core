@@ -139,7 +139,7 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         assertFalse(acceptHeader.isEmpty());
         assertEquals(MediaType.APPLICATION_JSON, acceptHeader.getFirst());
         assertEquals("grant_type=authorization_code&code=123&state=456&code_verifier=" + code
-                + "&redirect_uri=http%3A%2F" + "%2Fpathsome.url", request.getBody().readUtf8());
+                + "&redirect_uri=http%3A%2F" + "%2Fpathsome.url", request.getBody().utf8());
 
         request = requests.get(1);
         assertNotNull(request);
