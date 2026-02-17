@@ -281,12 +281,12 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
                 Headers.of("Content-Type", MediaType.APPLICATION_JSON),
                 """
-                {
-                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
-                    "preferred_username": "j.doe",
-                    "ehealth-suite-roles": []
-                }
-                """));
+                        {
+                            "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                            "preferred_username": "j.doe",
+                            "ehealth-suite-roles": []
+                        }
+                        """));
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -302,12 +302,12 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
                 Headers.of("Content-Type", MediaType.APPLICATION_JSON),
                 """
-                {
-                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
-                    "preferred_username": "j.doe",
-                    "ehealth-suite-roles": null
-                }
-                """));
+                        {
+                            "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                            "preferred_username": "j.doe",
+                            "ehealth-suite-roles": null
+                        }
+                        """));
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");
@@ -322,12 +322,12 @@ class Oauth2ServiceImplTest implements ShouldHandleObjectContracts<Oauth2Service
         dispatcher.setUserInfoResult(new MockResponse(HttpServletResponse.SC_OK,
                 Headers.of("Content-Type", MediaType.APPLICATION_JSON),
                 """
-                {
-                    "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
-                    "preferred_username": "j.doe",
-                    "ehealth-suite-roles": [["nestedRole1", "nestedRole2"], "plainRole"]
-                }
-                """));
+                        {
+                            "sub": "004504b8-3811-4532-b6a9-af42b7cb6a00",
+                            "preferred_username": "j.doe",
+                            "ehealth-suite-roles": [["nestedRole1", "nestedRole2"], "plainRole"]
+                        }
+                        """));
 
         var result = underTest.createAuthenticatedUserInfo(servletRequest, new UrlParameter("code", "123"),
                 new UrlParameter("state", "456"), "scopes", "code");

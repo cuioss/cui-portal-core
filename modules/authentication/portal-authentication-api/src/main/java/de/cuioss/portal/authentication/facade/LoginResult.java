@@ -69,10 +69,10 @@ public sealed interface LoginResult permits LoginResult.Success, LoginResult.Fai
      * @param cause       the optional underlying cause, may be null
      */
     record Failure(IDisplayNameProvider<?> errorReason,
-            @Nullable
-            String username,
-            @Nullable
-            Throwable cause) implements LoginResult {
+    @Nullable
+    String username,
+    @Nullable
+    Throwable cause) implements LoginResult {
 
         public Failure {
             requireNonNull(errorReason);

@@ -40,11 +40,11 @@ class TokenTest extends ValueObjectTest<Token> {
         @DisplayName("Should deserialize minimal token")
         void shouldDeserializeMinimalToken() throws Exception {
             String json = """
-                {
-                    "access_token": "test-access-token",
-                    "token_type": "Bearer"
-                }
-                """;
+                    {
+                        "access_token": "test-access-token",
+                        "token_type": "Bearer"
+                    }
+                    """;
 
             Token token = MAPPER.readValue(json, Token.class);
             assertNotNull(token);
@@ -60,15 +60,15 @@ class TokenTest extends ValueObjectTest<Token> {
         @DisplayName("Should deserialize complete token")
         void shouldDeserializeCompleteToken() throws Exception {
             String json = """
-                {
-                    "access_token": "test-access-token",
-                    "id_token": "test-id-token",
-                    "refresh_token": "test-refresh-token",
-                    "token_type": "Bearer",
-                    "expires_in": "3600",
-                    "state": "test-state"
-                }
-                """;
+                    {
+                        "access_token": "test-access-token",
+                        "id_token": "test-id-token",
+                        "refresh_token": "test-refresh-token",
+                        "token_type": "Bearer",
+                        "expires_in": "3600",
+                        "state": "test-state"
+                    }
+                    """;
 
             Token token = MAPPER.readValue(json, Token.class);
             assertNotNull(token);
@@ -84,12 +84,12 @@ class TokenTest extends ValueObjectTest<Token> {
         @DisplayName("Should ignore unknown properties")
         void shouldIgnoreUnknownProperties() throws Exception {
             String json = """
-                {
-                    "access_token": "test-access-token",
-                    "token_type": "Bearer",
-                    "unknown_property": "should-be-ignored"
-                }
-                """;
+                    {
+                        "access_token": "test-access-token",
+                        "token_type": "Bearer",
+                        "unknown_property": "should-be-ignored"
+                    }
+                    """;
 
             Token token = MAPPER.readValue(json, Token.class);
             assertNotNull(token);
