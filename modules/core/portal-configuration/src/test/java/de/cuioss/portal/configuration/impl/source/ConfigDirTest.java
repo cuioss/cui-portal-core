@@ -15,11 +15,11 @@
  */
 package de.cuioss.portal.configuration.impl.source;
 
-import io.smallrye.config.inject.ConfigProducer;
+import io.smallrye.config.inject.ConfigExtension;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,11 @@ import static de.cuioss.portal.configuration.PortalConfigurationKeys.PORTAL_CUST
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoWeld
-@AddBeanClasses(ConfigProducer.class)
+// ConfigExtension registers the Config for this classloader AND contributes
+// ConfigProducer itself. Adding ConfigProducer via @AddBeanClasses as well makes
+// the @ConfigProperty producers ambiguous; relying on ServiceLoader discovery
+// instead fails with SRCFG00015.
+@AddExtensions(ConfigExtension.class)
 class ConfigDirTest {
 
     @Inject
