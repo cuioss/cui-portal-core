@@ -11,6 +11,10 @@
     <artifactId>cui-portal-core</artifactId>
     <version>1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <!-- Must be declared: <inceptionYear> is inherited, and the license plugin binds
+         the copyright ${year} to it. Without this, this project would report
+         cui-parent-pom's 2022 and restamp every header on each -Ppre-commit run. -->
+    <inceptionYear>2023</inceptionYear>
     <name>cui portal core</name>
     <description>The core modules of the cui-portal incorporating
         portal-configuration and portal authentication.
