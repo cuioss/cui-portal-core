@@ -189,6 +189,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         } catch (IllegalArgumentException e) {
             LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             return null;
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
@@ -248,13 +249,12 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             }
 
             return baseAuthenticatedUserInfoBuilder.build();
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        }
-        /*TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe*/
-        catch (IOException | RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             return null;
         }
@@ -286,13 +286,12 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
             var token = requestToken.requestToken("client_credentials");
             return token.getAccess_token();
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        }
-        /*TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe*/
-        catch (IOException | RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             return null;
         }
@@ -318,13 +317,12 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             }
             LOGGER.debug("no token received");
             return null;
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
             return null;
-        }
-        /*TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe*/
-        catch (IOException | RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             return null;
         }

@@ -102,9 +102,8 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         }
         try {
             executeDoGet(req, resp);
-        }
-        /*TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe*/
-        catch (RuntimeException | IOException e) {
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
+        } catch (RuntimeException | IOException e) {
             LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR, e.getMessage());
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

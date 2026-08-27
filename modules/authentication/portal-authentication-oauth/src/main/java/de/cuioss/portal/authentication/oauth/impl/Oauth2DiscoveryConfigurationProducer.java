@@ -160,9 +160,8 @@ public class Oauth2DiscoveryConfigurationProducer {
             try (final var discoveryEndpoint = builder.build(RequestDiscovery.class)) {
                 final var discovery = discoveryEndpoint.getDiscovery();
                 configuration = createConfiguration(discovery);
-            }
-            /*TODO: Catch specific not RuntimeException. Suppress: // cui-rewrite:disable InvalidExceptionUsageRecipe*/
-            catch (final IOException | RuntimeException e) {
+                // cui-rewrite:disable InvalidExceptionUsageRecipe
+            } catch (final IOException | RuntimeException e) {
                 LOGGER.error(e, ERROR.DISCOVERY_FAILED);
             }
         } else {
