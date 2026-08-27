@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ * Copyright © 2023-present CUI-OpenSource-Software (info@cuioss.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,7 @@ public abstract class AbstractPortalServlet extends HttpServlet {
         }
         try {
             executeDoGet(req, resp);
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (RuntimeException | IOException e) {
             LOGGER.error(e, SERVLET.ERROR.REQUEST_PROCESSING_ERROR, e.getMessage());
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

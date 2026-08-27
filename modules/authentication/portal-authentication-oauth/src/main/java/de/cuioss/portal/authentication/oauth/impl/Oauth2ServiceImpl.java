@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 CUI-OpenSource-Software (info@cuioss.de)
+ * Copyright © 2023-present CUI-OpenSource-Software (info@cuioss.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,6 +189,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         } catch (IllegalArgumentException e) {
             LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             return null;
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.REQUEST_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
@@ -248,6 +249,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             }
 
             return baseAuthenticatedUserInfoBuilder.build();
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.GET_USERINFO_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
@@ -284,6 +286,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
             var token = requestToken.requestToken("client_credentials");
             return token.getAccess_token();
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
@@ -314,6 +317,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
             }
             LOGGER.debug("no token received");
             return null;
+            // cui-rewrite:disable InvalidExceptionUsageRecipe
         } catch (WebApplicationException e) {
             LOGGER.warn(e, WARN.CLIENT_TOKEN_FAILED);
             CuiRestClientBuilder.debugResponse(e.getResponse(), LOGGER);
