@@ -8,7 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Full build (all modules)
 ./mvnw clean verify
 
-#Quality Build
+# Code cleanup with OpenRewrite - auto-fixes license headers and formatting;
+# review what it changed and commit it
 ./mvnw clean verify -Ppre-commit
 
 # Build without tests
